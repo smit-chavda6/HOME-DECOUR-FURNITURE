@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOME DECOR FURNITURE</title>
+    <link href="image/Logo maker project.png" rel="icon">
+  <link href="image/Logo maker project.png" rel="apple-touch-icon">
+    <link rel="stylesheet" href="CSS/style.css">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gsta tic.com" rel="preconnect" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</head>
+
+<body>
+    <nav id="navbar2">
+        <div id="logo">
+            <img src="image/Logo maker project.png">
+        </div>
+        <a href="index.html" id="logo3">
+
+            <p id="webname" >HOME DECOR FURNITURE &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+        </a>
+        <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        <div class="hamburger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </nav>
+
+     <!-- Gallery Section -->
+     <section id="gallery" class="g2">
+        <p  id="gname">OUR COLLECTION</p><br>
+
+        <div class="feature-bar">
+            <!-- Size Filter -->
+            <div class="filter-section">
+                <h3>Filter by Size (cm)</h3>
+                <form id="size-filter">
+                    <input type="number" id="max-width" placeholder="Max Width">
+                    <input type="number" id="max-height" placeholder="Max Height">
+                    <input type="number" id="max-depth" placeholder="Max Depth">
+                    <button type="submit">Filter</button>
+                    <button type="reset" id="reset-filter">Reset</button>
+                </form>
+            </div>
+
+            <!-- Budget Planner -->
+            <div class="budget-section">
+                <h3>Budget Planner</h3>
+                <form id="budget-form">
+                    <input type="number" id="budget-input" placeholder="Enter your budget">
+                    <button type="submit">Set Budget</button>
+                </form>
+                <div id="budget-feedback"></div>
+            </div>
+
+            <!-- Wishlist -->
+            <div class="wishlist-section">
+                <button id="wishlist-toggle"><i class="fas fa-heart"></i> Wishlist <span id="wishlist-count">0</span></button>
+            </div>
+        </div>
+        
+        <div class="gallery-container">
+            <img src="image/toa-heftiba-FV3GConVSss-unsplash.jpg" alt="Furniture 1">
+            <img src="image/becca-tapert-dO3qTKxwik0-unsplash.jpg" alt="Furniture 2">
+            <img src="image/christopher-jolly-GqbU78bdJFM-unsplash.jpg" alt="Furniture 3">
+            <img src="image/davide-cantelli-ajisKc2uuFk-unsplash.jpg" alt="Furniture 4">
+            <img src="image/denys-striyeshyn-wJ7yGwz2-00-unsplash.jpg" alt="Furniture 5">
+            <img src="image/hutomo-abrianto-X5BWooeO4Cw-unsplash.jpg" alt="Furniture 6">
+            <img src="image/inside-weather-Uxqlfigh6oE-unsplash.jpg" alt="Furniture 7">
+            <img src="image/kari-shea-AMyjxxLEHU4-unsplash.jpg" alt="Furniture 8">
+            <img src="image/kari-shea-ItMggD0EguY-unsplash.jpg" alt="Furniture 9">
+            <img src="image/kari-shea-tOVmshavtoo-unsplash.jpg" alt="Furniture 10">
+            <img src="image/kirill-9uH-hM0VwPg-unsplash.jpg" alt="Furniture 11">
+            <img src="image/olena-bohovyk-gxKL334bUK4-unsplash.jpg" alt="Furniture 12">
+        </div>
+
+        <div id="wishlist-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>My Wishlist</h2>
+                <div id="wishlist-items"></div>
+                <div id="wishlist-total"></div>
+            </div>
+        </div>
+    </section>
+
+    
+    
+    <footer id="footer2" class="footer">
+
+        <div class="container copyright text-center mt-4">
+            <p>© <span>Copyright</span> <strong class="px-1 sitename">HOME DECOR FURNITURE</strong> <span>All Rights Reserved</span></p>
+            <div class="credits">
+                
+            </div>
+        </div>
+    </footer>
+        
+    <script src="js/app.js"></script>
+    <script src="js/gallery.js"></script>
+</body>
+
+</html>
