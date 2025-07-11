@@ -519,7 +519,7 @@
 
 .team-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(4, 1fr); /* Force 1 row for 4 members */
     gap: 40px;
     max-width: 1000px;
     margin: 0 auto;
