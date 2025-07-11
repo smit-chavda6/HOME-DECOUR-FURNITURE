@@ -5,8 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HOME DECOR FURNITURE</title>
-    <link href="image/Logo maker project.png" rel="icon">
-    <link href="image/Logo maker project.png" rel="apple-touch-icon">
+    <!-- Favicons - Enhanced for better compatibility -->
+    <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="image/Logo maker project.webp">
+    <link rel="icon" type="image/png" sizes="32x32" href="image/Logo maker project.webp">
+    <link rel="icon" type="image/png" sizes="48x48" href="image/Logo maker project.webp">
+    <link rel="apple-touch-icon" sizes="180x180" href="image/Logo maker project.webp">
+    <link rel="apple-touch-icon" sizes="152x152" href="image/Logo maker project.webp">
+    <link rel="apple-touch-icon" sizes="144x144" href="image/Logo maker project.webp">
+    <link rel="apple-touch-icon" sizes="120x120" href="image/Logo maker project.webp">
+    <link rel="apple-touch-icon" sizes="114x114" href="image/Logo maker project.webp">
+    <link rel="apple-touch-icon" sizes="76x76" href="image/Logo maker project.webp">
+    <link rel="apple-touch-icon" sizes="72x72" href="image/Logo maker project.webp">
+    <link rel="apple-touch-icon" sizes="60x60" href="image/Logo maker project.webp">
+    <link rel="apple-touch-icon" sizes="57x57" href="image/Logo maker project.webp">
+    <meta name="msapplication-TileColor" content="#8B4513">
+    <meta name="msapplication-TileImage" content="image/Logo maker project.webp">
+    <meta name="theme-color" content="#8B4513">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="CSS/style.css">
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gsta tic.com" rel="preconnect" crossorigin>
@@ -23,81 +39,395 @@
 </head>
 
 <body>
-    <nav id="navbar2">
-        <div id="logo">
-            <img src="image/Logo maker project.png">
-        </div>
-        <a href="index.html" id="logo3">
-
-            <p id="webname">HOME DECOR FURNITURE &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
-        </a>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="gallery.html">Gallery</a></li>
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="contact.html">Contact Us</a></li>
-        </ul>
-        <div class="hamburger">
-            <div class="line1"></div>
-            <div class="line2"></div>
-            <div class="line3"></div>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <img src="image/Logo maker project.webp" alt="Home Decor Furniture Logo" class="navbar-logo" loading="lazy">
+                <h1 class="navbar-name">HOME DECOR FURNITURE</h1>
+            </a>
+            
+            <ul class="navbar-menu">
+                <li class="navbar-item">
+                    <a href="index.html" class="navbar-link">Home</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="gallery.html" class="navbar-link">Gallery</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="about.html" class="navbar-link active">About Us</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="contact.html" class="navbar-link">Contact Us</a>
+                </li>
+                <li class="navbar-item">
+                    <a href="#" class="cart-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                        Cart
+                        <span class="cart-count">0</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="hamburger">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </div>
         </div>
     </nav>
 
-    <header id="about1">
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="hero-content">
         <h1>About Us</h1>
-        <p>Your trusted source for quality furniture.</p>
-    </header>
+            <p>Your trusted source for quality furniture</p>
+        </div>
+    </section>
 
-    <main id="about2">
+    <!-- Who We Are Section -->
         <section class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
             <h2>WHO WE ARE</h2>
-            <img src="image/phillip-goldsberry-fZuleEfeA1Q-unsplash.jpg" alt="Furniture Store Team" class="about-image">
-            <p>At Furniture Store, we are passionate about creating beautiful spaces. With over a decade of experience,
-                we offer a wide range of high-quality furniture designed to suit every style and budget.</p>
+                    <p>At Home Decor Furniture, we are passionate about creating beautiful spaces. With over a decade of experience, we offer a wide range of high-quality furniture designed to suit every style and budget. Our commitment to excellence and customer satisfaction has made us a trusted name in the furniture industry.</p>
+                    <p>We believe that every home tells a story, and we're here to help you write yours with furniture that combines beauty, functionality, and quality craftsmanship.</p>
+                </div>
+                <div class="about-image">
+                    <img src="image/phillip-goldsberry-fZuleEfeA1Q-unsplash.webp" alt="Furniture Store Team" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Company History Section -->
+    <section class="history-section">
+        <div class="container">
+            <h2>Our Journey</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">2014</div>
+                    <div class="timeline-content">
+                        <h3>The Beginning</h3>
+                        <p>Founded with a vision to bring quality furniture to every home, we started as a small family business with a passion for craftsmanship.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-year">2017</div>
+                    <div class="timeline-content">
+                        <h3>Expansion</h3>
+                        <p>Opened our first showroom and expanded our collection to include premium furniture from renowned designers.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-year">2020</div>
+                    <div class="timeline-content">
+                        <h3>Digital Transformation</h3>
+                        <p>Launched our online platform to reach customers nationwide and provide seamless shopping experience.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-year">2024</div>
+                    <div class="timeline-content">
+                        <h3>Today</h3>
+                        <p>Proudly serving thousands of satisfied customers with our commitment to quality, sustainability, and exceptional service.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         </section>
 
+    <!-- Mission Section -->
         <section class="mission-section">
-            <h2>Our Mission</h2><br>
-            <p>Our mission is to provide our customers with exceptional furniture that combines style, comfort, and
-                functionality. We believe that your home should reflect your personality and lifestyle, and we are here
-                to help you achieve that.</p>
-        </section>
-        <section class="mission-section">
-            <h2>SUSTAINABILITY</h2><br>
-            <p>We strive to use materials that are sustainably sourced, and strongly believe in supporting artisans and
-                their crafts. As a brand we aim to preserve and revive the dying traditions and techniques of hand
-                crafted furniture making and are associated with NGOs supporting this goal. One of which is 'The
-                Vishwakarma Swayam Sahayata Samuh' that is engaged in helping and providing education & training to the
-                local artisans.</p>
+        <div class="container">
+            <div class="mission-content">
+                <h2>Our Mission</h2>
+                <p>Our mission is to provide our customers with exceptional furniture that combines style, comfort, and functionality. We believe that your home should reflect your personality and lifestyle, and we are here to help you achieve that.</p>
+                <div class="mission-features">
+                    <div class="mission-feature">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Quality First</h3>
+                        <p>We never compromise on quality, ensuring every piece meets our high standards.</p>
+                    </div>
+                    <div class="mission-feature">
+                        <div class="feature-icon">💝</div>
+                        <h3>Customer Focus</h3>
+                        <p>Your satisfaction is our priority, and we go above and beyond to exceed expectations.</p>
+                    </div>
+                    <div class="mission-feature">
+                        <div class="feature-icon">🌟</div>
+                        <h3>Innovation</h3>
+                        <p>We continuously seek new designs and trends to keep our collection fresh and exciting.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         </section>
 
+    <!-- Sustainability Section -->
+    <section class="sustainability-section">
+        <div class="container">
+            <div class="sustainability-content">
+                <h2>SUSTAINABILITY</h2>
+                <p>We strive to use materials that are sustainably sourced, and strongly believe in supporting artisans and their crafts. As a brand, we aim to preserve and revive the dying traditions and techniques of handcrafted furniture making.</p>
+                <p>We are associated with NGOs supporting this goal, including 'The Vishwakarma Swayam Sahayata Samuh' that is engaged in helping and providing education & training to local artisans.</p>
+                <div class="sustainability-stats">
+                    <div class="stat">
+                        <h3>100%</h3>
+                        <p>Sustainably Sourced</p>
+                    </div>
+                    <div class="stat">
+                        <h3>50+</h3>
+                        <p>Local Artisans</p>
+                    </div>
+                    <div class="stat">
+                        <h3>10+</h3>
+                        <p>Years Experience</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </section>
+
+    <!-- Values Section -->
         <section class="values-section">
-            <h2>Our Values</h2><br>
-            <ul>
-                <li><strong>Quality:</strong> We source materials and craftsmanship that ensure durability and elegance.
-                </li>
-                <li><strong>Customer Satisfaction:</strong> Our customers are our priority, and we strive to exceed
-                    their expectations.</li>
-                    <li><strong>Innovation:</strong> We continuously seek new designs and trends to keep our collection
-                        fresh and exciting.</li>
-                    </ul>
+        <div class="container">
+            <h2>Our Values</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <h3>Quality</h3>
+                    <p>We source materials and craftsmanship that ensure durability and elegance. Every piece is carefully inspected to meet our high standards.</p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                    </div>
+                    <h3>Customer Satisfaction</h3>
+                    <p>Our customers are our priority, and we strive to exceed their expectations with exceptional service and support.</p>
+                </div>
+                
+                <div class="value-card">
+                    <div class="value-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <h3>Innovation</h3>
+                    <p>We continuously seek new designs and trends to keep our collection fresh and exciting for our customers.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievements Section -->
+    <section class="achievements-section">
+        <div class="container">
+            <h2>Our Achievements</h2>
+            <div class="achievements-grid">
+                <div class="achievement-card">
+                    <div class="achievement-number">5000+</div>
+                    <h3>Happy Customers</h3>
+                    <p>Families who have transformed their homes with our furniture</p>
+                </div>
+                
+                <div class="achievement-card">
+                    <div class="achievement-number">1000+</div>
+                    <h3>Furniture Pieces</h3>
+                    <p>Unique designs crafted with attention to detail</p>
+                </div>
+                
+                <div class="achievement-card">
+                    <div class="achievement-number">15+</div>
+                    <h3>Awards Won</h3>
+                    <p>Recognition for excellence in furniture design and service</p>
+                </div>
+                
+                <div class="achievement-card">
+                    <div class="achievement-number">98%</div>
+                    <h3>Customer Satisfaction</h3>
+                    <p>Based on thousands of customer reviews and feedback</p>
+                </div>
+            </div>
+        </div>
                 </section>
-                <section>
-                    <h2>MANAGEMENT BY</h2><br>
-                    <P>SMIT CHAVDA <br>KRISH KUVRANI <br>VAIRAG SHAH</P>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="container">
+            <h2>What Our Customers Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"The quality of furniture exceeded our expectations. The delivery was prompt and the customer service was exceptional. Highly recommended!"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SM</div>
+                        <div class="author-info">
+                            <h4>Sarah Mitchell</h4>
+                            <span>Chicago, IL</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Beautiful furniture that perfectly matches our home decor. The craftsmanship is outstanding and the prices are reasonable."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JD</div>
+                        <div class="author-info">
+                            <h4>John Davis</h4>
+                            <span>New York, NY</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p>"Amazing experience from start to finish. The team helped us choose the perfect pieces for our living room. We couldn't be happier!"</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">EW</div>
+                        <div class="author-info">
+                            <h4>Emily Wilson</h4>
+                            <span>Los Angeles, CA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
                 </section>
-    </main>
 
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="container">
+            <h2>MANAGEMENT TEAM</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <div class="avatar-placeholder">SM</div>
+                    </div>
+                    <h3>SMIT CHAVDA</h3>
+                    <p>Founder & CEO</p>
+                    <p class="member-description">With over 15 years of experience in the furniture industry, Smit leads our company with vision and passion for quality craftsmanship.</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <div class="avatar-placeholder">KK</div>
+                    </div>
+                    <h3>KRISH KUVRANI</h3>
+                    <p>Creative Director</p>
+                    <p class="member-description">Krish brings innovative design concepts and ensures every piece meets our high aesthetic and functional standards.</p>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-avatar">
+                        <div class="avatar-placeholder">VS</div>
+                    </div>
+                    <h3>VAIRAG SHAH</h3>
+                    <p>Operations Manager</p>
+                    <p class="member-description">Vairag oversees all operations, ensuring smooth delivery and exceptional customer service across all touchpoints.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-
-    <footer id="footer2" class="footer">
-
-        <div class="container copyright text-center mt-4">
-            <p>© <span>Copyright</span> <strong class="px-1 sitename">HOME DECOR FURNITURE</strong> <span>All Rights
-                    Reserved</span></p>
-            <div class="credits">
-
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>We are passionate about creating beautiful spaces with high-quality furniture that combines style, comfort, and functionality. Your home should reflect your personality and lifestyle.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                        <span>Chicago, IL 60652, United States</span>
+                    </div>
+                    <div class="contact-item">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                        </svg>
+                        <span>+1 234 567 890</span>
+                    </div>
+                    <div class="contact-item">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                        <span>support@homedecorfurniturestore.com</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Newsletter</h3>
+                <div class="newsletter">
+                    <p>Subscribe to get updates on new arrivals and special offers!</p>
+                    <form class="newsletter-form">
+                        <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+                        <button type="submit" class="newsletter-btn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-bottom-content">
+                <p class="copyright">© 2025 <strong>HOME DECOR FURNITURE</strong>. All Rights Reserved.</p>
+                <ul class="footer-bottom-links">
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Shipping Info</a></li>
+                </ul>
             </div>
         </div>
     </footer>

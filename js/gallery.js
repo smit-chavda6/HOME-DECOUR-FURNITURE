@@ -1,236 +1,267 @@
-const furnitureData = [
-    {
-        id: 1,
-        name: 'Comfortable Sofa',
-        price: 499.99,
-        image: 'image/toa-heftiba-FV3GConVSss-unsplash.jpg',
-        dimensions: { width: 200, height: 90, depth: 100 }
-    },
-    {
-        id: 2,
-        name: 'Modern Armchair',
-        price: 249.99,
-        image: 'image/becca-tapert-dO3qTKxwik0-unsplash.jpg',
-        dimensions: { width: 80, height: 100, depth: 90 }
-    },
-    {
-        id: 3,
-        name: 'Wooden Coffee Table',
-        price: 149.99,
-        image: 'image/christopher-jolly-GqbU78bdJFM-unsplash.jpg',
-        dimensions: { width: 120, height: 45, depth: 60 }
-    },
-    {
-        id: 4,
-        name: 'Dining Table',
-        price: 399.99,
-        image: 'image/davide-cantelli-ajisKc2uuFk-unsplash.jpg',
-        dimensions: { width: 180, height: 75, depth: 90 }
-    },
-    {
-        id: 5,
-        name: 'Bookshelf',
-        price: 199.99,
-        image: 'image/denys-striyeshyn-wJ7yGwz2-00-unsplash.jpg',
-        dimensions: { width: 90, height: 180, depth: 30 }
-    },
-    {
-        id: 6,
-        name: 'Queen Size Bed',
-        price: 599.99,
-        image: 'image/hutomo-abrianto-X5BWooeO4Cw-unsplash.jpg',
-        dimensions: { width: 160, height: 120, depth: 200 }
-    },
-    {
-        id: 7,
-        name: 'Office Chair',
-        price: 129.99,
-        image: 'image/inside-weather-Uxqlfigh6oE-unsplash.jpg',
-        dimensions: { width: 60, height: 110, depth: 65 }
-    },
-    {
-        id: 8,
-        name: 'Side Table',
-        price: 89.99,
-        image: 'image/kari-shea-AMyjxxLEHU4-unsplash.jpg',
-        dimensions: { width: 50, height: 60, depth: 50 }
-    },
-    {
-        id: 9,
-        name: 'Dresser',
-        price: 349.99,
-        image: 'image/kari-shea-ItMggD0EguY-unsplash.jpg',
-        dimensions: { width: 140, height: 90, depth: 50 }
-    },
-    {
-        id: 10,
-        name: 'Bar Stool',
-        price: 79.99,
-        image: 'image/kari-shea-tOVmshavtoo-unsplash.jpg',
-        dimensions: { width: 40, height: 105, depth: 40 }
-    },
-    {
-        id: 11,
-        name: 'L-shaped Sofa',
-        price: 899.99,
-        image: 'image/kirill-9uH-hM0VwPg-unsplash.jpg',
-        dimensions: { width: 250, height: 90, depth: 160 }
-    },
-    {
-        id: 12,
-        name: 'Accent Chair',
-        price: 199.99,
-        image: 'image/olena-bohovyk-gxKL334bUK4-unsplash.jpg',
-        dimensions: { width: 70, height: 85, depth: 80 }
-    }
-];
-
-document.addEventListener('DOMContentLoaded', () => {
+// Gallery Page JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const galleryItems = document.querySelectorAll('.gallery-item');
     const galleryContainer = document.querySelector('.gallery-container');
-
-    function renderGallery(items) {
-        galleryContainer.innerHTML = '';
-        items.forEach(item => {
-            const galleryItem = document.createElement('div');
-            galleryItem.className = 'gallery-item';
-            galleryItem.dataset.id = item.id;
-            galleryItem.dataset.width = item.dimensions.width;
-            galleryItem.dataset.height = item.dimensions.height;
-            galleryItem.dataset.depth = item.dimensions.depth;
-
-            galleryItem.innerHTML = `
-                <img src="${item.image}" alt="${item.name}">
-                <h3>${item.name}</h3>
-                <p class="price">$${item.price.toFixed(2)}</p>
-                <button class="add-to-wishlist"><i class="fas fa-heart"></i> Add to Wishlist</button>
-            `;
-            galleryContainer.appendChild(galleryItem);
+    
+    // Filter functionality
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const filter = this.getAttribute('data-filter');
+            
+            // Update active button
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter items
+            filterItems(filter);
         });
-    }
-
-    renderGallery(furnitureData);
-
-    // Size Filter
-    const sizeFilter = document.getElementById('size-filter');
-    sizeFilter.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const maxWidth = document.getElementById('max-width').value;
-        const maxHeight = document.getElementById('max-height').value;
-        const maxDepth = document.getElementById('max-depth').value;
-
-        const filteredData = furnitureData.filter(item => {
-            return (!maxWidth || item.dimensions.width <= maxWidth) &&
-                   (!maxHeight || item.dimensions.height <= maxHeight) &&
-                   (!maxDepth || item.dimensions.depth <= maxDepth);
-        });
-        renderGallery(filteredData);
     });
-
-    sizeFilter.addEventListener('reset', () => {
-        renderGallery(furnitureData);
-    });
-
-    // Wishlist
-    let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-    const wishlistModal = document.getElementById('wishlist-modal');
-    const wishlistToggle = document.getElementById('wishlist-toggle');
-    const closeButton = document.querySelector('.close-button');
-    const wishlistItemsContainer = document.getElementById('wishlist-items');
-    const wishlistCount = document.getElementById('wishlist-count');
-    const galleryContainer = document.querySelector('.gallery-container');
-
-    function updateWishlistCount() {
-        wishlistCount.textContent = wishlist.length;
-    }
-
-    function renderWishlist() {
-        wishlistItemsContainer.innerHTML = '';
-        if (wishlist.length === 0) {
-            wishlistItemsContainer.innerHTML = '<p>Your wishlist is empty.</p>';
-            return;
-        }
-        wishlist.forEach(item => {
-            const wishlistItem = document.createElement('div');
-            wishlistItem.className = 'wishlist-item';
-            wishlistItem.innerHTML = `
-                <img src="${item.image}" alt="${item.name}">
-                <span>${item.name} - $${item.price.toFixed(2)}</span>
-                <button class="remove-from-wishlist" data-id="${item.id}">&times;</button>
-            `;
-            wishlistItemsContainer.appendChild(wishlistItem);
-        });
-    }
-
-    galleryContainer.addEventListener('click', (e) => {
-        if (e.target.closest('.add-to-wishlist')) {
-            const galleryItem = e.target.closest('.gallery-item');
-            const itemId = parseInt(galleryItem.dataset.id);
-            const item = furnitureData.find(i => i.id === itemId);
-
-            if (!wishlist.find(i => i.id === itemId)) {
-                wishlist.push(item);
-                localStorage.setItem('wishlist', JSON.stringify(wishlist));
-                updateWishlistCount();
-                alert(`${item.name} has been added to your wishlist!`);
+    
+    function filterItems(filter) {
+        galleryItems.forEach(item => {
+            const category = item.getAttribute('data-category');
+            
+            if (filter === 'all' || category === filter) {
+                item.style.display = 'block';
+                // Add animation for showing items
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 100);
             } else {
-                alert(`${item.name} is already in your wishlist.`);
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    item.style.display = 'none';
+                }, 300);
             }
+        });
+    }
+    
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, observerOptions);
+    
+    // Observe gallery items for animation
+    galleryItems.forEach(item => {
+        observer.observe(item);
+    });
+    
+    // Add hover effects to gallery items
+    galleryItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-15px) scale(1.02)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+    
+    // Add click effects to gallery items
+    galleryItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            // Add ripple effect
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.classList.add('ripple');
+            
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+    
+    // Search functionality (if needed)
+    const searchInput = document.querySelector('.gallery-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            galleryItems.forEach(item => {
+                const title = item.querySelector('h3').textContent.toLowerCase();
+                const price = item.querySelector('.price').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || price.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    item.style.opacity = '1';
+                } else {
+                    item.style.opacity = '0';
+                    setTimeout(() => {
+                        item.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    }
+    
+    // Lazy loading enhancement
+    const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src || img.src;
+                img.classList.remove('lazy');
+                imageObserver.unobserve(img);
+            }
+        });
+    });
+    
+    // Observe images for lazy loading
+    const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+    lazyImages.forEach(img => {
+        imageObserver.observe(img);
+    });
+    
+    // Add loading states
+    function showLoading() {
+        galleryContainer.classList.add('loading');
+    }
+    
+    function hideLoading() {
+        galleryContainer.classList.remove('loading');
+    }
+    
+    // Simulate loading for demo purposes
+    if (galleryItems.length > 0) {
+        showLoading();
+        setTimeout(hideLoading, 1000);
+    }
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            // Reset filters
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            filterButtons[0].classList.add('active'); // "All Items" button
+            filterItems('all');
         }
     });
-
-    wishlistItemsContainer.addEventListener('click', (e) => {
-        if (e.target.classList.contains('remove-from-wishlist')) {
-            const itemId = parseInt(e.target.dataset.id);
-            wishlist = wishlist.filter(i => i.id !== itemId);
-            localStorage.setItem('wishlist', JSON.stringify(wishlist));
-            renderWishlist();
-            updateWishlistCount();
-        }
+    
+    // Add smooth scrolling to top when filtering
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+    
+    // Enhanced filter with scroll to top
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            scrollToTop();
+        });
     });
-
-    wishlistToggle.onclick = () => {
-        renderWishlist();
-        wishlistModal.style.display = 'block';
-    }
-    closeButton.onclick = () => {
-        wishlistModal.style.display = 'none';
-    }
-    window.onclick = (e) => {
-        if (e.target == wishlistModal) {
-            wishlistModal.style.display = 'none';
+    
+    // Add counter for filtered items
+    function updateItemCounter() {
+        const visibleItems = document.querySelectorAll('.gallery-item[style*="block"], .gallery-item:not([style*="none"])');
+        const counter = document.querySelector('.item-counter');
+        
+        if (counter) {
+            counter.textContent = `${visibleItems.length} items`;
         }
     }
     
-    // Budget Planner
-    const budgetForm = document.getElementById('budget-form');
-    const budgetFeedback = document.getElementById('budget-feedback');
-    let budget = JSON.parse(localStorage.getItem('budget')) || 0;
-
-    function updateBudgetFeedback() {
-        const wishlistTotal = wishlist.reduce((acc, item) => acc + item.price, 0);
-        if (budget > 0) {
-            const remaining = budget - wishlistTotal;
-            budgetFeedback.innerHTML = `Wishlist Total: $${wishlistTotal.toFixed(2)}. Remaining Budget: $${remaining.toFixed(2)}`;
-            budgetFeedback.style.color = remaining < 0 ? 'red' : 'green';
-        } else {
-            budgetFeedback.innerHTML = '';
-        }
+    // Update counter on filter
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            setTimeout(updateItemCounter, 400);
+        });
+    });
+    
+    // Initialize counter
+    updateItemCounter();
+    
+    // Add masonry layout option (if needed)
+    function toggleMasonry() {
+        galleryContainer.classList.toggle('masonry');
     }
-
-    budgetForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        budget = document.getElementById('budget-input').value;
-        localStorage.setItem('budget', JSON.stringify(budget));
-        updateBudgetFeedback();
+    
+    // Add view toggle buttons (if needed)
+    const viewToggle = document.querySelector('.view-toggle');
+    if (viewToggle) {
+        viewToggle.addEventListener('click', toggleMasonry);
+    }
+    
+    // Add price range filter (if needed)
+    const priceRange = document.querySelector('.price-range');
+    if (priceRange) {
+        priceRange.addEventListener('input', function() {
+            const maxPrice = parseFloat(this.value);
+            
+            galleryItems.forEach(item => {
+                const priceText = item.querySelector('.price').textContent;
+                const price = parseFloat(priceText.replace(/[^0-9.]/g, ''));
+                
+                if (price <= maxPrice) {
+                    item.style.display = 'block';
+                    item.style.opacity = '1';
+                } else {
+                    item.style.opacity = '0';
+                    setTimeout(() => {
+                        item.style.display = 'none';
+                    }, 300);
+                }
+            });
+        });
+    }
+    
+    // Add sort functionality (if needed)
+    function sortItems(criteria) {
+        const itemsArray = Array.from(galleryItems);
+        
+        itemsArray.sort((a, b) => {
+            if (criteria === 'price-low') {
+                const priceA = parseFloat(a.querySelector('.price').textContent.replace(/[^0-9.]/g, ''));
+                const priceB = parseFloat(b.querySelector('.price').textContent.replace(/[^0-9.]/g, ''));
+                return priceA - priceB;
+            } else if (criteria === 'price-high') {
+                const priceA = parseFloat(a.querySelector('.price').textContent.replace(/[^0-9.]/g, ''));
+                const priceB = parseFloat(b.querySelector('.price').textContent.replace(/[^0-9.]/g, ''));
+                return priceB - priceA;
+            } else if (criteria === 'name') {
+                const nameA = a.querySelector('h3').textContent.toLowerCase();
+                const nameB = b.querySelector('h3').textContent.toLowerCase();
+                return nameA.localeCompare(nameB);
+            }
+        });
+        
+        // Reorder items in DOM
+        itemsArray.forEach(item => {
+            galleryContainer.appendChild(item);
+        });
+    }
+    
+    // Add sort buttons (if needed)
+    const sortButtons = document.querySelectorAll('.sort-btn');
+    sortButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const criteria = this.getAttribute('data-sort');
+            sortItems(criteria);
+        });
     });
-
-    // Initial Load
-    updateWishlistCount();
-    updateBudgetFeedback();
-    wishlistItemsContainer.addEventListener('click', updateBudgetFeedback);
-    galleryContainer.addEventListener('click', (e) => {
-        if (e.target.closest('.add-to-wishlist')) {
-            updateBudgetFeedback();
-        }
-    });
+    
+    // Initialize gallery
+    console.log('Gallery initialized with', galleryItems.length, 'items');
 }); 
