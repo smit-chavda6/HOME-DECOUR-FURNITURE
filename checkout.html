@@ -52,6 +52,16 @@
         </div>
     </section>
     <script>
+// Redirect to login if not authenticated
+fetch('http://localhost:3001/api/check-auth', {
+  credentials: 'include'
+})
+  .then(res => res.json())
+  .then(data => {
+    if (!data.loggedIn) {
+      window.location.href = 'login.html?redirect=checkout';
+    }
+  });
     // Render order summary from localStorage cart
     function renderOrderSummary() {
         const summaryDiv = document.getElementById('order-summary');

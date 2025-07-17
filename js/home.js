@@ -52,16 +52,16 @@ document.addEventListener('DOMContentLoaded', function() {
             prevSlide();
         }
         // Restart auto-advance
-        slideInterval = setInterval(nextSlide, 5000);
+        slideInterval = setInterval(nextSlide, 10000);
     };
     
     window.currentSlide = function(n) {
         clearInterval(slideInterval);
         showSlide(n - 1);
         // Restart auto-advance
-        slideInterval = setInterval(nextSlide, 5000);
+        slideInterval = setInterval(nextSlide, 10000);
     };
-    
+
     // Pause slideshow on hover
     const slideshowContainer = document.querySelector('.slideshow-container');
     if (slideshowContainer) {
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         slideshowContainer.addEventListener('mouseleave', () => {
-            slideInterval = setInterval(nextSlide, 5000);
+            slideInterval = setInterval(nextSlide, 10000);
         });
     }
     
