@@ -727,6 +727,26 @@ document.addEventListener('DOMContentLoaded', function() {
             showNotification('Logout failed', 'error');
         }
     };
+
+    // Faux 3D Card Hover Effect for Feature Cards
+    const featureCards = document.querySelectorAll('.modern-feature-card');
+    featureCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * 10; // max 10deg
+            const rotateY = ((x - centerX) / centerX) * 10;
+            card.style.transform = `rotateX(${-rotateX}deg) rotateY(${rotateY}deg)`;
+            card.classList.add('is-tilting');
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+            card.classList.remove('is-tilting');
+        });
+    });
 }); 
 
 // --- Authentication Helpers ---
@@ -793,5 +813,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       });
     });
+  }
+}); 
+
+// --- Self-Drawing SVG Animation for Welcome Section ---
+document.addEventListener('DOMContentLoaded', function() {
+  // Self-drawing SVG animation for feature icons
+  const drawIcons = document.querySelectorAll('.self-draw-animate');
+  if (drawIcons.length > 0 && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('draw-in');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    drawIcons.forEach(icon => observer.observe(icon));
+  } else {
+    // Fallback: animate immediately
+    drawIcons.forEach(icon => icon.classList.add('draw-in'));
   }
 }); 

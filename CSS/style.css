@@ -26,3 +26,160 @@
 
 /* Import Layout Styles */
 @import url('layout.css');
+
+/* Modern Welcome Section Styles */
+.modern-welcome-section {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  padding-bottom: 3rem;
+}
+.modern-welcome-bg {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  width: 900px;
+  height: 400px;
+  background: radial-gradient(ellipse at center, #ffe5c1 0%, #fff8f3 70%, transparent 100%);
+  opacity: 0.5;
+  filter: blur(40px);
+  transform: translateX(-50%) scale(1.1);
+  z-index: 0;
+  pointer-events: none;
+  animation: floatBg 8s ease-in-out infinite alternate;
+}
+@keyframes floatBg {
+  0% { transform: translateX(-50%) scale(1.1) translateY(0); }
+  100% { transform: translateX(-50%) scale(1.1) translateY(30px); }
+}
+.modern-features-grid {
+  display: flex;
+  gap: 2.5rem;
+  justify-content: center;
+  align-items: stretch;
+  margin-top: 2.5rem;
+  position: relative;
+  z-index: 1;
+  flex-wrap: wrap;
+}
+.modern-feature-card {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 2rem;
+  box-shadow: 0 8px 32px rgba(139, 69, 19, 0.10), 0 1.5px 8px rgba(139, 69, 19, 0.08);
+  padding: 2.2rem 1.5rem 1.5rem 1.5rem;
+  min-width: 220px;
+  max-width: 320px;
+  flex: 1 1 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: box-shadow 0.3s, transform 0.3s;
+  position: relative;
+  z-index: 2;
+  border: 1.5px solid #f3e6d6;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  perspective: 800px;
+  will-change: transform, box-shadow;
+}
+.modern-feature-card.is-tilting {
+  transition: none;
+}
+.modern-feature-card:hover {
+  box-shadow: 0 12px 40px rgba(139, 69, 19, 0.18), 0 2px 12px rgba(139, 69, 19, 0.12);
+  transform: translateY(-8px) scale(1.04);
+  border-color: #ffd7a0;
+}
+.modern-feature-icon {
+  margin-bottom: 1.2rem;
+  background: linear-gradient(135deg, #fff8f3 60%, #ffe5c1 100%);
+  border-radius: 50%;
+  box-shadow: 0 2px 12px #ffe5c1aa;
+  padding: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.3s;
+}
+.modern-feature-card:hover .modern-feature-icon {
+  box-shadow: 0 4px 24px #ffd7a0cc;
+}
+.modern-feature-title {
+  font-family: 'Jost', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #8B4513;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+.modern-feature-desc {
+  color: #6d4c2b;
+  font-size: 1rem;
+  text-align: center;
+  font-weight: 500;
+  opacity: 0.92;
+}
+.modern-welcome-section h2,
+.modern-welcome-section .modern-main-heading {
+  color: #222 !important;
+  font-weight: 900;
+  text-shadow: none;
+}
+.modern-welcome-section .tagline {
+  color: #8B6F3A !important;
+  font-weight: 700;
+  font-style: normal;
+  letter-spacing: 0.5px;
+}
+.modern-welcome-section p,
+.modern-welcome-section .modern-feature-desc {
+  color: #222 !important;
+  font-weight: 500;
+  opacity: 1;
+  text-shadow: none;
+}
+.modern-feature-title {
+  color: #8B4513 !important;
+  font-weight: 900;
+  text-shadow: 0 2px 8px #f3e6d6cc;
+}
+.modern-feature-desc {
+  color: #2C2C2C !important;
+  font-weight: 500;
+  opacity: 1;
+}
+@media (max-width: 900px) {
+  .modern-features-grid {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  .modern-feature-card {
+    min-width: 180px;
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+/* Self-Drawing SVG Animation for Feature Icons */
+.self-draw-animate path,
+.self-draw-animate polygon,
+.self-draw-animate rect,
+.self-draw-animate circle {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: svg-draw 1.2s cubic-bezier(0.77,0,0.18,1) forwards;
+  animation-delay: 0.2s;
+}
+.self-draw-animate.draw-in path,
+.self-draw-animate.draw-in polygon,
+.self-draw-animate.draw-in rect,
+.self-draw-animate.draw-in circle {
+  animation: svg-draw 1.2s cubic-bezier(0.77,0,0.18,1) forwards;
+}
+@keyframes svg-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
