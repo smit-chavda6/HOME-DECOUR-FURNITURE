@@ -145,7 +145,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Simulate loading for demo purposes
     if (galleryItems.length > 0) {
         showLoading();
-        setTimeout(hideLoading, 1000);
+        setTimeout(() => {
+            hideLoading();
+            // After loading, check for ?category= param and filter
+            const params = new URLSearchParams(window.location.search);
+            const category = params.get('category');
+            if (category) {
+                const btn = document.getElementById(`filter-${category}`);
+                if (btn) {
+                    btn.click();
+                }
+            }
+        }, 1000);
+    } else {
+        // If no loading, still check for ?category= param
+        const params = new URLSearchParams(window.location.search);
+        const category = params.get('category');
+        if (category) {
+            const btn = document.getElementById(`filter-${category}`);
+            if (btn) {
+                btn.click();
+            }
+        }
     }
     
     // Keyboard navigation
@@ -264,16 +285,4 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize gallery
     console.log('Gallery initialized with', galleryItems.length, 'items');
-
-    // Auto-select filter if ?category= param is present
-    (function() {
-      const params = new URLSearchParams(window.location.search);
-      const category = params.get('category');
-      if (category) {
-        const btn = document.getElementById(`filter-${category}`);
-        if (btn) {
-          btn.click();
-        }
-      }
-    })();
 }); 

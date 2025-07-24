@@ -391,19 +391,40 @@
 .modern-why-choose {
   position: relative;
   background: linear-gradient(120deg, #fff8f3 60%, #ffe5c1 100%);
-  padding: 4rem 0 3rem 0;
+  padding: 5rem 0 4rem 0;
   overflow: hidden;
+  box-shadow: 0 8px 32px rgba(139,69,19,0.08);
+  z-index: 1;
 }
 .modern-why-title {
   text-align: center;
   font-family: 'Jost', sans-serif;
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   font-weight: 900;
-  color: #8B4513;
-  margin-bottom: 2.5rem;
+  color: #4B2600;
+  margin-bottom: 2.7rem;
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(90deg, #ffe5c1 60%, #fff8f3 100%);
+  display: inline-block;
+  padding: 0.5em 2em 0.5em 2em;
+  border-radius: 1.5em;
+  box-shadow: 0 2px 16px #ffe5c1aa;
 }
 .modern-why-title span {
   color: #A0522D;
+  background: none;
+}
+.modern-why-title::after {
+  content: '';
+  display: block;
+  margin: 0.5em auto 0 auto;
+  width: 80px;
+  height: 5px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #8B4513 40%, #A0522D 100%);
+  opacity: 0.7;
 }
 .modern-why-grid {
   display: grid;
@@ -411,25 +432,28 @@
   gap: 2.2rem;
   max-width: 1100px;
   margin: 0 auto;
+  z-index: 2;
 }
 .modern-why-card {
-  background: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.97);
   border-radius: 1.5rem;
-  box-shadow: 0 8px 32px rgba(139,69,19,0.10), 0 1.5px 8px rgba(139,69,19,0.08);
-  padding: 2.2rem 1.5rem 1.5rem 1.5rem;
+  box-shadow: 0 12px 40px rgba(139,69,19,0.18), 0 2px 12px rgba(139,69,19,0.12);
+  padding: 2.5rem 1.7rem 1.7rem 1.7rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: box-shadow 0.3s, transform 0.3s;
-  border: 1.5px solid #f3e6d6;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  border: 2px solid #e0c7a0;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   will-change: transform, box-shadow;
+  position: relative;
+  z-index: 2;
 }
 .modern-why-card:hover {
-  box-shadow: 0 12px 40px rgba(139,69,19,0.18), 0 2px 12px rgba(139,69,19,0.12);
-  transform: translateY(-8px) scale(1.04);
-  border-color: #ffd7a0;
+  box-shadow: 0 16px 48px rgba(139,69,19,0.22), 0 4px 16px rgba(139,69,19,0.16);
+  transform: translateY(-10px) scale(1.05);
+  border-color: #8B4513;
 }
 .modern-why-icon {
   margin-bottom: 1.2rem;
@@ -447,19 +471,20 @@
 }
 .modern-why-card h3 {
   font-family: 'Jost', sans-serif;
-  font-size: 1.18rem;
-  font-weight: 700;
-  color: #8B4513;
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: #4B2600;
   margin-bottom: 0.5rem;
   letter-spacing: 0.5px;
   text-align: center;
 }
 .modern-why-card p {
-  color: #6d4c2b;
-  font-size: 1rem;
+  color: #3d2a16;
+  font-size: 1.08rem;
   text-align: center;
-  font-weight: 500;
-  opacity: 0.92;
+  font-weight: 600;
+  opacity: 0.98;
+  text-shadow: 0 1px 6px #ffe5c1cc;
 }
 .modern-why-bg {
   position: absolute;
@@ -468,13 +493,17 @@
   width: 900px;
   height: 400px;
   background: radial-gradient(ellipse at center, #ffe5c1 0%, #fff8f3 70%, transparent 100%);
-  opacity: 0.5;
+  opacity: 0.7;
   filter: blur(40px);
   transform: translateX(-50%) scale(1.1);
   z-index: 0;
   pointer-events: none;
 }
 @media (max-width: 900px) {
+  .modern-why-title {
+    font-size: 2rem;
+    padding: 0.5em 1em;
+  }
   .modern-why-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -762,4 +791,27 @@
 .login-popup-logout-btn:hover {
   background: linear-gradient(90deg, #A0522D 60%, #8B4513 100%);
   transform: translateY(-2px) scale(1.04);
+}
+.view-in-room-btn {
+  display: block;
+  width: 90%;
+  margin: 0 auto 1rem auto;
+  background: linear-gradient(90deg, #8B4513 60%, #A0522D 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.7em 0;
+  border-radius: 2em;
+  box-shadow: 0 2px 12px #8B451344;
+  text-decoration: none;
+  transition: background 0.3s, transform 0.2s;
+  letter-spacing: 0.5px;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+}
+.view-in-room-btn:hover, .view-in-room-btn:focus {
+  background: linear-gradient(90deg, #A0522D 60%, #8B4513 100%);
+  transform: translateY(-2px) scale(1.04);
+  outline: none;
 }
