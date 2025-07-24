@@ -709,12 +709,20 @@ const showCartModal = (cartItems) => {
 
 // Notification function
 const showNotification = (message, type = 'success') => {
+    // Remove any existing notification first
+    const existing = document.querySelector('.notification');
+    if (existing) {
+        existing.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            if (document.body.contains(existing)) {
+                document.body.removeChild(existing);
+            }
+        }, 300);
+    }
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.textContent = message;
-    
     const bgColor = type === 'success' ? '#27ae60' : type === 'info' ? '#3498db' : '#e74c3c';
-    
     notification.style.cssText = `
         position: fixed;
         top: 100px;
@@ -729,14 +737,11 @@ const showNotification = (message, type = 'success') => {
         transition: transform 0.3s ease;
         font-weight: 500;
     `;
-    
     document.body.appendChild(notification);
-    
     // Animate in
     setTimeout(() => {
         notification.style.transform = 'translateX(0)';
     }, 100);
-    
     // Remove after 3 seconds
     setTimeout(() => {
         notification.style.transform = 'translateX(100%)';

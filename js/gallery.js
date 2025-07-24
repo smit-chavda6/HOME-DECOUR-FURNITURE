@@ -264,4 +264,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize gallery
     console.log('Gallery initialized with', galleryItems.length, 'items');
+
+    // Auto-select filter if ?category= param is present
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const category = params.get('category');
+      if (category) {
+        const btn = document.getElementById(`filter-${category}`);
+        if (btn) {
+          btn.click();
+        }
+      }
+    })();
 }); 

@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Add to cart functionality
-    const addToCartButtons = document.querySelectorAll('.btn-primary, .add-to-cart-btn');
+    const addToCartButtons = document.querySelectorAll('[data-add-to-cart="true"]');
     addToCartButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             // Check if this is a product page button
@@ -486,213 +486,69 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateNavbarForLoggedInUser(user) {
         const loginLink = document.querySelector('.navbar-link[href="login.html"]');
         if (loginLink) {
-            // Create a compact user menu that fits in navbar
-            loginLink.innerHTML = `
-                <div class="user-menu">
-                    <div class="user-avatar">
-                        <span>${user.username.charAt(0).toUpperCase()}</span>
-                    </div>
-                    <div class="user-info">
-                        <span class="user-name">${user.username}</span>
-                    </div>
-                    <button id="navbar-logout-btn" class="navbar-logout-btn" onclick="logout()" title="Logout">
-                        <svg viewBox="0 0 24 24" width="14" height="14">
-                            <path fill="currentColor" d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
-                        </svg>
-                    </button>
-                </div>
-            `;
+            loginLink.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 8-4 8-4s8 0 8 4v1H4v-1z"/></svg><span class="login-status-dot"></span>';
             loginLink.href = '#';
-            loginLink.classList.add('logged-in');
-        }
-        
-        // Add compact user menu styles for navbar
-        if (!document.querySelector('#user-menu-styles')) {
-            const styles = document.createElement('style');
-            styles.id = 'user-menu-styles';
-            styles.textContent = `
-                .navbar-link.logged-in {
-                    background: none;
-                    border: none;
-                    position: relative;
-                    z-index: 1001;
-                }
-                
-                .user-menu {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    padding: 6px 12px;
-                    background: rgba(139, 69, 19, 0.08);
-                    border-radius: 20px;
-                    transition: all 0.3s ease;
-                    border: 1px solid rgba(139, 69, 19, 0.1);
-                    min-width: 100px;
-                    max-width: 180px;
-                    position: relative;
-                    z-index: 1002;
-                }
-                
-                .user-menu:hover {
-                    background: rgba(139, 69, 19, 0.12);
-                    transform: translateY(-1px);
-                    box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2);
-                }
-                
-                .user-avatar {
-                    width: 24px;
-                    height: 24px;
-                    background: linear-gradient(135deg, #8B4513, #A0522D);
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: white;
-                    font-weight: 600;
-                    font-size: 11px;
-                    box-shadow: 0 1px 4px rgba(139, 69, 19, 0.3);
-                    flex-shrink: 0;
-                }
-                
-                .user-info {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-start;
-                    min-width: 0;
-                    flex: 1;
-                }
-                
-                .user-name {
-                    font-size: 0.8rem;
-                    font-weight: 600;
-                    color: #8B4513;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    max-width: 80px;
-                    line-height: 1.2;
-                }
-                
-                .navbar-logout-btn {
-                    background: #dc3545;
-                    color: white;
-                    border: none;
-                    padding: 4px;
-                    border-radius: 50%;
-                    width: 20px;
-                    height: 20px;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    font-weight: 500;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    flex-shrink: 0;
-                    box-shadow: 0 1px 4px rgba(220, 53, 69, 0.3);
-                    position: relative;
-                    z-index: 1003;
-                }
-                
-                /* Remove default focus outline and add custom focus style */
-                .user-menu:focus,
-                .user-menu *:focus,
-                .navbar-logout-btn:focus {
-                    outline: none !important;
-                    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #A0522D !important;
-                    border-radius: 20px;
-                }
-                
-                .navbar-logout-btn:hover {
-                    background: #c82333;
-                    transform: scale(1.1);
-                    box-shadow: 0 2px 6px rgba(220, 53, 69, 0.4);
-                }
-                
-                .navbar-logout-btn:active {
-                    transform: scale(0.95);
-                }
-                
-                .navbar-logout-btn svg {
-                    width: 12px;
-                    height: 12px;
-                }
-                
-                @media (max-width: 768px) {
-                    .navbar-link.logged-in {
-                        position: static;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                    }
-                    
-                    .user-menu {
-                        padding: 5px 10px;
-                        gap: 6px;
-                        position: static;
-                        margin: 0 auto;
-                        min-width: 90px;
-                        max-width: 150px;
-                    }
-                    
-                    .user-avatar {
-                        width: 20px;
-                        height: 20px;
-                        font-size: 10px;
-                    }
-                    
-                    .user-name {
-                        font-size: 0.75rem;
-                        max-width: 60px;
-                    }
-                    
-                    .navbar-logout-btn {
-                        width: 18px;
-                        height: 18px;
-                        padding: 3px;
-                        position: static;
-                    }
-                    
-                    .navbar-logout-btn svg {
-                        width: 10px;
-                        height: 10px;
-                    }
-                }
-                
-                @media (max-width: 480px) {
-                    .user-menu {
-                        padding: 4px 8px;
-                        gap: 5px;
-                        min-width: 80px;
-                        max-width: 120px;
-                    }
-                    
-                    .user-name {
-                        max-width: 50px;
-                        font-size: 0.7rem;
-                    }
-                    
-                    .navbar-logout-btn {
-                        width: 16px;
-                        height: 16px;
-                        padding: 2px;
-                    }
-                    
-                    .navbar-logout-btn svg {
-                        width: 9px;
-                        height: 9px;
-                    }
-                }
-            `;
-            document.head.appendChild(styles);
+            loginLink.classList.add('logged-in', 'navbar-login-btn');
+            loginLink.id = 'navbar-login-btn';
+            loginLink.title = 'Logout';
+            loginLink.onclick = function(e) {
+                e.preventDefault();
+                showLoginPopup(user);
+            };
         }
     }
     
     function updateNavbarForLoggedOutUser() {
         const loginLink = document.querySelector('.navbar-link[href="login.html"]');
         if (loginLink) {
-            loginLink.innerHTML = 'Login';
+            loginLink.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 8-4 8-4s8 0 8 4v1H4v-1z"/></svg><span class="login-status-dot"></span>';
             loginLink.href = 'login.html';
             loginLink.classList.remove('logged-in');
+            loginLink.classList.add('navbar-login-btn');
+            loginLink.id = 'navbar-login-btn';
+            loginLink.title = 'Login';
+            loginLink.onclick = null;
+        }
+    }
+    
+    function showLoginPopup(user) {
+        // Remove any existing popup
+        const existing = document.getElementById('login-popup-box');
+        if (existing) existing.remove();
+        // Create popup
+        const popup = document.createElement('div');
+        popup.id = 'login-popup-box';
+        popup.className = 'login-popup-box';
+        popup.innerHTML = `
+            <div class="login-popup-content">
+                <div class="login-popup-user">Logged in as: <strong>${user.username}</strong></div>
+                <button class="login-popup-logout-btn" id="login-popup-logout-btn">Logout</button>
+            </div>
+        `;
+        // Position below the icon
+        const icon = document.getElementById('navbar-login-btn');
+        if (icon) {
+            const rect = icon.getBoundingClientRect();
+            popup.style.position = 'absolute';
+            popup.style.top = (rect.bottom + window.scrollY + 8) + 'px';
+            popup.style.left = (rect.left + window.scrollX - 40) + 'px';
+            popup.style.zIndex = 9999;
+        }
+        document.body.appendChild(popup);
+        // Logout button
+        document.getElementById('login-popup-logout-btn').onclick = function() {
+            popup.remove();
+            logout();
+        };
+        // Close popup on outside click
+        setTimeout(() => {
+            document.addEventListener('mousedown', closePopupOnClickOutside);
+        }, 0);
+        function closePopupOnClickOutside(e) {
+            if (!popup.contains(e.target) && e.target.id !== 'navbar-login-btn') {
+                popup.remove();
+                document.removeEventListener('mousedown', closePopupOnClickOutside);
+            }
         }
     }
     
