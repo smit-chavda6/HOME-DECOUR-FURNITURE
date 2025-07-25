@@ -36,7 +36,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Dancing+Script:wght@400..700&display=swap"
         rel="stylesheet">
-
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
 
 <body>
@@ -83,15 +83,12 @@
     </nav>
 
     <section class="product-details">
+        <a href="gallery.html" class="back-to-gallery-btn" style="display:inline-flex;align-items:center;gap:0.5em;margin:2.2rem 0 0 2.2rem;font-weight:600;font-size:1.08rem;color:#8B4513;text-decoration:none;background:linear-gradient(90deg,#fff8f3 60%,#ffe5c1 100%);border-radius:2em;padding:0.7em 1.6em;box-shadow:0 2px 12px #ffe5c1aa;transition:background 0.2s,box-shadow 0.2s;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Back to Gallery</a>
+        <div class="product-bg-animated"></div>
         <div class="container">
             <div class="product-image">
-                <div class="image-container">
-                    <img id="product-img" src="" alt="Product Image" loading="lazy">
-                    <button class="zoom-btn" id="zoom-btn" title="View Full Size">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                        </svg>
-                    </button>
+                <div class="image-container" id="media-container">
+                    <!-- JS will inject <img> or <model-viewer> here -->
                 </div>
             </div>
             <div class="product-info">

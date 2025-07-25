@@ -368,3 +368,66 @@
     font-size: 1.2rem;
     font-family: 'Jost', sans-serif;
 } 
+
+.gallery-item-3d {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  min-height: 420px;
+  padding-bottom: 70px; /* Add space for button */
+}
+.gallery-item-3d h3, .gallery-item-3d .price {
+  position: relative;
+  z-index: 2;
+  background: rgba(255,255,255,0.97);
+  margin-bottom: 0.2em;
+  padding: 0.2em 0.5em;
+  border-radius: 0.5em;
+}
+.gallery-item-3d .view-detail-btn {
+  display: block !important;
+  opacity: 1 !important;
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  min-width: 160px;
+  max-width: 80%;
+  background: linear-gradient(90deg, #8B4513 60%, #A0522D 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.08rem;
+  padding: 0.85em 0;
+  border-radius: 2em;
+  box-shadow: 0 4px 18px #8B451344, 0 1.5px 8px #8B451322;
+  text-decoration: none;
+  transition: background 0.3s, transform 0.18s, box-shadow 0.18s;
+  letter-spacing: 0.5px;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  z-index: 3;
+  margin: 0;
+}
+.gallery-item-3d .view-detail-btn:hover, .gallery-item-3d .view-detail-btn:focus {
+  background: linear-gradient(90deg, #A0522D 60%, #8B4513 100%);
+  transform: translateX(-50%) translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 32px #8B451344, 0 2px 12px #8B451322;
+  outline: none;
+}
+/* Remove any hiding of .view-detail-btn for 3d items */
+.gallery-item-3d .view-detail-btn, .gallery-item-3d:hover .view-detail-btn {
+  display: block !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+} 
+
+.gallery-item-3d::after,
+.gallery-item-3d:hover::after {
+  display: none !important;
+  content: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+} 

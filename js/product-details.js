@@ -130,6 +130,75 @@ const productData = {
         weight: '18 kg',
         color: 'Emerald Green',
         warranty: '2 Years'
+    },
+    101: {
+        name: 'Modern Sofa 43 (3D Model)',
+        price: 4500,
+        image: 'image/1.png',
+        description: 'Explore this 3D model of a modern sofa, perfect for virtual staging or AR experiences. High-quality geometry and realistic textures.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'High-quality, optimized 3D geometry',
+            'Realistic PBR textures (if available)',
+            'Ready for AR/VR and virtual staging',
+            'Lightweight and easy to use in any project',
+            'Compatible with major 3D and AR platforms'
+        ]
+    },
+    102: {
+        name: 'Sofa Chair (3D Model)',
+        price: 3200,
+        image: 'image/2.png',
+        description: 'A detailed 3D model of a sofa chair, ideal for AR, VR, or design visualization. Includes textures and optimized mesh.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'Detailed mesh and textures',
+            'Optimized for AR/VR',
+            'Easy to use in any 3D project',
+            'Compatible with major 3D and AR platforms'
+        ]
+    },
+    103: {
+        name: 'Low Poly Modern Sofa (3D Model)',
+        price: 2500,
+        image: 'image/3.png',
+        description: 'Low poly 3D model of a modern sofa, suitable for games, AR, or quick visualizations. Lightweight and easy to use.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'Low poly, lightweight mesh',
+            'Ideal for games and AR',
+            'Quick to load and render',
+            'Compatible with major 3D and AR platforms'
+        ]
+    },
+    104: {
+        name: 'Old Sofa (3D Model)',
+        price: 2900,
+        image: 'image/4.png',
+        description: 'A classic old sofa 3D model, perfect for vintage scenes or AR/VR projects. Includes detailed mesh and textures.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'Classic/vintage design',
+            'Detailed mesh and textures',
+            'Ready for AR/VR and virtual staging',
+            'Compatible with major 3D and AR platforms'
+        ]
     }
 };
 
@@ -164,8 +233,7 @@ const loadProductDetails = () => {
         document.title = `${product.name} - HOME DECOR FURNITURE`;
         
         // Cache DOM elements
-        if (!cachedElements.productImg) {
-            cachedElements.productImg = document.getElementById('product-img');
+        if (!cachedElements.productName) {
             cachedElements.productName = document.getElementById('product-name');
             cachedElements.productPrice = document.getElementById('product-price');
             cachedElements.productDescription = document.getElementById('product-description');
@@ -174,21 +242,72 @@ const loadProductDetails = () => {
             cachedElements.productWeight = document.getElementById('product-weight');
             cachedElements.productColor = document.getElementById('product-color');
             cachedElements.productWarranty = document.getElementById('product-warranty');
+            cachedElements.mediaContainer = document.getElementById('media-container');
         }
-        
-        // Update product image with loading optimization
-        cachedElements.productImg.src = product.image;
-        cachedElements.productImg.alt = product.name;
+        // Render media (image or 3D model)
+        if ([101,102,103,104].includes(productId)) {
+            // 3D Model: use model-viewer
+            let modelSrc = '';
+            if (productId === 101) modelSrc = '3d models/no_43.glb';
+            if (productId === 102) modelSrc = '3d models/sofa_chair.glb';
+            if (productId === 103) modelSrc = '3d models/low_poly_modern_sofa_free_model.glb';
+            if (productId === 104) modelSrc = '3d models/old_sofa_free.glb';
+            cachedElements.mediaContainer.innerHTML = `
+                <model-viewer id="product-model-viewer" src="${modelSrc}" alt="${product.name}" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:320px;border-radius:1.2rem;box-shadow:0 2px 12px #ffe5c1aa;margin-bottom:1rem;"></model-viewer>
+                <button class="ar-fab-btn" id="ar-fab-btn" title="View in Room (AR)">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="8" rx="2.5" /><path d="M10 9.5v3" /><path d="M7.5 11l2.5-1.5 2.5 1.5" /><circle cx="10" cy="13.5" r="0.9" fill="#fff"/></svg>
+                </button>
+            `;
+            // AR button logic
+            const arBtn = document.getElementById('ar-fab-btn');
+            const modelViewer = document.getElementById('product-model-viewer');
+            if (arBtn && modelViewer) {
+                arBtn.onclick = function() {
+                    if (modelViewer.arEnabled) {
+                        modelViewer.activateAR();
+                    } else {
+                        alert('AR is not supported on your device or browser.');
+                    }
+                };
+            }
+        } else {
+            // Standard product: show image and zoom button
+            cachedElements.mediaContainer.innerHTML = `
+                <img id="product-img" src="${product.image}" alt="${product.name}" loading="lazy">
+                <button class="zoom-btn" id="zoom-btn" title="View Full Size">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                </button>
+            `;
+        }
         
         // Update product information
         cachedElements.productName.textContent = product.name;
-        cachedElements.productPrice.textContent = `₹${product.price.toLocaleString('en-IN')}`;
+        cachedElements.productPrice.textContent = typeof product.price === 'number' ? `₹${product.price.toLocaleString('en-IN')}` : product.price;
         cachedElements.productDescription.textContent = product.description;
         cachedElements.productMaterial.textContent = product.material;
         cachedElements.productDimensions.textContent = product.dimensions;
         cachedElements.productWeight.textContent = product.weight;
         cachedElements.productColor.textContent = product.color;
         cachedElements.productWarranty.textContent = product.warranty;
+        // Render features (for both standard and 3D model products)
+        const featuresList = document.querySelector('.features-list');
+        if (featuresList) {
+            featuresList.innerHTML = '';
+            const features = product.features || [
+                'Premium Quality',
+                'Durable Construction',
+                'Elegant Design',
+                'Easy Assembly'
+            ];
+            features.forEach(f => {
+                const div = document.createElement('div');
+                div.className = 'feature-item';
+                div.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>${f}</span>`;
+                featuresList.appendChild(div);
+            });
+        }
         
         // Initialize cart count
         updateCartCount();
@@ -196,8 +315,10 @@ const loadProductDetails = () => {
         // Initialize quantity controls
         initializeQuantityControls();
         
-        // Initialize zoom functionality
-        initializeZoomFunctionality();
+        // Initialize zoom functionality (only for standard products)
+        if (![101,102,103,104].includes(productId)) {
+            initializeZoomFunctionality();
+        }
         
         // Initialize cart functionality
         initializeCartFunctionality();
@@ -453,9 +574,13 @@ const showCartModal = (cartItems) => {
                 <button class="cart-modal-close">&times;</button>
             </div>
             <div class="cart-modal-body">
-                ${cartItems.map(item => `
+                ${cartItems.map(item => {
+                    // Always use the latest image from productData if available
+                    const latest = productData[item.id];
+                    const imgSrc = latest && latest.image ? latest.image : item.image;
+                    return `
                     <div class="cart-item">
-                        <img src="${item.image}" alt="${item.name}" loading="lazy">
+                        <img src="${imgSrc}" alt="${item.name}" loading="lazy">
                         <div class="cart-item-details">
                             <h4>${item.name}</h4>
                             <p>₹${item.price.toLocaleString('en-IN')} x ${item.quantity}</p>
@@ -463,7 +588,8 @@ const showCartModal = (cartItems) => {
                         </div>
                         <button class="cart-item-remove" data-id="${item.id}">&times;</button>
                     </div>
-                `).join('')}
+                `; 
+                }).join('')}
             </div>
             <div class="cart-modal-footer">
                                         <div class="cart-total">

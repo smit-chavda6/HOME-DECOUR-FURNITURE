@@ -590,12 +590,26 @@
   color: #8B4513;
   margin-bottom: 2.2rem;
 }
-.categories-grid {
+.modern-categories-section .categories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 2.2rem;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3.5rem;
   max-width: 1100px;
   margin: 0 auto;
+  justify-items: center;
+  justify-content: center;
+}
+@media (max-width: 1100px) {
+  .modern-categories-section .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+@media (max-width: 700px) {
+  .modern-categories-section .categories-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 }
 .category-card {
   background: rgba(255,255,255,0.85);
@@ -612,6 +626,8 @@
   will-change: transform, box-shadow;
   position: relative;
   height: 100%;
+  max-width: 260px;
+  min-width: 220px;
 }
 .category-card:hover {
   box-shadow: 0 12px 40px rgba(139,69,19,0.18), 0 2px 12px rgba(139,69,19,0.12);
@@ -814,4 +830,10 @@
   background: linear-gradient(90deg, #A0522D 60%, #8B4513 100%);
   transform: translateY(-2px) scale(1.04);
   outline: none;
+}
+.icon-container:hover svg path {
+  stroke: #000000; /* Change color on hover */
+}
+.icon-container:hover svg .accent-fill {
+  fill: #DAA520; /* Change accent color on hover */
 }
