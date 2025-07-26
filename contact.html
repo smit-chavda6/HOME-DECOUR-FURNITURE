@@ -91,141 +91,129 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="contact-hero">
-        <div class="hero-content">
-            <h1>Get In Touch</h1>
-            <p>We'd love to hear from you</p>
+    <!-- Advanced Hero Section -->
+    <section class="contact-hero-adv" style="position:relative;overflow:hidden;padding:100px 0 60px 0;background:linear-gradient(120deg,#fff8f3 60%,#ffe5c1 100%);text-align:center;box-shadow:0 8px 32px rgba(139,69,19,0.08);">
+      <div class="hero-bg-shape" style="position:absolute;top:-120px;left:50%;width:900px;height:400px;background:radial-gradient(ellipse at center,#ffe5c1 0%,#fff8f3 70%,transparent 100%);opacity:0.5;filter:blur(40px);transform:translateX(-50%) scale(1.1);z-index:0;pointer-events:none;"></div>
+      <div class="hero-bg-float" style="position:absolute;top:30px;left:10%;width:120px;height:120px;background:linear-gradient(135deg,#ffe5c1 60%,#fff8f3 100%);border-radius:50%;filter:blur(18px);opacity:0.35;z-index:1;animation:floatHero1 7s ease-in-out infinite alternate;"></div>
+      <div class="hero-bg-float" style="position:absolute;bottom:10px;right:12%;width:90px;height:90px;background:linear-gradient(135deg,#fff8f3 60%,#ffe5c1 100%);border-radius:50%;filter:blur(14px);opacity:0.28;z-index:1;animation:floatHero2 8s ease-in-out infinite alternate;"></div>
+      <div class="hero-content" style="max-width: 700px; margin: 0 auto; position:relative;z-index:2;">
+        <div class="hero-logo-premium">
+          <img src="image/Logo maker project.webp" alt="Home Decor Furniture Logo" />
         </div>
+        <h1 style="font-family:'Jost',sans-serif;font-size:3.2rem;font-weight:900;margin-bottom:0.7em;line-height:1.1;letter-spacing:1px;">
+          <span style="background:linear-gradient(90deg,#ffe5c1 40%,#fff8f3 100%);border-radius:0.5em;padding:0 0.3em;color:#8B4513;">Contact</span> <span style="color:#A0522D;">Us</span>
+        </h1>
+        <p style="font-size:1.3rem;font-family:'Dancing Script',cursive;color:#A0522D;margin-bottom:2.2em;">We'd love to help you create your dream space. Reach out for inquiries, support, or custom orders!</p>
+      </div>
+      <div class="scroll-down-indicator" style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:2;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="animation:scrollDownAnim 1.5s infinite alternate;"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </div>
+      <style>
+        @keyframes floatHero1 { 0%{transform:translateX(-50%) scale(1.1) translateY(0);} 100%{transform:translateX(-50%) scale(1.1) translateY(30px);} }
+        @keyframes floatHero2 { 0%{transform:scale(1) translateY(0);} 100%{transform:scale(1.1) translateY(-20px);} }
+        @keyframes scrollDownAnim { 0%{transform:translateY(0);} 100%{transform:translateY(10px);} }
+        .hero-logo-premium {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 1.5em auto;
+          width: 110px;
+          height: 110px;
+          border-radius: 50%;
+          background: rgba(255,255,255,0.65);
+          box-shadow: 0 8px 32px rgba(139,69,19,0.13), 0 2px 10px rgba(139,69,19,0.10);
+          border: 3px solid #8B4513;
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          position: relative;
+          animation: heroLogoFloat 3.5s ease-in-out infinite alternate, heroLogoFadeIn 1.2s cubic-bezier(0.77,0,0.18,1) 0.2s both;
+        }
+        .hero-logo-premium img {
+          width: 70px;
+          height: 70px;
+          object-fit: contain;
+          border-radius: 50%;
+          display: block;
+          box-shadow: 0 2px 8px #ffe5c1aa;
+        }
+        @keyframes heroLogoFloat {
+          0% { transform: translateY(0); }
+          100% { transform: translateY(12px); }
+        }
+        @keyframes heroLogoFadeIn {
+          0% { opacity: 0; transform: scale(0.85); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        @media (max-width:700px){
+          .contact-hero-adv h1{font-size:2.1rem;}
+          .contact-hero-adv .hero-content{padding:0 1em;}
+        }
+      </style>
     </section>
 
-    <!-- Contact Info Section -->
-    <section class="contact-info-section">
-        <div class="container">
-            <div class="contact-grid">
-                <div class="contact-card">
-                    <div class="contact-icon">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                        </svg>
-                    </div>
-                    <h3>Our Location</h3>
-                    <p>Ahmedabad, Gujarat, India</p>
-                </div>
-                
-                <div class="contact-card">
-                    <div class="contact-icon">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
-                        </svg>
-                    </div>
-                    <h3>Phone Number</h3>
-                    <p>+91 9825000000</p>
-                </div>
-                
-                <div class="contact-card">
-                    <div class="contact-icon">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                        </svg>
-                    </div>
-                    <h3>Email Address</h3>
-                    <p>support@homedecorfurniturestore.com</p>
-                </div>
-            </div>
+    <!-- Modern Contact Section -->
+    <section class="modern-contact-section" style="background: #f8f9fa; padding: 60px 0;">
+      <div class="container" style="max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 3rem; align-items: stretch;">
+        <!-- Left: Info Card -->
+        <div class="contact-info-modern" style="flex:1 1 340px; min-width:320px; background: #fff; border-radius: 2rem; box-shadow: 0 8px 32px rgba(139,69,19,0.10); padding: 2.5rem 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+          <h2 style="font-family: 'Jost', sans-serif; font-size: 1.5rem; color: #8B4513; margin-bottom: 1.2rem; font-weight:800;">Let's Connect</h2>
+          <div style="width:100%;margin-bottom:1.2rem;">
+            <div style="display:flex;align-items:center;gap:0.7em;margin-bottom:0.7em;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 8-4 8-4s8 0 8 4v1H4v-1z"/></svg> <span style="font-weight:600;">Ahmedabad, Gujarat, India</span></div>
+            <div style="display:flex;align-items:center;gap:0.7em;margin-bottom:0.7em;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg> <span style="font-weight:600;">+91 9825000000</span></div>
+            <div style="display:flex;align-items:center;gap:0.7em;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg> <span style="font-weight:600;">support@homedecorfurniturestore.com</span></div>
+          </div>
+          <div style="margin-top:2.2rem;display:flex;justify-content:center;">
+            <a href="tel:+919825000000" class="modern-btn-callnow">Call Now</a>
+          </div>
         </div>
+        <!-- Right: Contact Form Card -->
+        <div class="contact-form-modern" style="flex:2 1 420px; min-width:320px; background: #fff; border-radius: 2rem; box-shadow: 0 8px 32px rgba(139,69,19,0.10); padding: 2.5rem 2rem; display: flex; flex-direction: column; justify-content: center;">
+          <h2 style="font-family: 'Jost', sans-serif; font-size: 1.4rem; color: #A0522D; margin-bottom: 1.2rem; font-weight:700;">Send Us a Message</h2>
+          <form class="contact-form" action="#" method="POST" id="contact-form">
+            <div style="display:flex;gap:1.2em;flex-wrap:wrap;">
+              <input type="text" id="name" name="name" placeholder="Full Name *" required style="flex:1 1 180px;padding:14px 18px;margin-bottom:1em;border-radius:1em;border:1.5px solid #e0e0e0;font-size:1.08rem;">
+              <input type="email" id="email" name="email" placeholder="Email Address *" required style="flex:1 1 180px;padding:14px 18px;margin-bottom:1em;border-radius:1em;border:1.5px solid #e0e0e0;font-size:1.08rem;">
+            </div>
+            <div style="display:flex;gap:1.2em;flex-wrap:wrap;">
+              <input type="tel" id="phone" name="phone" placeholder="Phone Number" style="flex:1 1 180px;padding:14px 18px;margin-bottom:1em;border-radius:1em;border:1.5px solid #e0e0e0;font-size:1.08rem;">
+              <label for="subject" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">Subject *</label>
+              <select id="subject" name="subject" required style="flex:1 1 180px;padding:14px 18px;margin-bottom:1em;border-radius:1em;border:1.5px solid #e0e0e0;font-size:1.08rem;">
+                <option value="">Select a subject</option>
+                <option value="general">General Inquiry</option>
+                <option value="order">Order Information</option>
+                <option value="support">Customer Support</option>
+                <option value="feedback">Feedback</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <textarea id="message" name="message" rows="6" required placeholder="Tell us how we can help you..." style="width:100%;padding:16px 18px;margin-bottom:1em;border-radius:1em;border:1.5px solid #e0e0e0;font-size:1.08rem;"></textarea>
+            <button type="submit" class="modern-btn-send">
+              <span>Send Message</span>
+              <svg viewBox="0 0 24 24" style="width:20px;height:20px;margin-left:8px;"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </button>
+            <div id="contact-success" style="display:none; color: #27ae60; font-weight:600; margin-top:20px; font-size:1.1rem; text-align:center; animation: fadeIn 0.5s;">Thank you! Your message has been sent.</div>
+          </form>
+        </div>
+      </div>
+      <style>
+        @media (max-width: 900px) {
+          .modern-contact-section .container { flex-direction: column; gap: 1.5rem; }
+          .contact-info-modern, .contact-form-modern { max-width: 100%; }
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      </style>
     </section>
 
     <!-- Map Section -->
     <section class="map-section">
         <div class="container">
             <h2>Find Us</h2>
-            <div class="map-container">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2976.9335813383223!2d-87.7431347236811!3d41.743525471256824!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880e3086cab79def%3A0x8c924210bfd80e52!2sHOME%20DECOR!5e0!3m2!1sen!2sin!4v1727926339425!5m2!1sen!2sin" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div class="map-container" style="border-radius:1.2em; box-shadow:0 2px 12px #ffe5c1aa; overflow:hidden;">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2976.9335813383223!2d-87.7431347236811!3d41.743525471256824!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880e3086cab79def%3A0x8c924210bfd80e52!2sHOME%20DECOR!5e0!3m2!1sen!2sin!4v1727926339425!5m2!1sen!2sin" width="100%" height="400" style="border:0; width:100%;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
-        </section>
+    </section>
     
-    <!-- Contact Form Section -->
-    <section class="contact-form-section">
-        <div class="container">
-            <div class="form-container">
-                <div class="form-header">
-                    <h2>Send Us a Message</h2>
-                    <p>Have a question or want to place an order? Fill out the form below and we'll get back to you as soon as possible.</p>
-                </div>
-                
-                <form class="contact-form" action="#" method="POST" id="contact-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="name">Full Name *</label>
-                <input type="text" id="name" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email Address *</label>
-                <input type="email" id="email" name="email" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" name="phone">
-                        </div>
-                        <div class="form-group">
-                            <label for="subject">Subject *</label>
-                            <select id="subject" name="subject" required>
-                                <option value="">Select a subject</option>
-                                <option value="general">General Inquiry</option>
-                                <option value="order">Order Information</option>
-                                <option value="support">Customer Support</option>
-                                <option value="feedback">Feedback</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message *</label>
-                        <textarea id="message" name="message" rows="6" required placeholder="Tell us how we can help you..."></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn">
-                        <span>Send Message</span>
-                        <svg viewBox="0 0 24 24">
-                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                        </svg>
-                    </button>
-            </form>
-                <div id="contact-success" style="display:none; color: #27ae60; font-weight:600; margin-top:20px;">Thank you! Your message has been sent.</div>
-                <script>
-                // Improved contact form validation and feedback
-                document.getElementById('contact-form').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    if (!this.checkValidity()) {
-                        this.reportValidity();
-                        return;
-                    }
-                    document.getElementById('contact-success').style.display = 'block';
-                    this.reset();
-                });
-                </script>
-                <!-- Simple Live Chat Widget (dummy) -->
-                <div id="live-chat" style="position:fixed;bottom:24px;right:24px;z-index:9999;">
-                    <button id="chat-toggle" style="background:#8B4513;color:#fff;border:none;border-radius:50%;width:56px;height:56px;box-shadow:0 4px 16px rgba(0,0,0,0.15);font-size:2rem;cursor:pointer;">💬</button>
-                    <div id="chat-box" style="display:none;position:absolute;bottom:70px;right:0;width:300px;background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.18);padding:16px;">
-                        <div style="font-weight:600;margin-bottom:8px;">Live Chat</div>
-                        <div style="font-size:0.95rem;color:#555;">Hi! This is a demo chat. For real support, please use the contact form.</div>
-                        <button onclick="document.getElementById('chat-box').style.display='none'" style="margin-top:12px;background:#8B4513;color:#fff;border:none;border-radius:8px;padding:6px 16px;cursor:pointer;">Close</button>
-                    </div>
-                </div>
-                <script>
-                document.getElementById('chat-toggle').onclick = function() {
-                    var box = document.getElementById('chat-box');
-                    box.style.display = box.style.display === 'block' ? 'none' : 'block';
-                };
-                </script>
-            </div>
-        </div>
-        </section>
-
     <!-- Business Hours Section -->
     <section class="hours-section">
         <div class="container">
@@ -256,9 +244,9 @@
                 <h3>About Us</h3>
                 <p>We are passionate about creating beautiful spaces with high-quality furniture that combines style, comfort, and functionality. Your home should reflect your personality and lifestyle.</p>
                 <div class="social-links">
-                    <a href="#" class="social-link">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M4.5 21L21 4.5M4.5 4.5L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+                    <a href="#" class="social-link" title="X (Twitter)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="48" height="48" fill="#D2691E">
+                          <path d="M76.39 28H92L65.5 57.22 96 92H71.8L53.6 70.2 32 92H16L44.3 61.42 14 28h25l16.8 19.8L76.39 28Zm-4.8 58h7.3L38 34h-8.1L71.59 86Z"/>
                         </svg>
                     </a>
                    

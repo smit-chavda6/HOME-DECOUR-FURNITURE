@@ -131,6 +131,28 @@ const productData = {
         color: 'Emerald Green',
         warranty: '2 Years'
     },
+    13: {
+        name: 'Modern Minimalist Chair',
+        price: 8500,
+        image: 'image/quino-al-4SNUcHPiC8c-unsplash.jpg',
+        description: 'A sleek, minimalist chair perfect for modern interiors.',
+        material: 'Metal, Fabric',
+        dimensions: '60cm W x 80cm H x 60cm D',
+        weight: '10 kg',
+        color: 'Grey',
+        warranty: '2 Years'
+    },
+    14: {
+        name: 'Elegant Lounge Chair',
+        price: 12000,
+        image: 'image/alexander-andrews-JYGnB9gTCls-unsplash.jpg',
+        description: 'An elegant lounge chair for stylish living rooms.',
+        material: 'Wood, Leather',
+        dimensions: '70cm W x 90cm H x 80cm D',
+        weight: '12 kg',
+        color: 'Brown',
+        warranty: '3 Years'
+    },
     101: {
         name: 'Modern Sofa 43 (3D Model)',
         price: 4500,
@@ -199,6 +221,74 @@ const productData = {
             'Ready for AR/VR and virtual staging',
             'Compatible with major 3D and AR platforms'
         ]
+    },
+    105: {
+        name: 'Leather Sofa Stool (3D Model)',
+        price: 3200,
+        image: 'image/5.png',
+        description: 'A 3D model of a leather sofa stool, perfect for AR/VR.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'High-quality 3D geometry',
+            'Realistic textures',
+            'Ready for AR/VR',
+            'Compatible with major 3D platforms'
+        ]
+    },
+    106: {
+        name: 'White Chair (3D Model)',
+        price: 4500,
+        image: 'image/6.png',
+        description: 'A 3D model of a white chair, ideal for modern spaces.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'Detailed mesh',
+            'Optimized for AR/VR',
+            'Easy to use in any 3D project',
+            'Compatible with major 3D and AR platforms'
+        ]
+    },
+    107: {
+        name: 'Simple Modern Chair (3D Model)',
+        price: 2800,
+        image: 'image/7.png',
+        description: 'A simple modern chair 3D model for visualization.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'Low poly, lightweight',
+            'Ideal for games and AR',
+            'Quick to load and render',
+            'Compatible with major 3D and AR platforms'
+        ]
+    },
+    108: {
+        name: 'Modern Table (3D Model)',
+        price: 5200,
+        image: 'image/8.png',
+        description: 'A modern table 3D model for AR/VR and design projects.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'Modern design',
+            'Detailed mesh and textures',
+            'Ready for AR/VR',
+            'Compatible with major 3D and AR platforms'
+        ]
     }
 };
 
@@ -245,31 +335,20 @@ const loadProductDetails = () => {
             cachedElements.mediaContainer = document.getElementById('media-container');
         }
         // Render media (image or 3D model)
-        if ([101,102,103,104].includes(productId)) {
+        if ([101,102,103,104,105,106,107,108].includes(productId)) {
             // 3D Model: use model-viewer
             let modelSrc = '';
             if (productId === 101) modelSrc = '3d models/no_43.glb';
             if (productId === 102) modelSrc = '3d models/sofa_chair.glb';
             if (productId === 103) modelSrc = '3d models/low_poly_modern_sofa_free_model.glb';
             if (productId === 104) modelSrc = '3d models/old_sofa_free.glb';
+            if (productId === 105) modelSrc = '3d models/free_leather_sofa_stool.glb';
+            if (productId === 106) modelSrc = '3d models/white_chair.glb';
+            if (productId === 107) modelSrc = '3d models/simple_modern_chair_free_model.glb';
+            if (productId === 108) modelSrc = '3d models/table_mr_ft.glb';
             cachedElements.mediaContainer.innerHTML = `
                 <model-viewer id="product-model-viewer" src="${modelSrc}" alt="${product.name}" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:320px;border-radius:1.2rem;box-shadow:0 2px 12px #ffe5c1aa;margin-bottom:1rem;"></model-viewer>
-                <button class="ar-fab-btn" id="ar-fab-btn" title="View in Room (AR)">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="8" rx="2.5" /><path d="M10 9.5v3" /><path d="M7.5 11l2.5-1.5 2.5 1.5" /><circle cx="10" cy="13.5" r="0.9" fill="#fff"/></svg>
-                </button>
             `;
-            // AR button logic
-            const arBtn = document.getElementById('ar-fab-btn');
-            const modelViewer = document.getElementById('product-model-viewer');
-            if (arBtn && modelViewer) {
-                arBtn.onclick = function() {
-                    if (modelViewer.arEnabled) {
-                        modelViewer.activateAR();
-                    } else {
-                        alert('AR is not supported on your device or browser.');
-                    }
-                };
-            }
         } else {
             // Standard product: show image and zoom button
             cachedElements.mediaContainer.innerHTML = `
