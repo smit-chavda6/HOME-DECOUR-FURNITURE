@@ -27,6 +27,9 @@
 /* Import Layout Styles */
 @import url('layout.css');
 
+/* Import Chatbot Styles */
+@import url('chatbot.css');
+
 /* Modern Welcome Section Styles */
 .modern-welcome-section {
   position: relative;

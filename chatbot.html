@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Decor Support Chatbot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .chat-toggle {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(139, 69, 19, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+            color: white;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(139, 69, 19, 0.4);
+        }
+
+        .chat-toggle svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .chat-window {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1001;
+        }
+
+        .chat-window.active {
+            display: flex;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .close-chat {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 5px;
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .chat-input:focus {
+            border-color: #8B4513;
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-button:hover {
+            transform: scale(1.05);
+        }
+
+        .send-button svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .loading-dots {
+            display: flex;
+            align-items: center;
+            height: 20px;
+            padding-left: 10px;
+        }
+
+        .loading-dots div {
+            width: 6px;
+            height: 6px;
+            background-color: #8B4513;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: bounce 0.6s infinite alternate;
+        }
+
+        .loading-dots div:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loading-dots div:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-6px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .chat-window {
+                width: calc(100vw - 40px);
+                height: 60vh;
+                bottom: 80px;
+                right: 20px;
+                left: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chatbot-container">
+        <button class="chat-toggle" id="chatToggle">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+        </button>
+        
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <h3>Home Decor Support</h3>
+                <button class="close-chat" id="closeChat">×</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    Hello! Welcome to Home Decor Furniture. I'm here to help you with any questions about our furniture, orders, shipping, or general inquiries. How can I assist you today?
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Type your message...">
+                <button id="sendButton" class="send-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.542 60.542 0 0 0 18.443-8.852.75.75 0 0 0 0-1.288A60.542 60.542 0 0 0 3.478 2.405Z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Website data for the chatbot
+        const websiteData = {
+            company: "Home Decor Furniture",
+            products: {
+                categories: ["Living Room", "Dining Room", "Bedroom", "Office", "3D Models"],
+                featured: [
+                    "Comfortable Sofa - ₹41,500",
+                    "Modern Armchair - ₹20,750", 
+                    "Wooden Coffee Table - ₹12,450",
+                    "Dining Table - ₹33,200",
+                    "Queen Size Bed - ₹49,800",
+                    "Office Chair - ₹10,790"
+                ]
+            },
+            policies: {
+                shipping: "We offer free delivery on orders over ₹50,000. Standard delivery takes 5-7 business days.",
+                returns: "30-day return policy for items in original condition. Contact our support team for returns.",
+                payment: "We accept all major credit cards, UPI, and net banking.",
+                warranty: "3-5 year warranty on all furniture items depending on the product."
+            },
+            contact: {
+                phone: "+91 9825000000",
+                email: "support@homedecorfurniturestore.com",
+                address: "Ahmedabad, Gujarat, India",
+                hours: "Monday-Friday: 9 AM - 6 PM IST"
+            },
+            features: [
+                "Premium Quality Materials",
+                "Expert Craftsmanship", 
+                "Sustainable Design",
+                "Customer Satisfaction Guarantee"
+            ]
+        };
+
+        // Chatbot functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatToggle = document.getElementById('chatToggle');
+            const chatWindow = document.getElementById('chatWindow');
+            const closeChat = document.getElementById('closeChat');
+            const chatMessages = document.getElementById('chatMessages');
+            const chatInput = document.getElementById('chatInput');
+            const sendButton = document.getElementById('sendButton');
+
+            let chatHistory = [{
+                role: "user",
+                parts: [{ text: `You are a friendly, knowledgeable, and professional customer support chatbot for ${websiteData.company}. Your name is 'DecorBot'. 
+
+You should answer questions about:
+- Products and categories: ${websiteData.products.categories.join(', ')}
+- Featured products: ${websiteData.products.featured.join(', ')}
+- Shipping: ${websiteData.policies.shipping}
+- Returns: ${websiteData.policies.returns}
+- Payment: ${websiteData.policies.payment}
+- Warranty: ${websiteData.policies.warranty}
+- Contact info: Phone: ${websiteData.contact.phone}, Email: ${websiteData.contact.email}
+- Company features: ${websiteData.features.join(', ')}
+
+Keep responses concise and helpful. If you don't know something specific, suggest visiting the FAQ page or contacting human support at ${websiteData.contact.phone}. Maintain a warm, inviting tone that matches our elegant furniture brand.` }]
+            }];
+
+            // Toggle chat window
+            chatToggle.addEventListener('click', () => {
+                chatWindow.classList.add('active');
+            });
+
+            closeChat.addEventListener('click', () => {
+                chatWindow.classList.remove('active');
+            });
+
+            // Add message to chat
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+                messageDiv.textContent = text;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            // Show loading indicator
+            function showLoading(show) {
+                if (show) {
+                    const loadingDiv = document.createElement('div');
+                    loadingDiv.id = 'loadingDots';
+                    loadingDiv.classList.add('bot-message', 'loading-dots');
+                    loadingDiv.innerHTML = '<div></div><div></div><div></div>';
+                    chatMessages.appendChild(loadingDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                } else {
+                    const loadingDiv = document.getElementById('loadingDots');
+                    if (loadingDiv) {
+                        loadingDiv.remove();
+                    }
+                }
+            }
+
+            // Simple AI response system (you can replace this with actual AI API)
+            function generateResponse(userMessage) {
+                const message = userMessage.toLowerCase();
+                
+                // Product inquiries
+                if (message.includes('product') || message.includes('furniture') || message.includes('sofa') || message.includes('chair') || message.includes('table') || message.includes('bed')) {
+                    return `We offer a wide range of furniture across ${websiteData.products.categories.join(', ')} categories. Our featured products include ${websiteData.products.featured.slice(0, 3).join(', ')}. You can browse our complete collection in the gallery section. Would you like to know about specific products or categories?`;
+                }
+                
+                // Pricing inquiries
+                if (message.includes('price') || message.includes('cost') || message.includes('₹') || message.includes('rupee')) {
+                    return `Our furniture prices range from ₹6,640 for bar stools to ₹74,700 for premium L-shaped sofas. All prices are clearly displayed on our product pages. We also offer financing options for larger purchases.`;
+                }
+                
+                // Shipping inquiries
+                if (message.includes('shipping') || message.includes('delivery') || message.includes('shipping')) {
+                    return websiteData.policies.shipping + " For specific delivery times, please contact us with your location.";
+                }
+                
+                // Return inquiries
+                if (message.includes('return') || message.includes('refund') || message.includes('exchange')) {
+                    return websiteData.policies.returns + " Please ensure items are in original packaging for returns.";
+                }
+                
+                // Payment inquiries
+                if (message.includes('payment') || message.includes('pay') || message.includes('card') || message.includes('upi')) {
+                    return websiteData.policies.payment + " We also offer EMI options for qualifying purchases.";
+                }
+                
+                // Contact inquiries
+                if (message.includes('contact') || message.includes('phone') || message.includes('email') || message.includes('call')) {
+                    return `You can reach us at ${websiteData.contact.phone} or email us at ${websiteData.contact.email}. Our support team is available ${websiteData.contact.hours}.`;
+                }
+                
+                // Warranty inquiries
+                if (message.includes('warranty') || message.includes('guarantee')) {
+                    return websiteData.policies.warranty + " We stand behind the quality of all our products.";
+                }
+                
+                // General greeting
+                if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+                    return "Hello! I'm here to help you with any questions about our furniture collection, orders, or policies. What would you like to know?";
+                }
+                
+                // Default response
+                return "Thank you for your question! For specific inquiries about orders or complex issues, please call us at " + websiteData.contact.phone + " or visit our FAQ page. How else can I assist you today?";
+            }
+
+            // Send message
+            async function sendMessage() {
+                const userText = chatInput.value.trim();
+                if (userText === '') return;
+
+                addMessage(userText, 'user');
+                chatInput.value = '';
+                showLoading(true);
+
+                // Simulate AI processing time
+                setTimeout(() => {
+                    showLoading(false);
+                    const botResponse = generateResponse(userText);
+                    addMessage(botResponse, 'bot');
+                }, 1000);
+            }
+
+            // Event listeners
+            sendButton.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
