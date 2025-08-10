@@ -11,6 +11,7 @@
     <link rel="icon" type="image/png" sizes="48x48" href="image/Logo maker project.webp">
     <link rel="apple-touch-icon" sizes="180x180" href="image/Logo maker project.webp">
     <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/cart-popup.css">
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -154,8 +155,33 @@
             </div>
         </div>
     </footer>
+    
+    <!-- Cart Popup Modal -->
+    <div id="cartPopupOverlay" class="cart-popup-overlay">
+        <div class="cart-popup">
+            <div class="cart-popup-header">
+                <h3>🛒 Your Cart</h3>
+                <button id="closeCartBtn" class="close-cart-btn">&times;</button>
+            </div>
+            <div id="cartItemsContainer" class="cart-items-container">
+                <!-- Cart items will be dynamically loaded here -->
+            </div>
+            <div class="cart-popup-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cartTotalPrice" class="cart-total-price">₹0</span>
+                </div>
+                <div class="cart-actions">
+                    <button id="continueShoppingBtn" class="cart-btn secondary">Continue Shopping</button>
+                    <button id="proceedToCheckoutBtn" class="cart-btn primary">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="js/app.js"></script>
     <script src="js/chatbot.js"></script>
+    <script src="js/cart-popup.js"></script>
     <script>
 // Blog Read More Toggle
 const readMoreLinks = document.querySelectorAll('.read-more');

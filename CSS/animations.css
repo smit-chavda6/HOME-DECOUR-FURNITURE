@@ -1,0 +1,75 @@
+/* -------------------------------------- */
+/* 1. Base Styles for Animated Elements   */
+/* -------------------------------------- */
+
+/* This class will be on every element we want to animate. */
+/* It sets the initial state (invisible and off-screen) */
+/* and defines the transition properties. */
+.animate-on-scroll {
+    opacity: 0;
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* When the 'visible' class is added by JavaScript, */
+/* the element becomes fully visible and moves to its final position. */
+.animate-on-scroll.visible {
+    opacity: 1;
+    transform: none;
+}
+
+
+/* -------------------------------------- */
+/* 2. Specific Animation Types            */
+/* -------------------------------------- */
+
+/* Fade-in Animation (no movement) */
+.fade-in {
+    /* No initial transform needed, just starts with opacity 0 */
+}
+
+/* Slide-in from Bottom */
+.slide-in-up {
+    transform: translateY(50px);
+}
+
+/* Slide-in from Left */
+.slide-in-left {
+    transform: translateX(-100px);
+}
+
+/* Slide-in from Right */
+.slide-in-right {
+    transform: translateX(100px);
+}
+
+/* Zoom-in Effect */
+.zoom-in {
+    transform: scale(0.9);
+}
+
+
+/* -------------------------------------- */
+/* 3. Special Animations                */
+/* -------------------------------------- */
+
+/* For the vertical timeline bar */
+.timeline::before {
+    transform-origin: top;
+    transform: scaleY(0);
+    transition: transform 1.5s ease-in-out;
+}
+
+.timeline.visible::before {
+    transform: scaleY(1);
+}
+
+/* For the number counters in Achievements/Stats */
+.animated-counter, .achievement-number {
+    transition: all 0.5s ease-out;
+}
+
+/* A subtle hover effect for cards */
+.value-card:hover, .achievement-card:hover, .testimonial-card:hover, .team-member:hover, .mission-feature:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(44, 62, 80, 0.15);
+} 

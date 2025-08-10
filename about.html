@@ -24,6 +24,15 @@
     <meta name="theme-color" content="#8B4513">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/cart-popup.css">
+    
+    <link rel="stylesheet" href="CSS/style-redesign.css">
+    
+    <link rel="stylesheet" href="CSS/animations.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gsta tic.com" rel="preconnect" crossorigin>
     <link
@@ -81,9 +90,9 @@
 
     <!-- Hero Section -->
     <section class="about-hero">
-        <div class="hero-content">
-        <h1>About Us</h1>
-            <p>Your trusted source for quality furniture</p>
+        <div class="hero-content animate-on-scroll fade-in">
+            <h1>Our Story</h1>
+            <p>Crafting homes with passion and purpose since 2014.</p>
         </div>
     </section>
 
@@ -91,12 +100,12 @@
         <section class="about-section">
         <div class="container">
             <div class="about-content">
-                <div class="about-text">
-            <h2>WHO WE ARE</h2>
-                    <p>At Home Decor Furniture, we are passionate about creating beautiful spaces. With over a decade of experience, we offer a wide range of high-quality furniture designed to suit every style and budget. Our commitment to excellence and customer satisfaction has made us a trusted name in the furniture industry.</p>
-                    <p>We believe that every home tells a story, and we're here to help you write yours with furniture that combines beauty, functionality, and quality craftsmanship.</p>
+                <div class="about-text animate-on-scroll slide-in-left">
+                    <h2 class="section-title">Who We Are</h2>
+                    <p>At Home Decor Furniture, we believe furniture is more than just an object. It's a cornerstone of the home, a backdrop for memories, and a reflection of your story. We are dedicated to sourcing and crafting pieces that blend timeless design with sustainable quality.</p>
+                    <p>From a small family workshop to a trusted national brand, our commitment has never wavered: to help you create a home you love, one beautiful piece at a time.</p>
                 </div>
-                <div class="about-image">
+                <div class="about-image animate-on-scroll slide-in-right">
                     <img src="image/phillip-goldsberry-fZuleEfeA1Q-unsplash.webp" alt="Furniture Store Team" loading="lazy">
                 </div>
             </div>
@@ -106,160 +115,132 @@
     <!-- Company History Section -->
     <section class="history-section">
         <div class="container">
-            <h2>Our Journey</h2>
-            <div class="timeline">
-                <div class="timeline-item">
+            <h2 class="section-title animate-on-scroll fade-in">Our Journey</h2>
+            <div class="timeline animate-on-scroll">
+                <div class="timeline-item animate-on-scroll slide-in-left">
                     <div class="timeline-year">2014</div>
                     <div class="timeline-content">
                         <h3>The Beginning</h3>
-                        <p>Founded with a vision to bring quality furniture to every home, we started as a small family business with a passion for craftsmanship.</p>
+                        <p>Our journey began in a small workshop, fueled by a passion for woodworking and timeless design.</p>
                     </div>
                 </div>
                 
-                <div class="timeline-item">
+                <div class="timeline-item animate-on-scroll slide-in-right">
                     <div class="timeline-year">2017</div>
                     <div class="timeline-content">
-                        <h3>Expansion</h3>
-                        <p>Opened our first showroom and expanded our collection to include premium furniture from renowned designers.</p>
+                        <h3>First Showroom</h3>
+                        <p>We opened our first physical store, connecting with our community and expanding our collection.</p>
                     </div>
                 </div>
                 
-                <div class="timeline-item">
+                <div class="timeline-item animate-on-scroll slide-in-left">
                     <div class="timeline-year">2020</div>
                     <div class="timeline-content">
-                        <h3>Digital Transformation</h3>
-                        <p>Launched our online platform to reach customers nationwide and provide seamless shopping experience.</p>
+                        <h3>Digital Leap</h3>
+                        <p>Our online store launched, bringing Home Decor Furniture to homes across the country.</p>
                     </div>
                 </div>
                 
-                <div class="timeline-item">
-                    <div class="timeline-year">2024</div>
+                <div class="timeline-item animate-on-scroll slide-in-right">
+                    <div class="timeline-year">2025</div>
                     <div class="timeline-content">
-                        <h3>Today</h3>
-                        <p>Proudly serving thousands of satisfied customers with our commitment to quality, sustainability, and exceptional service.</p>
+                        <h3>Sustainable Future</h3>
+                        <p>We solidified our commitment to sustainability, partnering with artisans and NGOs to ensure ethical craftsmanship.</p>
                     </div>
                 </div>
             </div>
         </div>
         </section>
 
-    <!-- Mission Section -->
-        <section class="mission-section">
+    <section class="values-section">
         <div class="container">
-            <div class="mission-content">
-                <h2>Our Mission</h2>
-                <p>Our mission is to provide our customers with exceptional furniture that combines style, comfort, and functionality. We believe that your home should reflect your personality and lifestyle, and we are here to help you achieve that.</p>
-                <div class="mission-features">
-                    <div class="mission-feature">
-                        <div class="feature-icon">🎯</div>
-                        <h3>Quality First</h3>
-                        <p>We never compromise on quality, ensuring every piece meets our high standards.</p>
-                    </div>
-                    <div class="mission-feature">
-                        <div class="feature-icon">💝</div>
-                        <h3>Customer Focus</h3>
-                        <p>Your satisfaction is our priority, and we go above and beyond to exceed expectations.</p>
-                    </div>
-                    <div class="mission-feature">
-                        <div class="feature-icon">🌟</div>
-                        <h3>Innovation</h3>
-                        <p>We continuously seek new designs and trends to keep our collection fresh and exciting.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </section>
-
-    <!-- Sustainability Section -->
-    <section class="sustainability-section">
-        <div class="container">
-            <div class="sustainability-content">
-                <h2>SUSTAINABILITY</h2>
-                <p>We strive to use materials that are sustainably sourced, and strongly believe in supporting artisans and their crafts. As a brand, we aim to preserve and revive the dying traditions and techniques of handcrafted furniture making.</p>
-                <p>We are associated with NGOs supporting this goal, including 'The Vishwakarma Swayam Sahayata Samuh' that is engaged in helping and providing education & training to local artisans.</p>
-                <div class="sustainability-stats">
-                    <div class="stat">
-                        <h3>100%</h3>
-                        <p>Sustainably Sourced</p>
-                    </div>
-                    <div class="stat">
-                        <h3>50+</h3>
-                        <p>Local Artisans</p>
-                    </div>
-                    <div class="stat">
-                        <h3>10+</h3>
-                        <p>Years Experience</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </section>
-
-    <!-- Values Section -->
-        <section class="values-section">
-        <div class="container">
-            <h2>Our Values</h2>
+            <h2 class="section-title animate-on-scroll fade-in">Our Core Values</h2>
             <div class="values-grid">
-                <div class="value-card">
+                <div class="value-card animate-on-scroll zoom-in">
                     <div class="value-icon">
-                        <svg viewBox="0 0 24 24">
+                        <svg class="value-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            <path d="M9 12l2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <h3>Uncompromising Quality</h3>
+                    <p>Every piece is built to last, using superior materials and meticulous craftsmanship.</p>
+                </div>
+                <div class="value-card animate-on-scroll zoom-in" style="transition-delay: 0.2s;">
+                    <div class="value-icon">
+                        <svg class="value-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </div>
+                    <h3>Customer Dedication</h3>
+                    <p>Your satisfaction is our foundation. We provide exceptional service from Browse to delivery.</p>
+                </div>
+                <div class="value-card animate-on-scroll zoom-in" style="transition-delay: 0.4s;">
+                    <div class="value-icon">
+                        <svg class="value-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12,6 12,12 16,14"/>
                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                         </svg>
                     </div>
-                    <h3>Quality</h3>
-                    <p>We source materials and craftsmanship that ensure durability and elegance. Every piece is carefully inspected to meet our high standards.</p>
-                </div>
-                
-                <div class="value-card">
-                    <div class="value-icon">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
-                    </div>
-                    <h3>Customer Satisfaction</h3>
-                    <p>Our customers are our priority, and we strive to exceed their expectations with exceptional service and support.</p>
-                </div>
-                
-                <div class="value-card">
-                    <div class="value-icon">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                    </div>
-                    <h3>Innovation</h3>
-                    <p>We continuously seek new designs and trends to keep our collection fresh and exciting for our customers.</p>
+                    <h3>Timeless Innovation</h3>
+                    <p>We honor classic design while embracing modern trends to keep our collection fresh and inspiring.</p>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Sustainability Section -->
+    <section class="sustainability-section">
+        <div class="container">
+            <div class="sustainability-content animate-on-scroll fade-in">
+                <h2 class="section-title">A Greener Home</h2>
+                <p>We are committed to ethical sourcing and sustainable practices. By supporting local artisans and using responsibly harvested materials, we craft furniture that is not only beautiful but also kind to our planet.</p>
+                <div class="sustainability-stats">
+                                    <div class="stat animate-on-scroll zoom-in">
+                    <h3 class="achievement-number" data-target="100" data-suffix="%">0%</h3>
+                    <p>Sustainably Sourced</p>
+                </div>
+                <div class="stat animate-on-scroll zoom-in" style="transition-delay: 0.2s;">
+                    <h3 class="achievement-number" data-target="50">0+</h3>
+                    <p>Artisan Partners</p>
+                </div>
+                <div class="stat animate-on-scroll zoom-in" style="transition-delay: 0.4s;">
+                    <h3 class="achievement-number" data-target="10">0+</h3>
+                    <p>Years of Trust</p>
+                </div>
+                </div>
+            </div>
+        </div>
+        </section>
+
+
+
     <!-- Achievements Section -->
     <section class="achievements-section">
         <div class="container">
-            <h2>Our Achievements</h2>
+            <h2 class="section-title animate-on-scroll fade-in">By The Numbers</h2>
             <div class="achievements-grid">
-                <div class="achievement-card">
-                    <div class="achievement-number">5000+</div>
-                    <h3>Happy Customers</h3>
-                    <p>Families who have transformed their homes with our furniture</p>
+                <div class="achievement-card animate-on-scroll slide-in-up">
+                    <div class="achievement-number">2000+</div>
+                    <h3>Happy Homes</h3>
+                    <p>Families who have trusted us to furnish their spaces.</p>
                 </div>
                 
-                <div class="achievement-card">
+                <div class="achievement-card animate-on-scroll slide-in-up" style="transition-delay: 0.1s;">
                     <div class="achievement-number">1000+</div>
-                    <h3>Furniture Pieces</h3>
-                    <p>Unique designs crafted with attention to detail</p>
+                    <h3>Curated Pieces</h3>
+                    <p>Unique designs carefully selected for our collection.</p>
                 </div>
                 
-                <div class="achievement-card">
+                <div class="achievement-card animate-on-scroll slide-in-up" style="transition-delay: 0.2s;">
                     <div class="achievement-number">15+</div>
-                    <h3>Awards Won</h3>
-                    <p>Recognition for excellence in furniture design and service</p>
+                    <h3>Design Awards</h3>
+                    <p>Recognized for excellence in furniture design and service.</p>
                 </div>
                 
-                <div class="achievement-card">
+                <div class="achievement-card animate-on-scroll slide-in-up" style="transition-delay: 0.3s;">
                     <div class="achievement-number">98%</div>
-                    <h3>Customer Satisfaction</h3>
-                    <p>Based on thousands of customer reviews and feedback</p>
+                    <h3>Satisfaction Rate</h3>
+                    <p>A testament to our dedication to our customers.</p>
                 </div>
             </div>
         </div>
@@ -268,11 +249,11 @@
     <!-- Testimonials Section -->
     <section class="testimonials-section">
         <div class="container">
-            <h2>What Our Customers Say</h2>
+            <h2 class="section-title animate-on-scroll fade-in">Words From Our Customers</h2>
             <div class="testimonials-grid">
-                <div class="testimonial-card">
+                <div class="testimonial-card animate-on-scroll slide-in-left">
                     <div class="testimonial-content">
-                        <p>"The quality of furniture exceeded our expectations. The delivery was prompt and the customer service was exceptional. Highly recommended!"</p>
+                        <p>"The quality exceeded my expectations. This furniture didn't just fill a room, it completed our home. Exceptional service from start to finish."</p>
                     </div>
                     <div class="testimonial-author">
                         <div class="author-avatar">SM</div>
@@ -283,9 +264,9 @@
                     </div>
                 </div>
                 
-                <div class="testimonial-card">
+                <div class="testimonial-card animate-on-scroll slide-in-up">
                     <div class="testimonial-content">
-                        <p>"Beautiful furniture that perfectly matches our home decor. The craftsmanship is outstanding and the prices are reasonable."</p>
+                        <p>"I was looking for pieces with character and found them here. The craftsmanship is outstanding, and it's clear they care about every detail."</p>
                     </div>
                     <div class="testimonial-author">
                         <div class="author-avatar">JD</div>
@@ -296,9 +277,9 @@
                     </div>
                 </div>
                 
-                <div class="testimonial-card">
+                <div class="testimonial-card animate-on-scroll slide-in-right">
                     <div class="testimonial-content">
-                        <p>"Amazing experience from start to finish. The team helped us choose the perfect pieces for our living room. We couldn't be happier!"</p>
+                        <p>"An amazing experience. The team helped me find the perfect sofa. It's the centerpiece of our living room, and we couldn't be happier!"</p>
                     </div>
                     <div class="testimonial-author">
                         <div class="author-avatar">EW</div>
@@ -315,42 +296,42 @@
     <!-- Team Section -->
     <section class="team-section">
         <div class="container">
-            <h2>MANAGEMENT TEAM</h2>
+            <h2 class="section-title animate-on-scroll fade-in">Meet the Founders</h2>
             <div class="team-grid">
-                <div class="team-member">
+                <div class="team-member animate-on-scroll zoom-in">
                     <div class="member-avatar">
-                        <div class="avatar-placeholder">SM</div>
+                        <div class="avatar-placeholder">SC</div>
                     </div>
                     <h3>SMIT CHAVDA</h3>
                     <p>Founder & CEO</p>
-                    <p class="member-description">With over 15 years of experience in the furniture industry, Smit leads our company with vision and passion for quality craftsmanship.</p>
+                    <p class="member-description">With a deep-rooted passion for design, Smit leads the company's vision and product curation.</p>
                 </div>
                 
-                <div class="team-member">
+                <div class="team-member animate-on-scroll zoom-in" style="transition-delay: 0.1s;">
                     <div class="member-avatar">
                         <div class="avatar-placeholder">KK</div>
                     </div>
                     <h3>KRISH KUVRANI</h3>
                     <p>Creative Director</p>
-                    <p class="member-description">Krish brings innovative design concepts and ensures every piece meets our high aesthetic and functional standards.</p>
+                    <p class="member-description">Krish is the eye behind the brand, shaping our aesthetic and discovering new design trends.</p>
                 </div>
                 
-                <div class="team-member">
+                <div class="team-member animate-on-scroll zoom-in" style="transition-delay: 0.2s;">
                     <div class="member-avatar">
                         <div class="avatar-placeholder">VS</div>
                     </div>
                     <h3>VAIRAG SHAH</h3>
                     <p>Operations Manager</p>
-                    <p class="member-description">Vairag oversees all operations, ensuring smooth delivery and exceptional customer service across all touchpoints.</p>
+                    <p class="member-description">Vairag ensures every piece gets from our workshop to your home seamlessly and with care.</p>
                 </div>
 
-                <div class="team-member">
+                <div class="team-member animate-on-scroll zoom-in" style="transition-delay: 0.3s;">
                     <div class="member-avatar">
                         <div class="avatar-placeholder">RM</div>
                     </div>
-                    <h3>RUDRA MEWADA</h3>
+                    <h3>RUDRA MEVADA</h3>
                     <p>Web Developer</p>
-                    <p class="member-description">Rudra is the web developer of the company, he is responsible for the website and the web application of the company.</p>
+                    <p class="member-description">Rudra builds the digital home for our furniture, ensuring a smooth online experience for you.</p>
                 </div>
             </div>
         </div>
@@ -442,9 +423,34 @@
             </div>
         </div>
     </footer>
+    
+    <!-- Cart Popup Modal -->
+    <div id="cartPopupOverlay" class="cart-popup-overlay">
+        <div class="cart-popup">
+            <div class="cart-popup-header">
+                <h3>🛒 Your Cart</h3>
+                <button id="closeCartBtn" class="close-cart-btn">&times;</button>
+            </div>
+            <div id="cartItemsContainer" class="cart-items-container">
+                <!-- Cart items will be dynamically loaded here -->
+            </div>
+            <div class="cart-popup-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cartTotalPrice" class="cart-total-price">₹0</span>
+                </div>
+                <div class="cart-actions">
+                    <button id="continueShoppingBtn" class="cart-btn secondary">Continue Shopping</button>
+                    <button id="proceedToCheckoutBtn" class="cart-btn primary">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <script src="js/app.js"></script>
 <script src="js/chatbot.js"></script>
+<script src="js/cart-popup.js"></script>
+<script src="js/animations.js"></script>
 </body>
 
 </html>

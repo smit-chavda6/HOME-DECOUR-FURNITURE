@@ -1,0 +1,31 @@
+/* General Layout Styles */
+
+/* Section Layouts */
+section {
+    padding: 40px 20px;
+    text-align: center;
+    margin-top: 70px;
+}
+
+/* Add top margin for fixed navbar */
+main, section:not(.about-cta), .g2, #home, #about1, #ccc {
+    margin-top: 70px;
+}
+
+/* Mobile Responsive Layout */
+@media screen and (max-width:768px){
+    body{
+        overflow-x: hidden;
+    }
+    
+    /* Adjust content margins for mobile */
+    #home, section:not(.about-cta), .g2, .product-details {
+        margin-top: 70px;
+    }
+}
+
+@media screen and (max-width:1024px){
+    .nav-links{
+        
+    }
+} 

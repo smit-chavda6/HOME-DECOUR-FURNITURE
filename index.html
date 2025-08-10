@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HOME DECOR FURNITURE</title>
     <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/cart-popup.css">
 
     <!-- Favicons - Enhanced for better compatibility -->
     <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico">
@@ -41,6 +42,43 @@
 </head>
 
 <body>
+    <!-- Initial Loading Screen -->
+    <div id="loader-wrapper">
+        <div class="aurora-background"></div>
+
+        <div class="loader-content">
+            <!-- Logo Section -->
+            <div class="loader-logo">
+                <h1 class="logo-text">HOME DECOR FURNITURE</h1>
+            </div>
+            
+            <!-- 3D Cube Section -->
+            <div class="scene">
+                <div class="cube">
+                    <div class="face front">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a1 1 0 0 1 1-1h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V9Z"/><path d="M3 13h18"/><path d="M9 13v6"/><path d="M15 13v6"/><path d="M6 8V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/></svg>
+                    </div>
+                    <div class="face back">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 0-9-9c0 2.492.99 4.733 2.615 6.385L12 21Z"/><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M12 21v-3.5"/><path d="M12 3v1.5"/></svg>
+                    </div>
+                    <div class="face right">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18M4 9v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"/><path d="m10 13 2 2 2-2"/><path d="M12 3v10"/></svg>
+                    </div>
+                    <div class="face left">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20h6M7 4h10M7 4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V4Z"/><path d="M9 8v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V8"/></svg>
+                    </div>
+                    <div class="face top">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="14" width="18" height="8" rx="2"/><path d="M6 14l1.5-10h9L18 14"/><path d="M7 22v-4"/><path d="M17 22v-4"/></svg>
+                    </div>
+                    <div class="face bottom">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v4"/><path d="M20 10v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"/><path d="M4 10h16"/><path d="M12 16v6"/><path d="M10 22h4"/></svg>
+                    </div>
+                </div>
+            </div>
+            <p class="loader-message">Crafting your perfect space...</p>
+        </div>
+    </div>
+
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="navbar-brand">
@@ -348,12 +386,114 @@
             </div>
         </div>
     </footer>
+    
+    <!-- Cart Popup Modal -->
+    <div id="cartPopupOverlay" class="cart-popup-overlay">
+        <div class="cart-popup">
+            <div class="cart-popup-header">
+                <h3>🛒 Your Cart</h3>
+                <button id="closeCartBtn" class="close-cart-btn">&times;</button>
+            </div>
+            <div id="cartItemsContainer" class="cart-items-container">
+                <!-- Cart items will be dynamically loaded here -->
+            </div>
+            <div class="cart-popup-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cartTotalPrice" class="cart-total-price">₹0</span>
+                </div>
+                <div class="cart-actions">
+                    <button id="continueShoppingBtn" class="cart-btn secondary">Continue Shopping</button>
+                    <button id="proceedToCheckoutBtn" class="cart-btn primary">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
         
     <script src="js/app.js"></script>
     <script src="js/home.js"></script>
     <script src="js/gallery-data.js"></script>
     <script src="js/gallery.js"></script>
     <script src="js/chatbot.js"></script>
+    <script src="js/cart-popup.js"></script>
+
+    <script src="js/success-animation.js"></script>
+
+    <!-- Simple Home Page Loader Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loaderWrapper = document.getElementById('loader-wrapper');
+            const loaderMessage = document.querySelector('.loader-message');
+            
+            if (loaderWrapper && loaderMessage) {
+                const messages = [
+                    "Crafting your perfect space...",
+                    "Polishing the finest designs...",
+                    "Unpacking premium collections...",
+                    "Lighting up your inspiration...",
+                    "Building your dream interior..."
+                ];
+                
+                let messageIndex = 0;
+                
+                // Change message every 2.5 seconds
+                const messageInterval = setInterval(() => {
+                    messageIndex = (messageIndex + 1) % messages.length;
+                    loaderMessage.style.opacity = '0';
+                    setTimeout(() => {
+                        loaderMessage.textContent = messages[messageIndex];
+                        loaderMessage.style.opacity = '1';
+                    }, 400);
+                }, 2500);
+                
+                // Hide loader when page is fully loaded
+                window.addEventListener('load', function() {
+                    clearInterval(messageInterval);
+                    
+                    // Add extra delay to show loader longer
+                    setTimeout(() => {
+                        loaderWrapper.classList.add('hidden');
+                        setTimeout(() => {
+                            loaderWrapper.style.display = 'none';
+                        }, 800);
+                    }, 3000);
+                });
+                
+                // Fallback: hide after 10 seconds
+                setTimeout(() => {
+                    if (loaderWrapper.style.display !== 'none') {
+                        clearInterval(messageInterval);
+                        loaderWrapper.classList.add('hidden');
+                        setTimeout(() => {
+                            loaderWrapper.style.display = 'none';
+                        }, 800);
+                    }
+                }, 10000);
+            }
+        });
+    </script>
+
+    <!-- Purchase Success Animation -->
+    <div class="purchase-success-overlay" id="purchaseSuccessOverlay">
+        <div class="confetti-container" id="confettiContainer"></div>
+        <div class="success-card">
+            <div class="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+            </div>
+            <h2 class="success-title">Purchase Successful!</h2>
+            <p class="success-message">Thank you for your order. Your furniture will be delivered soon!</p>
+            <div class="success-product" id="successProductName">Product Name</div>
+            <div class="success-actions">
+                <button class="success-btn primary" onclick="continueShopping()">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
+
+
+        </div>
+    </div>
 </body>
 
 </html>

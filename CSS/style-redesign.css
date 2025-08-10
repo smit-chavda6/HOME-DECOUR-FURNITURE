@@ -1,0 +1,519 @@
+/* --- MODERN & ELEGANT REDESIGN --- */
+
+/* 1. ROOT VARIABLES & GLOBAL STYLES */
+:root {
+    --font-primary: 'Playfair Display', serif;
+    --font-secondary: 'Jost', sans-serif;
+    
+    --color-background: #FDF8F2; /* Warm Linen White */
+    --color-text: #3D3A37; /* Warm Charcoal Brown */
+    --color-accent: #8B4513; /* Saddle Brown */
+    --color-border: #EAE0D5; /* Soft Beige */
+    --color-white: #FFFFFF;
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-secondary);
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Global Heading Styles */
+h1, h2, h3 {
+    font-family: var(--font-primary);
+    color: var(--color-text);
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 2.8rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+h2.section-title {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+h2.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: var(--color-accent);
+}
+
+
+/* 2. SECTION SPECIFIC STYLES */
+
+/* --- Hero Section --- */
+.about-hero {
+    height: 60vh;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--color-white);
+    background: url('../image/au_1.png') no-repeat center center/cover;
+    position: relative;
+}
+
+.about-hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* Dark overlay for text contrast */
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2rem 3rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+.hero-content h1 {
+    font-size: 4rem;
+    color: var(--color-white);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    margin: 0;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    font-family: var(--font-secondary);
+    font-style: italic;
+    opacity: 0.9;
+    margin-top: 0.5rem;
+}
+
+
+/* --- Who We Are Section --- */
+.about-section {
+    padding: 100px 0;
+    position: relative;
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 5rem;
+    align-items: center;
+}
+
+.about-text h2 {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.about-text h2::after {
+    left: 0;
+    transform: none;
+}
+
+.about-text p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+.about-image {
+    position: relative;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+}
+
+.about-image img {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.1);
+}
+/* Decorative element */
+.about-image::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--color-accent);
+    border-radius: 8px;
+    z-index: -1;
+    transition: all 0.3s ease;
+}
+.about-image:hover::before {
+    transform: translate(5px, 5px);
+}
+
+
+/* --- History Section --- */
+.history-section {
+    padding: 100px 0;
+    background-color: var(--color-white);
+}
+
+.timeline {
+    max-width: 800px;
+    margin: 60px auto 0;
+    position: relative;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--color-border);
+    transform: translateX(-50%);
+}
+
+.timeline-item {
+    display: flex;
+    margin-bottom: 80px;
+    position: relative;
+}
+.timeline-item:nth-child(odd) { flex-direction: row; }
+.timeline-item:nth-child(even) { flex-direction: row-reverse; }
+
+/* The dot on the timeline */
+.timeline-item::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 16px;
+    background-color: var(--color-background);
+    border: 3px solid var(--color-accent);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.timeline-year {
+    position: absolute;
+    top: 5px;
+    font-size: 1.5rem;
+    font-family: var(--font-primary);
+    color: var(--color-accent);
+    background: var(--color-white);
+    padding: 0 10px;
+}
+.timeline-item:nth-child(odd) .timeline-year { left: 50%; margin-left: 25px; }
+.timeline-item:nth-child(even) .timeline-year { right: 50%; margin-right: 25px; }
+
+.timeline-content {
+    padding: 30px;
+    width: calc(50% - 40px);
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+}
+.timeline-content h3 {
+    font-size: 1.5rem;
+    color: var(--color-accent);
+    margin-bottom: 10px;
+}
+.timeline-content p { color: #666; line-height: 1.6; }
+
+
+/* --- Values Section (Replaces Mission) --- */
+.values-section {
+    padding: 100px 0;
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    margin-top: 60px;
+}
+
+.value-card {
+    background: var(--color-white);
+    padding: 40px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+}
+
+.value-icon {
+    margin-bottom: 25px;
+    color: var(--color-accent);
+}
+.value-svg { /* For our custom icons */
+    width: 50px;
+    height: 50px;
+}
+
+.value-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+.value-card p {
+    color: #666;
+    line-height: 1.7;
+}
+
+
+/* --- Sustainability Section --- */
+.sustainability-section {
+    padding: 120px 0;
+    color: var(--color-white);
+    background: linear-gradient(rgba(45, 37, 30, 0.8), rgba(45, 37, 30, 0.8)), url('../image/sustainability-bg.jpg') no-repeat center center/cover;
+    /* You'll need to find a nice background image, e.g., a forest or wood texture */
+}
+
+.sustainability-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+.sustainability-content h2 {
+    color: var(--color-white);
+}
+.sustainability-content p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 40px;
+    opacity: 0.9;
+}
+
+.sustainability-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.stat {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 30px;
+    border-top: 3px solid var(--color-accent);
+    border-radius: 4px;
+}
+.stat h3 {
+    font-family: var(--font-primary);
+    font-size: 3rem;
+    color: var(--color-white);
+    margin-bottom: 10px;
+}
+.stat p {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin: 0;
+}
+
+
+/* --- Achievements Section --- */
+.achievements-section {
+    padding: 100px 0;
+    background-color: var(--color-white);
+}
+
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    margin-top: 60px;
+}
+
+.achievement-card {
+    text-align: center;
+    padding: 30px;
+}
+.achievement-number {
+    font-family: var(--font-primary);
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    margin-bottom: 10px;
+    line-height: 1;
+}
+.achievement-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--color-text);
+}
+.achievement-card p {
+    color: #777;
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+
+/* --- Testimonials Section --- */
+.testimonials-section {
+    padding: 100px 0;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    margin-top: 60px;
+}
+
+.testimonial-card {
+    background: var(--color-white);
+    padding: 35px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    position: relative;
+}
+/* The big quote icon */
+.testimonial-card::before {
+    content: '"';
+    font-family: var(--font-primary);
+    font-size: 6rem;
+    color: var(--color-border);
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    line-height: 1;
+    z-index: 0;
+}
+.testimonial-content {
+    position: relative;
+    z-index: 1;
+}
+.testimonial-content p {
+    font-size: 1.1rem;
+    font-style: italic;
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-top: 1px solid var(--color-border);
+    padding-top: 20px;
+}
+.author-avatar {
+    width: 50px;
+    height: 50px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-white);
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+.author-info h4 {
+    font-family: var(--font-secondary);
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 5px;
+}
+.author-info span {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+/* --- Team Section --- */
+.team-section {
+    padding: 100px 0;
+    background-color: var(--color-white);
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    margin-top: 60px;
+}
+
+.team-member {
+    text-align: center;
+}
+/* New avatar style */
+.member-avatar {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background-color: var(--color-border);
+    overflow: hidden;
+}
+.member-avatar img { /* Use real images if possible */
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+/* Placeholder for if you don't have images */
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-primary);
+    font-size: 3rem;
+    color: var(--color-white);
+}
+
+.team-member h3 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+}
+.team-member p {
+    color: var(--color-accent);
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+.member-description {
+    color: #666 !important; /* Overriding old style */
+    font-size: 0.95rem;
+    line-height: 1.6;
+    font-weight: 400 !important;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 992px) {
+    .about-content { grid-template-columns: 1fr; }
+    .about-image { margin-top: 40px; }
+    .values-grid, .testimonials-grid { grid-template-columns: 1fr; }
+    .team-grid, .achievements-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+    h2 { font-size: 2.2rem; }
+    .about-image img {
+        max-height: 400px;
+    }
+    .timeline::before { left: 20px; }
+    .timeline-item, .timeline-item:nth-child(even) { flex-direction: row; }
+    .timeline-item::after { left: 20px; }
+    .timeline-item:nth-child(odd) .timeline-year, .timeline-item:nth-child(even) .timeline-year {
+        left: 50px;
+        top: -10px;
+    }
+    .timeline-content { width: calc(100% - 50px); margin-left: 50px; }
+    .team-grid, .achievements-grid, .sustainability-stats { grid-template-columns: 1fr; }
+} 

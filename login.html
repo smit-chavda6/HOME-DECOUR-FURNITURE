@@ -82,6 +82,10 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         .btn-primary:hover {
@@ -90,9 +94,15 @@
         }
         
         .btn-primary:disabled {
-            opacity: 0.6;
+            opacity: 0.8;
             cursor: not-allowed;
             transform: none;
+            background: linear-gradient(135deg, #A0522D, #8B4513);
+        }
+        
+        .btn-primary:disabled:hover {
+            transform: none;
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
         }
         
         .form-links {
@@ -137,10 +147,12 @@
             border-radius: 50%;
             border-top-color: #fff;
             animation: spin 1s ease-in-out infinite;
+            margin-left: 8px;
         }
         
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         .demo-credentials {
@@ -347,10 +359,12 @@
                     loginBtn.disabled = true;
                     loginBtnText.style.display = 'none';
                     loginBtnLoader.style.display = 'inline-block';
+                    loginBtnText.textContent = 'Logging in...';
                 } else {
                     loginBtn.disabled = false;
                     loginBtnText.style.display = 'inline';
                     loginBtnLoader.style.display = 'none';
+                    loginBtnText.textContent = 'Login';
                 }
             }
             

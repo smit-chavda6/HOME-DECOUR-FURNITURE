@@ -25,6 +25,9 @@
     <meta name="theme-color" content="#8B4513">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/cart-popup.css">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gsta tic.com" rel="preconnect" crossorigin>
     <link
@@ -37,7 +40,7 @@
 
 </head>
 
-<body>
+<body class="gallery-page">
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="navbar-brand">
@@ -83,6 +86,46 @@
         <h1 id="gname">OUR COLLECTION</h1>
         <p class="gallery-subtitle">Discover our carefully curated selection of premium furniture</p>
         
+        <!-- Search and Filter Section -->
+        <div class="gallery-controls">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <div class="search-box">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    <input type="text" class="gallery-search" placeholder="Search furniture..." id="gallerySearch">
+                    <button class="clear-search" id="clearSearch" title="Clear search">×</button>
+                </div>
+            </div>
+            
+            <!-- Price Filter -->
+            <div class="price-filter-container">
+                                    <label for="priceRange" class="price-label">Price Range: <span id="priceValue">₹0 - ₹90,000</span></label>
+                <div class="price-slider-container">
+                    <input type="range" id="priceRange" class="price-range" min="0" max="90000" value="90000" step="1000">
+                    <div class="price-inputs">
+                        <input type="number" id="minPrice" class="price-input" placeholder="Min" min="0" max="90000">
+                        <span class="price-separator">-</span>
+                        <input type="number" id="maxPrice" class="price-input" placeholder="Max" min="0" max="90000">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sort Options -->
+            <div class="sort-container">
+                <label for="sortSelect" class="sort-label">Sort by:</label>
+                <select id="sortSelect" class="sort-select" aria-label="Sort products">
+                    <option value="">Sort by</option>
+                    <option value="name-asc">Name (A-Z)</option>
+                    <option value="name-desc">Name (Z-A)</option>
+                    <option value="price-low">Price (Low to High)</option>
+                    <option value="price-high">Price (High to Low)</option>
+                </select>
+            </div>
+        </div>
+        
         <!-- Filter Buttons -->
         <div class="gallery-filters">
             <button class="filter-btn active" data-filter="all">All Items</button>
@@ -93,150 +136,552 @@
             <button class="filter-btn" data-filter="3d" id="filter-3d">3D Models</button>
         </div>
         
+        <!-- Results Counter -->
+        <div class="results-counter">
+            <span id="resultsCount">0</span> items found
+        </div>
+        
         <div class="gallery-container">
-            <div class="gallery-item" data-category="living">
-                <a href="product-details.html?id=1">
+            <!-- Modern Product Card 1 -->
+            <div class="product-card" data-category="living" data-product-id="1">
+                <div class="product-image">
                     <img src="image/toa-heftiba-FV3GConVSss-unsplash.webp" alt="Comfortable Sofa" loading="lazy">
-                </a>
-                <h3>Comfortable Sofa</h3>
-                <p class="price">₹41,500</p>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="1">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="1">Add to Cart</button>
+                    </div>
+                    <div class="product-badge">New</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Comfortable Sofa</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-count">(24)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹41,500</span>
+                        <span class="original-price">₹49,900</span>
+                        <span class="discount">-17%</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=1" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="1">♡</button>
+                    </div>
+                </div>
             </div>
             
-            <div class="gallery-item" data-category="living">
-                <a href="product-details.html?id=2">
+            <!-- Modern Product Card 2 -->
+            <div class="product-card" data-category="living" data-product-id="2">
+                <div class="product-image">
                     <img src="image/becca-tapert-dO3qTKxwik0-unsplash.webp" alt="Modern Armchair" loading="lazy">
-                </a>
-                <h3>Modern Armchair</h3>
-                <p class="price">₹20,750</p>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="2">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="2">Add to Cart</button>
+                    </div>
+                    <div class="product-badge sale">Sale</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Modern Armchair</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-count">(18)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹20,750</span>
+                        <span class="original-price">₹25,000</span>
+                        <span class="discount">-17%</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=2" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="2">♡</button>
+                    </div>
+                </div>
             </div>
             
-            <div class="gallery-item" data-category="living">
-                <a href="product-details.html?id=3">
+            <!-- Modern Product Card 3 -->
+            <div class="product-card" data-category="living" data-product-id="3">
+                <div class="product-image">
                     <img src="image/christopher-jolly-GqbU78bdJFM-unsplash.webp" alt="Wooden Coffee Table" loading="lazy">
-                </a>
-                <h3>Wooden Coffee Table</h3>
-                <p class="price">₹12,450</p>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="3">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="3">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Wooden Coffee Table</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-count">(31)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹12,450</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=3" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="3">♡</button>
+                    </div>
+                </div>
             </div>
             
-            <div class="gallery-item" data-category="dining">
-                <a href="product-details.html?id=4">
+            <!-- Modern Product Card 4 -->
+            <div class="product-card" data-category="dining" data-product-id="4">
+                <div class="product-image">
                     <img src="image/davide-cantelli-ajisKc2uuFk-unsplash.webp" alt="Dining Table" loading="lazy">
-                </a>
-                <h3>Dining Table</h3>
-                <p class="price">₹33,200</p>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="4">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="4">Add to Cart</button>
+                    </div>
+                    <div class="product-badge hot">Hot</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Dining Table</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-count">(27)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹33,200</span>
+                        <span class="original-price">₹39,800</span>
+                        <span class="discount">-17%</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=4" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="4">♡</button>
+                    </div>
+                </div>
             </div>
             
-            <div class="gallery-item" data-category="living">
-                <a href="product-details.html?id=5">
+            <!-- Modern Product Card 5 -->
+            <div class="product-card" data-category="living" data-product-id="5">
+                <div class="product-image">
                     <img src="image/denys-striyeshyn-wJ7yGwz2-00-unsplash.webp" alt="Bookshelf" loading="lazy">
-                </a>
-                <h3>Bookshelf</h3>
-                <p class="price">₹16,600</p>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="5">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="5">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Bookshelf</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-count">(15)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹16,600</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=5" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="5">♡</button>
+                    </div>
+                </div>
             </div>
             
-            <div class="gallery-item" data-category="bedroom">
-                <a href="product-details.html?id=6">
+            <!-- Modern Product Card 6 -->
+            <div class="product-card" data-category="bedroom" data-product-id="6">
+                <div class="product-image">
                     <img src="image/hutomo-abrianto-X5BWooeO4Cw-unsplash.webp" alt="Queen Size Bed" loading="lazy">
-                </a>
-                <h3>Queen Size Bed</h3>
-                <p class="price">₹49,800</p>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="6">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="6">Add to Cart</button>
+                    </div>
+                    <div class="product-badge">New</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Queen Size Bed</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-count">(42)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹49,800</span>
+                        <span class="original-price">₹59,900</span>
+                        <span class="discount">-17%</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=6" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="6">♡</button>
+                    </div>
+                </div>
             </div>
             
-            <div class="gallery-item" data-category="office">
-                <a href="product-details.html?id=7">
+            <!-- Modern Product Card 7 -->
+            <div class="product-card" data-category="office" data-product-id="7">
+                <div class="product-image">
                     <img src="image/inside-weather-Uxqlfigh6oE-unsplash.webp" alt="Office Chair" loading="lazy">
-                </a>
-                <h3>Office Chair</h3>
-                <p class="price">₹10,790</p>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="7">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="7">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Office Chair</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-count">(19)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹10,790</span>
+                        <span class="original-price">₹12,900</span>
+                        <span class="discount">-16%</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=7" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="7">♡</button>
+                    </div>
+                </div>
             </div>
             
-            <div class="gallery-item" data-category="living">
-                <a href="product-details.html?id=8">
+            <!-- Modern Product Card 8 -->
+            <div class="product-card" data-category="living" data-product-id="8">
+                <div class="product-image">
                     <img src="image/kari-shea-AMyjxxLEHU4-unsplash.webp" alt="Side Table" loading="lazy">
-                </a>
-                <h3>Side Table</h3>
-                <p class="price">₹7,470</p>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="8">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="8">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Side Table</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-count">(12)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹7,470</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=8" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="8">♡</button>
+                    </div>
+                </div>
             </div>
             
-            <div class="gallery-item" data-category="bedroom">
-                <a href="product-details.html?id=9">
+            <!-- Modern Product Card 9 -->
+            <div class="product-card" data-category="bedroom" data-product-id="9">
+                <div class="product-image">
                     <img src="image/kari-shea-ItMggD0EguY-unsplash.webp" alt="Dresser" loading="lazy">
-                </a>
-                <h3>Dresser</h3>
-                <p class="price">₹29,050</p>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="9">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="9">Add to Cart</button>
+                    </div>
+                    <div class="product-badge sale">Sale</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Dresser</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-count">(23)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹29,050</span>
+                        <span class="original-price">₹34,800</span>
+                        <span class="discount">-17%</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=9" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="9">♡</button>
+                    </div>
+                </div>
             </div>
             
-            <div class="gallery-item" data-category="dining">
-                <a href="product-details.html?id=10">
+            <!-- Modern Product Card 10 -->
+            <div class="product-card" data-category="dining" data-product-id="10">
+                <div class="product-image">
                     <img src="image/kari-shea-tOVmshavtoo-unsplash.webp" alt="Bar Stool" loading="lazy">
-                </a>
-                <h3>Bar Stool</h3>
-                <p class="price">₹6,640</p>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="10">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="10">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Bar Stool</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-count">(8)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹6,640</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=10" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="10">♡</button>
+                    </div>
+                </div>
             </div>
             
-            <div class="gallery-item" data-category="living">
-                <a href="product-details.html?id=11">
+            <!-- Modern Product Card 11 -->
+            <div class="product-card" data-category="living" data-product-id="11">
+                <div class="product-image">
                     <img src="image/kirill-9uH-hM0VwPg-unsplash.webp" alt="L-shaped Sofa" loading="lazy">
-                </a>
-                <h3>L-shaped Sofa</h3>
-                <p class="price">₹74,700</p>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="11">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="11">Add to Cart</button>
+                    </div>
+                    <div class="product-badge hot">Hot</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">L-shaped Sofa</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-count">(38)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹74,700</span>
+                        <span class="original-price">₹89,900</span>
+                        <span class="discount">-17%</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=11" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="11">♡</button>
+                    </div>
+                </div>
             </div>
             
-            <div class="gallery-item" data-category="living">
-                <a href="product-details.html?id=12">
+            <!-- Modern Product Card 12 -->
+            <div class="product-card" data-category="living" data-product-id="12">
+                <div class="product-image">
                     <img src="image/olena-bohovyk-gxKL334bUK4-unsplash.webp" alt="Accent Chair" loading="lazy">
-                </a>
-                <h3>Accent Chair</h3>
-                <p class="price">₹16,600</p>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="12">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="12">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Accent Chair</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-count">(16)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹16,600</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=12" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="12">♡</button>
+                    </div>
+                </div>
             </div>
-            <div class="gallery-item gallery-item-3d" data-category="3d" id="gallery-3d-1">
-                <model-viewer src="3d models/no_43.glb" alt="3D Model: Modern Sofa" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:220px;border-radius:1.2rem;box-shadow:0 2px 12px #ffe5c1aa;margin-bottom:1rem;"></model-viewer>
-                <h3>Office Chair</h3>
-                <p class="price">₹10,790</p>
-                <a href="product-details.html?id=101" class="view-detail-btn">View Details</a>
+            <!-- Modern 3D Product Card 1 -->
+            <div class="product-card product-card-3d" data-category="3d" data-product-id="101">
+                <div class="product-image">
+                    <model-viewer src="3d models/no_43.glb" alt="3D Model: Modern Sofa" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr"></model-viewer>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="101">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="101">Add to Cart</button>
+                        <button class="view-in-room-btn" data-product-id="101" data-model-src="3d models/no_43.glb">View in Room</button>
+                    </div>
+                    <div class="product-badge">3D</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Modern Office Chair</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-count">(15)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹10,790</span>
+                        <span class="original-price">₹12,900</span>
+                        <span class="discount">-16%</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=101" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="101">♡</button>
+                    </div>
+                </div>
             </div>
-            <div class="gallery-item gallery-item-3d" data-category="3d" id="gallery-3d-2">
-                <model-viewer src="3d models/sofa_chair.glb" alt="3D Model: Sofa Chair" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:220px;border-radius:1.2rem;box-shadow:0 2px 12px #ffe5c1aa;margin-bottom:1rem;"></model-viewer>
-                <h3>Sofa Chair</h3>
-                <p class="price">₹15,000</p>
-                <a href="product-details.html?id=102" class="view-detail-btn">View Details</a>
+
+            <!-- Modern 3D Product Card 2 -->
+            <div class="product-card product-card-3d" data-category="3d" data-product-id="102">
+                <div class="product-image">
+                    <model-viewer src="3d models/sofa_chair.glb" alt="3D Model: Sofa Chair" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr"></model-viewer>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="102">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="102">Add to Cart</button>
+                        <button class="view-in-room-btn" data-product-id="102" data-model-src="3d models/sofa_chair.glb">View in Room</button>
+                    </div>
+                    <div class="product-badge hot">Hot</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Sofa Chair</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-count">(22)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹15,000</span>
+                        <span class="original-price">₹18,000</span>
+                        <span class="discount">-17%</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=102" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="102">♡</button>
+                    </div>
+                </div>
             </div>
-            <div class="gallery-item gallery-item-3d" data-category="3d" id="gallery-3d-3">
-                <model-viewer src="3d models/low_poly_modern_sofa_free_model.glb" alt="3D Model: Low Poly Modern Sofa" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:220px;border-radius:1.2rem;box-shadow:0 2px 12px #ffe5c1aa;margin-bottom:1rem;"></model-viewer>
-                <h3>Low Poly Modern Sofa</h3>
-                <p class="price">₹6,000</p>
-                <a href="product-details.html?id=103" class="view-detail-btn">View Details</a>
+
+            <!-- Modern 3D Product Card 3 -->
+            <div class="product-card product-card-3d" data-category="3d" data-product-id="103">
+                <div class="product-image">
+                    <model-viewer src="3d models/low_poly_modern_sofa_free_model.glb" alt="3D Model: Low Poly Modern Sofa" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr"></model-viewer>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="103">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="103">Add to Cart</button>
+                        <button class="view-in-room-btn" data-product-id="103" data-model-src="3d models/low_poly_modern_sofa_free_model.glb">View in Room</button>
+                    </div>
+                    <div class="product-badge sale">Sale</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Low Poly Modern Sofa</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-count">(8)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹6,000</span>
+                        <span class="original-price">₹7,200</span>
+                        <span class="discount">-17%</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=103" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="103">♡</button>
+                    </div>
+                </div>
             </div>
-            <div class="gallery-item gallery-item-3d" data-category="3d" id="gallery-3d-4">
-                <model-viewer src="3d models/old_sofa_free.glb" alt="3D Model: Old Sofa" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:220px;border-radius:1.2rem;box-shadow:0 2px 12px #ffe5c1aa;margin-bottom:1rem;"></model-viewer>
-                <h3>Old Sofa</h3>
-                <p class="price">₹12,000</p>
-                <a href="product-details.html?id=104" class="view-detail-btn">View Details</a>
+
+            <!-- Modern 3D Product Card 4 -->
+            <div class="product-card product-card-3d" data-category="3d" data-product-id="104">
+                <div class="product-image">
+                    <model-viewer src="3d models/old_sofa_free.glb" alt="3D Model: Old Sofa" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr"></model-viewer>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="104">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="104">Add to Cart</button>
+                        <button class="view-in-room-btn" data-product-id="104" data-model-src="3d models/old_sofa_free.glb">View in Room</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Vintage Sofa</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-count">(11)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹12,000</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=104" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="104">♡</button>
+                    </div>
+                </div>
             </div>
-            <!-- Add more image-based furniture as needed -->
-            <div class="gallery-item gallery-item-3d" data-category="3d" id="gallery-3d-5">
-                <model-viewer src="3d models/free_leather_sofa_stool.glb" alt="3D Model: Leather Sofa Stool" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:220px;border-radius:1.2rem;box-shadow:0 2px 12px #ffe5c1aa;margin-bottom:1rem;"></model-viewer>
-                <h3>Leather Sofa Stool</h3>
-                <p class="price">₹3,200</p>
-                <a href="product-details.html?id=105" class="view-detail-btn">View Details</a>
+
+            <!-- Modern 3D Product Card 5 -->
+            <div class="product-card product-card-3d" data-category="3d" data-product-id="105">
+                <div class="product-image">
+                    <model-viewer src="3d models/free_leather_sofa_stool.glb" alt="3D Model: Leather Sofa Stool" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr"></model-viewer>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="105">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="105">Add to Cart</button>
+                        <button class="view-in-room-btn" data-product-id="105" data-model-src="3d models/free_leather_sofa_stool.glb">View in Room</button>
+                    </div>
+                    <div class="product-badge">New</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Leather Sofa Stool</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-count">(6)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹3,200</span>
+                        <span class="original-price">₹3,800</span>
+                        <span class="discount">-16%</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=105" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="105">♡</button>
+                    </div>
+                </div>
             </div>
-            <div class="gallery-item gallery-item-3d" data-category="3d" id="gallery-3d-6">
-                <model-viewer src="3d models/white_chair.glb" alt="3D Model: White Chair" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:220px;border-radius:1.2rem;box-shadow:0 2px 12px #ffe5c1aa;margin-bottom:1rem;"></model-viewer>
-                <h3>White Chair</h3>
-                <p class="price">₹4,500</p>
-                <a href="product-details.html?id=106" class="view-detail-btn">View Details</a>
+
+            <!-- Modern 3D Product Card 6 -->
+            <div class="product-card product-card-3d" data-category="3d" data-product-id="106">
+                <div class="product-image">
+                    <model-viewer src="3d models/white_chair.glb" alt="3D Model: White Chair" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr"></model-viewer>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="106">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="106">Add to Cart</button>
+                        <button class="view-in-room-btn" data-product-id="106" data-model-src="3d models/white_chair.glb">View in Room</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">White Chair</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-count">(9)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹4,500</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=106" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="106">♡</button>
+                    </div>
+                </div>
             </div>
-            <div class="gallery-item gallery-item-3d" data-category="3d" id="gallery-3d-7">
-                <model-viewer src="3d models/simple_modern_chair_free_model.glb" alt="3D Model: Simple Modern Chair" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:220px;border-radius:1.2rem;box-shadow:0 2px 12px #ffe5c1aa;margin-bottom:1rem;"></model-viewer>
-                <h3>Simple Modern Chair</h3>
-                <p class="price">₹2,800</p>
-                <a href="product-details.html?id=107" class="view-detail-btn">View Details</a>
+
+            <!-- Modern 3D Product Card 7 -->
+            <div class="product-card product-card-3d" data-category="3d" data-product-id="107">
+                <div class="product-image">
+                    <model-viewer src="3d models/simple_modern_chair_free_model.glb" alt="3D Model: Simple Modern Chair" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr"></model-viewer>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="107">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="107">Add to Cart</button>
+                        <button class="view-in-room-btn" data-product-id="107" data-model-src="3d models/simple_modern_chair_free_model.glb">View in Room</button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Simple Modern Chair</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★☆</span>
+                        <span class="rating-count">(7)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹2,800</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=107" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="107">♡</button>
+                    </div>
+                </div>
             </div>
-            <div class="gallery-item gallery-item-3d" data-category="3d" id="gallery-3d-8">
-                <model-viewer src="3d models/table_mr_ft.glb" alt="3D Model: Modern Table" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:220px;border-radius:1.2rem;box-shadow:0 2px 12px #ffe5c1aa;margin-bottom:1rem;"></model-viewer>
-                <h3>Modern Table</h3>
-                <p class="price">₹5,200</p>
-                <a href="product-details.html?id=108" class="view-detail-btn">View Details</a>
+
+            <!-- Modern 3D Product Card 8 -->
+            <div class="product-card product-card-3d" data-category="3d" data-product-id="108">
+                <div class="product-image">
+                    <model-viewer src="3d models/table_mr_ft.glb" alt="3D Model: Modern Table" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr"></model-viewer>
+                    <div class="product-overlay">
+                        <button class="quick-view-btn" data-product-id="108">Quick View</button>
+                        <button class="add-to-cart-btn" data-product-id="108">Add to Cart</button>
+                        <button class="view-in-room-btn" data-product-id="108" data-model-src="3d models/table_mr_ft.glb">View in Room</button>
+                    </div>
+                    <div class="product-badge hot">Hot</div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Modern Table</h3>
+                    <div class="product-rating">
+                        <span class="stars">★★★★★</span>
+                        <span class="rating-count">(13)</span>
+                    </div>
+                    <div class="product-price">
+                        <span class="current-price">₹5,200</span>
+                        <span class="original-price">₹6,200</span>
+                        <span class="discount">-16%</span>
+                    </div>
+                    <div class="product-actions">
+                        <a href="product-details.html?id=108" class="view-details-btn">View Details</a>
+                        <button class="wishlist-btn" data-product-id="108">♡</button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -329,10 +774,39 @@
             </div>
         </div>
     </footer>
+    
+    <!-- Cart Popup Modal -->
+    <div id="cartPopupOverlay" class="cart-popup-overlay">
+        <div class="cart-popup">
+            <div class="cart-popup-header">
+                <h3>🛒 Your Cart</h3>
+                <button id="closeCartBtn" class="close-cart-btn">&times;</button>
+            </div>
+            <div id="cartItemsContainer" class="cart-items-container">
+                <!-- Cart items will be dynamically loaded here -->
+            </div>
+            <div class="cart-popup-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cartTotalPrice" class="cart-total-price">₹0</span>
+                </div>
+                <div class="cart-actions">
+                    <button id="continueShoppingBtn" class="cart-btn secondary">Continue Shopping</button>
+                    <button id="proceedToCheckoutBtn" class="cart-btn primary">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+
         
     <script src="js/app.js"></script>
     <script src="js/gallery.js"></script>
     <script src="js/chatbot.js"></script>
+    <script src="js/cart-popup.js"></script>
+    
+
+
     <!-- Add model-viewer script for 3D support -->
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <script>

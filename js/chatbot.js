@@ -623,51 +623,51 @@ Keep responses concise and helpful (max 150 words). If you don't know something 
         
         // Product inquiries
         if (message.includes('product') || message.includes('furniture') || message.includes('sofa') || message.includes('chair') || message.includes('table') || message.includes('bed')) {
-            return `We offer a wide range of furniture across ${websiteData.products.categories.join(', ')} categories. Our featured products include ${websiteData.products.featured.slice(0, 3).join(', ')}. You can browse our complete collection in the gallery section. Would you like to know about specific products or categories?`;
+            return `We offer a wide range of furniture across ${websiteData.products.categories.join(', ')} categories.\n\nOur featured products include:\n• ${websiteData.products.featured.slice(0, 3).join('\n• ')}\n\nYou can browse our complete collection in the gallery section. Would you like to know about specific products or categories?`;
         }
         
         // Pricing inquiries
         if (message.includes('price') || message.includes('cost') || message.includes('₹') || message.includes('rupee')) {
-            return `Our furniture prices range from ₹6,640 for bar stools to ₹74,700 for premium L-shaped sofas. All prices are clearly displayed on our product pages. We also offer financing options for larger purchases.`;
+            return `Our furniture prices range from ₹6,640 for bar stools to ₹74,700 for premium L-shaped sofas.\n\nAll prices are clearly displayed on our product pages.\n\nWe also offer financing options for larger purchases.`;
         }
         
         // Shipping inquiries
         if (message.includes('shipping') || message.includes('delivery')) {
-            return websiteData.policies.shipping + " For specific delivery times, please contact us with your location.";
+            return `${websiteData.policies.shipping}\n\nFor specific delivery times, please contact us with your location.`;
         }
         
         // Return inquiries
         if (message.includes('return') || message.includes('refund') || message.includes('exchange')) {
-            return websiteData.policies.returns + " Please ensure items are in original packaging for returns.";
+            return `${websiteData.policies.returns}\n\nPlease ensure items are in original packaging for returns.`;
         }
         
         // Payment inquiries
         if (message.includes('payment') || message.includes('pay') || message.includes('card') || message.includes('upi')) {
-            return websiteData.policies.payment + " We also offer EMI options for qualifying purchases.";
+            return `${websiteData.policies.payment}\n\nWe also offer EMI options for qualifying purchases.`;
         }
         
         // Contact inquiries
         if (message.includes('contact') || message.includes('phone') || message.includes('email') || message.includes('call')) {
-            return `You can reach us at ${websiteData.contact.phone} or email us at ${websiteData.contact.email}. Our support team is available ${websiteData.contact.hours}.`;
+            return `You can reach us at:\n\n📞 Phone: ${websiteData.contact.phone}\n📧 Email: ${websiteData.contact.email}\n\nOur support team is available ${websiteData.contact.hours}.`;
         }
         
         // Warranty inquiries
         if (message.includes('warranty') || message.includes('guarantee')) {
-            return websiteData.policies.warranty + " We stand behind the quality of all our products.";
+            return `${websiteData.policies.warranty}\n\nWe stand behind the quality of all our products.`;
         }
         
         // 3D model inquiries
         if (message.includes('3d') || message.includes('model') || message.includes('ar') || message.includes('augmented reality')) {
-            return "We offer interactive 3D models for many of our furniture pieces! You can view them in augmented reality to see how they look in your space. Check out our 3D Models category in the gallery.";
+            return "We offer interactive 3D models for many of our furniture pieces!\n\nYou can view them in augmented reality to see how they look in your space.\n\nCheck out our 3D Models category in the gallery.";
         }
         
         // General greeting
         if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
-            return "Hello! I'm here to help you with any questions about our furniture collection, orders, or policies. What would you like to know?";
+            return "Hello! 👋\n\nI'm here to help you with any questions about our furniture collection, orders, or policies.\n\nWhat would you like to know?";
         }
         
         // Default response
-        return "Thank you for your question! For specific inquiries about orders or complex issues, please call us at " + websiteData.contact.phone + " or visit our FAQ page. How else can I assist you today?";
+        return "Thank you for your question!\n\nFor specific inquiries about orders or complex issues, please call us at " + websiteData.contact.phone + " or visit our FAQ page.\n\nHow else can I assist you today?";
     }
 
     // Send message

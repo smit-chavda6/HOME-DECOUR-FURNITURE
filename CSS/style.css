@@ -30,6 +30,9 @@
 /* Import Chatbot Styles */
 @import url('chatbot.css');
 
+/* Import Loading Animations */
+@import url('loading.css');
+
 /* Modern Welcome Section Styles */
 .modern-welcome-section {
   position: relative;

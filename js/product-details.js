@@ -349,6 +349,18 @@ const loadProductDetails = () => {
             cachedElements.mediaContainer.innerHTML = `
                 <model-viewer id="product-model-viewer" src="${modelSrc}" alt="${product.name}" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:320px;border-radius:1.2rem;box-shadow:0 2px 12px #ffe5c1aa;margin-bottom:1rem;"></model-viewer>
             `;
+        
+        // Show AR button for 3D models
+        const viewInRoomBtn = document.getElementById('view-in-room-btn');
+        if (viewInRoomBtn) {
+            viewInRoomBtn.style.display = 'flex';
+            viewInRoomBtn.innerHTML = `
+                <svg viewBox="0 0 24 24" style="margin-right: 8px;">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                View in Room
+            `;
+        }
         } else {
             // Standard product: show image and zoom button
             cachedElements.mediaContainer.innerHTML = `
@@ -401,6 +413,11 @@ const loadProductDetails = () => {
         
         // Initialize cart functionality
         initializeCartFunctionality();
+        
+        // Initialize AR functionality for 3D models
+        if ([101,102,103,104,105,106,107,108].includes(productId)) {
+            initializeARFunctionality();
+        }
         
     } else {
         // Handle invalid product ID
@@ -626,7 +643,9 @@ const handleCartClick = (e) => {
         // Show cart modal with current cart data
         showCartModal(currentCart);
     } else {
-        showNotification('Your cart is empty', 'info');
+        if (window.cartPopupSystem) {
+            window.cartPopupSystem.showNotification('Your cart is empty', 'info');
+        }
     }
 };
 
@@ -879,7 +898,6 @@ const showCartModal = (cartItems) => {
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartCount();
             closeModal();
-            showNotification('Item removed from cart');
         });
     });
     
@@ -890,7 +908,6 @@ const showCartModal = (cartItems) => {
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartCount();
             closeModal();
-            showNotification('Cart cleared');
         });
     }
     
@@ -898,7 +915,6 @@ const showCartModal = (cartItems) => {
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', () => {
             closeModal();
-            showNotification('Redirecting to checkout...', 'info');
             setTimeout(() => {
                 window.location.href = 'checkout.html';
             }, 1000);
@@ -912,53 +928,365 @@ const showCartModal = (cartItems) => {
     }, 100);
 };
 
-// Notification function
-const showNotification = (message, type = 'success') => {
-    // Remove any existing notification first
-    const existing = document.querySelector('.notification');
-    if (existing) {
-        existing.style.transform = 'translateX(100%)';
+
+
+// Initialize AR functionality for 3D models
+const initializeARFunctionality = () => {
+    const viewInRoomBtn = document.getElementById('view-in-room-btn');
+    const modelViewer = document.getElementById('product-model-viewer');
+    
+    if (viewInRoomBtn && modelViewer) {
+        viewInRoomBtn.addEventListener('click', () => {
+            // Check if AR is supported
+            if (modelViewer.canActivateAR) {
+                // Show AR instructions
+                showARInstructions();
+                
+                // Activate AR after a short delay
         setTimeout(() => {
-            if (document.body.contains(existing)) {
-                document.body.removeChild(existing);
+                    modelViewer.activateAR();
+                }, 1000);
+            } else {
+                // Fallback for devices without AR support
+                showARNotSupported();
             }
-        }, 300);
+        });
     }
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    const bgColor = type === 'success' ? '#27ae60' : type === 'info' ? '#3498db' : '#e74c3c';
-    notification.style.cssText = `
-        position: fixed;
-        top: 100px;
-        right: 20px;
-        background: ${bgColor};
-        color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        z-index: 10000;
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
-        font-weight: 500;
-    `;
-    document.body.appendChild(notification);
-    // Animate in
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-    // Remove after 3 seconds
-    setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => {
-            if (document.body.contains(notification)) {
-                document.body.removeChild(notification);
-            }
-        }, 300);
-    }, 3000);
 };
 
-// Optimized loading
+// Show AR instructions modal
+const showARInstructions = () => {
+    const modal = document.createElement('div');
+    modal.className = 'ar-instructions-modal';
+    modal.innerHTML = `
+        <div class="ar-instructions-overlay"></div>
+        <div class="ar-instructions-content">
+            <div class="ar-instructions-header">
+                <h3>View in Your Room</h3>
+                <button class="ar-instructions-close">&times;</button>
+            </div>
+            <div class="ar-instructions-body">
+                <div class="ar-instruction-step">
+                    <div class="ar-step-number">1</div>
+                    <div class="ar-step-text">
+                        <strong>Point your camera</strong> at a flat surface like a floor or table
+                    </div>
+                </div>
+                <div class="ar-instruction-step">
+                    <div class="ar-step-number">2</div>
+                    <div class="ar-step-text">
+                        <strong>Tap to place</strong> the furniture in your space
+                    </div>
+                </div>
+                <div class="ar-instruction-step">
+                    <div class="ar-step-number">3</div>
+                    <div class="ar-step-text">
+                        <strong>Move around</strong> to see how it looks from different angles
+                    </div>
+                </div>
+                <div class="ar-instruction-step">
+                    <div class="ar-step-number">4</div>
+                    <div class="ar-step-text">
+                        <strong>Resize and rotate</strong> to find the perfect fit
+                    </div>
+                </div>
+            </div>
+            <div class="ar-instructions-footer">
+                <button class="ar-start-btn">Start AR Experience</button>
+            </div>
+        </div>
+    `;
+    
+    // Add styles
+    const styles = document.createElement('style');
+    styles.textContent = `
+        .ar-instructions-modal {
+        position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ar-instructions-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .ar-instructions-content {
+            position: relative;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: arModalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes arModalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .ar-instructions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .ar-instructions-header h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .ar-instructions-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .ar-instructions-close:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .ar-instruction-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .ar-step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .ar-step-text {
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        
+        .ar-step-text strong {
+            color: #667eea;
+        }
+        
+        .ar-instructions-footer {
+            margin-top: 25px;
+            text-align: center;
+        }
+        
+        .ar-start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .ar-start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .ar-instructions-content {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            .ar-instructions-header h3 {
+                font-size: 1.3rem;
+            }
+            
+            .ar-instruction-step {
+                padding: 12px;
+                gap: 12px;
+            }
+            
+            .ar-step-number {
+                width: 25px;
+                height: 25px;
+                font-size: 1rem;
+            }
+        }
+    `;
+    document.head.appendChild(styles);
+    
+    // Event listeners
+    const closeBtn = modal.querySelector('.ar-instructions-close');
+    const overlay = modal.querySelector('.ar-instructions-overlay');
+    const startBtn = modal.querySelector('.ar-start-btn');
+    
+    const closeModal = () => {
+        modal.remove();
+        // Activate AR after closing instructions
+        const modelViewer = document.getElementById('product-model-viewer');
+        if (modelViewer && modelViewer.canActivateAR) {
+            modelViewer.activateAR();
+        }
+    };
+    
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+    startBtn.addEventListener('click', closeModal);
+    
+    document.body.appendChild(modal);
+};
+
+// Show AR not supported message
+const showARNotSupported = () => {
+    const modal = document.createElement('div');
+    modal.className = 'ar-not-supported-modal';
+    modal.innerHTML = `
+        <div class="ar-not-supported-overlay"></div>
+        <div class="ar-not-supported-content">
+            <div class="ar-not-supported-icon">
+                <svg viewBox="0 0 24 24" width="60" height="60">
+                    <circle cx="12" cy="12" r="10" fill="#f8d7da"/>
+                    <path d="M12 8v4m0 4h.01" stroke="#721c24" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h3>AR Not Available</h3>
+            <p>Your device doesn't support AR features. You can still view the 3D model using the controls below.</p>
+            <button class="ar-not-supported-close">Got it</button>
+        </div>
+    `;
+    
+    // Add styles
+    const styles = document.createElement('style');
+    styles.textContent = `
+        .ar-not-supported-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ar-not-supported-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .ar-not-supported-content {
+            position: relative;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: arModalSlideIn 0.3s ease-out;
+        }
+        
+        .ar-not-supported-icon {
+            margin-bottom: 20px;
+        }
+        
+        .ar-not-supported-content h3 {
+            margin: 0 0 15px 0;
+            color: #721c24;
+            font-size: 1.5rem;
+        }
+        
+        .ar-not-supported-content p {
+            margin: 0 0 25px 0;
+            color: #6c757d;
+            line-height: 1.5;
+        }
+        
+        .ar-not-supported-close {
+            background: #721c24;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .ar-not-supported-close:hover {
+            background: #5a1a1a;
+            transform: translateY(-1px);
+        }
+    `;
+    document.head.appendChild(styles);
+    
+    // Event listeners
+    const closeBtn = modal.querySelector('.ar-not-supported-close');
+    const overlay = modal.querySelector('.ar-not-supported-overlay');
+    
+    const closeModal = () => modal.remove();
+    
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+    
+    document.body.appendChild(modal);
+};
+
+// Initialize product details
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         loadProductDetails();

@@ -15,11 +15,103 @@
     <link rel="manifest" href="manifest.json">
     
     <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/loading.css">
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     
     <style>
+        /* Notification Popup Styles */
+        .notification-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            max-width: 400px;
+            background: linear-gradient(135deg, #fff8f3 0%, #ffe5c1 100%);
+            border: 2px solid #D2691E;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 
+                0 10px 30px rgba(139, 69, 19, 0.3),
+                0 0 0 1px rgba(210, 105, 30, 0.2);
+            z-index: 10001;
+            transform: translateX(100%);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .notification-popup.show {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .notification-popup.success {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #f8fff9 0%, #e8f5e8 100%);
+        }
+
+        .notification-popup.error {
+            border-color: #dc3545;
+            background: linear-gradient(135deg, #fff8f8 0%, #ffe8e8 100%);
+        }
+
+        .notification-popup.warning {
+            border-color: #ffc107;
+            background: linear-gradient(135deg, #fffef8 0%, #fff8e8 100%);
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .notification-title {
+            font-family: 'Jost', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #8B4513;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: #8B4513;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .notification-close:hover {
+            background: rgba(139, 69, 19, 0.1);
+            transform: scale(1.1);
+        }
+
+        .notification-message {
+            font-family: 'Jost', sans-serif;
+            color: #A0522D;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .notification-icon {
+            width: 20px;
+            height: 20px;
+        }
+
         /* Checkout Page Specific Styles */
         .checkout-hero {
             background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
@@ -599,26 +691,44 @@
         </div>
     </div>
 
-    <div id="confirmation-message" class="confirmation-message" style="display:none;">
-        <h2>🎉 Order Placed Successfully!</h2>
-        <p>Thank you for your purchase. Your order has been confirmed and we'll contact you soon with delivery details.</p>
-        <p><strong>Order ID:</strong> <span id="order-id"></span></p>
-        <a href="index.html" class="back-home-btn">Continue Shopping</a>
+    <!-- Notification Popup Container -->
+    <div id="notificationContainer"></div>
+
+    <!-- Purchase Success Animation -->
+    <div class="purchase-success-overlay" id="purchaseSuccessOverlay">
+        <div class="confetti-container" id="confettiContainer"></div>
+        <div class="success-card">
+            <div class="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20,6 9,17 4,12"></polyline>
+                </svg>
+            </div>
+            <h2 class="success-title">Order Placed Successfully!</h2>
+            <p class="success-message">Thank you for your purchase. Your order has been confirmed and we'll contact you soon with delivery details.</p>
+            <div class="success-product" id="successProductName">Your Order</div>
+            <div class="success-actions">
+                <button class="success-btn primary" onclick="continueShopping()">Continue Shopping</button>
+            </div>
+        </div>
     </div>
 
     <script>
-// Redirect to login if not authenticated
-fetch('http://localhost:3001/api/check-auth', {
-  credentials: 'include'
-})
-  .then(res => res.json())
-  .then(data => {
-    if (!data.loggedIn) {
-      window.location.href = 'login.html?redirect=checkout';
-    }
+        // Redirect to login if not authenticated
+        fetch('http://localhost:3001/api/check-auth', {
+          credentials: 'include'
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (!data.loggedIn) {
+              showWarningNotification('Authentication Required', 'Please log in to complete your purchase.');
+              setTimeout(() => {
+                window.location.href = 'login.html?redirect=checkout';
+              }, 2000);
+            }
         })
         .catch(error => {
             console.log('Auth check failed, proceeding with checkout');
+            showInfoNotification('Connection Notice', 'Unable to verify authentication status. Proceeding with checkout.');
         });
 
         // Payment method selection
@@ -637,6 +747,7 @@ fetch('http://localhost:3001/api/check-auth', {
         if (cart.length === 0) {
                 orderItemsDiv.innerHTML = '<p>Your cart is empty.</p>';
                 document.getElementById('place-order-btn').disabled = true;
+                showWarningNotification('Empty Cart', 'Your shopping cart is empty. Please add some items before proceeding to checkout.');
             return;
         }
 
@@ -681,6 +792,7 @@ fetch('http://localhost:3001/api/check-auth', {
             
             // Validate form
         if (!this.checkValidity()) {
+            showErrorNotification('Form Validation Error', 'Please fill in all required fields correctly before proceeding.');
             this.reportValidity();
             return;
         }
@@ -688,17 +800,30 @@ fetch('http://localhost:3001/api/check-auth', {
             // Check if payment method is selected
             const selectedPayment = document.querySelector('.payment-method.selected');
             if (!selectedPayment) {
-                alert('Please select a payment method');
+                showErrorNotification('Payment Method Required', 'Please select a payment method to continue with your order.');
                 return;
             }
             
             // Generate order ID
             const orderId = 'ORD' + Date.now() + Math.random().toString(36).substr(2, 5).toUpperCase();
             
-            // Show confirmation
-            document.querySelector('.checkout-container').style.display = 'none';
-            document.getElementById('order-id').textContent = orderId;
-            document.getElementById('confirmation-message').style.display = 'block';
+            // Get product names from cart for success message
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const productNames = cart.map(item => item.name).join(', ');
+            const displayName = productNames.length > 30 ? productNames.substring(0, 30) + '...' : productNames;
+            
+            // Show success notification
+            showSuccessNotification('Order Processing', 'Your order is being processed. Please wait...', 3000);
+            
+            // Show success animation
+            if (typeof showPurchaseSuccess === 'function') {
+                showPurchaseSuccess(displayName || 'Your Order');
+            } else {
+                // Fallback if success animation is not loaded
+                document.querySelector('.checkout-container').style.display = 'none';
+                document.getElementById('order-id').textContent = orderId;
+                document.getElementById('confirmation-message').style.display = 'block';
+            }
             
         // Clear cart
         localStorage.removeItem('cart');
@@ -717,8 +842,13 @@ fetch('http://localhost:3001/api/check-auth', {
 
         document.getElementById('phone').addEventListener('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '').substring(0, 15);
-    });
+        });
+
+        // Show welcome notification
+        showInfoNotification('Welcome to Checkout', 'Please review your order details and fill in the shipping information.', 4000);
     </script>
     <script src="js/chatbot.js"></script>
+    <script src="js/success-animation.js"></script>
+
 </body>
 </html> 
