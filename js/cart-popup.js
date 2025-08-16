@@ -2,6 +2,14 @@
 class CartPopupSystem {
     constructor() {
         this.cart = JSON.parse(localStorage.getItem('cart')) || [];
+        console.log('Cart popup system initialized with cart:', this.cart);
+        
+        // Debug: Check if there are any items with price 0
+        const zeroPriceItems = this.cart.filter(item => item.price === 0 || item.price === '0');
+        if (zeroPriceItems.length > 0) {
+            console.warn('Found items with zero price in cart:', zeroPriceItems);
+        }
+        
         this.init();
     }
 
@@ -104,7 +112,10 @@ class CartPopupSystem {
 
     // Setup add to cart buttons
     setupAddToCartButtons() {
-        const addToCartButtons = document.querySelectorAll('[data-add-to-cart="true"], .add-to-cart-btn, #add-to-cart-btn');
+        const addToCartButtons = document.querySelectorAll('[data-add-to-cart="true"], .add-to-cart-btn');
+        
+        // Don't add listeners to #add-to-cart-btn on product details page
+        // as it has its own handler
         
         addToCartButtons.forEach(button => {
             button.addEventListener('click', (e) => {
@@ -114,46 +125,33 @@ class CartPopupSystem {
         });
     }
 
-    // Add item to cart
+    // Add item to cart (for gallery and other pages, not product details)
     addToCart(button) {
         let productId, productName, productPrice, productImage;
 
-        // Handle different button types
-        if (button.id === 'add-to-cart-btn') {
-            // Product details page
-            const productTitle = document.querySelector('.product-title');
-            const productPriceElement = document.querySelector('.product-price .current-price');
-            const productImageElement = document.querySelector('.product-image img');
+        // Gallery or other pages
+        productId = button.getAttribute('data-product-id') || this.generateProductId();
+        const productCard = button.closest('.product-card');
+        
+        if (productCard) {
+            const titleElement = productCard.querySelector('.product-title');
+            const priceElement = productCard.querySelector('.current-price');
+            const imageElement = productCard.querySelector('img');
+            const modelViewer = productCard.querySelector('model-viewer');
             
-            productId = this.generateProductId();
-            productName = productTitle ? productTitle.textContent : 'Product';
-            productPrice = productPriceElement ? parseFloat(productPriceElement.textContent.replace(/[^\d]/g, '')) : 0;
-            productImage = productImageElement ? productImageElement.src : '';
-        } else {
-            // Gallery or other pages
-            productId = button.getAttribute('data-product-id') || this.generateProductId();
-            const productCard = button.closest('.product-card');
+            productName = titleElement ? titleElement.textContent : 'Product';
+            productPrice = priceElement ? parseFloat(priceElement.textContent.replace(/[^\d.]/g, '')) : 0;
             
-            if (productCard) {
-                const titleElement = productCard.querySelector('.product-title');
-                const priceElement = productCard.querySelector('.current-price');
-                const imageElement = productCard.querySelector('img');
-                const modelViewer = productCard.querySelector('model-viewer');
-                
-                productName = titleElement ? titleElement.textContent : 'Product';
-                productPrice = priceElement ? parseFloat(priceElement.textContent.replace(/[^\d]/g, '')) : 0;
-                
-                if (imageElement) {
-                    productImage = imageElement.src;
-                } else if (modelViewer) {
-                    // For 3D models, get the specific 3D model image
-                    productImage = this.get3DModelImage(productCard);
-                }
-            } else {
-                productName = button.textContent.replace('Add to Cart', '').trim() || 'Product';
-                productPrice = 0;
-                productImage = '';
+            if (imageElement) {
+                productImage = imageElement.src;
+            } else if (modelViewer) {
+                // For 3D models, get the specific 3D model image
+                productImage = this.get3DModelImage(productCard);
             }
+        } else {
+            productName = button.textContent.replace('Add to Cart', '').trim() || 'Product';
+            productPrice = 0;
+            productImage = '';
         }
 
         // Check if item already exists in cart
@@ -187,9 +185,41 @@ class CartPopupSystem {
         }, 150);
     }
 
+    // Add item to cart from product details page
+    addToCartFromProductDetails(product) {
+        console.log('Adding product to cart from details:', product);
+        
+        // Check if item already exists in cart
+        const existingItemIndex = this.cart.findIndex(item => item.id === product.id);
+        
+        if (existingItemIndex > -1) {
+            this.cart[existingItemIndex].quantity += 1;
+            console.log('Updated existing item quantity');
+        } else {
+            this.cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image,
+                quantity: 1
+            });
+            console.log('Added new item to cart');
+        }
+
+        // Save to localStorage
+        localStorage.setItem('cart', JSON.stringify(this.cart));
+        
+        // Update cart count
+        this.updateCartCount();
+        
+        console.log('Current cart:', this.cart);
+    }
+
     // Generate unique product ID
     generateProductId() {
-        return Date.now() + Math.random().toString(36).substr(2, 9);
+        const id = Date.now() + Math.random().toString(36).substr(2, 9);
+        console.log('Generated product ID:', id);
+        return id;
     }
 
     // Get 3D model image for cart items
@@ -296,7 +326,7 @@ class CartPopupSystem {
                 const clearCartBtn = document.createElement('button');
                 clearCartBtn.className = 'clear-cart-btn';
                 clearCartBtn.textContent = 'Clear Cart';
-                clearCartBtn.onclick = () => this.clearCart();
+                clearCartBtn.addEventListener('click', () => this.clearCart());
                 cartItemsContainer.appendChild(clearCartBtn);
                 
                 // Enable checkout button when cart has items
@@ -340,27 +370,52 @@ class CartPopupSystem {
                      style="${is3DModel ? 'background: #f8f8f8; border-radius: 8px;' : ''}">
                 <div class="cart-item-details">
                     <div class="cart-item-name">${item.name}</div>
-                    <div class="cart-item-price">₹${item.price.toLocaleString('en-IN')}</div>
+                    <div class="cart-item-price">₹${(typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0).toLocaleString('en-IN')}</div>
                     <div class="cart-item-quantity">
-                        <button class="quantity-btn" onclick="cartPopupSystem.updateQuantity('${item.id}', -1)">-</button>
+                        <button class="quantity-btn decrease-btn" data-product-id="${item.id}">-</button>
                         <span class="quantity-display">${item.quantity}</span>
-                        <button class="quantity-btn" onclick="cartPopupSystem.updateQuantity('${item.id}', 1)">+</button>
+                        <button class="quantity-btn increase-btn" data-product-id="${item.id}">+</button>
                     </div>
                 </div>
-                <button class="remove-item-btn" onclick="cartPopupSystem.removeFromCart('${item.id}')">Remove</button>
+                <button class="remove-item-btn" data-product-id="${item.id}">Remove</button>
             `;
+            
+            // Add event listeners for quantity buttons
+            const decreaseBtn = cartItem.querySelector('.decrease-btn');
+            const increaseBtn = cartItem.querySelector('.increase-btn');
+            const removeBtn = cartItem.querySelector('.remove-item-btn');
+            
+            decreaseBtn.addEventListener('click', () => {
+                this.updateQuantity(item.id, -1);
+            });
+            
+            increaseBtn.addEventListener('click', () => {
+                this.updateQuantity(item.id, 1);
+            });
+            
+            removeBtn.addEventListener('click', () => {
+                this.removeFromCart(item.id);
+            });
+            
             container.appendChild(cartItem);
         });
     }
 
     // Update cart total
     updateCartTotal(totalElement) {
-        const total = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const total = this.cart.reduce((sum, item) => {
+            // Ensure price is a number and handle edge cases
+            const price = typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0;
+            const quantity = item.quantity || 1;
+            return sum + (price * quantity);
+        }, 0);
         totalElement.textContent = `₹${total.toLocaleString('en-IN')}`;
     }
 
     // Update quantity
     updateQuantity(productId, change) {
+        console.log('Updating quantity for product:', productId, 'change:', change);
+        
         const itemIndex = this.cart.findIndex(item => item.id === productId);
         
         if (itemIndex > -1) {
@@ -368,6 +423,7 @@ class CartPopupSystem {
             
             if (this.cart[itemIndex].quantity <= 0) {
                 this.cart.splice(itemIndex, 1);
+                console.log('Item removed due to zero quantity');
             }
             
             localStorage.setItem('cart', JSON.stringify(this.cart));
@@ -381,7 +437,15 @@ class CartPopupSystem {
                     this.hideCartPopup();
                     this.showNotification('Cart is now empty', 'info');
                 } else {
-                    this.showCartPopup();
+                    // Refresh the cart popup content
+                    const cartItemsContainer = document.getElementById('cartItemsContainer');
+                    const cartTotalPrice = document.getElementById('cartTotalPrice');
+                    if (cartItemsContainer) {
+                        this.renderCartItems(cartItemsContainer);
+                    }
+                    if (cartTotalPrice) {
+                        this.updateCartTotal(cartTotalPrice);
+                    }
                 }
             }
         }
@@ -389,8 +453,15 @@ class CartPopupSystem {
 
     // Remove from cart
     removeFromCart(productId) {
+        console.log('Attempting to remove item with ID:', productId);
+        console.log('Current cart before removal:', this.cart);
+        
         const removedItem = this.cart.find(item => item.id === productId);
+        console.log('Item to remove:', removedItem);
+        
         this.cart = this.cart.filter(item => item.id !== productId);
+        console.log('Cart after removal:', this.cart);
+        
         localStorage.setItem('cart', JSON.stringify(this.cart));
         this.updateCartCount();
         
@@ -402,7 +473,15 @@ class CartPopupSystem {
                 this.hideCartPopup();
                 this.showNotification('Cart is now empty', 'info');
             } else {
-                this.showCartPopup();
+                // Refresh the cart popup content
+                const cartItemsContainer = document.getElementById('cartItemsContainer');
+                const cartTotalPrice = document.getElementById('cartTotalPrice');
+                if (cartItemsContainer) {
+                    this.renderCartItems(cartItemsContainer);
+                }
+                if (cartTotalPrice) {
+                    this.updateCartTotal(cartTotalPrice);
+                }
             }
         }
         
@@ -418,6 +497,15 @@ class CartPopupSystem {
         this.updateCartCount();
         this.hideCartPopup();
         this.showNotification('Cart cleared successfully', 'success');
+        console.log('Cart cleared');
+    }
+    
+    // Reset cart completely (for debugging)
+    resetCart() {
+        this.cart = [];
+        localStorage.removeItem('cart');
+        this.updateCartCount();
+        console.log('Cart completely reset');
     }
 
     // Show notification
@@ -492,4 +580,14 @@ class CartPopupSystem {
 // Initialize cart popup system when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.cartPopupSystem = new CartPopupSystem();
-}); 
+    console.log('Cart popup system initialized globally:', window.cartPopupSystem);
+});
+
+// Fallback: Initialize immediately if DOM is already loaded
+if (document.readyState === 'loading') {
+    // DOM is still loading, wait for DOMContentLoaded
+} else {
+    // DOM is already loaded, initialize immediately
+    window.cartPopupSystem = new CartPopupSystem();
+    console.log('Cart popup system initialized immediately:', window.cartPopupSystem);
+} 

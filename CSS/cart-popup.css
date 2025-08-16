@@ -220,6 +220,27 @@
     transform: scale(1.05);
 }
 
+/* Clear Cart Button */
+.clear-cart-btn {
+    background: #ff4757 !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 24px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+    margin: 10px 0 !important;
+}
+
+.clear-cart-btn:hover {
+    background: #e74c3c !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3) !important;
+}
+
+/* Cart Popup Footer */
 .cart-popup-footer {
     background: #f8f8f8;
     padding: 1.5rem;
@@ -290,26 +311,6 @@
     color: #666 !important;
     transform: none !important;
     box-shadow: none !important;
-}
-
-.clear-cart-btn {
-    background: #e74c3c;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 1rem;
-    width: 100%;
-}
-
-.clear-cart-btn:hover {
-    background: #c0392b;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
 }
 
 .empty-cart-message {

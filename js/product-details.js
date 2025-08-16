@@ -292,22 +292,62 @@ const productData = {
     }
 };
 
-// Cart functionality
-let cart = [];
+// Product details functionality
 let currentProduct = null;
 
-// Initialize cart from localStorage
-const initializeCart = () => {
-    cart = JSON.parse(localStorage.getItem('cart')) || [];
-    console.log('Cart initialized:', cart);
+// Test cart functionality
+const testCartFunctionality = () => {
+    console.log('Testing cart functionality...');
+    
+    if (window.cartPopupSystem) {
+        console.log('✅ Cart popup system is available');
+        console.log('✅ Cart methods available:', Object.getOwnPropertyNames(Object.getPrototypeOf(window.cartPopupSystem)));
+        console.log('✅ Current cart:', window.cartPopupSystem.cart);
+        
+        // Test remove functionality
+        if (typeof window.cartPopupSystem.removeFromCart === 'function') {
+            console.log('✅ Remove function is available');
+        } else {
+            console.error('❌ Remove function is missing');
+        }
+        
+        // Test update quantity functionality
+        if (typeof window.cartPopupSystem.updateQuantity === 'function') {
+            console.log('✅ Update quantity function is available');
+        } else {
+            console.error('❌ Update quantity function is missing');
+        }
+    } else {
+        console.error('❌ Cart popup system is not available');
+    }
+};
+
+// Initialize product details
+const initializeProductDetails = () => {
+    // Cart is now handled by the main cart popup system
+    console.log('Product details initialized');
+    
+    // Debug: Check if cart popup system is available
+    if (window.cartPopupSystem) {
+        console.log('Cart popup system is available:', window.cartPopupSystem);
+    } else {
+        console.warn('Cart popup system not found, initializing...');
+        // Wait a bit for the cart popup system to load
+        setTimeout(() => {
+            if (!window.cartPopupSystem) {
+                console.error('Cart popup system still not available, creating new instance');
+                window.cartPopupSystem = new CartPopupSystem();
+            }
+        }, 100);
+    }
 };
 
 // Cache DOM elements for better performance
 let cachedElements = {};
 
 const loadProductDetails = () => {
-    // Initialize cart first
-    initializeCart();
+    // Initialize product details
+    initializeProductDetails();
     
     // Get product ID from URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -318,9 +358,16 @@ const loadProductDetails = () => {
     
     if (product) {
         currentProduct = { ...product, id: productId };
+        console.log('Current product set:', currentProduct);
         
         // Update page title
         document.title = `${product.name} - HOME DECOR FURNITURE`;
+        
+        // Update breadcrumb navigation
+        const breadcrumbProductName = document.getElementById('breadcrumb-product-name');
+        if (breadcrumbProductName) {
+            breadcrumbProductName.textContent = product.name;
+        }
         
         // Cache DOM elements
         if (!cachedElements.productName) {
@@ -413,6 +460,14 @@ const loadProductDetails = () => {
         
         // Initialize cart functionality
         initializeCartFunctionality();
+        
+        // Initialize tab functionality
+        initializeTabFunctionality();
+        
+        // Test cart functionality
+        setTimeout(() => {
+            testCartFunctionality();
+        }, 1000);
         
         // Initialize AR functionality for 3D models
         if ([101,102,103,104,105,106,107,108].includes(productId)) {
@@ -538,7 +593,7 @@ const initializeCartFunctionality = () => {
     }
 };
 
-// Add to cart function
+// Add to cart function - Use the main cart popup system (same as gallery)
 const addToCart = () => {
     if (!currentProduct) {
         console.error('No product loaded');
@@ -551,384 +606,109 @@ const addToCart = () => {
         return;
     }
     
-    // Get current cart from localStorage to ensure we have the latest data
-    let currentCart = JSON.parse(localStorage.getItem('cart')) || [];
-    
     const quantity = parseInt(quantityInput.value) || 1;
-    const existingItemIndex = currentCart.findIndex(item => item.id === currentProduct.id);
     
-    if (existingItemIndex > -1) {
-        // Update existing item quantity
-        currentCart[existingItemIndex].quantity += quantity;
+    console.log('Adding to cart:', currentProduct);
+    console.log('Quantity:', quantity);
+    
+    // Use the main cart popup system to add items (same as gallery)
+    if (window.cartPopupSystem) {
+        // Add the item multiple times based on quantity
+        for (let i = 0; i < quantity; i++) {
+            window.cartPopupSystem.addToCartFromProductDetails(currentProduct);
+        }
+        
+        // Show success message using the same notification system as gallery
+        window.cartPopupSystem.showNotification(`${currentProduct.name} added to cart!`, 'success');
+        
+        // Add button animation (same as gallery)
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
+        if (addToCartBtn) {
+            addToCartBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                addToCartBtn.style.transform = 'scale(1)';
+            }, 150);
+        }
     } else {
-        // Add new item to cart
-        currentCart.push({
-            id: currentProduct.id,
-            name: currentProduct.name,
-            price: currentProduct.price,
-            image: currentProduct.image,
-            quantity: quantity
-        });
-    }
-    
-    // Update the cart variable
-    cart = currentCart;
-    
-    // Save to localStorage
-    localStorage.setItem('cart', JSON.stringify(cart));
-    
-    // Update cart count
-    updateCartCount();
-    
-    // Show success message
-    showCartSuccess();
-    
-    // Add button animation
-    const addToCartBtn = document.getElementById('add-to-cart-btn');
-    if (addToCartBtn) {
-        addToCartBtn.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            addToCartBtn.style.transform = 'scale(1)';
-        }, 150);
+        // Fallback to direct localStorage manipulation (same logic as gallery)
+        let currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existingItemIndex = currentCart.findIndex(item => item.id === currentProduct.id);
+        
+        if (existingItemIndex > -1) {
+            currentCart[existingItemIndex].quantity += quantity;
+        } else {
+            currentCart.push({
+                id: currentProduct.id,
+                name: currentProduct.name,
+                price: currentProduct.price,
+                image: currentProduct.image,
+                quantity: quantity
+            });
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(currentCart));
+        
+        // Update cart count
+        updateCartCount();
+        
+        // Show success message
+        showCartSuccess();
     }
     
     console.log('Item added to cart:', currentProduct.name, 'Quantity:', quantity);
-    console.log('Updated cart:', cart);
 };
 
-// Update cart count
+// Update cart count - Use the main cart popup system
 const updateCartCount = () => {
-    const cartCountElements = document.querySelectorAll('.cart-count');
-    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-    
-    cartCountElements.forEach(element => {
-        element.textContent = totalItems;
-        element.style.display = totalItems > 0 ? 'flex' : 'none';
-    });
-};
-
-// Show cart success message
-const showCartSuccess = () => {
-    const successMessage = document.getElementById('cart-success');
-    if (successMessage) {
-        successMessage.classList.add('show');
-        
-        setTimeout(() => {
-            successMessage.classList.remove('show');
-        }, 3000);
-    }
-};
-
-// Cart icon click handler
-const initializeCartIcon = () => {
-    const cartIcon = document.querySelector('.cart-icon');
-    if (cartIcon) {
-        // Remove any existing event listeners to prevent conflicts
-        cartIcon.removeEventListener('click', handleCartClick);
-        cartIcon.addEventListener('click', handleCartClick);
-    }
-};
-
-// Handle cart icon click
-const handleCartClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Get the latest cart data from localStorage
-    const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
-    
-    console.log('Cart clicked, current cart:', currentCart);
-    
-    if (currentCart.length > 0) {
-        // Show cart modal with current cart data
-        showCartModal(currentCart);
+    if (window.cartPopupSystem) {
+        window.cartPopupSystem.updateCartCount();
     } else {
-        if (window.cartPopupSystem) {
-            window.cartPopupSystem.showNotification('Your cart is empty', 'info');
-        }
+        // Fallback to direct calculation
+        const cartCountElements = document.querySelectorAll('.cart-count');
+        const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+        const totalItems = currentCart.reduce((total, item) => total + (item.quantity || 0), 0);
+        
+        cartCountElements.forEach(element => {
+            element.textContent = totalItems;
+            element.style.display = totalItems > 0 ? 'flex' : 'none';
+        });
     }
 };
 
-// Show cart modal function
-const showCartModal = (cartItems) => {
-    // Remove existing modal if any
-    const existingModal = document.querySelector('.cart-modal');
-    if (existingModal) {
-        existingModal.remove();
-    }
+// Show cart success message - Now handled by main cart system
+const showCartSuccess = () => {
+    // Success messages are now handled by the main cart popup system
+    console.log('Cart success - handled by main cart system');
+};
+
+// Cart icon click handler - Use the main cart popup system
+const initializeCartIcon = () => {
+    // The cart icon functionality is handled by the main cart popup system
+    // No need to add additional event listeners here
+};
+
+// Initialize tab functionality
+const initializeTabFunctionality = () => {
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
     
-    const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    
-    const modal = document.createElement('div');
-    modal.className = 'cart-modal';
-    modal.setAttribute('role', 'dialog');
-    modal.setAttribute('aria-modal', 'true');
-    modal.setAttribute('tabindex', '-1');
-    modal.innerHTML = `
-        <div class="cart-modal-overlay"></div>
-        <div class="cart-modal-content">
-            <div class="cart-modal-header">
-                <h3>Shopping Cart</h3>
-                <button class="cart-modal-close">&times;</button>
-            </div>
-            <div class="cart-modal-body">
-                ${cartItems.map(item => {
-                    // Always use the latest image from productData if available
-                    const latest = productData[item.id];
-                    const imgSrc = latest && latest.image ? latest.image : item.image;
-                    return `
-                    <div class="cart-item">
-                        <img src="${imgSrc}" alt="${item.name}" loading="lazy">
-                        <div class="cart-item-details">
-                            <h4>${item.name}</h4>
-                            <p>₹${item.price.toLocaleString('en-IN')} x ${item.quantity}</p>
-                            <p class="cart-item-total">₹${(item.price * item.quantity).toLocaleString('en-IN')}</p>
-                        </div>
-                        <button class="cart-item-remove" data-id="${item.id}">&times;</button>
-                    </div>
-                `; 
-                }).join('')}
-            </div>
-            <div class="cart-modal-footer">
-                                        <div class="cart-total">
-                            <strong>Total: ₹${total.toLocaleString('en-IN')}</strong>
-                        </div>
-                <div class="cart-actions">
-                    <button class="btn-secondary cart-clear">Clear Cart</button>
-                    <button class="btn-primary cart-checkout">Checkout</button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    // Add modal styles if not already present
-    if (!document.querySelector('#cart-modal-styles')) {
-        const styles = document.createElement('style');
-        styles.id = 'cart-modal-styles';
-        styles.textContent = `
-            .cart-modal {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: 10000;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetTab = button.getAttribute('data-tab');
             
-            .cart-modal-overlay {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                backdrop-filter: blur(5px);
-            }
+            // Remove active class from all buttons and panes
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabPanes.forEach(pane => pane.classList.remove('active'));
             
-            .cart-modal-content {
-                background: white;
-                border-radius: 20px;
-                max-width: 500px;
-                width: 90%;
-                max-height: 80vh;
-                overflow: hidden;
-                position: relative;
-                z-index: 1;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            // Add active class to clicked button and corresponding pane
+            button.classList.add('active');
+            const targetPane = document.getElementById(`${targetTab}-tab`);
+            if (targetPane) {
+                targetPane.classList.add('active');
             }
-            
-            .cart-modal-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 20px;
-                border-bottom: 1px solid #f0f0f0;
-            }
-            
-            .cart-modal-header h3 {
-                margin: 0;
-                color: #2c3e50;
-                font-family: 'Jost', sans-serif;
-            }
-            
-            .cart-modal-close {
-                background: none;
-                border: none;
-                font-size: 1.5rem;
-                cursor: pointer;
-                color: #666;
-                padding: 5px;
-            }
-            
-            .cart-modal-body {
-                padding: 20px;
-                max-height: 400px;
-                overflow-y: auto;
-            }
-            
-            .cart-item {
-                display: flex;
-                align-items: center;
-                gap: 15px;
-                padding: 15px 0;
-                border-bottom: 1px solid #f0f0f0;
-            }
-            
-            .cart-item:last-child {
-                border-bottom: none;
-            }
-            
-            .cart-item img {
-                width: 60px;
-                height: 60px;
-                object-fit: cover;
-                border-radius: 10px;
-            }
-            
-            .cart-item-details {
-                flex: 1;
-            }
-            
-            .cart-item-details h4 {
-                margin: 0 0 5px 0;
-                color: #2c3e50;
-                font-size: 1rem;
-            }
-            
-            .cart-item-details p {
-                margin: 0;
-                color: #666;
-                font-size: 0.9rem;
-            }
-            
-            .cart-item-total {
-                font-weight: 600;
-                color: #8B4513 !important;
-            }
-            
-            .cart-item-remove {
-                background: #ff4757;
-                color: white;
-                border: none;
-                border-radius: 50%;
-                width: 30px;
-                height: 30px;
-                cursor: pointer;
-                font-size: 1.2rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            
-            .cart-modal-footer {
-                padding: 20px;
-                border-top: 1px solid #f0f0f0;
-                background: #f8f9fa;
-            }
-            
-            .cart-total {
-                text-align: right;
-                margin-bottom: 15px;
-                font-size: 1.2rem;
-                color: #2c3e50;
-            }
-            
-            .cart-actions {
-                display: flex;
-                gap: 10px;
-                justify-content: flex-end;
-            }
-            
-            .cart-actions button {
-                padding: 10px 20px;
-                border-radius: 25px;
-                border: none;
-                cursor: pointer;
-                font-weight: 600;
-                transition: all 0.3s ease;
-            }
-            
-            .cart-clear {
-                background: #6c757d;
-                color: white;
-            }
-            
-            .cart-checkout {
-                background: linear-gradient(135deg, #8B4513, #A0522D);
-                color: white;
-            }
-            
-            @media (max-width: 768px) {
-                .cart-modal-content {
-                    width: 95%;
-                    margin: 20px;
-                }
-                
-                .cart-actions {
-                    flex-direction: column;
-                }
-            }
-        `;
-        document.head.appendChild(styles);
-    }
-    
-    // Modal event listeners
-    const closeBtn = modal.querySelector('.cart-modal-close');
-    const overlay = modal.querySelector('.cart-modal-overlay');
-    const clearBtn = modal.querySelector('.cart-clear');
-    const checkoutBtn = modal.querySelector('.cart-checkout');
-    const removeBtns = modal.querySelectorAll('.cart-item-remove');
-    
-    // Close modal
-    const closeModal = () => modal.remove();
-    
-    closeBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', closeModal);
-    
-    // Remove item
-    removeBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const itemId = parseInt(btn.getAttribute('data-id'));
-            cart = cart.filter(item => item.id !== itemId);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount();
-            closeModal();
         });
     });
-    
-    // Clear cart
-    if (clearBtn) {
-        clearBtn.addEventListener('click', () => {
-            cart = [];
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount();
-            closeModal();
-        });
-    }
-    
-    // Checkout
-    if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', () => {
-            closeModal();
-            setTimeout(() => {
-                window.location.href = 'checkout.html';
-            }, 1000);
-        });
-    }
-    
-    // Focus trap for modal
-    setTimeout(() => {
-        const focusable = modal.querySelectorAll('button, [tabindex]:not([tabindex="-1"])');
-        if (focusable.length) focusable[0].focus();
-    }, 100);
 };
-
-
 
 // Initialize AR functionality for 3D models
 const initializeARFunctionality = () => {
@@ -1289,10 +1069,18 @@ const showARNotSupported = () => {
 // Initialize product details
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
+        // Ensure cart popup system is initialized
+        if (!window.cartPopupSystem) {
+            window.cartPopupSystem = new CartPopupSystem();
+        }
         loadProductDetails();
         initializeCartIcon();
     });
 } else {
+    // Ensure cart popup system is initialized
+    if (!window.cartPopupSystem) {
+        window.cartPopupSystem = new CartPopupSystem();
+    }
     loadProductDetails();
     initializeCartIcon();
 } 
