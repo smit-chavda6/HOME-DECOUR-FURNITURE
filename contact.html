@@ -93,7 +93,7 @@
     </nav>
 
     <!-- Advanced Hero Section -->
-    <section class="contact-hero-adv" style="position:relative;overflow:hidden;padding:100px 0 60px 0;background:linear-gradient(120deg,#fff8f3 60%,#ffe5c1 100%);text-align:center;box-shadow:0 8px 32px rgba(139,69,19,0.08);">
+    <section class="contact-hero-adv" style="position:relative;overflow:hidden;padding:100px 0 60px 0;text-align:center;">
       <div class="hero-bg-shape" style="position:absolute;top:-120px;left:50%;width:900px;height:400px;background:radial-gradient(ellipse at center,#ffe5c1 0%,#fff8f3 70%,transparent 100%);opacity:0.5;filter:blur(40px);transform:translateX(-50%) scale(1.1);z-index:0;pointer-events:none;"></div>
       <div class="hero-bg-float" style="position:absolute;top:30px;left:10%;width:120px;height:120px;background:linear-gradient(135deg,#ffe5c1 60%,#fff8f3 100%);border-radius:50%;filter:blur(18px);opacity:0.35;z-index:1;animation:floatHero1 7s ease-in-out infinite alternate;"></div>
       <div class="hero-bg-float" style="position:absolute;bottom:10px;right:12%;width:90px;height:90px;background:linear-gradient(135deg,#fff8f3 60%,#ffe5c1 100%);border-radius:50%;filter:blur(14px);opacity:0.28;z-index:1;animation:floatHero2 8s ease-in-out infinite alternate;"></div>
@@ -195,10 +195,11 @@
             
             <div class="contact-cards-container">
                 <div class="contact-cards-grid">
+                    <!-- Showroom Card -->
                     <div class="contact-card showroom-card animate-on-scroll slide-in-left">
-                        <div class="card-glow"></div>
+                        <div class="card-glow" aria-hidden="true"></div>
                         <div class="card-header">
-                            <div class="card-icon">
+                            <div class="card-icon" aria-hidden="true">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                                     <circle cx="12" cy="10" r="3"/>
@@ -211,22 +212,19 @@
                         </div>
                         <div class="card-content">
                             <div class="contact-info-item">
-                                <div class="info-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                                        <circle cx="12" cy="10" r="3"/>
-                                    </svg>
-                                </div>
+                                
                                 <div class="info-details">
                                     <h4>Our Location</h4>
-                                    <p>123 Furniture Street</p>
-                                    <p>Ahmedabad, Gujarat 380001</p>
-                                    <p>India</p>
+                                    <address>
+                                        <p>123 Furniture Street</p>
+                                        <p>Ahmedabad, Gujarat 380001</p>
+                                        <p>India</p>
+                                    </address>
                                 </div>
                             </div>
                             <div class="card-actions">
-                                <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="action-btn primary-btn">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="action-btn primary-btn" aria-label="Get directions to our showroom">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                                         <circle cx="12" cy="10" r="3"/>
                                     </svg>
@@ -234,13 +232,14 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="card-pattern"></div>
+                        <div class="card-pattern" aria-hidden="true"></div>
                     </div>
-                    
+
+                    <!-- Phone Card -->
                     <div class="contact-card phone-card animate-on-scroll slide-in-left" style="transition-delay: 0.2s;">
-                        <div class="card-glow"></div>
+                        <div class="card-glow" aria-hidden="true"></div>
                         <div class="card-header">
-                            <div class="card-icon">
+                            <div class="card-icon" aria-hidden="true">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                                 </svg>
@@ -252,11 +251,7 @@
                         </div>
                         <div class="card-content">
                             <div class="contact-info-item">
-                                <div class="info-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                                    </svg>
-                                </div>
+
                                 <div class="info-details">
                                     <h4>Phone Number</h4>
                                     <p class="phone-number">+91 9825000000</p>
@@ -264,21 +259,22 @@
                                 </div>
                             </div>
                             <div class="card-actions">
-                                <a href="tel:+919825000000" class="action-btn secondary-btn">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <a href="tel:+919825000000" class="action-btn secondary-btn" aria-label="Call us"> 
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
                                     </svg>
                                     <span>Call Now</span>
                                 </a>
                             </div>
                         </div>
-                        <div class="card-pattern"></div>
+                        <div class="card-pattern" aria-hidden="true"></div>
                     </div>
-                    
+
+                    <!-- Email Card -->
                     <div class="contact-card email-card animate-on-scroll slide-in-left" style="transition-delay: 0.4s;">
-                        <div class="card-glow"></div>
+                        <div class="card-glow" aria-hidden="true"></div>
                         <div class="card-header">
-                            <div class="card-icon">
+                            <div class="card-icon" aria-hidden="true">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                                     <polyline points="22,6 12,13 2,6"/>
@@ -290,13 +286,7 @@
                             </div>
                         </div>
                         <div class="card-content">
-                            <div class="contact-info-item">
-                                <div class="info-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                                        <polyline points="22,6 12,13 2,6"/>
-                                    </svg>
-                                </div>
+                            <div class="contact-info-item">     
                                 <div class="info-details">
                                     <h4>Email Address</h4>
                                     <p class="email-address">support@homedecorfurniturestore.com</p>
@@ -304,8 +294,8 @@
                                 </div>
                             </div>
                             <div class="card-actions">
-                                <a href="mailto:support@homedecorfurniturestore.com" class="action-btn tertiary-btn">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <a href="mailto:support@homedecorfurniturestore.com" class="action-btn tertiary-btn" aria-label="Send email"> 
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                                         <polyline points="22,6 12,13 2,6"/>
                                     </svg>
@@ -313,7 +303,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="card-pattern"></div>
+                        <div class="card-pattern" aria-hidden="true"></div>
                     </div>
                 </div>
             </div>
@@ -1368,7 +1358,7 @@
                 let isValid = true;
                 inputs.forEach(input => {
                     validateField(input);
-                    if (input.hasAttribute('required') && !input.value) {
+                    if (input.hasAttribute('required') && !!input.value) {
                         isValid = false;
                     }
                 });
@@ -1387,7 +1377,7 @@
                     <span class="btn-text">Sending...</span>
                     <span class="btn-icon">
                         <svg class="loading-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83L12 8.17l4.24 4.24 2.83-2.83L12 2z"/>
                         </svg>
                     </span>
                 `;

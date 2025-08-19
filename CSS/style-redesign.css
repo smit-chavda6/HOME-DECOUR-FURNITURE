@@ -13,7 +13,13 @@
 }
 
 body {
+    margin: 0;
     background-color: var(--color-background);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
     color: var(--color-text);
     font-family: var(--font-secondary);
 }
@@ -80,7 +86,7 @@ h2.section-title::after {
 .hero-content {
     position: relative;
     z-index: 2;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.4); /* Darker overlay for improved text contrast */
     padding: 2rem 3rem;
     border: 1px solid rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(5px);
@@ -89,7 +95,7 @@ h2.section-title::after {
 .hero-content h1 {
     font-size: 4rem;
     color: var(--color-white);
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); /* Increased shadow for better contrast */
     margin: 0;
 }
 
@@ -494,6 +500,59 @@ h2.section-title::after {
     font-weight: 400 !important;
 }
 
+/* --- Fix: remove unwanted gaps between adjacent sections (collapsing margins) */
+section {
+	margin: 0; /* remove any user-agent/author margins that create gaps */
+	box-sizing: border-box;
+}
+
+/* Ensure no extra gap between consecutive sections */
+section + section {
+	margin-top: 0;
+}
+
+/* Headings can create collapsing margins — keep them tight inside sections */
+.section-title,
+.about-text h2,
+.history-section h2,
+.values-section h2,
+.mission-content h2,
+.sustainability-content h2,
+.team-section h2,
+.achievements-section h2,
+.testimonials-section h2 {
+	margin-top: 0;
+	margin-bottom: 1.25rem;
+}
+
+/* Provide consistent vertical spacing on sections (adjust as needed) */
+.about-section,
+.history-section,
+.values-section,
+.mission-section,
+.sustainability-section,
+.achievements-section,
+.testimonials-section,
+.team-section {
+	padding-top: 60px;
+	padding-bottom: 60px;
+}
+
+/* Small screens keep spacing reasonable */
+@media (max-width: 768px) {
+	.about-section,
+	.history-section,
+	.values-section,
+	.mission-section,
+	.sustainability-section,
+	.achievements-section,
+	.testimonials-section,
+	.team-section {
+		padding-top: 40px;
+		padding-bottom: 40px;
+	}
+}
+
 /* --- Responsive Design --- */
 @media (max-width: 992px) {
     .about-content { grid-template-columns: 1fr; }
@@ -516,4 +575,4 @@ h2.section-title::after {
     }
     .timeline-content { width: calc(100% - 50px); margin-left: 50px; }
     .team-grid, .achievements-grid, .sustainability-stats { grid-template-columns: 1fr; }
-} 
+}

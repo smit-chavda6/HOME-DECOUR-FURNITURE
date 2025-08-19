@@ -5,8 +5,9 @@
     background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
     color: white;
     text-align: center;
-    padding: 120px 20px 80px;
-    margin-top: 80px;
+    padding: 120px 20px 60px; /* tightened bottom padding to reduce gap */
+    margin-top: 0;
+    margin-bottom: 0; /* ensure no extra bottom margin creates a gap */
     position: relative;
     overflow: hidden;
 }
@@ -50,8 +51,9 @@
 
 /* About Section */
 .about-section {
-    padding: 100px 0;
+    padding: 40px 0 80px; /* reduced top padding to remove gap while keeping inner spacing */
     background: white;
+    margin-top: 0;
 }
 
 .about-content {
@@ -648,13 +650,13 @@
         font-size: 2rem;
     }
     
-    .hero-content p {
-        font-size: 1.1rem;
+    .hero-content h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 10px; /* reduced to avoid large gap between hero and next section */
+        font-family: 'Jost', sans-serif;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
-    
-    .about-text h2,
-    .mission-content h2,
-    .sustainability-content h2,
     .values-section h2,
     .team-section h2,
     .history-section h2,
@@ -678,4 +680,4 @@
     .achievement-number {
         font-size: 2.5rem;
     }
-} 
+}

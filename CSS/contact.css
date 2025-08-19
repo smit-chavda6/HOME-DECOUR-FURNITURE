@@ -16,7 +16,7 @@
     --border-light: #f3e6d6;
     --border-medium: #ffd7a0;
     --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    --gradient-background: linear-gradient(120deg, var(--background-light) 60%, var(--background-warm) 100%);
+    /* --gradient-background: linear-gradient(120deg, var(--background-light) 60%, var(--background-warm) 100%); */
     --gradient-warm: linear-gradient(135deg, var(--background-light), var(--background-warm));
     --font-primary: 'Jost', sans-serif;
     --font-secondary: 'Dancing Script', cursive;
@@ -554,6 +554,10 @@ body {
 .card-content {
     width: 100%;
     margin-bottom: 25px;
+    /* allow the content area to expand so actions can stick to the bottom */
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
 }
 
 .contact-info-item {
@@ -777,9 +781,10 @@ body {
 .input-wrapper input:focus,
 .input-wrapper textarea:focus,
 .input-wrapper select:focus {
+    /* Keep a subtle elevation on focus, but avoid a large painted ring to prevent double visuals */
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.1), 0 4px 12px var(--shadow-light);
+    box-shadow: 0 4px 12px var(--shadow-light);
     transform: translateY(-2px);
 }
 
@@ -1247,6 +1252,16 @@ body {
 .input-wrapper input:focus,
 .input-wrapper textarea:focus,
 .input-wrapper select:focus {
+    /* Default: subtle elevation on focus (handled above). Use :focus-visible to show visible outlines for keyboard users. */
+    outline: none;
+}
+
+/* Accessible focus outlines for keyboard users */
+.action-btn:focus-visible,
+.submit-btn:focus-visible,
+.input-wrapper input:focus-visible,
+.input-wrapper textarea:focus-visible,
+.input-wrapper select:focus-visible {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
 }
