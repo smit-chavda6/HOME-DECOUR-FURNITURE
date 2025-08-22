@@ -759,7 +759,7 @@
                         <div class="hours-card-content">
                             <h3 class="hours-day">Saturday</h3>
                             <p class="hours-time">10:00 AM - 6:00 PM</p>
-                            <span class="hours-status open">Open Now</span>
+                            <span class="hours-status open">Open </span>
             </div>
                         <div class="hours-card-accent"></div>
         </div>
@@ -774,7 +774,7 @@
                         <div class="hours-card-content">
                             <h3 class="hours-day">Sunday</h3>
                             <p class="hours-time">11:00 AM - 5:00 PM</p>
-                            <span class="hours-status closed">Closed Today</span>
+                            <span class="hours-status closed">Closed </span>
                         </div>
                         <div class="hours-card-accent"></div>
                     </div>
@@ -1345,21 +1345,22 @@
     <script>
         // Advanced Contact Form & Business Hours - immediate init with guards
         (function() {
-            const form = document.getElementById('contact-form');
+            const form = document.getElementById('redesigned-contact-form');
             const submitBtn = document.querySelector('.submit-btn');
             const successMessage = document.getElementById('contact-success');
             
-            // Material Design Input Animation
-            const inputs = document.querySelectorAll('.input-wrapper input, .input-wrapper textarea, .input-wrapper select');
+            // Material Design Input Animation (scoped to form if present)
+            const inputs = form ? form.querySelectorAll('input, textarea, select') : document.querySelectorAll('input, textarea, select');
             
             inputs.forEach(input => {
+                if (!input || !input.parentElement) return;
                 // Handle focus events
                 input.addEventListener('focus', function() {
-                    this.parentElement.classList.add('focused');
+                    if (this.parentElement) this.parentElement.classList.add('focused');
                 });
                 
                 input.addEventListener('blur', function() {
-                    if (!this.value) {
+                    if (!this.value && this.parentElement) {
                         this.parentElement.classList.remove('focused');
                     }
                 });
@@ -1372,7 +1373,7 @@
                 // Handle select change
                 if (input.tagName === 'SELECT') {
                     input.addEventListener('change', function() {
-                        if (this.value) {
+                        if (this.value && this.parentElement) {
                             this.parentElement.classList.add('focused');
                         }
                     });
@@ -1418,7 +1419,7 @@
             }
             
             // Form submission with advanced animations
-            form.addEventListener('submit', function(e) {
+            if (form) form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 // Validate all fields
@@ -1432,9 +1433,9 @@
                 
                 if (!isValid) {
                     // Shake animation for invalid form
-                    form.classList.add('shake');
+                    if (form) form.classList.add('shake');
                     setTimeout(() => {
-                        form.classList.remove('shake');
+                        if (form) form.classList.remove('shake');
                     }, 500);
                     return;
                 }
@@ -1453,16 +1454,16 @@
                 // Simulate form submission (replace with actual form handling)
                 setTimeout(() => {
                     // Hide form and show success message
-                    form.style.display = 'none';
-                    successMessage.style.display = 'block';
+                    if (form) form.style.display = 'none';
+                    if (successMessage) successMessage.style.display = 'block';
                     
                     // Add success animation
-                    successMessage.classList.add('fade-in');
+                    if (successMessage) successMessage.classList.add('fade-in');
                     
                     // Reset form
-                    form.reset();
+                    if (form) form.reset();
                     inputs.forEach(input => {
-                        input.parentElement.classList.remove('focused', 'has-value', 'error');
+                        if (input.parentElement) input.parentElement.classList.remove('focused', 'has-value', 'error');
                     });
                     
                     // Reset button
@@ -1478,8 +1479,8 @@
                     
                     // Auto-hide success message after 5 seconds
                     setTimeout(() => {
-                        successMessage.style.display = 'none';
-                        form.style.display = 'block';
+                        if (successMessage) successMessage.style.display = 'none';
+                        if (form) form.style.display = 'block';
                     }, 5000);
                     
                 }, 2000);
