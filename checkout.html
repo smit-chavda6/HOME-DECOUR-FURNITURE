@@ -636,6 +636,37 @@
                             <span>Cash on Delivery</span>
                         </div>
                     </div>
+                    <!-- Payment simulation panels -->
+                    <div id="payment-simulations" style="margin-top:12px; display:none;">
+                        <div class="sim-panel" data-sim="upi" style="display:none;">
+                            <label>Enter UPI ID</label>
+                            <input type="text" id="upiId" placeholder="example@bank" style="padding:10px;border:1px solid #ddd;border-radius:8px;width:100%;margin-top:6px;">
+                            <button type="button" id="simulateUpiPay" class="checkout-btn" style="margin-top:12px;">Pay via UPI (Simulated)</button>
+                        </div>
+                        <div class="sim-panel" data-sim="card" style="display:none;">
+                            <label>Card Number</label>
+                            <input type="text" id="cardNumber" placeholder="4111 1111 1111 1111" style="padding:10px;border:1px solid #ddd;border-radius:8px;width:100%;margin:6px 0;">
+                            <div style="display:flex; gap:10px;">
+                                <input type="text" id="cardExpiry" placeholder="MM/YY" style="padding:10px;border:1px solid #ddd;border-radius:8px;flex:1;">
+                                <input type="text" id="cardCvv" placeholder="CVV" style="padding:10px;border:1px solid #ddd;border-radius:8px;flex:1;">
+                            </div>
+                            <button type="button" id="simulateCardPay" class="checkout-btn" style="margin-top:12px;">Pay via Card (Simulated)</button>
+                        </div>
+                        <div class="sim-panel" data-sim="netbanking" style="display:none;">
+                            <label>Select Bank</label>
+                            <select id="nbBank" style="padding:10px;border:1px solid #ddd;border-radius:8px;width:100%;margin-top:6px;">
+                                <option value="">Choose Bank</option>
+                                <option>SBI</option>
+                                <option>HDFC</option>
+                                <option>ICICI</option>
+                                <option>Axis</option>
+                            </select>
+                            <button type="button" id="simulateNbPay" class="checkout-btn" style="margin-top:12px;">Pay via NetBanking (Simulated)</button>
+                        </div>
+                        <div class="sim-panel" data-sim="cod" style="display:none;">
+                            <p style="margin:6px 0 0 0;color:#666;">Cash will be collected upon delivery.</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-section">
@@ -713,6 +744,40 @@
     </div>
 
     <script>
+        // Simple notification helpers for this page
+        function createNotification(type, title, message, duration = 3000) {
+            const container = document.getElementById('notificationContainer');
+            if (!container) return;
+            const popup = document.createElement('div');
+            popup.className = `notification-popup ${type}`;
+            popup.innerHTML = `
+                <div class="notification-header">
+                    <div class="notification-title">
+                        <svg class="notification-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            ${type === 'success' ? '<path d="M20 6L9 17l-5-5"/>' : type === 'error' ? '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>' : type === 'warning' ? '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>' : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>'}
+                        </svg>
+                        <span>${title}</span>
+                    </div>
+                    <button class="notification-close" aria-label="Close">×</button>
+                </div>
+                <p class="notification-message">${message}</p>
+            `;
+            container.appendChild(popup);
+            // show
+            requestAnimationFrame(() => popup.classList.add('show'));
+            // close handlers
+            const close = () => {
+                popup.classList.remove('show');
+                setTimeout(() => popup.remove(), 300);
+            };
+            popup.querySelector('.notification-close').addEventListener('click', close);
+            if (duration > 0) setTimeout(close, duration);
+        }
+        function showSuccessNotification(title, message, duration) { createNotification('success', title, message, duration); }
+        function showErrorNotification(title, message, duration) { createNotification('error', title, message, duration); }
+        function showWarningNotification(title, message, duration) { createNotification('warning', title, message, duration); }
+        function showInfoNotification(title, message, duration) { createNotification('info', title, message, duration); }
+
         // Redirect to login if not authenticated
         fetch('http://localhost:3001/api/check-auth', {
           credentials: 'include'
@@ -731,13 +796,21 @@
             showInfoNotification('Connection Notice', 'Unable to verify authentication status. Proceeding with checkout.');
         });
 
-        // Payment method selection
+        // Payment method selection + show simulation panels
         document.querySelectorAll('.payment-method').forEach(method => {
             method.addEventListener('click', function() {
                 document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
                 this.classList.add('selected');
+                const selected = this.getAttribute('data-method');
+                const simsRoot = document.getElementById('payment-simulations');
+                if (simsRoot) {
+                    simsRoot.style.display = 'block';
+                    simsRoot.querySelectorAll('.sim-panel').forEach(p => p.style.display = 'none');
+                    const target = simsRoot.querySelector(`.sim-panel[data-sim="${selected}"]`);
+                    if (target) target.style.display = 'block';
+                }
             });
-  });
+        });
 
     // Render order summary from localStorage cart
     function renderOrderSummary() {
@@ -812,8 +885,19 @@
             const productNames = cart.map(item => item.name).join(', ');
             const displayName = productNames.length > 30 ? productNames.substring(0, 30) + '...' : productNames;
             
-            // Show success notification
-            showSuccessNotification('Order Processing', 'Your order is being processed. Please wait...', 3000);
+            // Require simulation button click for online methods
+            const selectedMethod = selectedPayment.getAttribute('data-method');
+            const simsRoot = document.getElementById('payment-simulations');
+            const needsSim = ['upi','card','netbanking'].includes(selectedMethod);
+            const simBtn = needsSim ? (selectedMethod==='upi' ? document.getElementById('simulateUpiPay') : selectedMethod==='card' ? document.getElementById('simulateCardPay') : document.getElementById('simulateNbPay')) : null;
+            if (needsSim && simBtn && simBtn.offsetParent !== null) {
+                showInfoNotification('Payment Pending', 'Click the simulate button to mock the payment.', 3000);
+                simBtn.focus();
+                return;
+            }
+
+            // Show success notification popup
+            showSuccessNotification('Success', 'Product is successfully ordered.', 3500);
             
             // Show success animation
             if (typeof showPurchaseSuccess === 'function') {
@@ -834,6 +918,29 @@
                 cartCount.textContent = '0';
             }
         });
+
+        // Simulate payment flows
+        function completeSimulatedPayment(methodName) {
+            showSuccessNotification('Payment Successful', `${methodName} payment simulated successfully.`, 2500);
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const productNames = cart.map(item => item.name).join(', ');
+            const displayName = productNames.length > 30 ? productNames.substring(0, 30) + '...' : productNames || 'Your Order';
+            setTimeout(() => {
+                if (typeof showPurchaseSuccess === 'function') {
+                    showPurchaseSuccess(displayName);
+                }
+                localStorage.removeItem('cart');
+                const cartCount = document.querySelector('.cart-count');
+                if (cartCount) cartCount.textContent = '0';
+            }, 500);
+        }
+
+        const simulateUpi = document.getElementById('simulateUpiPay');
+        if (simulateUpi) simulateUpi.addEventListener('click', () => completeSimulatedPayment('UPI'));
+        const simulateCard = document.getElementById('simulateCardPay');
+        if (simulateCard) simulateCard.addEventListener('click', () => completeSimulatedPayment('Card'));
+        const simulateNb = document.getElementById('simulateNbPay');
+        if (simulateNb) simulateNb.addEventListener('click', () => completeSimulatedPayment('NetBanking'));
 
         // Form validation enhancements
         document.getElementById('pincode').addEventListener('input', function() {

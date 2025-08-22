@@ -328,17 +328,25 @@ const initializeProductDetails = () => {
     console.log('Product details initialized');
     
     // Debug: Check if cart popup system is available
-    if (window.cartPopupSystem) {
+    if (window.cartPopupSystem && typeof window.cartPopupSystem.init === 'function') {
+        window.cartPopupSystem.init();
         console.log('Cart popup system is available:', window.cartPopupSystem);
     } else {
         console.warn('Cart popup system not found, initializing...');
-        // Wait a bit for the cart popup system to load
-        setTimeout(() => {
-            if (!window.cartPopupSystem) {
-                console.error('Cart popup system still not available, creating new instance');
+        // Ensure singleton init
+        const ensureInit = () => {
+            if (window.cartPopupSystem && typeof window.cartPopupSystem.init === 'function') {
+                window.cartPopupSystem.init();
+            } else {
                 window.cartPopupSystem = new CartPopupSystem();
+                window.cartPopupSystem.init();
             }
-        }, 100);
+        };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', ensureInit, { once: true });
+        } else {
+            setTimeout(ensureInit, 0);
+        }
     }
 };
 
@@ -613,10 +621,15 @@ const addToCart = () => {
     
     // Use the main cart popup system to add items (same as gallery)
     if (window.cartPopupSystem) {
-        // Add the item multiple times based on quantity
+        // Add the item once with desired quantity
         for (let i = 0; i < quantity; i++) {
             window.cartPopupSystem.addToCartFromProductDetails(currentProduct);
         }
+        // Persist cart immediately and update UI
+        try {
+            localStorage.setItem('cart', JSON.stringify(window.cartPopupSystem.cart));
+        } catch (e) {}
+        window.cartPopupSystem.updateCartCount();
         
         // Show success message using the same notification system as gallery
         window.cartPopupSystem.showNotification(`${currentProduct.name} added to cart!`, 'success');

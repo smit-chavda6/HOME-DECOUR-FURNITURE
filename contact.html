@@ -789,9 +789,77 @@
                             </svg>
                             <span id="current-time">Loading...</span>
                         </div>
+                        <script>
+                            // Immediate fallback time display
+                            (function() {
+                                try {
+                                    const now = new Date();
+                                    const timeString = now.toLocaleTimeString('en-US', {
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        second: '2-digit',
+                                        hour12: true
+                                    });
+                                    const currentTimeElement = document.getElementById('current-time');
+                                    if (currentTimeElement && currentTimeElement.textContent === 'Loading...') {
+                                        currentTimeElement.textContent = timeString;
+                                    }
+                                } catch (e) {
+                                    console.log('Fallback time display error:', e);
+                                }
+                            })();
+                        </script>
                         <div class="store-status">
                             <span id="store-status" class="status-indicator">Checking...</span>
                         </div>
+                        <script>
+                            // Immediate fallback store status
+                            (function() {
+                                try {
+                                    const now = new Date();
+                                    const dayOfWeek = now.getDay();
+                                    const currentHour = now.getHours();
+                                    const currentMinute = now.getMinutes();
+                                    const currentTime = currentHour * 60 + currentMinute;
+                                    
+                                    // Define business hours (in minutes from midnight)
+                                    const hours = {
+                                        1: { open: 9 * 60, close: 20 * 60 }, // Monday
+                                        2: { open: 9 * 60, close: 20 * 60 }, // Tuesday
+                                        3: { open: 9 * 60, close: 20 * 60 }, // Wednesday
+                                        4: { open: 9 * 60, close: 20 * 60 }, // Thursday
+                                        5: { open: 9 * 60, close: 20 * 60 }, // Friday
+                                        6: { open: 10 * 60, close: 18 * 60 }, // Saturday
+                                        0: { open: 11 * 60, close: 17 * 60 }  // Sunday
+                                    };
+                                    
+                                    const todayHours = hours[dayOfWeek];
+                                    let statusText = 'CLOSED';
+                                    let statusClass = 'closed';
+                                    
+                                    if (todayHours) {
+                                        if (currentTime >= todayHours.open && currentTime < todayHours.close) {
+                                            statusText = 'OPEN NOW';
+                                            statusClass = 'open';
+                                        }
+                                    }
+                                    
+                                    const statusElement = document.getElementById('store-status');
+                                    if (statusElement && statusElement.textContent === 'Checking...') {
+                                        statusElement.textContent = statusText;
+                                        statusElement.className = `status-indicator ${statusClass}`;
+                                        
+                                        if (statusClass === 'open') {
+                                            statusElement.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+                                        } else {
+                                            statusElement.style.background = 'linear-gradient(135deg, #dc3545, #e74c3c)';
+                                        }
+                                    }
+                                } catch (e) {
+                                    console.log('Fallback store status error:', e);
+                                }
+                            })();
+                        </script>
                     </div>
                     
                     <div class="info-panel-content">
@@ -1040,6 +1108,26 @@
                 font-size: 1.2rem;
                 font-weight: 600;
                 color: #8B4513;
+                position: relative;
+            }
+            
+            .current-time-display::after {
+                content: '';
+                position: absolute;
+                right: -15px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 6px;
+                height: 6px;
+                background: #28a745;
+                border-radius: 50%;
+                animation: timePulse 2s infinite;
+                opacity: 0.7;
+            }
+            
+            @keyframes timePulse {
+                0%, 100% { opacity: 0.7; transform: translateY(-50%) scale(1); }
+                50% { opacity: 1; transform: translateY(-50%) scale(1.2); }
             }
             
             .current-time-display svg {
@@ -1337,7 +1425,7 @@
                 let isValid = true;
                 inputs.forEach(input => {
                     validateField(input);
-                    if (input.hasAttribute('required') && !!input.value) {
+                    if (input.hasAttribute('required') && !input.value) {
                         isValid = false;
                     }
                 });
@@ -1451,85 +1539,115 @@
             
             // Business Hours Functionality
             function updateCurrentTime() {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: true
-                });
-                
-                const currentTimeElement = document.getElementById('current-time');
-                if (currentTimeElement) {
-                    currentTimeElement.textContent = timeString;
+                try {
+                    const now = new Date();
+                    const timeString = now.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: true
+                    });
+                    
+                    const currentTimeElement = document.getElementById('current-time');
+                    if (currentTimeElement) {
+                        currentTimeElement.textContent = timeString;
+                    }
+                    
+                    // Update store status based on current time and day
+                    updateStoreStatus(now);
+                } catch (error) {
+                    console.error('Error updating current time:', error);
+                    const currentTimeElement = document.getElementById('current-time');
+                    if (currentTimeElement) {
+                        currentTimeElement.textContent = 'Time unavailable';
+                    }
                 }
-                
-                // Update store status based on current time and day
-                updateStoreStatus(now);
             }
             
             function updateStoreStatus(now) {
-                const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
-                const currentHour = now.getHours();
-                const currentMinute = now.getMinutes();
-                const currentTime = currentHour * 60 + currentMinute;
-                
-                let isOpen = false;
-                let statusText = '';
-                let statusClass = '';
-                
-                // Define business hours (in minutes from midnight)
-                const hours = {
-                    1: { open: 9 * 60, close: 20 * 60 }, // Monday
-                    2: { open: 9 * 60, close: 20 * 60 }, // Tuesday
-                    3: { open: 9 * 60, close: 20 * 60 }, // Wednesday
-                    4: { open: 9 * 60, close: 20 * 60 }, // Thursday
-                    5: { open: 9 * 60, close: 20 * 60 }, // Friday
-                    6: { open: 10 * 60, close: 18 * 60 }, // Saturday
-                    0: { open: 11 * 60, close: 17 * 60 }  // Sunday
-                };
-                
-                const todayHours = hours[dayOfWeek];
-                
-                let nextChangeText = '';
-                if (todayHours) {
-                    if (currentTime >= todayHours.open && currentTime < todayHours.close) {
-                        isOpen = true;
-                        const minutesToClose = todayHours.close - currentTime;
-                        const hrs = Math.floor(minutesToClose / 60);
-                        const mins = minutesToClose % 60;
-                        nextChangeText = minutesToClose <= 60 ? ` · Closes in ${mins}m` : ` · Closes in ${hrs}h ${mins}m`;
-                    } else if (currentTime < todayHours.open) {
-                        // Not yet open today
-                        const minutesToOpen = todayHours.open - currentTime;
-                        const hrs = Math.floor(minutesToOpen / 60);
-                        const mins = minutesToOpen % 60;
-                        nextChangeText = minutesToOpen <= 60 ? ` · Opens in ${mins}m` : ` · Opens in ${hrs}h ${mins}m`;
-                    }
-                }
-                if (isOpen) {
-                    statusText = 'OPEN NOW';
-                    statusClass = 'open';
-                } else {
-                    statusText = 'CLOSED';
-                    statusClass = 'closed';
-                }
-                
-                const statusElement = document.getElementById('store-status');
-                if (statusElement) {
-                    statusElement.textContent = statusText + nextChangeText;
-                    statusElement.className = `status-indicator ${statusClass}`;
+                try {
+                    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+                    const currentHour = now.getHours();
+                    const currentMinute = now.getMinutes();
+                    const currentTime = currentHour * 60 + currentMinute;
                     
-                    // Update status colors
-                    if (statusClass === 'open') {
-                        statusElement.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+                    let isOpen = false;
+                    let statusText = '';
+                    let statusClass = '';
+                    
+                    // Define business hours (in minutes from midnight)
+                    const hours = {
+                        1: { open: 9 * 60, close: 20 * 60 }, // Monday
+                        2: { open: 9 * 60, close: 20 * 60 }, // Tuesday
+                        3: { open: 9 * 60, close: 20 * 60 }, // Wednesday
+                        4: { open: 9 * 60, close: 20 * 60 }, // Thursday
+                        5: { open: 9 * 60, close: 20 * 60 }, // Friday
+                        6: { open: 10 * 60, close: 18 * 60 }, // Saturday
+                        0: { open: 11 * 60, close: 17 * 60 }  // Sunday
+                    };
+                    
+                    const todayHours = hours[dayOfWeek];
+                    
+                    let nextChangeText = '';
+                    if (todayHours) {
+                        if (currentTime >= todayHours.open && currentTime < todayHours.close) {
+                            isOpen = true;
+                            const minutesToClose = todayHours.close - currentTime;
+                            const hrs = Math.floor(minutesToClose / 60);
+                            const mins = minutesToClose % 60;
+                            nextChangeText = minutesToClose <= 60 ? ` · Closes in ${mins}m` : ` · Closes in ${hrs}h ${mins}m`;
+                        } else if (currentTime < todayHours.open) {
+                            // Not yet open today
+                            const minutesToOpen = todayHours.open - currentTime;
+                            const hrs = Math.floor(minutesToOpen / 60);
+                            const mins = minutesToOpen % 60;
+                            nextChangeText = minutesToOpen <= 60 ? ` · Opens in ${mins}m` : ` · Opens in ${hrs}h ${mins}m`;
+                        } else {
+                            // Already closed for today
+                            nextChangeText = ` · Opens tomorrow`;
+                        }
+                    }
+                    
+                    if (isOpen) {
+                        statusText = 'OPEN NOW';
+                        statusClass = 'open';
                     } else {
-                        statusElement.style.background = 'linear-gradient(135deg, #dc3545, #e74c3c)';
+                        statusText = 'CLOSED';
+                        statusClass = 'closed';
+                    }
+                    
+                    const statusElement = document.getElementById('store-status');
+                    if (statusElement) {
+                        // Only update if the status has changed or if it's still "Checking..."
+                        if (statusElement.textContent === 'Checking...' || 
+                            !statusElement.textContent.includes(statusText)) {
+                            
+                            statusElement.textContent = statusText + nextChangeText;
+                            statusElement.className = `status-indicator ${statusClass}`;
+                            
+                            // Update status colors
+                            if (statusClass === 'open') {
+                                statusElement.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+                            } else {
+                                statusElement.style.background = 'linear-gradient(135deg, #dc3545, #e74c3c)';
+                            }
+                            
+                            console.log(`Store status updated: ${statusText} (${statusClass})`);
+                        }
+                    } else {
+                        console.error('Store status element not found');
+                    }
+                    
+                    // Update individual day cards
+                    updateDayCards(dayOfWeek, isOpen);
+                } catch (error) {
+                    console.error('Error updating store status:', error);
+                    const statusElement = document.getElementById('store-status');
+                    if (statusElement) {
+                        statusElement.textContent = 'Status unavailable';
+                        statusElement.className = 'status-indicator';
                     }
                 }
-                
-                // Update individual day cards
-                updateDayCards(dayOfWeek, isOpen);
             }
             
             function updateDayCards(currentDay, isStoreOpen) {
@@ -1540,11 +1658,86 @@
                 });
             }
             
-            // Initialize time and status
-            updateCurrentTime();
+            // Global variable to store the interval ID
+            let timeUpdateInterval = null;
             
-            // Update time every second
-            setInterval(updateCurrentTime, 1000);
+            // Function to start continuous time updates
+            function startTimeUpdates() {
+                // Clear any existing interval to prevent multiple intervals
+                if (timeUpdateInterval) {
+                    clearInterval(timeUpdateInterval);
+                }
+                
+                // Update time and store status immediately
+                updateCurrentTime();
+                
+                // Start continuous updates every second
+                timeUpdateInterval = setInterval(updateCurrentTime, 1000);
+                
+                console.log('Time and store status updates started successfully');
+            }
+            
+            // Function to stop time updates
+            function stopTimeUpdates() {
+                if (timeUpdateInterval) {
+                    clearInterval(timeUpdateInterval);
+                    timeUpdateInterval = null;
+                    console.log('Time updates stopped');
+                }
+            }
+            
+            // Initialize time and status when DOM is ready
+            function initializeTimeDisplay() {
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', startTimeUpdates);
+                } else {
+                    // DOM is already ready
+                    startTimeUpdates();
+                }
+            }
+            
+            // Start the time display system
+            initializeTimeDisplay();
+            
+            // Force immediate store status update
+            function forceUpdateStoreStatus() {
+                const now = new Date();
+                updateStoreStatus(now);
+            }
+            
+            // Call immediately and also after a short delay to ensure it works
+            forceUpdateStoreStatus();
+            setTimeout(forceUpdateStoreStatus, 100);
+            setTimeout(forceUpdateStoreStatus, 500);
+            
+            // Also start updates when window loads (as a backup)
+            window.addEventListener('load', function() {
+                if (!timeUpdateInterval) {
+                    startTimeUpdates();
+                }
+            });
+            
+            // Handle page visibility changes (when user switches tabs)
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    // Page is hidden, stop updates to save resources
+                    stopTimeUpdates();
+                } else {
+                    // Page is visible again, restart updates
+                    if (!timeUpdateInterval) {
+                        startTimeUpdates();
+                    }
+                }
+            });
+            
+            // Ensure time updates are working by checking periodically
+            setInterval(function() {
+                const currentTimeElement = document.getElementById('current-time');
+                if (currentTimeElement && !timeUpdateInterval) {
+                    console.log('Time updates stopped unexpectedly, restarting...');
+                    startTimeUpdates();
+                }
+            }, 5000); // Check every 5 seconds
             
             // Find Us Section Functionality
             function initializeFindUsSection() {

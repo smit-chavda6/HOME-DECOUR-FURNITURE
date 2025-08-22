@@ -6,7 +6,8 @@ class LoadingManager {
         this.loaderMessage = document.querySelector('.loader-message');
         this.isLoading = true;
         this.startTime = Date.now();
-        this.minLoadingTime = 6000; // Minimum 6 seconds
+        // Shorter minimum time for better responsiveness
+        this.minLoadingTime = 1200; // Minimum 1.2 seconds
         
         this.messages = [
             "Crafting your perfect space...",
@@ -31,18 +32,16 @@ class LoadingManager {
         
         // Hide loading screen when complete
         window.addEventListener('load', () => {
-            // Add extra delay after page load to show loader longer
-            setTimeout(() => {
-                this.hideLoadingScreen();
-            }, 3000); // 3 seconds extra after page load
+            // Remove extra delay; hide as soon as minLoadingTime satisfied
+            this.hideLoadingScreen();
         });
         
-        // Fallback: hide after 10 seconds if load event doesn't fire
+        // Fallback: hide after 6 seconds if load event doesn't fire
         setTimeout(() => {
             if (this.isLoading) {
                 this.hideLoadingScreen();
             }
-        }, 10000);
+        }, 6000);
     }
     
     updateLoadingMessages() {

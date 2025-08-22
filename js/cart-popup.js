@@ -1,6 +1,9 @@
 // Cart Popup System - Shared across all pages
 class CartPopupSystem {
     constructor() {
+        // Prevent duplicate initialization
+        this._initialized = false;
+
         this.cart = JSON.parse(localStorage.getItem('cart')) || [];
         console.log('Cart popup system initialized with cart:', this.cart);
         
@@ -14,6 +17,15 @@ class CartPopupSystem {
     }
 
     init() {
+        if (this._initialized) {
+            // Keep cart in sync with localStorage in case another page updated it
+            try {
+                this.cart = JSON.parse(localStorage.getItem('cart')) || this.cart;
+            } catch (e) {}
+            this.updateCartCount();
+            return;
+        }
+        this._initialized = true;
         this.updateCartCount();
         this.setupCartIcon();
         this.setupCartPopup();
@@ -302,6 +314,10 @@ class CartPopupSystem {
 
     // Show cart popup
     showCartPopup() {
+        // Sync cart from storage before rendering to avoid stale data
+        try {
+            this.cart = JSON.parse(localStorage.getItem('cart')) || this.cart;
+        } catch (e) {}
         const cartItemsContainer = document.getElementById('cartItemsContainer');
         const cartTotalPrice = document.getElementById('cartTotalPrice');
         const cartPopupOverlay = document.getElementById('cartPopupOverlay');
@@ -577,17 +593,19 @@ class CartPopupSystem {
     }
 }
 
-// Initialize cart popup system when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.cartPopupSystem = new CartPopupSystem();
-    console.log('Cart popup system initialized globally:', window.cartPopupSystem);
-});
+// Initialize cart popup system once
+function initializeCartPopupSystemOnce() {
+    if (!window.cartPopupSystem) {
+        window.cartPopupSystem = new CartPopupSystem();
+    }
+    if (window.cartPopupSystem && typeof window.cartPopupSystem.init === 'function') {
+        window.cartPopupSystem.init();
+    }
+    console.log('Cart popup system ready:', window.cartPopupSystem);
+}
 
-// Fallback: Initialize immediately if DOM is already loaded
 if (document.readyState === 'loading') {
-    // DOM is still loading, wait for DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', initializeCartPopupSystemOnce);
 } else {
-    // DOM is already loaded, initialize immediately
-    window.cartPopupSystem = new CartPopupSystem();
-    console.log('Cart popup system initialized immediately:', window.cartPopupSystem);
-} 
+    initializeCartPopupSystemOnce();
+}

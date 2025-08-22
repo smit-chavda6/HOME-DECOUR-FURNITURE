@@ -95,8 +95,8 @@
                         <circle cx="11" cy="11" r="8"/>
                         <path d="m21 21-4.35-4.35"/>
                     </svg>
-                    <input type="text" class="gallery-search" placeholder="Search furniture..." id="gallerySearch">
-                    <button class="clear-search" id="clearSearch" title="Clear search">×</button>
+                    <input type="text" class="gallery-search" placeholder="Search furniture..." id="gallerySearch" autocomplete="off">
+                    <button class="clear-search" id="clearSearch" title="Clear search" aria-label="Clear search">×</button>
                 </div>
             </div>
             
@@ -127,13 +127,13 @@
         </div>
         
         <!-- Filter Buttons -->
-        <div class="gallery-filters">
-            <button class="filter-btn active" data-filter="all">All Items</button>
-            <button class="filter-btn" data-filter="living" id="filter-living">Living Room</button>
-            <button class="filter-btn" data-filter="dining" id="filter-dining">Dining Room</button>
-            <button class="filter-btn" data-filter="bedroom" id="filter-bedroom">Bedroom</button>
-            <button class="filter-btn" data-filter="office" id="filter-office">Office</button>
-            <button class="filter-btn" data-filter="3d" id="filter-3d">3D Models</button>
+        <div class="gallery-filters" role="tablist" aria-label="Filter products by category">
+            <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true" aria-label="Show all items">All Items</button>
+            <button class="filter-btn" data-filter="living" id="filter-living" role="tab" aria-selected="false" aria-label="Show living room items">Living Room</button>
+            <button class="filter-btn" data-filter="dining" id="filter-dining" role="tab" aria-selected="false" aria-label="Show dining room items">Dining Room</button>
+            <button class="filter-btn" data-filter="bedroom" id="filter-bedroom" role="tab" aria-selected="false" aria-label="Show bedroom items">Bedroom</button>
+            <button class="filter-btn" data-filter="office" id="filter-office" role="tab" aria-selected="false" aria-label="Show office items">Office</button>
+            <button class="filter-btn" data-filter="3d" id="filter-3d" role="tab" aria-selected="false" aria-label="Show 3D models">3D Models</button>
         </div>
         
         <!-- Results Counter -->
