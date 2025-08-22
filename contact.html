@@ -311,92 +311,71 @@
         
         <!-- Send Message Section -->
         <section class="send-message-section">
-            <div class="section-header animate-on-scroll fade-in">
-                <div class="header-badge message-badge">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-                    </svg>
-                    <span>Quick Contact</span>
-                </div>
-                <h2 class="section-title">Send Us a Message</h2>
-                <p class="section-subtitle">We'll get back to you within 24 hours</p>
-                <div class="header-decoration">
-                    <div class="decoration-line"></div>
-                    <div class="decoration-dot"></div>
-                    <div class="decoration-line"></div>
-                </div>
-            </div>
-            
-            <div class="message-form-container">
-                <form class="contact-form" id="contact-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <div class="input-wrapper">
-                                <input type="text" id="name" name="name" required>
-                                <label for="name">Full Name</label>
-                                <div class="input-line"></div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="input-wrapper">
-                                <input type="email" id="email" name="email" required>
-                                <label for="email">Email Address</label>
-                                <div class="input-line"></div>
-                            </div>
-                        </div>
+            <div class="container">
+                <div class="section-header animate-on-scroll fade-in">
+                    <div class="header-badge message-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                        </svg>
+                        <span>Message Us</span>
                     </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <div class="input-wrapper">
-                                <input type="tel" id="phone" name="phone">
-                                <label for="phone">Phone Number</label>
-                                <div class="input-line"></div>
+                    <h2 class="section-title">Get In Touch</h2>
+                    <p class="section-subtitle">We respond quickly to all inquiries</p>
+                    <div class="header-decoration">
+                        <div class="decoration-line"></div>
+                        <div class="decoration-dot"></div>
+                        <div class="decoration-line"></div>
+                    </div>
+                </div>
+                <div class="message-form-container animate-on-scroll slide-in-up">
+                    <form class="contact-form redesigned-contact-form" id="redesigned-contact-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" name="name" placeholder="Your Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" placeholder="Your Email" required>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="input-wrapper">
-                                <select id="subject" name="subject" required>
-                                    <option value="" disabled selected></option>
-                                <option value="general">General Inquiry</option>
-                                <option value="order">Order Information</option>
-                                <option value="support">Customer Support</option>
-                                <option value="feedback">Feedback</option>
-                                <option value="other">Other</option>
-                            </select>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input type="tel" id="phone" name="phone" placeholder="Your Phone (optional)">
+                            </div>
+                            <div class="form-group">
                                 <label for="subject">Subject</label>
-                                <div class="input-line"></div>
+                                <select id="subject" name="subject" required>
+                                    <option value="" disabled selected>Select Subject</option>
+                                    <option value="general">General Inquiry</option>
+                                    <option value="order">Order Information</option>
+                                    <option value="support">Customer Support</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
                         </div>
+                        <div class="form-group full-width">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" placeholder="Type your message here..." required></textarea>
                         </div>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <div class="input-wrapper">
-                            <textarea id="message" name="message" rows="5" required></textarea>
-                            <label for="message">Your Message</label>
-                            <div class="input-line"></div>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="submit-btn">
-                        <span class="btn-text">Send Message</span>
-                        <span class="btn-icon">
+                        <button type="submit" class="submit-btn redesigned-submit-btn">
+                            <span>Send Message</span>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
                             </svg>
-                        </span>
-                        <div class="btn-ripple"></div>
-                    </button>
-            </form>
-                
-                <div id="contact-success" class="success-message">
-                    <div class="success-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 6L9 17l-5-5"/>
-                        </svg>
+                        </button>
+                    </form>
+                    <div id="contact-success" class="success-message redesigned-success-message" style="display:none;">
+                        <div class="success-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 6L9 17l-5-5"/>
+                            </svg>
+                        </div>
+                        <h4>Message Sent!</h4>
+                        <p>Thank you for reaching out. We'll reply soon.</p>
                     </div>
-                    <h4>Message Sent Successfully!</h4>
-                    <p>We'll get back to you within 24 hours.</p>
                 </div>
             </div>
         </section>
@@ -738,7 +717,7 @@
         </style>
         </section>
 
-    <!-- Advanced Business Hours Section -->
+     <!-- Advanced Business Hours Section -->
     <section class="advanced-hours-section">
         <!-- Animated Background Elements -->
         <div class="hours-bg-shapes">
@@ -1512,16 +1491,25 @@
                 
                 const todayHours = hours[dayOfWeek];
                 
+                let nextChangeText = '';
                 if (todayHours) {
                     if (currentTime >= todayHours.open && currentTime < todayHours.close) {
                         isOpen = true;
-                        statusText = 'OPEN NOW';
-                        statusClass = 'open';
-                    } else {
-                        isOpen = false;
-                        statusText = 'CLOSED';
-                        statusClass = 'closed';
+                        const minutesToClose = todayHours.close - currentTime;
+                        const hrs = Math.floor(minutesToClose / 60);
+                        const mins = minutesToClose % 60;
+                        nextChangeText = minutesToClose <= 60 ? ` · Closes in ${mins}m` : ` · Closes in ${hrs}h ${mins}m`;
+                    } else if (currentTime < todayHours.open) {
+                        // Not yet open today
+                        const minutesToOpen = todayHours.open - currentTime;
+                        const hrs = Math.floor(minutesToOpen / 60);
+                        const mins = minutesToOpen % 60;
+                        nextChangeText = minutesToOpen <= 60 ? ` · Opens in ${mins}m` : ` · Opens in ${hrs}h ${mins}m`;
                     }
+                }
+                if (isOpen) {
+                    statusText = 'OPEN NOW';
+                    statusClass = 'open';
                 } else {
                     statusText = 'CLOSED';
                     statusClass = 'closed';
@@ -1529,7 +1517,7 @@
                 
                 const statusElement = document.getElementById('store-status');
                 if (statusElement) {
-                    statusElement.textContent = statusText;
+                    statusElement.textContent = statusText + nextChangeText;
                     statusElement.className = `status-indicator ${statusClass}`;
                     
                     // Update status colors
@@ -1546,33 +1534,9 @@
             
             function updateDayCards(currentDay, isStoreOpen) {
                 const dayCards = document.querySelectorAll('.hours-card');
-                const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                
-                dayCards.forEach((card, index) => {
-                    const statusElement = card.querySelector('.hours-status');
-                    if (statusElement) {
-                        const dayName = card.querySelector('.hours-day').textContent;
-                        
-                        if (dayName.includes(dayNames[currentDay])) {
-                            // Current day
-                            if (isStoreOpen) {
-                                statusElement.textContent = 'Open Now';
-                                statusElement.className = 'hours-status open';
-                            } else {
-                                statusElement.textContent = 'Closed Today';
-                                statusElement.className = 'hours-status closed';
-                            }
-                        } else {
-                            // Other days
-                            if (dayName.includes('Sunday')) {
-                                statusElement.textContent = 'Closed';
-                                statusElement.className = 'hours-status closed';
-                            } else {
-                                statusElement.textContent = 'Open';
-                                statusElement.className = 'hours-status open';
-                            }
-                        }
-                    }
+                dayCards.forEach(card => {
+                    const statusEl = card.querySelector('.hours-status');
+                    // Logic to update individual day cards can be added here
                 });
             }
             
@@ -1741,4 +1705,3 @@
 </body>
 
 </html>
-

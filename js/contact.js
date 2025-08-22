@@ -162,7 +162,9 @@ function initButtonInteractions() {
 
 // Contact Form Enhancements
 function initContactForm() {
-    const form = document.getElementById('contact-form');
+    // Support both legacy and redesigned form IDs/classes
+    const form = document.getElementById('redesigned-contact-form') || document.getElementById('contact-form');
+    if (!form) return; // nothing to init
     const inputs = form.querySelectorAll('input, textarea, select');
     
     inputs.forEach(input => {
@@ -191,11 +193,13 @@ function initContactForm() {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const submitBtn = form.querySelector('.submit-btn');
-        const btnText = submitBtn.querySelector('.btn-text');
-        const btnIcon = submitBtn.querySelector('.btn-icon');
-        const originalText = btnText.textContent;
-        const originalIcon = btnIcon.innerHTML;
+        const submitBtn = form.querySelector('.redesigned-submit-btn, .submit-btn');
+        if (!submitBtn) return;
+        // For redesigned button simple content structure
+        const btnTextEl = submitBtn.querySelector('.btn-text') || submitBtn.querySelector('span');
+        const btnIcon = submitBtn.querySelector('.btn-icon') || submitBtn.querySelector('svg');
+        const originalText = btnTextEl ? btnTextEl.textContent : '';
+        const originalIcon = btnIcon ? btnIcon.outerHTML : '';
         
         // Ensure no size changes
         submitBtn.style.transform = 'none';
@@ -204,35 +208,56 @@ function initContactForm() {
         submitBtn.style.height = submitBtn.offsetHeight + 'px';
         
         // Add loading state
-        submitBtn.classList.add('loading');
-        btnText.textContent = 'Sending...';
-        btnIcon.style.opacity = '0';
+    submitBtn.classList.add('loading');
+    if (btnTextEl) btnTextEl.textContent = 'Sending...';
+    if (btnIcon && btnIcon.style) btnIcon.style.opacity = '0';
         
         // Simulate form submission
         setTimeout(() => {
             // Show success state
             submitBtn.classList.remove('loading');
-            btnText.textContent = 'Message Sent!';
-            btnIcon.innerHTML = `
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 6L9 17l-5-5"/>
-                </svg>
-            `;
-            btnIcon.style.opacity = '1';
+            if (btnTextEl) btnTextEl.textContent = 'Message Sent!';
+            if (btnIcon) {
+                btnIcon.outerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>';
+            }
             submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
             
             // Show success message
             const successMessage = document.getElementById('contact-success');
             if (successMessage) {
-                successMessage.style.display = 'block';
-                successMessage.style.animation = 'fadeIn 0.5s ease-out';
+                successMessage.style.display = 'flex';
+                // add class to trigger scoped CSS animations
+                successMessage.classList.add('show');
+                // generate confetti pieces only first time per show
+                if (!successMessage.dataset.confetti) {
+                    const colors = ['primary','secondary','accent'];
+                    for (let i=0;i<14;i++) {
+                        const piece = document.createElement('span');
+                        piece.className = 'success-confetti-piece' + (i%3===1?' alt': i%3===2?' accent':'');
+                        // random trajectory via CSS vars
+                        const angle = (Math.random()*100) - 50; // horizontal spread
+                        const distance = 40 + Math.random()*70; // vertical distance
+                        const rotate = Math.floor(Math.random()*360) + 'deg';
+                        piece.style.setProperty('--x', angle + 'px');
+                        piece.style.setProperty('--y', distance * -1 + 'px');
+                        piece.style.setProperty('--r', rotate);
+                        piece.style.animationDelay = (Math.random()*0.25)+'s';
+                        piece.style.left = (50 + angle/6)+'%';
+                        successMessage.appendChild(piece);
+                    }
+                    successMessage.dataset.confetti = 'true';
+                }
             }
             
             // Reset form after 3 seconds
             setTimeout(() => {
                 form.reset();
-                btnText.textContent = originalText;
-                btnIcon.innerHTML = originalIcon;
+                if (btnTextEl) btnTextEl.textContent = originalText;
+                if (originalIcon && submitBtn.querySelector('svg')) {
+                    // already replaced, nothing else
+                } else if (originalIcon) {
+                    submitBtn.insertAdjacentHTML('beforeend', originalIcon);
+                }
                 submitBtn.style.background = 'linear-gradient(135deg, #8B4513, #D2691E)';
                 submitBtn.classList.remove('loading');
                 
@@ -245,6 +270,10 @@ function initContactForm() {
                 // Hide success message
                 if (successMessage) {
                     successMessage.style.display = 'none';
+                    successMessage.classList.remove('show');
+                    // remove confetti for next show cycle
+                    successMessage.querySelectorAll('.success-confetti-piece').forEach(p=>p.remove());
+                    delete successMessage.dataset.confetti;
                 }
                 
                 // Reset input states
@@ -345,3 +374,5 @@ const additionalStyles = `
 const styleSheet = document.createElement('style');
 styleSheet.textContent = additionalStyles;
 document.head.appendChild(styleSheet); 
+
+
