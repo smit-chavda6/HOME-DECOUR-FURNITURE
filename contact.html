@@ -1343,8 +1343,8 @@
     <script src="js/animations.js"></script>
     
     <script>
-        // Advanced Contact Form Functionality
-        document.addEventListener('DOMContentLoaded', function() {
+        // Advanced Contact Form & Business Hours - immediate init with guards
+        (function() {
             const form = document.getElementById('contact-form');
             const submitBtn = document.querySelector('.submit-btn');
             const successMessage = document.getElementById('contact-success');
@@ -1486,7 +1486,7 @@
             });
             
             // Button ripple effect
-            submitBtn.addEventListener('click', function(e) {
+            if (submitBtn) submitBtn.addEventListener('click', function(e) {
                 const ripple = document.createElement('div');
                 ripple.classList.add('btn-ripple');
                 
@@ -1815,7 +1815,14 @@
             
             // Initialize Find Us section
             initializeFindUsSection();
-        });
+
+            // If DOM already loaded, start immediately; otherwise, ensure on load
+            if (document.readyState !== 'loading') {
+                initializeTimeDisplay();
+            } else {
+                document.addEventListener('DOMContentLoaded', initializeTimeDisplay, { once: true });
+            }
+        })();
     </script>
     
     <style>
