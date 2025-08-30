@@ -384,6 +384,9 @@
     gap: 0.5rem;
     margin-bottom: 2rem;
     border-bottom: 2px solid #f3e6d6;
+    position: relative;
+    overflow-x: auto;
+    scrollbar-width: thin;
 }
 
 .tab-btn {
@@ -395,6 +398,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
     border-bottom: 3px solid transparent;
+    white-space: nowrap;
 }
 
 .tab-btn:hover {
@@ -596,12 +600,19 @@
     }
     
     .tab-navigation {
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+        -webkit-overflow-scrolling: touch;
+        position: sticky;
+        top: 60px; /* below fixed navbar */
+        background: #fff;
+        z-index: 2;
     }
     
     .tab-btn {
-        padding: 0.8rem 1.5rem;
-        font-size: 0.9rem;
+        padding: 0.8rem 1.2rem;
+        font-size: 0.95rem;
     }
     
     .tab-content {
@@ -717,6 +728,8 @@
 
 .image-modal.show {
     display: flex;
+    /* Ensure the entire viewport behind is fully dark */
+    background: #000;
 }
 
 .modal-overlay {
@@ -726,7 +739,20 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Make product image full-view overlay very dark so page background is not visible */
+#image-modal .modal-overlay {
+    background: #000; /* fully opaque */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+/* Remove glow around full-view image to avoid bright edges */
+#image-modal #modal-image {
+    box-shadow: none;
 }
 
 .modal-content {

@@ -353,19 +353,47 @@ const initializeProductDetails = () => {
 // Cache DOM elements for better performance
 let cachedElements = {};
 
-const loadProductDetails = () => {
+const loadProductDetails = async () => {
     // Initialize product details
     initializeProductDetails();
     
     // Get product ID from URL
     const urlParams = new URLSearchParams(window.location.search);
-    const productId = parseInt(urlParams.get('id'));
+    const productId = urlParams.get('id');
+    const productIdNum = parseInt(productId, 10);
     
-    // Get product data
-    const product = productData[productId];
+    // Get product data (prefer static map; if missing, fetch from API)
+    let product = productData[productIdNum];
+    if (!product) {
+        try {
+            const res = await fetch(`/api/products/${productIdNum}`, { credentials: 'include' });
+            if (res.ok) {
+                const data = await res.json();
+                const p = data.product;
+                if (p) {
+                    product = {
+                        name: p.name,
+                        price: p.price,
+                        image: p.image || 'image/Logo maker project.webp',
+                        description: p.description || '',
+                        material: p.material || '-',
+                        dimensions: '-',
+                        weight: '-',
+                        color: '-',
+                        warranty: '-',
+                    };
+                    // For 3D products, adjust rendering later via model_src
+                    if (p.is_3d) {
+                        product.__is3d = true;
+                        product.__model_src = p.model_src || '';
+                    }
+                }
+            }
+        } catch (e) { console.warn('Failed to fetch product by id', e); }
+    }
     
     if (product) {
-        currentProduct = { ...product, id: productId };
+    currentProduct = { ...product, id: String(productId) };
         console.log('Current product set:', currentProduct);
         
         // Update page title
@@ -390,19 +418,19 @@ const loadProductDetails = () => {
             cachedElements.mediaContainer = document.getElementById('media-container');
         }
         // Render media (image or 3D model)
-        if ([101,102,103,104,105,106,107,108].includes(productId)) {
+        if ([101,102,103,104,105,106,107,108].includes(productIdNum) || product.__is3d) {
             // 3D Model: use model-viewer
-            let modelSrc = '';
-            if (productId === 101) modelSrc = '3d models/no_43.glb';
-            if (productId === 102) modelSrc = '3d models/sofa_chair.glb';
-            if (productId === 103) modelSrc = '3d models/low_poly_modern_sofa_free_model.glb';
-            if (productId === 104) modelSrc = '3d models/old_sofa_free.glb';
-            if (productId === 105) modelSrc = '3d models/free_leather_sofa_stool.glb';
-            if (productId === 106) modelSrc = '3d models/white_chair.glb';
-            if (productId === 107) modelSrc = '3d models/simple_modern_chair_free_model.glb';
-            if (productId === 108) modelSrc = '3d models/table_mr_ft.glb';
+            let modelSrc = product.__model_src || '';
+            if (productIdNum === 101) modelSrc = '3d models/no_43.glb';
+            if (productIdNum === 102) modelSrc = '3d models/sofa_chair.glb';
+            if (productIdNum === 103) modelSrc = '3d models/low_poly_modern_sofa_free_model.glb';
+            if (productIdNum === 104) modelSrc = '3d models/old_sofa_free.glb';
+            if (productIdNum === 105) modelSrc = '3d models/free_leather_sofa_stool.glb';
+            if (productIdNum === 106) modelSrc = '3d models/white_chair.glb';
+            if (productIdNum === 107) modelSrc = '3d models/simple_modern_chair_free_model.glb';
+            if (productIdNum === 108) modelSrc = '3d models/table_mr_ft.glb';
             cachedElements.mediaContainer.innerHTML = `
-                <model-viewer id="product-model-viewer" src="${modelSrc}" alt="${product.name}" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:320px;border-radius:1.2rem;box-shadow:0 2px 12px #ffe5c1aa;margin-bottom:1rem;"></model-viewer>
+                <model-viewer id="product-model-viewer" src="${modelSrc}" alt="${product.name}" camera-controls auto-rotate background-color="#121419" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:320px;border-radius:1.2rem;box-shadow:0 2px 12px #00000044;margin-bottom:1rem;"></model-viewer>
             `;
         
         // Show AR button for 3D models
@@ -461,8 +489,8 @@ const loadProductDetails = () => {
         // Initialize quantity controls
         initializeQuantityControls();
         
-        // Initialize zoom functionality (only for standard products)
-        if (![101,102,103,104].includes(productId)) {
+    // Initialize zoom functionality (only for standard products)
+    if (![101,102,103,104,105,106,107,108].includes(productIdNum)) {
             initializeZoomFunctionality();
         }
         
@@ -477,8 +505,8 @@ const loadProductDetails = () => {
             testCartFunctionality();
         }, 1000);
         
-        // Initialize AR functionality for 3D models
-        if ([101,102,103,104,105,106,107,108].includes(productId)) {
+    // Initialize AR functionality for 3D models
+    if ([101,102,103,104,105,106,107,108].includes(productIdNum) || (currentProduct && currentProduct.__is3d)) {
             initializeARFunctionality();
         }
         
@@ -541,6 +569,7 @@ const initializeZoomFunctionality = () => {
     const modalClose = document.getElementById('modal-close');
     const modalImage = document.getElementById('modal-image');
     const productImg = document.getElementById('product-img');
+    const modalContent = document.querySelector('.modal-content');
     
     // Open modal when zoom button is clicked
     if (zoomBtn) {
@@ -555,6 +584,18 @@ const initializeZoomFunctionality = () => {
     // Close modal when overlay is clicked
     if (modalOverlay) {
         modalOverlay.addEventListener('click', closeImageModal);
+    }
+    // Close when clicking the empty area of the modal (outside the image)
+    if (imageModal) {
+        imageModal.addEventListener('click', (e) => {
+            if (e.target === imageModal || e.target === modalOverlay || e.target === modalContent) {
+                closeImageModal();
+            }
+        });
+    }
+    // Prevent closing when clicking directly on the image
+    if (modalImage) {
+        modalImage.addEventListener('click', (e) => e.stopPropagation());
     }
     
     // Close modal when close button is clicked
@@ -621,10 +662,8 @@ const addToCart = () => {
     
     // Use the main cart popup system to add items (same as gallery)
     if (window.cartPopupSystem) {
-        // Add the item once with desired quantity
-        for (let i = 0; i < quantity; i++) {
-            window.cartPopupSystem.addToCartFromProductDetails(currentProduct);
-        }
+    // Add the item with desired quantity in one call (merges correctly)
+    window.cartPopupSystem.addToCartFromProductDetails(currentProduct, quantity);
         // Persist cart immediately and update UI
         try {
             localStorage.setItem('cart', JSON.stringify(window.cartPopupSystem.cart));
@@ -1081,12 +1120,12 @@ const showARNotSupported = () => {
 
 // Initialize product details
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
         // Ensure cart popup system is initialized
         if (!window.cartPopupSystem) {
             window.cartPopupSystem = new CartPopupSystem();
         }
-        loadProductDetails();
+        await loadProductDetails();
         initializeCartIcon();
     });
 } else {
@@ -1094,6 +1133,6 @@ if (document.readyState === 'loading') {
     if (!window.cartPopupSystem) {
         window.cartPopupSystem = new CartPopupSystem();
     }
-    loadProductDetails();
+    (async () => { await loadProductDetails(); })();
     initializeCartIcon();
 } 

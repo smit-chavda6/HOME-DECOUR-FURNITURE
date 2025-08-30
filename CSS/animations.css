@@ -22,10 +22,7 @@
 /* 2. Specific Animation Types            */
 /* -------------------------------------- */
 
-/* Fade-in Animation (no movement) */
-.fade-in {
-    /* No initial transform needed, just starts with opacity 0 */
-}
+/* Fade-in animation is handled by the base .animate-on-scroll class */
 
 /* Slide-in from Bottom */
 .slide-in-up {

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel - HOME DECOR FURNITURE</title>
+  <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico">
+  <link rel="stylesheet" href="CSS/style.css" />
+  <link rel="stylesheet" href="CSS/admin.css" />
+  <link rel="stylesheet" href="CSS/dark-mode.css" />
+</head>
+<body>
+  <div class="admin-wrap">
+    <div class="admin-header">
+  <h1><span class="brand">HOME DECOR FURNITURE</span> — Admin Dashboard</h1>
+      <div class="admin-actions">
+        <button class="btn" id="btn-refresh">Refresh</button>
+        <button class="btn" id="btn-logout">Logout</button>
+        <a class="btn primary" href="/">Go to site</a>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Total Users</h3>
+        <div class="metric" id="m-total">–</div>
+      </div>
+      <div class="card">
+        <h3>Admins</h3>
+        <div class="metric" id="m-admins">–</div>
+      </div>
+      <div class="card">
+        <h3>Standard Users</h3>
+        <div class="metric" id="m-users">–</div>
+      </div>
+      <div class="card">
+        <h3>Messages</h3>
+        <div class="metric" id="m-messages">–</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Users</h2>
+      <div class="content">
+        <div class="notice">Promote/demote users between admin and user roles. You cannot modify or delete your own account.</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Contact Messages</h2>
+      <div class="content">
+        <div class="notice">Recent messages sent via the Contact page.</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Subject</th>
+                <th>Message</th>
+                <th>Received</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="messages-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Products</h2>
+      <div class="content">
+        <div class="notice">Add new products to your catalog. You can also delete products here. Use the View link to open Product Details page.</div>
+        <form id="prod-form" style="margin-bottom:14px;display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));">
+          <input type="hidden" id="p-id" value="" />
+          <div>
+            <label>Name *</label>
+            <input id="p-name" required placeholder="e.g., Elegant Sofa" />
+          </div>
+          <div>
+            <label>Price (₹) *</label>
+            <input id="p-price" type="number" min="0" step="1" required />
+          </div>
+          <div>
+            <label>Image URL</label>
+            <input id="p-image" placeholder="image/sofa.webp or https://…" />
+          </div>
+          <div>
+            <label>Category</label>
+            <select id="p-category">
+              <option value="">—</option>
+              <option value="living">Living Room</option>
+              <option value="dining">Dining Room</option>
+              <option value="bedroom">Bedroom</option>
+              <option value="office">Office</option>
+              <option value="3d">3D Models</option>
+            </select>
+          </div>
+          <div>
+            <label>Brand</label>
+            <input id="p-brand" placeholder="e.g., UrbanWood" />
+          </div>
+          <div>
+            <label>Material</label>
+            <input id="p-material" placeholder="e.g., Leather" />
+          </div>
+          <div style="grid-column:1/-1;">
+            <label>Description</label>
+            <textarea id="p-desc" placeholder="Short description" style="width:100%;min-height:70px"></textarea>
+          </div>
+          <div>
+            <label>Original Price</label>
+            <input id="p-original" type="number" min="0" step="1" />
+          </div>
+          <div>
+            <label>Discount (%)</label>
+            <input id="p-discount" type="number" min="0" max="90" step="1" />
+          </div>
+          <div>
+            <label>Badge</label>
+            <input id="p-badge" placeholder="e.g., New, Sale, Hot" />
+          </div>
+          <div>
+            <label>Is 3D Model?</label>
+            <select id="p-is3d">
+              <option value="0">No</option>
+              <option value="1">Yes</option>
+            </select>
+          </div>
+          <div id="p-model-row" style="display:none;grid-column:1/-1;">
+            <label>3D Model Path</label>
+            <input id="p-model" placeholder="3d models/your_model.glb" />
+          </div>
+          <div style="grid-column:1/-1;display:flex;gap:8px;align-items:center;">
+            <button class="btn primary" type="submit" id="btn-prod-submit">Add Product</button>
+            <button class="btn" type="button" id="btn-prod-cancel" style="display:none;">Cancel Edit</button>
+            <button class="btn" type="button" id="btn-prod-refresh">Refresh Products</button>
+          </div>
+        </form>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Brand</th>
+                <th>Material</th>
+                <th>3D</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="prod-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  const fmtDate = (d) => new Date(d).toLocaleString();
+  async function api(path, opts={}){
+    const res = await fetch(path, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
+    const ctype = (res.headers.get('content-type') || '').toLowerCase();
+    const isJson = ctype.includes('application/json');
+    try {
+      if (!isJson) {
+        const text = await res.text();
+        // Common cause: page opened on different port than the API server so HTML is returned
+        const hint = text.trim().startsWith('<!DOCTYPE') ? 'It looks like an HTML page was returned. Make sure you open the site on the same port your server prints in the terminal (e.g., http://localhost:3001/admin.html).' : '';
+        throw new Error(`Expected JSON from ${path} but got ${ctype || 'unknown content-type'}. ${hint}`.trim());
+      }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Request failed');
+      return data;
+    } catch (e) {
+      // Re-throw with a cleaner message to avoid confusing "Unexpected token '<'" errors
+      throw new Error(e.message || 'Request failed');
+    }
+  }
+  async function ensureAdmin(){
+    const auth = await api('/api/check-auth');
+    if (!auth.authenticated || auth.user.role !== 'admin') {
+      // try backend guard for better message
+      try { await api('/api/admin/check'); } catch(e) {}
+      location.href = '/login.html';
+      return false;
+    }
+    return true;
+  }
+  async function loadStats(){
+    const data = await api('/api/admin/stats');
+    document.getElementById('m-total').textContent = data.stats.totalUsers;
+    document.getElementById('m-admins').textContent = data.stats.admins;
+    document.getElementById('m-users').textContent = data.stats.standardUsers;
+    if (typeof data.stats.messages !== 'undefined') {
+      document.getElementById('m-messages').textContent = data.stats.messages;
+    }
+  }
+  function row(user, currentId){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td data-label="ID">${user.id}</td>
+      <td data-label="Username">${user.username}</td>
+      <td data-label="Email" class="muted">${user.email}</td>
+      <td data-label="Name">${user.full_name || ''}</td>
+      <td data-label="Role"><span class="role ${user.role==='admin'?'admin':''}">${user.role}</span></td>
+      <td data-label="Created" class="muted">${fmtDate(user.created_at)}</td>
+      <td data-label="Actions">
+        <div class="row-actions">
+          <button class="btn js-promote" ${user.id===currentId?'disabled':''}>${user.role==='admin'?'Make User':'Make Admin'}</button>
+          <button class="btn js-delete" ${user.id===currentId?'disabled':''}>Delete</button>
+        </div>
+      </td>`;
+    tr.querySelector('.js-promote').addEventListener('click', async ()=>{
+      const newRole = user.role === 'admin' ? 'user' : 'admin';
+      try{
+        await api(`/api/admin/users/${user.id}/role`, { method:'PUT', body: JSON.stringify({ role: newRole }) });
+        await refresh();
+      }catch(e){ alert(e.message); }
+    });
+    tr.querySelector('.js-delete').addEventListener('click', async ()=>{
+      if(!confirm('Delete this user?')) return;
+      try{
+        await api(`/api/admin/users/${user.id}`, { method:'DELETE' });
+        await refresh();
+      }catch(e){ alert(e.message); }
+    });
+    return tr;
+  }
+  async function loadUsers(){
+    const auth = await api('/api/check-auth');
+    const me = auth.user?.id;
+    const data = await api('/api/admin/users');
+    const tbody = document.getElementById('users-body');
+    tbody.innerHTML = '';
+    data.users.forEach(u=> tbody.appendChild(row(u, me)) );
+  }
+  function msgRow(m){
+    const tr = document.createElement('tr');
+    const preview = (m.message || '').slice(0, 80).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    tr.innerHTML = `
+      <td data-label="ID">${m.id}</td>
+      <td data-label="Name">${m.name}</td>
+      <td data-label="Email" class="muted">${m.email}</td>
+      <td data-label="Phone">${m.phone || ''}</td>
+      <td data-label="Subject">${m.subject}</td>
+      <td data-label="Message" title="${(m.message||'').replace(/"/g,'&quot;')}">${preview}${m.message && m.message.length>80?'…':''}</td>
+      <td data-label="Received" class="muted">${fmtDate(m.created_at)}</td>
+      <td data-label="Actions"><div class="row-actions"><button class="btn js-del">Delete</button></div></td>`;
+    tr.querySelector('.js-del').addEventListener('click', async ()=>{
+      if(!confirm('Delete this message?')) return;
+      try{ await api(`/api/admin/messages/${m.id}`, { method:'DELETE' }); await refresh(); }catch(e){ alert(e.message); }
+    });
+    return tr;
+  }
+  async function loadMessages(){
+    const data = await api('/api/admin/messages');
+    const tbody = document.getElementById('messages-body');
+    tbody.innerHTML = '';
+    data.messages.forEach(m=> tbody.appendChild(msgRow(m)) );
+  }
+  async function refresh(){
+  await Promise.all([loadStats(), loadUsers(), loadMessages(), loadProducts()]);
+  }
+  document.getElementById('btn-refresh').addEventListener('click', refresh);
+  document.getElementById('btn-logout').addEventListener('click', async ()=>{
+    try { await api('/api/logout', { method:'POST' }); } catch(e) {}
+    location.href = '/login.html';
+  });
+  (async ()=>{ if(await ensureAdmin()) await refresh(); })();
+
+  // ===== Products Management =====
+  const qsel = (s)=>document.querySelector(s);
+  const byId = (id)=>document.getElementById(id);
+  const productsTbody = byId('prod-body');
+
+  function productRow(p){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td data-label="ID">${p.id}</td>
+      <td data-label="Name">${p.name}</td>
+      <td data-label="Price">₹${Number(p.price||0).toLocaleString('en-IN')}</td>
+      <td data-label="Category" class="muted">${p.category||''}</td>
+      <td data-label="Brand" class="muted">${p.brand||''}</td>
+      <td data-label="Material" class="muted">${p.material||''}</td>
+      <td data-label="3D">${p.is_3d ? 'Yes' : 'No'}</td>
+      <td data-label="Actions">
+        <div class="row-actions">
+          <a class="btn" href="product-details.html?id=${p.id}" target="_blank">View</a>
+          <button class="btn js-edit">Edit</button>
+          <button class="btn js-del">Delete</button>
+        </div>
+      </td>`;
+    tr.querySelector('.js-edit').addEventListener('click', ()=>{
+      startEditProduct(p);
+    });
+    tr.querySelector('.js-del').addEventListener('click', async ()=>{
+      if (!confirm('Delete this product?')) return;
+      try {
+        await api(`/api/admin/products/${p.id}`, { method:'DELETE' });
+        await loadProducts();
+      } catch(e){ alert(e.message); }
+    });
+    return tr;
+  }
+
+  async function loadProducts(){
+    if (!productsTbody) return;
+    try {
+      const data = await api('/api/products');
+      productsTbody.innerHTML = '';
+      (data.products||[]).forEach(p=> productsTbody.appendChild(productRow(p)) );
+    } catch(e){
+      console.warn('Failed to load products', e);
+    }
+  }
+
+  // Form handlers
+  const form = byId('prod-form');
+  const is3dSel = byId('p-is3d');
+  const modelRow = byId('p-model-row');
+  const hiddenId = byId('p-id');
+  const btnSubmit = byId('btn-prod-submit');
+  const btnCancel = byId('btn-prod-cancel');
+  if (is3dSel) {
+    const onToggle = ()=>{ modelRow.style.display = is3dSel.value === '1' ? '' : 'none'; };
+    is3dSel.addEventListener('change', onToggle);
+    onToggle();
+  }
+
+  function resetFormToCreate(){
+    if (!btnSubmit || !hiddenId) return;
+    hiddenId.value = '';
+    btnSubmit.textContent = 'Add Product';
+    if (btnCancel) btnCancel.style.display = 'none';
+  }
+
+  function startEditProduct(p){
+    if (!p) return;
+    hiddenId.value = p.id;
+    byId('p-name').value = p.name || '';
+    byId('p-price').value = p.price ?? '';
+    byId('p-image').value = p.image || '';
+    byId('p-category').value = p.category || '';
+    byId('p-brand').value = p.brand || '';
+    byId('p-material').value = p.material || '';
+    byId('p-desc').value = p.description || '';
+    byId('p-original').value = (p.original_price ?? '') || '';
+    byId('p-discount').value = (p.discount ?? '') || '';
+    byId('p-badge').value = p.badge || '';
+    byId('p-model').value = p.model_src || '';
+    is3dSel.value = (p.is_3d ? '1' : '0');
+    modelRow.style.display = is3dSel.value === '1' ? '' : 'none';
+    btnSubmit.textContent = 'Save Changes';
+    if (btnCancel) btnCancel.style.display = '';
+    // Scroll to form for convenience
+    document.getElementById('prod-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  if (form) {
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      // Normalize paths to forward slashes for the web
+      const norm = (s) => (s || '').trim().replace(/\\/g,'/');
+      const payload = {
+        name: byId('p-name').value.trim(),
+        price: parseInt(byId('p-price').value,10)||0,
+        image: norm(byId('p-image').value),
+        description: byId('p-desc').value.trim(),
+        category: byId('p-category').value,
+        brand: byId('p-brand').value.trim(),
+        material: byId('p-material').value.trim(),
+        original_price: byId('p-original').value ? parseInt(byId('p-original').value,10) : null,
+        discount: byId('p-discount').value ? parseInt(byId('p-discount').value,10) : null,
+        badge: byId('p-badge').value.trim(),
+        model_src: norm(byId('p-model').value),
+        is_3d: byId('p-is3d').value === '1'
+      };
+      try {
+        const editingId = hiddenId.value;
+        if (editingId) {
+          await api(`/api/admin/products/${editingId}`, { method:'PUT', body: JSON.stringify(payload) });
+          alert('Product updated');
+        } else {
+          await api('/api/admin/products', { method:'POST', body: JSON.stringify(payload) });
+          alert('Product added');
+        }
+        // Clear fields
+        form.reset();
+        if (is3dSel) is3dSel.value = '0';
+        if (modelRow) modelRow.style.display = 'none';
+        resetFormToCreate();
+        await loadProducts();
+      } catch(e){ alert(e.message); }
+    });
+  }
+
+  const btnProdRefresh = byId('btn-prod-refresh');
+  if (btnProdRefresh) btnProdRefresh.addEventListener('click', loadProducts);
+  if (btnCancel) btnCancel.addEventListener('click', () => {
+    form.reset();
+    if (is3dSel) is3dSel.value = '0';
+    if (modelRow) modelRow.style.display = 'none';
+    resetFormToCreate();
+  });
+  </script>
+</body>
+<script src="js/app.js"></script>
+</html>

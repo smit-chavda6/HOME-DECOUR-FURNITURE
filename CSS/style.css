@@ -33,6 +33,9 @@
 /* Import Loading Animations */
 @import url('loading.css');
 
+/* Import Profile Page Styles */
+@import url('profile.css');
+
 /* Modern Welcome Section Styles */
 .modern-welcome-section {
   position: relative;
@@ -715,15 +718,16 @@
   display: flex !important;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #fff8f3 60%, #ffe5c1 100%);
-  box-shadow: 0 2px 8px #8B451322;
-  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+  /* Revert to classic navbar link look */
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: none;
+  transition: background 0.2s, transform 0.15s;
   margin: 0 0.5rem;
-  padding: 0;
-  border: 1.5px solid #f3e6d6;
+  padding: 0.5rem 1rem;
+  border: none;
 }
 .navbar-login-btn svg {
   display: block;
@@ -733,10 +737,10 @@
   height: 22px;
 }
 .navbar-login-btn:hover, .navbar-login-btn:focus {
-  background: linear-gradient(135deg, #ffe5c1 60%, #fff8f3 100%);
-  box-shadow: 0 4px 16px #8B451344;
-  transform: translateY(-2px) scale(1.07);
-  border-color: #ffd7a0;
+  /* Match default navbar link hover */
+  background: rgba(139, 69, 19, 0.1);
+  box-shadow: none;
+  transform: translateY(-2px);
 }
 /* Login Status Dot */
 .navbar-login-btn {
@@ -744,12 +748,12 @@
 }
 .navbar-login-btn .login-status-dot {
   position: absolute;
-  bottom: 6px;
-  right: 6px;
+  bottom: 4px;
+  right: 8px;
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  border: 2px solid #fff8f3;
+  border: 2px solid #ffffff;
   background: #bbb;
   box-shadow: 0 1px 4px #8B451322;
   z-index: 2;

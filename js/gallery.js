@@ -1,7 +1,7 @@
 // Gallery Page JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     const filterButtons = document.querySelectorAll('.filter-btn');
-    const galleryItems = document.querySelectorAll('.product-card');
+    let galleryItems = Array.from(document.querySelectorAll('.product-card'));
     const galleryContainer = document.querySelector('.gallery-container');
     
     // New search and filter elements
@@ -13,6 +13,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const maxPriceInput = document.getElementById('maxPrice');
     const sortSelect = document.getElementById('sortSelect');
     const resultsCount = document.getElementById('resultsCount');
+    // Advanced filters (optional)
+    const advBrand = document.getElementById('advBrand');
+    const advMaterial = document.getElementById('advMaterial');
+    // Wishlist elements
+    const wishlistSection = document.querySelector('.wishlist-section');
+    const wishlistItemsEl = document.getElementById('wishlistItems');
+    const wishlistEmptyEl = document.getElementById('wishlistEmptyState');
+    const clearWishlistBtn = document.getElementById('clearWishlistBtn');
+    const WISHLIST_KEY = 'hd_wishlist';
+    let wishlist = {};
     
     // Current filter state
     let currentFilter = 'all';
@@ -20,7 +30,113 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentMinPrice = 0;
     let currentMaxPrice = 90000;
     let currentSort = '';
+    let currentBrand = '';
+    let currentMaterial = '';
     
+    // If gallery is not present on this page, exit early to avoid errors
+    const isGalleryPage = !!galleryContainer || galleryItems.length > 0;
+    if (!isGalleryPage) {
+        console.debug('gallery.js: No gallery found on this page; skipping init');
+        return;
+    }
+
+    // --- Wishlist: State helpers ---
+    function loadWishlist() {
+        try {
+            const raw = localStorage.getItem(WISHLIST_KEY);
+            wishlist = raw ? JSON.parse(raw) : {};
+        } catch (e) {
+            console.warn('Failed to parse wishlist from storage:', e);
+            wishlist = {};
+        }
+    }
+
+    function saveWishlist() {
+        try {
+            localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist));
+        } catch (e) {
+            console.warn('Failed to save wishlist:', e);
+        }
+    }
+
+    function getProductDataFromCard(card) {
+        const id = card.getAttribute('data-product-id');
+        const title = card.querySelector('.product-title')?.textContent?.trim() || `Product ${id}`;
+        const price = card.querySelector('.current-price')?.textContent?.trim() || '';
+        const imgEl = card.querySelector('.product-image img');
+        const image = imgEl ? imgEl.getAttribute('src') : 'image/Logo maker project.webp';
+        const category = card.getAttribute('data-category') || '';
+        return { id, title, price, image, category };
+    }
+
+    function parsePriceToNumber(priceText) {
+        if (!priceText) return 0;
+        const n = parseFloat(String(priceText).replace(/[^0-9.]/g, ''));
+        return isNaN(n) ? 0 : n;
+    }
+
+    function renderWishlist() {
+        if (!wishlistItemsEl || !wishlistEmptyEl) return;
+        const items = Object.values(wishlist);
+        if (items.length === 0) {
+            wishlistItemsEl.innerHTML = '';
+            wishlistEmptyEl.style.display = 'block';
+        } else {
+            wishlistEmptyEl.style.display = 'none';
+            const html = items.map(item => `
+                <div class="wishlist-item" data-product-id="${item.id}">
+                    <div class="wishlist-thumb">
+                        <img src="${item.image}" alt="${item.title}" loading="lazy"/>
+                    </div>
+                    <div class="wishlist-meta">
+                        <a class="wishlist-title" href="product-details.html?id=${item.id}">${item.title}</a>
+                        ${item.price ? `<div class="wishlist-price">${item.price}</div>` : ''}
+                        <div class="wishlist-meta-actions">
+                            <a class="wishlist-view" href="product-details.html?id=${item.id}">View</a>
+                            <button class="wishlist-add-to-cart" data-action="add-to-cart" aria-label="Add to cart from wishlist">Add to Cart</button>
+                            <button class="wishlist-remove" data-action="remove" aria-label="Remove from wishlist">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            wishlistItemsEl.innerHTML = html;
+        }
+        syncWishlistButtons();
+    }
+
+    function addToWishlistFromCard(card) {
+        const data = getProductDataFromCard(card);
+        wishlist[data.id] = data;
+        saveWishlist();
+        renderWishlist();
+    }
+
+    function removeFromWishlist(id) {
+        if (wishlist[id]) {
+            delete wishlist[id];
+            saveWishlist();
+            renderWishlist();
+        }
+    }
+
+    function isWishlisted(id) { return !!wishlist[id]; }
+
+    function syncWishlistButtons() {
+        document.querySelectorAll('.wishlist-btn').forEach(btn => {
+            const id = btn.getAttribute('data-product-id') || btn.closest('.product-card')?.getAttribute('data-product-id');
+            if (!id) return;
+            if (isWishlisted(id)) {
+                btn.classList.add('active');
+                btn.textContent = '♥';
+                btn.style.color = '#e74c3c';
+            } else {
+                btn.classList.remove('active');
+                btn.textContent = '♡';
+                btn.style.color = '#D2691E';
+            }
+        });
+    }
+
     // Filter functionality
     filterButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -55,43 +171,43 @@ document.addEventListener('DOMContentLoaded', function() {
     }, observerOptions);
     
     // Observe gallery items for animation
-    galleryItems.forEach(item => {
-        observer.observe(item);
-    });
+    function observeItems(items){
+        items.forEach(item => observer.observe(item));
+    }
+    observeItems(galleryItems);
     
     // Add hover effects to gallery items
-    galleryItems.forEach(item => {
-        item.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-15px) scale(1.02)';
+    function bindHover(items){
+        items.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-15px) scale(1.02)';
+            });
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
         });
-        
-        item.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
-        });
-    });
+    }
+    bindHover(galleryItems);
     
     // Add click effects to gallery items
-    galleryItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-            // Add ripple effect
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            ripple.classList.add('ripple');
-            
-            this.appendChild(ripple);
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
+    function bindRipple(items){
+        items.forEach(item => {
+            item.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
         });
-    });
+    }
+    bindRipple(galleryItems);
     
     // Search functionality
     if (searchInput) {
@@ -113,6 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function updateClearButton() {
+        if (!clearSearchBtn) return;
         if (currentSearch.length > 0) {
             clearSearchBtn.classList.add('visible');
         } else {
@@ -291,6 +408,20 @@ document.addEventListener('DOMContentLoaded', function() {
             applyFilters();
         });
     }
+
+    // Advanced filters
+    if (advBrand) {
+        advBrand.addEventListener('change', function() {
+            currentBrand = this.value || '';
+            applyFilters();
+        });
+    }
+    if (advMaterial) {
+        advMaterial.addEventListener('change', function() {
+            currentMaterial = this.value || '';
+            applyFilters();
+        });
+    }
     
     function sortItems(items, criteria) {
         return items.sort((a, b) => {
@@ -325,6 +456,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const title = item.querySelector('.product-title').textContent.toLowerCase();
             const priceText = item.querySelector('.current-price').textContent;
             const price = parseFloat(priceText.replace(/[^0-9.]/g, ''));
+            const brand = item.getAttribute('data-brand') || '';
+            const material = item.getAttribute('data-material') || '';
             
             // Check category filter
             const categoryMatch = currentFilter === 'all' || category === currentFilter;
@@ -337,7 +470,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Check price filter
             const priceMatch = price >= currentMinPrice && price <= currentMaxPrice;
             
-            if (categoryMatch && searchMatch && priceMatch) {
+            const brandMatch = !currentBrand || brand === currentBrand;
+            const materialMatch = !currentMaterial || material === currentMaterial;
+
+            if (categoryMatch && searchMatch && priceMatch && brandMatch && materialMatch) {
                 item.style.display = 'block';
                 item.style.opacity = '1';
                 item.style.transform = 'translateY(0)';
@@ -436,63 +572,140 @@ document.addEventListener('DOMContentLoaded', function() {
     updateClearButton();
     
     // Add event listeners for product card buttons
-    const viewDetailsBtns = document.querySelectorAll('.view-details-btn');
-    const addToCartBtns = document.querySelectorAll('.add-to-cart-btn');
-    const quickViewBtns = document.querySelectorAll('.quick-view-btn');
-    const wishlistBtns = document.querySelectorAll('.wishlist-btn');
+    function bindCardButtons(context){
+        const root = context || document;
+        const viewDetailsBtns = root.querySelectorAll('.view-details-btn');
+        const addToCartBtns = root.querySelectorAll('.add-to-cart-btn');
+        const quickViewBtns = root.querySelectorAll('.quick-view-btn');
+    const wishlistBtns = root.querySelectorAll('.wishlist-btn');
+    const viewInRoomBtnsDyn = root.querySelectorAll('.view-in-room-btn');
     
-    // View Details button functionality - now using href links
-    viewDetailsBtns.forEach(btn => {
-        // The links are now <a> tags with href, so we don't need to prevent default
-        // Just add some styling to make them look like buttons
-        btn.style.textDecoration = 'none';
-        btn.style.display = 'inline-block';
-    });
+        // View Details button styling
+        viewDetailsBtns.forEach(btn => {
+            btn.style.textDecoration = 'none';
+            btn.style.display = 'inline-block';
+        });
     
 
     
-    // Quick View button functionality
-    quickViewBtns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const productId = this.getAttribute('data-product-id');
-            const productCard = this.closest('.product-card');
-            const productTitle = productCard.querySelector('.product-title').textContent;
-            const productPrice = productCard.querySelector('.current-price').textContent;
-            
-            // Quick view logic here
-            console.log(`Quick view: ${productTitle} (${productPrice}) - ID: ${productId}`);
-            
-            // Navigate to product details page with correct ID
-            window.location.href = `product-details.html?id=${productId}`;
+        // Quick View button functionality
+        quickViewBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const productId = this.getAttribute('data-product-id');
+                const productCard = this.closest('.product-card');
+                const productTitle = productCard.querySelector('.product-title').textContent;
+                const productPrice = productCard.querySelector('.current-price').textContent;
+                console.log(`Quick view: ${productTitle} (${productPrice}) - ID: ${productId}`);
+                window.location.href = `product-details.html?id=${productId}`;
+            });
         });
-    });
     
-    // Wishlist button functionality
-    wishlistBtns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const productId = this.getAttribute('data-product-id');
-            const productCard = this.closest('.product-card');
-            const productTitle = productCard.querySelector('.product-title').textContent;
-            
-            // Toggle wishlist state
-            this.classList.toggle('active');
-            if (this.classList.contains('active')) {
-                this.textContent = '♥';
-                this.style.color = '#e74c3c';
-                if (window.cartPopupSystem) {
-                    window.cartPopupSystem.showNotification(`${productTitle} added to wishlist!`, 'success');
+        // Wishlist button functionality with persistence
+        wishlistBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const productCard = this.closest('.product-card');
+                const productId = productCard?.getAttribute('data-product-id');
+                const productTitle = productCard?.querySelector('.product-title')?.textContent || 'Item';
+                if (!productId) return;
+                if (isWishlisted(productId)) {
+                    removeFromWishlist(productId);
+                    window.cartPopupSystem?.showNotification(`${productTitle} removed from wishlist!`, 'info');
+                } else {
+                    addToWishlistFromCard(productCard);
+                    window.cartPopupSystem?.showNotification(`${productTitle} added to wishlist!`, 'success');
                 }
-            } else {
-                this.textContent = '♡';
-                this.style.color = '#D2691E';
-                if (window.cartPopupSystem) {
-                    window.cartPopupSystem.showNotification(`${productTitle} removed from wishlist!`, 'info');
-                }
-            }
+            });
         });
-    });
+
+        // AR view-in-room for dynamically added items
+        viewInRoomBtnsDyn.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const productCard = btn.closest('.product-card');
+                const productTitle = productCard.querySelector('.product-title').textContent;
+                const modelSrc = btn.getAttribute('data-model-src');
+                const productId = btn.getAttribute('data-product-id');
+                showGalleryARExperience(productTitle, modelSrc, productId);
+            });
+        });
+    }
+
+    bindCardButtons(document);
+
+    // Fetch products from API and append to gallery (if any)
+    async function fetchAndAppendProducts(){
+        if (!galleryContainer) return;
+        try {
+            const res = await fetch('/api/products', { credentials: 'include' });
+            if (!res.ok) return;
+            const data = await res.json();
+            const products = (data.products||[]);
+            if (!products.length) return;
+            const created = [];
+            products.forEach(p => {
+                // Skip if a card with same id already exists
+                if (galleryContainer.querySelector(`.product-card[data-product-id="${p.id}"]`)) return;
+                const card = document.createElement('div');
+                card.className = 'product-card' + (p.is_3d ? ' product-card-3d' : '');
+                card.setAttribute('data-category', p.category || '');
+                card.setAttribute('data-product-id', p.id);
+                if (p.brand) card.setAttribute('data-brand', p.brand);
+                if (p.material) card.setAttribute('data-material', p.material);
+                const priceHtml = `<span class="current-price">₹${Number(p.price||0).toLocaleString('en-IN')}</span>`;
+                const originalHtml = p.original_price ? `<span class=\"original-price\">₹${Number(p.original_price).toLocaleString('en-IN')}</span>` : '';
+                const discountHtml = p.discount ? `<span class=\"discount\">-${p.discount}%</span>` : '';
+                const badgeHtml = p.badge ? `<div class=\"product-badge\">${p.badge}</div>` : '';
+                const mediaHtml = p.is_3d && p.model_src ? `
+                    <model-viewer src="${p.model_src}" alt="${p.name}" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr"></model-viewer>
+                ` : `
+                    <img src="${p.image || 'image/Logo maker project.webp'}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='image/Logo maker project.webp';">
+                `;
+                card.innerHTML = `
+                    <div class="product-image">
+                        ${mediaHtml}
+                        <div class="product-overlay">
+                            <button class="quick-view-btn" data-product-id="${p.id}">Quick View</button>
+                            <button class="add-to-cart-btn" data-product-id="${p.id}">Add to Cart</button>
+                            ${p.is_3d && p.model_src ? `<button class="view-in-room-btn" data-product-id="${p.id}" data-model-src="${p.model_src}">View in Room</button>` : ''}
+                        </div>
+                        ${badgeHtml}
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${p.name}</h3>
+                        <div class="product-rating">
+                            <span class="stars">${'★'.repeat(Math.round(p.rating||4))}${'☆'.repeat(5-Math.round(p.rating||4))}</span>
+                            <span class="rating-count">(${p.rating_count||0})</span>
+                        </div>
+                        <div class="product-price">
+                            ${priceHtml}
+                            ${originalHtml}
+                            ${discountHtml}
+                        </div>
+                        <div class="product-actions">
+                            <a href="product-details.html?id=${p.id}" class="view-details-btn">View Details</a>
+                            <button class="wishlist-btn" data-product-id="${p.id}">♡</button>
+                        </div>
+                    </div>`;
+                galleryContainer.appendChild(card);
+                created.push(card);
+            });
+            if (created.length){
+                // Update references and bindings
+                galleryItems = Array.from(document.querySelectorAll('.product-card'));
+                observeItems(created);
+                bindHover(created);
+                bindRipple(created);
+                bindCardButtons(galleryContainer);
+                updatePriceRange();
+                applyFilters();
+                syncWishlistButtons();
+            }
+        } catch (e){ console.warn('Failed to fetch products', e); }
+    }
+
+    fetchAndAppendProducts();
     
     // Add event listeners for AR buttons
     const viewInRoomBtns = document.querySelectorAll('.view-in-room-btn');
@@ -502,14 +715,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const productCard = btn.closest('.product-card');
             const productTitle = productCard.querySelector('.product-title').textContent;
             const modelSrc = btn.getAttribute('data-model-src');
+            const productId = btn.getAttribute('data-product-id');
             
             // Show AR experience
-            showGalleryARExperience(productTitle, modelSrc);
+            showGalleryARExperience(productTitle, modelSrc, productId);
         });
     });
     
     // Function to show AR experience from gallery
-    function showGalleryARExperience(productTitle, modelSrc) {
+    function showGalleryARExperience(productTitle, modelSrc, productId) {
         const modal = document.createElement('div');
         modal.className = 'gallery-ar-modal';
         modal.innerHTML = `
@@ -520,7 +734,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="gallery-ar-close">&times;</button>
                 </div>
                 <div class="gallery-ar-body">
-                    <model-viewer src="${modelSrc}" alt="${productTitle}" camera-controls auto-rotate background-color="#fff8f3" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:400px;border-radius:1.2rem;box-shadow:0 2px 12px #ffe5c1aa;"></model-viewer>
+                    <model-viewer src="${modelSrc}" alt="${productTitle}" camera-controls auto-rotate background-color="#121419" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:400px;border-radius:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,0.35);"></model-viewer>
                     <div class="gallery-ar-instructions">
                         <h4>How to use AR:</h4>
                         <ol>
@@ -533,7 +747,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
                 <div class="gallery-ar-footer">
                     <button class="gallery-ar-start-btn">Start AR Experience</button>
-                    <button class="gallery-ar-view-details-btn">View Full Details</button>
+                    <a class="gallery-ar-view-details-btn" href="product-details.html?id=${productId}">View Full Details</a>
                 </div>
             </div>
         `;
@@ -718,8 +932,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Event listeners
         const closeBtn = modal.querySelector('.gallery-ar-close');
         const overlay = modal.querySelector('.gallery-ar-overlay');
-        const startBtn = modal.querySelector('.gallery-ar-start-btn');
-        const viewDetailsBtn = modal.querySelector('.gallery-ar-view-details-btn');
+    const startBtn = modal.querySelector('.gallery-ar-start-btn');
+    const viewDetailsBtn = modal.querySelector('.gallery-ar-view-details-btn');
         const modelViewer = modal.querySelector('model-viewer');
         
         const closeModal = () => modal.remove();
@@ -738,13 +952,70 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         viewDetailsBtn.addEventListener('click', () => {
+            // Close modal and let the anchor navigate
             closeModal();
-            // Navigate to product details page
-            const productId = btn.getAttribute('data-product-id');
-            window.location.href = `product-details.html?id=${productId}`;
         });
         
         document.body.appendChild(modal);
+    }
+
+    // --- Initialize wishlist UI ---
+    if (wishlistSection) {
+        loadWishlist();
+        renderWishlist();
+
+        // Clear all
+        if (clearWishlistBtn) {
+            clearWishlistBtn.addEventListener('click', () => {
+                wishlist = {};
+                saveWishlist();
+                renderWishlist();
+                if (window.cartPopupSystem) {
+                    window.cartPopupSystem.showNotification('Wishlist cleared', 'info');
+                }
+            });
+        }
+
+        // Remove single via delegation
+        if (wishlistItemsEl) {
+            wishlistItemsEl.addEventListener('click', (e) => {
+                const removeBtn = e.target.closest('[data-action="remove"]');
+                const addBtn = e.target.closest('[data-action="add-to-cart"]');
+                const itemEl = e.target.closest('.wishlist-item');
+                const id = itemEl?.getAttribute('data-product-id');
+                if (!itemEl || !id) return;
+
+                if (removeBtn) {
+                    removeFromWishlist(id);
+                    if (window.cartPopupSystem) {
+                        window.cartPopupSystem.showNotification('Removed from wishlist', 'info');
+                    }
+                    return;
+                }
+
+                if (addBtn) {
+                    const data = wishlist[id];
+                    if (!data) return;
+                    const product = {
+                        id: String(data.id),
+                        name: data.title,
+                        price: parsePriceToNumber(data.price),
+                        image: data.image
+                    };
+                    if (window.cartPopupSystem && typeof window.cartPopupSystem.addToCartFromProductDetails === 'function') {
+                        window.cartPopupSystem.addToCartFromProductDetails(product, 1);
+                        window.cartPopupSystem.showNotification(`${product.name} added to cart!`, 'success');
+                    } else {
+                        // Fallback: create a hidden button-like context
+                        const fakeBtn = document.createElement('button');
+                        fakeBtn.setAttribute('data-product-id', String(product.id));
+                        document.body.appendChild(fakeBtn);
+                        try { window.cartPopupSystem?.addToCart(fakeBtn); } catch {}
+                        try { document.body.removeChild(fakeBtn); } catch {}
+                    }
+                }
+            });
+        }
     }
 
 }); 

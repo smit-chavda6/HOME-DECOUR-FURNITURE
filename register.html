@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - HOME DECOR FURNITURE</title>
     <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/dark-mode.css">
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -196,9 +197,22 @@
                 gap: 0;
             }
         }
+        /* Dark theme: use au3 as background image (page-local override) */
+        body.dark-mode .register-section {
+            background-image: linear-gradient(135deg, rgba(15,15,17,0.40) 0%, rgba(18,20,25,0.40) 100%), url('image/au3.png') !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-blend-mode: normal !important;
+        }
     </style>
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode" hidden>
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M21.64 13a1 1 0 0 0-1.05-.14A8 8 0 1 1 11.14 3.41a1 1 0 0 0-.14-1.05 1 1 0 0 0-1.09-.33A10 10 0 1 0 22 14.09a1 1 0 0 0-.36-1.09z"/>
+        </svg>
+    </button>
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="navbar-brand">
@@ -277,6 +291,10 @@
                 <span id="registerBtnText">Create Account</span>
                 <span id="registerBtnLoader" class="loading" style="display: none;"></span>
             </button>
+            <div class="form-group" style="margin-top:8px;display:flex;gap:8px;align-items:center">
+                <input type="checkbox" id="registerNewsletter" name="newsletter" style="width:auto">
+                <label for="registerNewsletter" style="margin:0">Subscribe to newsletter (optional)</label>
+            </div>
             
             <div class="form-links">
                 Already have an account? <a href="login.html">Login</a>
@@ -363,6 +381,7 @@
                 const fullName = document.getElementById('fullName').value.trim();
                 const phone = document.getElementById('phone').value.trim();
                 const address = document.getElementById('address').value.trim();
+                const newsletter = document.getElementById('registerNewsletter').checked;
                 
                 // Validation
                 if (!username || !email || !password || !confirmPassword || !fullName) {
@@ -401,7 +420,8 @@
                             password,
                             full_name: fullName,
                             phone,
-                            address
+                            address,
+                            newsletter
                         })
                     });
                     

@@ -4,8 +4,12 @@ class CartPopupSystem {
         // Prevent duplicate initialization
         this._initialized = false;
 
-        this.cart = JSON.parse(localStorage.getItem('cart')) || [];
-        console.log('Cart popup system initialized with cart:', this.cart);
+    // Load and normalize cart from storage
+    const stored = JSON.parse(localStorage.getItem('cart')) || [];
+    this.cart = this._consolidateCart(this._normalizeCartItems(stored));
+    // Persist normalized cart back to storage (once)
+    try { localStorage.setItem('cart', JSON.stringify(this.cart)); } catch (e) {}
+    console.log('Cart popup system initialized with cart:', this.cart);
         
         // Debug: Check if there are any items with price 0
         const zeroPriceItems = this.cart.filter(item => item.price === 0 || item.price === '0');
@@ -20,7 +24,8 @@ class CartPopupSystem {
         if (this._initialized) {
             // Keep cart in sync with localStorage in case another page updated it
             try {
-                this.cart = JSON.parse(localStorage.getItem('cart')) || this.cart;
+                const fresh = JSON.parse(localStorage.getItem('cart')) || this.cart;
+                this.cart = this._consolidateCart(this._normalizeCartItems(fresh));
             } catch (e) {}
             this.updateCartCount();
             return;
@@ -30,6 +35,32 @@ class CartPopupSystem {
         this.setupCartIcon();
         this.setupCartPopup();
         this.setupAddToCartButtons();
+    }
+
+    // Normalize id/quantity/price shapes
+    _normalizeId(id) { return String(id); }
+
+    _normalizeCartItems(items) {
+        return (items || []).map(it => ({
+            ...it,
+            id: this._normalizeId(it.id),
+            quantity: Math.max(1, parseInt(it.quantity, 10) || 1),
+            price: typeof it.price === 'number' ? it.price : (parseFloat(it.price) || 0)
+        }));
+    }
+
+    _consolidateCart(items) {
+        const map = new Map();
+        (items || []).forEach(it => {
+            const id = this._normalizeId(it.id);
+            if (map.has(id)) {
+                const existing = map.get(id);
+                existing.quantity += Math.max(1, it.quantity || 1);
+            } else {
+                map.set(id, { ...it, id });
+            }
+        });
+        return Array.from(map.values());
     }
 
     // Update cart count in navbar
@@ -64,9 +95,9 @@ class CartPopupSystem {
 
     // Setup cart icon click handler
     setupCartIcon() {
-        const cartIcon = document.querySelector('.cart-icon');
-        if (cartIcon) {
-            cartIcon.addEventListener('click', (e) => {
+        const bind = (el) => {
+            if (!el || el.__cartBound) return;
+            el.addEventListener('click', (e) => {
                 e.preventDefault();
                 if (this.cart.length > 0) {
                     this.showCartPopup();
@@ -74,6 +105,15 @@ class CartPopupSystem {
                     this.showNotification('Your cart is empty!', 'info');
                 }
             });
+            el.__cartBound = true;
+        };
+        document.querySelectorAll('.cart-icon, .mobile-cart-icon').forEach(bind);
+        // Observe DOM changes to bind dynamically inserted icons
+        if (!this._cartIconObserver) {
+            this._cartIconObserver = new MutationObserver(() => {
+                document.querySelectorAll('.cart-icon, .mobile-cart-icon').forEach(bind);
+            });
+            this._cartIconObserver.observe(document.body, { childList: true, subtree: true });
         }
     }
 
@@ -142,7 +182,7 @@ class CartPopupSystem {
         let productId, productName, productPrice, productImage;
 
         // Gallery or other pages
-        productId = button.getAttribute('data-product-id') || this.generateProductId();
+    productId = button.getAttribute('data-product-id') || this.generateProductId();
         const productCard = button.closest('.product-card');
         
         if (productCard) {
@@ -166,14 +206,16 @@ class CartPopupSystem {
             productImage = '';
         }
 
-        // Check if item already exists in cart
-        const existingItemIndex = this.cart.findIndex(item => item.id === productId);
+    // Normalize id for consistent merging across pages
+    const normalizedId = this._normalizeId(productId);
+    // Check if item already exists in cart
+    const existingItemIndex = this.cart.findIndex(item => item.id === normalizedId);
         
         if (existingItemIndex > -1) {
             this.cart[existingItemIndex].quantity += 1;
         } else {
             this.cart.push({
-                id: productId,
+                id: normalizedId,
                 name: productName,
                 price: productPrice,
                 image: productImage,
@@ -198,22 +240,26 @@ class CartPopupSystem {
     }
 
     // Add item to cart from product details page
-    addToCartFromProductDetails(product) {
-        console.log('Adding product to cart from details:', product);
-        
+    addToCartFromProductDetails(product, quantity = 1) {
+        console.log('Adding product to cart from details:', product, 'qty:', quantity);
+
+        const normalizedId = this._normalizeId(product.id);
+        const qty = Math.max(1, parseInt(quantity, 10) || 1);
+        const price = typeof product.price === 'number' ? product.price : (parseFloat(product.price) || 0);
+
         // Check if item already exists in cart
-        const existingItemIndex = this.cart.findIndex(item => item.id === product.id);
+        const existingItemIndex = this.cart.findIndex(item => item.id === normalizedId);
         
         if (existingItemIndex > -1) {
-            this.cart[existingItemIndex].quantity += 1;
+            this.cart[existingItemIndex].quantity += qty;
             console.log('Updated existing item quantity');
         } else {
             this.cart.push({
-                id: product.id,
+                id: normalizedId,
                 name: product.name,
-                price: product.price,
+                price: price,
                 image: product.image,
-                quantity: 1
+                quantity: qty
             });
             console.log('Added new item to cart');
         }
@@ -432,7 +478,8 @@ class CartPopupSystem {
     updateQuantity(productId, change) {
         console.log('Updating quantity for product:', productId, 'change:', change);
         
-        const itemIndex = this.cart.findIndex(item => item.id === productId);
+    const normalizedId = this._normalizeId(productId);
+    const itemIndex = this.cart.findIndex(item => item.id === normalizedId);
         
         if (itemIndex > -1) {
             this.cart[itemIndex].quantity += change;
@@ -472,10 +519,11 @@ class CartPopupSystem {
         console.log('Attempting to remove item with ID:', productId);
         console.log('Current cart before removal:', this.cart);
         
-        const removedItem = this.cart.find(item => item.id === productId);
+    const normalizedId = this._normalizeId(productId);
+    const removedItem = this.cart.find(item => item.id === normalizedId);
         console.log('Item to remove:', removedItem);
         
-        this.cart = this.cart.filter(item => item.id !== productId);
+    this.cart = this.cart.filter(item => item.id !== normalizedId);
         console.log('Cart after removal:', this.cart);
         
         localStorage.setItem('cart', JSON.stringify(this.cart));

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - HOME DECOR FURNITURE</title>
     <link rel="stylesheet" href="CSS/style.css">
+    <link rel="stylesheet" href="CSS/cart-popup.css">
+    <link rel="stylesheet" href="CSS/dark-mode.css">
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -24,7 +26,8 @@
             /* Gradient overlay over background image (fallback to gradient if image missing) */
             background-image: linear-gradient(135deg, rgba(248,249,250,0.75) 0%, rgba(233,236,239,0.75) 100%), url('image/au.jpeg');
             background-size: cover;
-            background-position: center;
+            /* Align visual focal point consistently with dark theme */
+            background-position: center 35%;
             background-repeat: no-repeat;
             background-blend-mode: overlay;
             padding: 20px;
@@ -257,9 +260,23 @@
             .login-bg .blob,
             .login-form { animation: none !important; }
         }
+        /* Dark theme: use au3 as background image (page-local override) */
+        body.dark-mode .login-section {
+            background-image: linear-gradient(135deg, rgba(15,15,17,0.40) 0%, rgba(18,20,25,0.40) 100%), url('image/au4.png') !important;
+            background-size: cover !important;
+            /* Match the light theme focal position */
+            background-position: center 35% !important;
+            background-repeat: no-repeat !important;
+            background-blend-mode: normal !important;
+        }
     </style>
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode" hidden>
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M21.64 13a1 1 0 0 0-1.05-.14A8 8 0 1 1 11.14 3.41a1 1 0 0 0-.14-1.05 1 1 0 0 0-1.09-.33A10 10 0 1 0 22 14.09a1 1 0 0 0-.36-1.09z"/>
+        </svg>
+    </button>
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="navbar-brand">
@@ -290,6 +307,11 @@
         </div>
         <form class="login-form" id="loginForm">
             <h2>Login to Your Account</h2>
+            <div class="demo-credentials" style="display:none">
+                <h4>Demo credentials</h4>
+                <p><strong>User:</strong> demo@example.com</p>
+                <p><strong>Password:</strong> demopass</p>
+            </div>
             
             <div id="alertContainer"></div>
             
@@ -307,6 +329,10 @@
                 <span id="loginBtnText">Login</span>
                 <span id="loginBtnLoader" class="loading" style="display: none;"></span>
             </button>
+            <div class="form-group" style="margin-top:8px;display:flex;gap:8px;align-items:center">
+                <input type="checkbox" id="loginNewsletter" name="newsletter" style="width:auto">
+                <label for="loginNewsletter" style="margin:0">Subscribe to newsletter (optional)</label>
+            </div>
             
             <div class="form-links">
                 <a href="#" id="forgotPassword">Forgot password?</a>
@@ -318,6 +344,28 @@
         </form>
     </section>
     
+    <!-- Cart Popup Modal -->
+    <div id="cartPopupOverlay" class="cart-popup-overlay">
+        <div class="cart-popup">
+            <div class="cart-popup-header">
+                <h3>🛒 Your Cart</h3>
+                <button id="closeCartBtn" class="close-cart-btn">&times;</button>
+            </div>
+            <div id="cartItemsContainer" class="cart-items-container">
+                <!-- Cart items will be dynamically loaded here -->
+            </div>
+            <div class="cart-popup-footer">
+                <div class="cart-total">
+                    Total: <span id="cartTotalPrice" class="cart-total-price">₹0</span>
+                </div>
+                <div class="cart-actions">
+                    <button id="continueShoppingBtn" class="cart-btn secondary">Continue Shopping</button>
+                    <button id="proceedToCheckoutBtn" class="cart-btn primary">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-section">
@@ -378,6 +426,7 @@
     </footer>
     
     <script src="js/app.js"></script>
+    <script src="js/cart-popup.js"></script>
     <script>
         // Login functionality
         document.addEventListener('DOMContentLoaded', function() {
@@ -404,14 +453,14 @@
                 // Show loading state
                 setLoadingState(true);
                 
-                try {
+        try {
                     const response = await fetch('http://localhost:3000/api/login', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         credentials: 'include',
-                        body: JSON.stringify({ username, password })
+            body: JSON.stringify({ username, password, newsletter: document.getElementById('loginNewsletter').checked })
                     });
                     
                     const data = await response.json();
@@ -490,5 +539,5 @@
         });
     </script>
     <script src="js/chatbot.js"></script>
-</body>
-</html> 
+    </body>
+    </html>

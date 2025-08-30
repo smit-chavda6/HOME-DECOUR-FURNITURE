@@ -7,6 +7,7 @@
     <title>HOME DECOR FURNITURE</title>
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="CSS/cart-popup.css">
+    <link rel="stylesheet" href="CSS/dark-mode.css">
     <!-- Favicons - Enhanced for better compatibility -->
     <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="image/Logo maker project.webp">
@@ -52,6 +53,11 @@
 </head>
 
 <body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode" hidden>
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M21.64 13a1 1 0 0 0-1.05-.14A8 8 0 1 1 11.14 3.41a1 1 0 0 0-.14-1.05 1 1 0 0 0-1.09-.33A10 10 0 1 0 22 14.09a1 1 0 0 0-.36-1.09z"/>
+        </svg>
+    </button>
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="navbar-brand">
@@ -360,11 +366,50 @@
                             <label for="message">Message</label>
                             <textarea id="message" name="message" rows="5" placeholder="Type your message here..." required></textarea>
                         </div>
-                        <button type="submit" class="submit-btn redesigned-submit-btn">
-                            <span>Send Message</span>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-                            </svg>
+                        <!-- Optional: Schedule a Callback -->
+                        <div class="optional-block callback-block">
+                            <label class="optional-toggle">
+                                <input type="checkbox" id="enableCallback" />
+                                <span>Schedule a callback (optional)</span>
+                            </label>
+                            <div id="callbackFields" class="callback-fields" style="display:none;">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="callbackDate">Preferred date</label>
+                                        <input type="date" id="callbackDate" name="callbackDate" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="callbackTime">Preferred time</label>
+                                        <input type="time" id="callbackTime" name="callbackTime" />
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="callbackMethod">Contact method</label>
+                                        <select id="callbackMethod" name="callbackMethod">
+                                            <option value="phone" selected>Phone</option>
+                                            <option value="email">Email</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="callbackNotes">Notes (optional)</label>
+                                        <input type="text" id="callbackNotes" name="callbackNotes" placeholder="Any specific instructions" />
+                                    </div>
+                                </div>
+                                <p class="optional-hint">We’ll try our best to reach you at the selected time within business hours.</p>
+                            </div>
+                        </div>
+                        <button type="submit" id="contactSendBtn" class="contact-send-btn contact-send-btn--primary" aria-label="Send message">
+                            <span class="contact-send-btn__content">
+                                <span class="contact-send-btn__label">Send Message</span>
+                                <span class="contact-send-btn__icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 2L11 13"/>
+                                        <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                                    </svg>
+                                </span>
+                                <span class="contact-send-btn__shine" aria-hidden="true"></span>
+                            </span>
                         </button>
                     </form>
                     <div id="contact-success" class="success-message redesigned-success-message" style="display:none;">
@@ -744,7 +789,7 @@
                         <div class="hours-card-content">
                             <h3 class="hours-day">Monday - Friday</h3>
                             <p class="hours-time">9:00 AM - 8:00 PM</p>
-                            <span class="hours-status open">Open Now</span>
+                            <span class="hours-status open">Open</span>
                     </div>
                         <div class="hours-card-accent"></div>
                     </div>
@@ -1227,6 +1272,19 @@
         </style>
     </section>
     
+                <!-- Success Popup (isolated) -->
+                <div id="contactSuccessPopup" class="contact-success-popup" aria-hidden="true">
+                    <div class="contact-success-popup__overlay" data-dismiss="contactSuccessPopup"></div>
+                    <div class="contact-success-popup__dialog" role="dialog" aria-modal="true" aria-labelledby="contactSuccessTitle">
+                        <div class="contact-success-popup__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                        </div>
+                        <h4 id="contactSuccessTitle">Message Sent!</h4>
+                        <p>Thank you for reaching out. We'll reply soon.</p>
+                    </div>
+                </div>
+                <!-- No extra JS needed for the send button; styles now match site theme -->
+
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-section">
@@ -1346,7 +1404,8 @@
         // Advanced Contact Form & Business Hours - immediate init with guards
         (function() {
             const form = document.getElementById('redesigned-contact-form');
-            const submitBtn = document.querySelector('.submit-btn');
+            // Prefer the new isolated send button, fall back to legacy class
+            const submitBtn = document.querySelector('.contact-send-btn') || document.querySelector('.submit-btn');
             const successMessage = document.getElementById('contact-success');
             
             // Material Design Input Animation (scoped to form if present)
@@ -1418,8 +1477,43 @@
                 }
             }
             
+            // Optional Callback toggle and validation
+            (function initCallbackOptional() {
+                const cbToggle = document.getElementById('enableCallback');
+                const cbFields = document.getElementById('callbackFields');
+                const cbDate = document.getElementById('callbackDate');
+                const cbTime = document.getElementById('callbackTime');
+                const cbMethod = document.getElementById('callbackMethod');
+                const phoneInput = document.getElementById('phone');
+                const emailInput = document.getElementById('email');
+
+                if (cbDate) {
+                    try { cbDate.min = new Date().toISOString().split('T')[0]; } catch {}
+                }
+
+                function syncCallbackRequirements() {
+                    const enabled = !!cbToggle?.checked;
+                    if (cbFields) cbFields.style.display = enabled ? 'block' : 'none';
+                    if (cbDate) cbDate.required = enabled;
+                    if (cbTime) cbTime.required = enabled;
+                    if (cbMethod && phoneInput && emailInput) {
+                        const method = cbMethod.value;
+                        // Phone/email remain optional normally; only require one when callback is enabled
+                        phoneInput.required = enabled && method === 'phone';
+                        emailInput.required = enabled && method === 'email';
+                    }
+                }
+
+                cbToggle?.addEventListener('change', syncCallbackRequirements);
+                cbMethod?.addEventListener('change', syncCallbackRequirements);
+
+                // Initialize state on load
+                syncCallbackRequirements();
+            })();
+            
             // Form submission with advanced animations
-            if (form) form.addEventListener('submit', function(e) {
+            // If contact.js handles submission for the modern button, don't double-submit here
+            if (form && !document.querySelector('.contact-send-btn')) form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 // Validate all fields
@@ -1440,7 +1534,7 @@
                     return;
                 }
                 
-                // Show loading state
+                // Show loading state (legacy only)
                 submitBtn.innerHTML = `
                     <span class="btn-text">Sending...</span>
                     <span class="btn-icon">
@@ -1487,7 +1581,7 @@
             });
             
             // Button ripple effect
-            if (submitBtn) submitBtn.addEventListener('click', function(e) {
+            if (submitBtn && submitBtn.classList.contains('submit-btn')) submitBtn.addEventListener('click', function(e) {
                 const ripple = document.createElement('div');
                 ripple.classList.add('btn-ripple');
                 
@@ -1903,6 +1997,7 @@
     
     <!-- Contact Page JavaScript -->
     <script src="js/contact.js"></script>
+    <script src="js/app.js"></script>
 </body>
 
 </html>

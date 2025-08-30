@@ -7,6 +7,7 @@
     <title>HOME DECOR FURNITURE</title>
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="CSS/cart-popup.css">
+    <link rel="stylesheet" href="CSS/dark-mode.css">
 
     <!-- Favicons - Enhanced for better compatibility -->
     <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico">
@@ -42,6 +43,11 @@
 </head>
 
 <body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode" hidden>
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M21.64 13a1 1 0 0 0-1.05-.14A8 8 0 1 1 11.14 3.41a1 1 0 0 0-.14-1.05 1 1 0 0 0-1.09-.33A10 10 0 1 0 22 14.09a1 1 0 0 0-.36-1.09z"/>
+        </svg>
+    </button>
     <!-- Initial Loading Screen -->
     <div id="loader-wrapper">
         <div class="aurora-background"></div>
@@ -496,4 +502,5 @@
     </div>
 </body>
 
+    <script src="js/app.js"></script>
 </html>

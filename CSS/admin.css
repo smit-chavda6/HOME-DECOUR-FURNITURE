@@ -1,0 +1,50 @@
+:root{--bg:#0f0f11;--card:#16181d;--muted:#a4a9b6;--accent:#d4a373;--ok:#22c55e;--warn:#ef4444}
+body{background:#0f0f11;color:#eaeef5;font-family:Inter,system-ui,Arial,sans-serif}
+.admin-wrap{max-width:1200px;margin:90px auto 40px;padding:0 16px}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.admin-header h1{font-size:24px;font-weight:700}
+.admin-actions{display:flex;gap:8px}
+.btn{padding:8px 12px;border-radius:8px;border:1px solid #2a2f39;background:#16181d;color:#eaeef5;cursor:pointer}
+.btn.primary{background:linear-gradient(135deg,#d4a373,#c08457);border:0;color:#111}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0}
+.card{background:#16181d;border:1px solid #22262f;border-radius:14px;padding:16px}
+.card h3{font-size:13px;color:#a4a9b6;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.metric{font-size:28px;font-weight:700}
+.ok{color:var(--ok)}.warn{color:var(--warn)}
+.panel{background:#16181d;border:1px solid #22262f;border-radius:14px;margin-top:16px}
+.panel h2{margin:0;padding:14px 16px;border-bottom:1px solid #22262f;font-size:16px}
+.panel .content{padding:14px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #22262f;text-align:left;font-size:14px}
+th{color:#a4a9b6;font-weight:600}
+.role{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#1d212b;border:1px solid #2a2f39;font-size:12px}
+.role.admin{background:#2b1f17;border-color:#3a2a1e;color:#eac8a3}
+.muted{color:#a4a9b6}
+.row-actions{display:flex;gap:6px}
+.row-actions .btn{padding:6px 8px;font-size:12px}
+.hidden{display:none}
+.notice{margin-top:10px;color:#a4a9b6}
+.brand{color:#eac8a3}
+@media (max-width: 768px){
+  .admin-header{flex-direction:column;align-items:flex-start;gap:8px}
+  .admin-actions{width:100%;flex-wrap:wrap}
+  .admin-actions .btn{flex:1 1 140px}
+  .cards{grid-template-columns:1fr}
+  table{display:block;overflow:auto}
+  th,td{white-space:nowrap}
+}
+/* Compact card-style tables for small phones */
+@media (max-width: 640px){
+  .admin-wrap{margin-top:70px}
+  .admin-header h1{font-size:18px;line-height:1.2}
+  .admin-actions .btn{flex:1 1 100%;}
+  .table-wrap{overflow:visible}
+  table{display:block;border:0}
+  thead{display:none}
+  tbody{display:block}
+  tbody tr{display:block;background:#14161b;border:1px solid #22262f;border-radius:12px;margin-bottom:12px}
+  td{display:grid;grid-template-columns:120px 1fr;gap:8px;padding:10px 12px;white-space:normal}
+  td::before{content:attr(data-label);color:#a4a9b6;font-weight:600;text-transform:uppercase;font-size:11px}
+  .row-actions{gap:8px;flex-wrap:wrap}
+  .row-actions .btn{flex:1 1 130px}
+}

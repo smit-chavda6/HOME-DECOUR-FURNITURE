@@ -166,6 +166,25 @@ function initContactForm() {
     const form = document.getElementById('redesigned-contact-form') || document.getElementById('contact-form');
     if (!form) return; // nothing to init
     const inputs = form.querySelectorAll('input, textarea, select');
+
+    // If already logged in, prefill and lock name/email (and phone if present)
+    fetch('/api/check-auth', { credentials: 'include' })
+        .then(r => r.ok ? r.json() : { authenticated: false })
+        .then(data => {
+            if (data && data.authenticated && data.user) {
+                const n = form.querySelector('#name');
+                const e = form.querySelector('#email');
+                const p = form.querySelector('#phone');
+                if (n) { n.value = data.user.full_name || data.user.username || ''; n.readOnly = true; n.required = false; n.classList.add('has-value'); n.parentElement?.classList.add('focused'); }
+                if (e) { e.value = data.user.email || ''; e.readOnly = true; e.required = false; e.classList.add('has-value'); e.parentElement?.classList.add('focused'); }
+                if (p && (data.user.phone || '').trim()) { p.value = data.user.phone; p.readOnly = true; p.classList.add('has-value'); p.parentElement?.classList.add('focused'); }
+                // Optionally hide name/email groups to simplify UI when logged in
+                const nameGroup = n?.closest('.form-group');
+                const emailGroup = e?.closest('.form-group');
+                if (nameGroup) nameGroup.style.display = 'none';
+                if (emailGroup) emailGroup.style.display = 'none';
+            }
+        }).catch(()=>{});
     
     inputs.forEach(input => {
         // Add floating label effect
@@ -193,11 +212,16 @@ function initContactForm() {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const submitBtn = form.querySelector('.redesigned-submit-btn, .submit-btn');
+        // Support new isolated button as well
+        const submitBtn = form.querySelector('.contact-send-btn, .redesigned-submit-btn, .submit-btn');
         if (!submitBtn) return;
-        // For redesigned button simple content structure
-        const btnTextEl = submitBtn.querySelector('.btn-text') || submitBtn.querySelector('span');
-        const btnIcon = submitBtn.querySelector('.btn-icon') || submitBtn.querySelector('svg');
+        // Find label and icon across button variants
+        const btnTextEl = submitBtn.querySelector('.contact-send-btn__label')
+                          || submitBtn.querySelector('.btn-text')
+                          || submitBtn.querySelector('span');
+        const btnIcon = submitBtn.querySelector('.contact-send-btn__icon svg')
+                          || submitBtn.querySelector('.btn-icon')
+                          || submitBtn.querySelector('svg');
         const originalText = btnTextEl ? btnTextEl.textContent : '';
         const originalIcon = btnIcon ? btnIcon.outerHTML : '';
         
@@ -212,77 +236,79 @@ function initContactForm() {
     if (btnTextEl) btnTextEl.textContent = 'Sending...';
     if (btnIcon && btnIcon.style) btnIcon.style.opacity = '0';
         
-        // Simulate form submission
-        setTimeout(() => {
-            // Show success state
+        // Collect form values
+        const payload = {
+            name: form.querySelector('#name')?.value?.trim() || undefined,
+            email: form.querySelector('#email')?.value?.trim() || undefined,
+            phone: form.querySelector('#phone')?.value?.trim() || undefined,
+            subject: form.querySelector('#subject')?.value || 'general',
+            message: form.querySelector('#message')?.value?.trim() || ''
+        };
+
+        // Persist to backend
+        fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(async (res)=>{
+            if (!res.ok) throw new Error((await res.json().catch(()=>({}))).error || 'Failed to send');
+            return res.json();
+        }).then(() => {
+            // Success UI
             submitBtn.classList.remove('loading');
             if (btnTextEl) btnTextEl.textContent = 'Message Sent!';
             if (btnIcon) {
                 btnIcon.outerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>';
             }
             submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
-            
-            // Show success message
-            const successMessage = document.getElementById('contact-success');
-            if (successMessage) {
-                successMessage.style.display = 'flex';
-                // add class to trigger scoped CSS animations
-                successMessage.classList.add('show');
-                // generate confetti pieces only first time per show
-                if (!successMessage.dataset.confetti) {
-                    const colors = ['primary','secondary','accent'];
-                    for (let i=0;i<14;i++) {
-                        const piece = document.createElement('span');
-                        piece.className = 'success-confetti-piece' + (i%3===1?' alt': i%3===2?' accent':'');
-                        // random trajectory via CSS vars
-                        const angle = (Math.random()*100) - 50; // horizontal spread
-                        const distance = 40 + Math.random()*70; // vertical distance
-                        const rotate = Math.floor(Math.random()*360) + 'deg';
-                        piece.style.setProperty('--x', angle + 'px');
-                        piece.style.setProperty('--y', distance * -1 + 'px');
-                        piece.style.setProperty('--r', rotate);
-                        piece.style.animationDelay = (Math.random()*0.25)+'s';
-                        piece.style.left = (50 + angle/6)+'%';
-                        successMessage.appendChild(piece);
-                    }
-                    successMessage.dataset.confetti = 'true';
-                }
-            }
-            
-            // Reset form after 3 seconds
+
+            const sendSection = document.querySelector('.send-message-section');
+            if (sendSection) sendSection.classList.add('is-hidden');
+            const popup = document.getElementById('contactSuccessPopup');
+            if (popup) popup.setAttribute('aria-hidden','false');
+
+            // Reset after a pause
             setTimeout(() => {
                 form.reset();
                 if (btnTextEl) btnTextEl.textContent = originalText;
-                if (originalIcon && submitBtn.querySelector('svg')) {
-                    // already replaced, nothing else
-                } else if (originalIcon) {
-                    submitBtn.insertAdjacentHTML('beforeend', originalIcon);
+                // Restore icon for all variants
+                const existingIcon = submitBtn.querySelector('svg');
+                if (!existingIcon && originalIcon) {
+                    const iconWrap = submitBtn.querySelector('.contact-send-btn__icon');
+                    if (iconWrap) {
+                        iconWrap.innerHTML = originalIcon;
+                    } else {
+                        submitBtn.insertAdjacentHTML('beforeend', originalIcon);
+                    }
                 }
                 submitBtn.style.background = 'linear-gradient(135deg, #8B4513, #D2691E)';
                 submitBtn.classList.remove('loading');
-                
+
                 // Reset button styles
                 submitBtn.style.transform = '';
                 submitBtn.style.boxShadow = '';
                 submitBtn.style.width = '';
                 submitBtn.style.height = '';
-                
-                // Hide success message
-                if (successMessage) {
-                    successMessage.style.display = 'none';
-                    successMessage.classList.remove('show');
-                    // remove confetti for next show cycle
-                    successMessage.querySelectorAll('.success-confetti-piece').forEach(p=>p.remove());
-                    delete successMessage.dataset.confetti;
-                }
-                
+
+                if (popup) popup.setAttribute('aria-hidden','true');
+                if (sendSection) sendSection.classList.remove('is-hidden');
+
                 // Reset input states
                 inputs.forEach(input => {
                     input.classList.remove('has-value');
                     input.parentElement.classList.remove('focused');
                 });
             }, 3000);
-        }, 2000);
+        }).catch((err) => {
+            // Error UI
+            submitBtn.classList.remove('loading');
+            submitBtn.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+            if (btnTextEl) btnTextEl.textContent = err.message || 'Failed';
+            setTimeout(() => {
+                if (btnTextEl) btnTextEl.textContent = originalText;
+                submitBtn.style.background = 'linear-gradient(135deg, #8B4513, #D2691E)';
+            }, 2000);
+        });
     });
 }
 
