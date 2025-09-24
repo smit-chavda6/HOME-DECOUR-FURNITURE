@@ -10,8 +10,12 @@
 
 .profile-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
 .profile-card { background: #fff; border: 1px solid rgba(139,69,19,0.12); border-radius: 14px; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+.tab-navigation .btn[aria-selected="true"] { background: linear-gradient(135deg, #D2691E, #8B4513); color:#fff; border:0; }
+.tab-pane { min-height: 120px; }
 .profile-card h2 { margin: 0 0 12px; font-size: 16px; color: #3d2314; text-transform: uppercase; letter-spacing: .06em; }
 .details { display: grid; gap: 10px; }
+.order-items { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
+.order-items li { background: rgba(139,69,19,0.03); border: 1px solid rgba(139,69,19,0.12); border-radius: 10px; padding: 8px; }
 .detail label { display:block; font-size: 12px; color: #6f4f3b; margin-bottom: 4px; }
 .detail .value { font-size: 15px; color: #2c1810; }
 .chip { display:inline-flex; align-items:center; gap:6px; padding: 4px 10px; border-radius: 999px; background: rgba(139,69,19,0.08); color: #3d2314; border: 1px solid rgba(139,69,19,0.2); font-size: 12px; font-weight: 600; }
@@ -27,6 +31,7 @@
 .btn.primary { background: linear-gradient(135deg, #D2691E, #8B4513); border: 0; color: #fff; font-weight: 700; }
 .btn.ghost { background: rgba(255,255,255,0.7); border-color: rgba(139,69,19,0.2); color: #6f4f3b; }
 .btn.ghost:hover { background: #fff; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; filter: grayscale(0.1); }
 
 .profile-back { display:flex; align-items:center; gap:8px; margin: 0 0 12px; }
 .profile-back .icon { display:inline-flex; margin-right: 6px; }
@@ -52,13 +57,110 @@
 /* Modal styles */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 16px; }
 .modal-overlay.active { display: flex; }
-.modal { width: 100%; max-width: 560px; background: #fff; border: 1px solid rgba(139,69,19,0.15); border-radius: 14px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); overflow: hidden; }
-.modal-header { display:flex; align-items:center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid rgba(139,69,19,0.12); }
+/* Ensure the Review modal sits above the Orders & Reviews modal */
+#reviewModal.modal-overlay { z-index: 3000; }
+.modal { width: 100%; max-width: 560px; background: #fff; border: 1px solid rgba(139,69,19,0.15); border-radius: 14px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); overflow: hidden; max-height: 90vh; display: flex; flex-direction: column; }
+.modal.modal--wide { max-width: 960px; }
+.modal-header { display:flex; align-items:center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid rgba(139,69,19,0.12); position: sticky; top: 0; background: #fff; z-index: 2; }
 .modal-header h3 { margin:0; font-size: 18px; color:#3d2314; }
 .modal-close { background: transparent; border: 0; font-size: 26px; line-height: 1; padding: 2px 8px; cursor: pointer; color: #6f4f3b; }
-.modal-body { padding: 16px; }
+.modal-body { padding: 16px; overflow: auto; }
+/* Tabs */
+.tabs { display:flex; gap:8px; border-bottom:1px solid rgba(139,69,19,0.12); margin-bottom: 12px; }
+.tab-btn { appearance:none; border:0; background: transparent; padding:10px 12px; border-bottom:2px solid transparent; color:#6f4f3b; cursor:pointer; }
+.tab-btn.active { color:#3d2314; border-bottom-color:#8B4513; font-weight:600; }
+
+/* Data tables */
+.data-table { width:100%; border-collapse: collapse; font-size: 14px; }
+.data-table thead th { text-align:left; background: rgba(139,69,19,0.06); color:#3d2314; padding:10px; border-bottom:1px solid rgba(139,69,19,0.15); }
+.data-table tbody td { padding:10px; border-bottom:1px solid rgba(139,69,19,0.1); vertical-align: top; }
+.data-table tbody tr:hover { background: rgba(139,69,19,0.04); }
+.data-table td .actions { display:flex; flex-wrap: wrap; gap:6px; }
+.status-badge { display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid currentColor; font-size:12px; text-transform: capitalize; }
+.status-badge.delivered { color:#1f7a3a; }
+.status-badge.shipped { color:#1f6f7a; }
+.status-badge.placed { color:#8B4513; }
+.item-thumb { width:34px; height:34px; object-fit:cover; border-radius:6px; border:1px solid rgba(0,0,0,0.08); margin-right:6px; vertical-align:middle; }
+.items-cell { display:flex; flex-wrap: wrap; gap:8px; }
+.items-cell .item { display:flex; align-items:center; gap:6px; background: rgba(139,69,19,0.06); padding:4px 6px; border-radius:8px; border:1px solid rgba(139,69,19,0.12); }
+
+/* Compact buttons for table actions */
+.btn.sm { padding: 4px 8px; font-size: 12px; border-radius: 8px; }
+
+/* Star ratings */
+.stars { display:inline-flex; gap:2px; color:#FFC107; vertical-align: middle; }
+/* Half star + glow enhancements */
+.stars .star { position:relative; transition:transform .15s ease, filter .15s ease; }
+.stars.interactive .star:hover { transform: scale(1.15); filter: drop-shadow(0 0 4px rgba(255,193,7,0.6)); }
+/* Layered star approach: base star + .star-fill-layer inside controlling partial width */
+.stars .star .star-fill-layer { position:absolute; top:0; left:0; height:100%; overflow:hidden; display:inline-block; width:0; }
+.stars .star .star-fill-layer svg path { fill: currentColor; stroke: currentColor; }
+.rating-value { font-size:14px; color:#8B4513; }
+.dark-mode .rating-value { color:#e8e6e3; }
+.stars.interactive.glowing .star--filled svg path { filter: drop-shadow(0 0 4px rgba(255,193,7,0.65)); }
+/* Force reviewed display stars to stay yellow even if other theme overrides occur */
+#reviewsTable .stars,
+#reviewsTable td .stars,
+#reviewsTable .stars .star--filled svg path {
+  color:#FFC107 !important;
+  fill:#FFC107 !important;
+  stroke:#FFC107 !important;
+}
+.dark-mode #reviewsTable .stars,
+.dark-mode #reviewsTable td .stars,
+.dark-mode #reviewsTable .stars .star--filled svg path {
+  color:#FFB300 !important;
+  fill:#FFB300 !important;
+  stroke:#FFB300 !important;
+}
+/* Apply same forced color to overlay layer */
+#reviewsTable .stars .star .star-fill-layer svg path { fill:#FFC107 !important; }
+.dark-mode #reviewsTable .stars .star .star-fill-layer svg path { fill:#FFB300 !important; }
+.stars .star { display:inline-block; width:16px; height:16px; position:relative; }
+.stars .star svg { width:100%; height:100%; position:relative; z-index:0; pointer-events:none; }
+.stars .star .star-fill-layer { z-index:1; }
+/* Full star: outline + (overlay provides fill) */
+.stars .star--filled svg path { fill: transparent; stroke: currentColor; }
+/* Partial star: treat like empty outline but we distinguish class for logic */
+.stars .star--partial svg path { fill: transparent; stroke: currentColor; opacity:0.85; }
+/* Overlay supplies actual fill */
+.stars .star .star-fill-layer svg path { fill: currentColor; stroke: currentColor; }
+/* Empty star outline lighter */
+.stars .star--empty svg path { fill: transparent; stroke: currentColor; opacity: 0.35; }
+
+/* Interactive stars for review modal */
+.stars.interactive { cursor: pointer; }
+.stars.interactive .star { width:22px; height:22px; }
+.stars.interactive .star:focus { outline: 2px solid #8B4513; outline-offset: 2px; border-radius: 4px; }
+
+/* Dark mode tweaks for modal and tables */
+.dark-mode .modal { background: #121214; border-color: rgba(255,255,255,0.12); }
+.dark-mode .modal-header { border-bottom-color: rgba(255,255,255,0.12); background: #121214; }
+.dark-mode .modal-header h3 { color: #e8e6e3; }
+.dark-mode .modal-close { color: #b9b5b0; }
+.dark-mode .tabs { border-bottom-color: rgba(255,255,255,0.12); }
+.dark-mode .tab-btn { color: #b9b5b0; }
+.dark-mode .tab-btn.active { color:#fff; border-bottom-color:#d28f5a; }
+.dark-mode .data-table thead th { background: rgba(255,255,255,0.06); color:#e8e6e3; border-bottom-color: rgba(255,255,255,0.12); }
+.dark-mode .data-table tbody td { border-bottom-color: rgba(255,255,255,0.08); color:#ddd; }
+.dark-mode .data-table tbody tr:hover { background: rgba(255,255,255,0.04); }
+.dark-mode .items-cell .item { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); }
+.dark-mode .status-badge.placed { color:#e2b08a; }
+.dark-mode .status-badge.shipped { color:#7bcbe0; }
+.dark-mode .status-badge.delivered { color:#55c17a; }
+.dark-mode .btn { background: #1a1b1e; border-color: rgba(255,255,255,0.14); color: #e8e6e3; }
+.dark-mode .btn:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
+.dark-mode .btn.primary { background: linear-gradient(135deg, #c77634, #8B4513); }
+.dark-mode .btn:disabled { opacity: 0.45; box-shadow: none; filter: grayscale(0.25); }
 
 @media (max-width: 480px){
   .modal { max-width: 100%; border-radius: 12px; }
   .modal-body { padding: 14px; }
 }
+
+/* Reviewed badge inside item chip */
+.reviewed-badge { background:#1f7a3a; color:#fff; font-size:10px; padding:2px 6px; border-radius:999px; line-height:1; margin-left:4px; display:inline-block; font-weight:600; letter-spacing:.5px; }
+.items-cell .item .reviewed-badge { background:#1f7a3a; }
+.dark-mode .reviewed-badge { background:#2f9a54; }
+
+/* (Removed reviews filter controls styles) */

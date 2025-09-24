@@ -655,11 +655,13 @@
         font-size: 1.8rem;
     }
     
+    .product-actions { gap: 0.75rem; }
     .btn-primary,
     .btn-secondary,
     .btn-ar {
-        padding: 0.8rem 1.5rem;
+        padding: 0.9rem 1.2rem;
         font-size: 1rem;
+        width: 100%;
     }
     
     .tab-content {

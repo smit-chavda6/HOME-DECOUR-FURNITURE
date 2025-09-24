@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin • Settings</title>
+  <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico">
+  <link rel="stylesheet" href="CSS/style.css" />
+  <link rel="stylesheet" href="CSS/admin.css" />
+  <link rel="stylesheet" href="CSS/dark-mode.css" />
+  <script defer src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" aria-label="Admin navigation">
+      <div class="admin-profile">
+        <div class="avatar" aria-hidden="true">A</div>
+        <div class="profile-meta">
+          <div class="name" id="admin-user-name">Admin</div>
+          <a class="open-profile" href="/profile.html" target="_blank" rel="noopener">Open Profile ↗</a>
+        </div>
+      </div>
+      <nav class="admin-nav">
+        <a class="nav-link" href="/admin.html"><span class="nav-icon"><i data-feather="grid"></i></span><span class="nav-label">Dashboard</span></a>
+        <a class="nav-link" href="/admin-users.html"><span class="nav-icon"><i data-feather="users"></i></span><span class="nav-label">Users</span></a>
+        <a class="nav-link" href="/admin-orders.html"><span class="nav-icon"><i data-feather="file-text"></i></span><span class="nav-label">Orders</span></a>
+        <a class="nav-link" href="/admin-messages.html"><span class="nav-icon"><i data-feather="mail"></i></span><span class="nav-label">Messages</span></a>
+        <a class="nav-link" href="/admin-products.html"><span class="nav-icon"><i data-feather="shopping-bag"></i></span><span class="nav-label">Products</span></a>
+        <a class="nav-link" href="/admin-notifications.html"><span class="nav-icon"><i data-feather="bell"></i></span><span class="nav-label">Notifications</span></a>
+        <a class="nav-link active" href="/admin-settings.html"><span class="nav-icon"><i data-feather="settings"></i></span><span class="nav-label">Settings</span></a>
+      </nav>
+    </aside>
+    <div class="admin-main">
+      <div class="admin-wrap">
+        <div class="admin-header">
+          <h1><span class="brand">Admin</span> — Settings</h1>
+          <div class="admin-actions">
+            <button class="btn" id="btn-save">Save</button>
+            <button class="btn" id="btn-logout">Logout</button>
+            <a class="btn primary" href="/">Go to site</a>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Site Preferences</h2>
+          <div class="content">
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="set-theme">Theme</label>
+                <select id="set-theme">
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="set-accent">Accent</label>
+                <select id="set-accent">
+                  <option value="accent-amber">Amber</option>
+                  <option value="accent-teal">Teal</option>
+                  <option value="accent-rose">Rose</option>
+                  <option value="accent-indigo">Indigo</option>
+                </select>
+              </div>
+              <div class="form-field" style="grid-column:1/-1">
+                <label for="set-site-title">Site Title</label>
+                <input id="set-site-title" placeholder="HOME DECOR FURNITURE" />
+              </div>
+            </div>
+            <div class="section-actions" style="margin-top:12px">
+              <button class="btn primary" id="btn-apply">Apply</button>
+              <button class="btn" id="btn-reset">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Security</h2>
+          <div class="content">
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="set-session-timeout">Session Timeout (minutes)</label>
+                <input id="set-session-timeout" type="number" min="5" step="5" placeholder="30" />
+              </div>
+              <div class="form-field">
+                <label for="set-2fa">Require 2FA</label>
+                <select id="set-2fa">
+                  <option value="off">Off</option>
+                  <option value="on">On</option>
+                </select>
+              </div>
+            </div>
+            <div class="notice">Note: These UI settings are local in this demo. We can wire them to server config if needed.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+  async function api(path, opts={}){
+    const res = await fetch(path, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
+    const data = await res.json().catch(()=>({}));
+    if (!res.ok) throw new Error(data.error || 'Request failed');
+    return data;
+  }
+  async function ensureAdmin(){
+    const auth = await api('/api/check-auth');
+    if (!auth.authenticated || auth.user.role !== 'admin') { try { await api('/api/admin/check'); } catch(e) {} location.href = '/login.html'; return false; }
+    try { document.getElementById('admin-user-name').textContent = auth.user?.full_name || auth.user?.username || 'Admin'; } catch{}
+    return true;
+  }
+  (function highlight(){
+    const path = location.pathname.replace(/\\+/g,'/');
+    document.querySelectorAll('.admin-sidebar .nav-link').forEach(a => {
+      const href = a.getAttribute('href');
+      const matches = (href === '/' ? path === '/' : path.endsWith(href));
+      a.classList.toggle('active', matches);
+    });
+    try { if (window.feather) feather.replace(); } catch {}
+  })();
+  // Demo settings persistence (localStorage)
+  const $ = (id)=>document.getElementById(id);
+  function loadLocal(){
+    const theme = localStorage.getItem('hdf-theme') || 'light';
+    const accent = localStorage.getItem('hdf-accent') || 'accent-amber';
+    const title = localStorage.getItem('hdf-site-title') || 'HOME DECOR FURNITURE';
+    const tout = localStorage.getItem('hdf-session-timeout') || '';
+    const twofa = localStorage.getItem('hdf-2fa') || 'off';
+    $('#set-theme').value = theme;
+    $('#set-accent').value = accent;
+    $('#set-site-title').value = title;
+    $('#set-session-timeout').value = tout;
+    $('#set-2fa').value = twofa;
+  }
+  function apply(){
+    localStorage.setItem('hdf-theme', $('#set-theme').value);
+    localStorage.setItem('hdf-accent', $('#set-accent').value);
+    localStorage.setItem('hdf-site-title', $('#set-site-title').value.trim() || 'HOME DECOR FURNITURE');
+    localStorage.setItem('hdf-session-timeout', $('#set-session-timeout').value);
+    localStorage.setItem('hdf-2fa', $('#set-2fa').value);
+    alert('Settings saved locally. Reload to see theme change.');
+  }
+  document.getElementById('btn-apply').addEventListener('click', apply);
+  document.getElementById('btn-save').addEventListener('click', apply);
+  document.getElementById('btn-reset').addEventListener('click', ()=>{ localStorage.removeItem('hdf-theme'); localStorage.removeItem('hdf-accent'); localStorage.removeItem('hdf-site-title'); localStorage.removeItem('hdf-session-timeout'); localStorage.removeItem('hdf-2fa'); loadLocal(); });
+  document.getElementById('btn-logout').addEventListener('click', async ()=>{ try { await api('/api/logout', { method:'POST' }); } catch(e) {} location.href = '/login.html'; });
+  (async ()=>{ if(await ensureAdmin()) loadLocal(); })();
+  </script>
+  <script src="js/app.js"></script>
+</body>
+</html>

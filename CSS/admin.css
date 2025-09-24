@@ -1,31 +1,128 @@
-:root{--bg:#0f0f11;--card:#16181d;--muted:#a4a9b6;--accent:#d4a373;--ok:#22c55e;--warn:#ef4444}
-body{background:#0f0f11;color:#eaeef5;font-family:Inter,system-ui,Arial,sans-serif}
+.chart-card {
+  /* ...existing code... */
+  min-height: 220px;
+  max-height: 320px;
+  height: 260px;
+  overflow: hidden;
+}
+.chart-card canvas {
+  height: 180px !important;
+  max-height: 180px !important;
+  min-height: 180px !important;
+  width: 100% !important;
+  display: block;
+}
+/* Theme tokens (light by default) */
+:root{
+  --bg:#f7f7fb;           /* page background */
+  --surface:#ffffff;      /* cards/panels/buttons */
+  --panel:#ffffff;        /* table headers/surfaces */
+  --border:#e5e7eb;       /* outlines/dividers */
+  --text:#111827;         /* primary text */
+  --muted:#6b7280;        /* secondary text */
+  --accent1:#d4a373;      /* gradient start */
+  --accent2:#c08457;      /* gradient end */
+  --accentText:#111;      /* text on accent */
+  --ok:#16a34a;           /* success */
+  --warn:#dc2626;         /* danger */
+}
+
+/* Dark mode overrides (match site-wide dark palette) */
+body.dark-mode{
+  --bg:#0f0f11;
+  --surface:#16181d;
+  --panel:#121318;
+  --border:#22262f;
+  --text:#eaeef5;
+  --muted:#a4a9b6;
+  --accent1:#d4a373;
+  --accent2:#c08457;
+  --accentText:#111;
+  --ok:#22c55e;
+  --warn:#ef4444;
+}
+
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
+/* New sidebar layout */
+.admin-layout{display:grid;grid-template-columns:260px 1fr;gap:0;max-width:1440px;margin:0 auto}
+.admin-sidebar{position:sticky;top:0;align-self:start;height:100vh;background:var(--surface);border-right:1px solid var(--border);padding:20px 14px 24px;display:flex;flex-direction:column;gap:18px}
+.admin-main{min-height:100vh}
+.admin-profile{display:flex;align-items:center;gap:12px;padding:6px 10px}
+.admin-profile .avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;color:var(--accentText);font-weight:700}
+.admin-profile .name{font-weight:700}
+.admin-profile .open-profile{color:var(--muted);font-size:12px;text-decoration:none}
+.admin-nav{display:flex;flex-direction:column;gap:4px}
+.admin-nav .nav-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--muted);text-decoration:none}
+.admin-nav .nav-link .nav-icon{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px}
+.admin-nav .nav-link .nav-icon svg{width:18px;height:18px;stroke:currentColor}
+.admin-nav .nav-link:hover{background:color-mix(in oklab, var(--panel) 80%, transparent);color:var(--text)}
+.admin-nav .nav-link.active{background:linear-gradient(135deg, color-mix(in oklab, var(--accent1) 10%, transparent), color-mix(in oklab, var(--accent2) 10%, transparent));color:var(--text);border:1px solid var(--border)}
+.admin-nav .nav-icon{width:18px;text-align:center;opacity:.9}
 .admin-wrap{max-width:1200px;margin:90px auto 40px;padding:0 16px}
 .admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .admin-header h1{font-size:24px;font-weight:700}
 .admin-actions{display:flex;gap:8px}
-.btn{padding:8px 12px;border-radius:8px;border:1px solid #2a2f39;background:#16181d;color:#eaeef5;cursor:pointer}
-.btn.primary{background:linear-gradient(135deg,#d4a373,#c08457);border:0;color:#111}
+.btn{padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer}
+.btn.primary{background:linear-gradient(135deg,var(--accent1),var(--accent2));border:0;color:var(--accentText)}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0}
-.card{background:#16181d;border:1px solid #22262f;border-radius:14px;padding:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px}
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;min-height:220px;display:flex;flex-direction:column}
+.chart-card h3{font-size:14px;color:#a4a9b6;margin:4px 0 8px 0;font-weight:600}
+.chart-card canvas{flex:1}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-top:16px}
+.panel h2{margin:0;padding:16px 16px 0;font-size:18px}
+.panel .content{padding:16px}
+.panel .notice{color:var(--muted);margin-bottom:10px}
+/* Simple form styling */
+#prod-form label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+#prod-form input,#prod-form select,#prod-form textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text);outline:none}
+#prod-form input:focus,#prod-form select:focus,#prod-form textarea:focus{border-color:color-mix(in oklab, var(--accent2) 50%, var(--border));box-shadow:0 0 0 3px color-mix(in oklab, var(--accent2) 20%, transparent)}
+
+/* Modal (Add/Edit Product) */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 1000; }
+.modal-overlay.hidden { display: none; }
+.modal { background: var(--card-bg, #ffffff); color: var(--text-color, #111827); width: min(760px, 100%); max-height: 90vh; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); overflow: hidden; border: 1px solid var(--border-color, #e5e7eb); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border-color, #e5e7eb); }
+.modal-header h3 { margin: 0; font-size: 1.1rem; }
+.modal-close { appearance: none; -webkit-appearance: none; background: transparent; border: none; font-size: 20px; line-height: 1; padding: 6px 10px; border-radius: 8px; cursor: pointer; color: inherit; }
+.modal-close:hover { background: rgba(0,0,0,0.06); }
+.modal-body { padding: 14px 16px; }
+
+/* Inputs inside modal inherit existing admin input styles; ensure full width */
+#prod-form input, #prod-form select, #prod-form textarea { width: 100%; }
+
+/* Dark mode adjustments if variables aren't set */
+html.dark .modal { background: var(--card-bg, #0f172a); color: var(--text-color, #e5e7eb); border-color: var(--border-color, #1f2937); }
+html.dark .modal-close:hover { background: rgba(255,255,255,0.08); }
+.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:10px}
+table{width:100%;border-collapse:collapse}
+thead th{position:sticky;top:0;background:var(--panel);color:var(--muted);padding:10px;text-align:left;border-bottom:1px solid var(--border)}
+tbody td{padding:10px;border-bottom:1px solid var(--border)}
+.row-actions{display:flex;gap:8px}
 .card h3{font-size:13px;color:#a4a9b6;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
 .metric{font-size:28px;font-weight:700}
 .ok{color:var(--ok)}.warn{color:var(--warn)}
-.panel{background:#16181d;border:1px solid #22262f;border-radius:14px;margin-top:16px}
-.panel h2{margin:0;padding:14px 16px;border-bottom:1px solid #22262f;font-size:16px}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-top:16px}
+.panel h2{margin:0;padding:14px 16px;border-bottom:1px solid var(--border);font-size:16px}
 .panel .content{padding:14px}
 table{width:100%;border-collapse:collapse}
-th,td{padding:10px;border-bottom:1px solid #22262f;text-align:left;font-size:14px}
-th{color:#a4a9b6;font-weight:600}
-.role{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:#1d212b;border:1px solid #2a2f39;font-size:12px}
+.th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:14px}
+th{color:var(--muted);font-weight:600}
+.role{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:color-mix(in oklab, var(--panel) 80%, transparent);border:1px solid var(--border);font-size:12px}
 .role.admin{background:#2b1f17;border-color:#3a2a1e;color:#eac8a3}
-.muted{color:#a4a9b6}
+.muted{color:var(--muted)}
 .row-actions{display:flex;gap:6px}
 .row-actions .btn{padding:6px 8px;font-size:12px}
 .hidden{display:none}
-.notice{margin-top:10px;color:#a4a9b6}
+.notice{margin-top:10px;color:var(--muted)}
 .brand{color:#eac8a3}
 @media (max-width: 768px){
+  .admin-layout{grid-template-columns:1fr}
+  .admin-sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--border);border-radius:0}
+  .admin-profile{padding:0 0 4px 0}
+  .admin-nav{flex-direction:row;flex-wrap:wrap;gap:8px}
+  .admin-nav .nav-link{padding:8px 10px}
   .admin-header{flex-direction:column;align-items:flex-start;gap:8px}
   .admin-actions{width:100%;flex-wrap:wrap}
   .admin-actions .btn{flex:1 1 140px}
@@ -33,6 +130,12 @@ th{color:#a4a9b6;font-weight:600}
   table{display:block;overflow:auto}
   th,td{white-space:nowrap}
 }
+/* Generic form helpers (used in Settings) */
+.form-grid{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.form-field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.form-field input,.form-field select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text);outline:none}
+.form-field input:focus,.form-field select:focus{border-color:color-mix(in oklab, var(--accent2) 50%, var(--border));box-shadow:0 0 0 3px color-mix(in oklab, var(--accent2) 20%, transparent)}
+.section-actions{display:flex;gap:8px;flex-wrap:wrap}
 /* Compact card-style tables for small phones */
 @media (max-width: 640px){
   .admin-wrap{margin-top:70px}
@@ -42,7 +145,7 @@ th{color:#a4a9b6;font-weight:600}
   table{display:block;border:0}
   thead{display:none}
   tbody{display:block}
-  tbody tr{display:block;background:#14161b;border:1px solid #22262f;border-radius:12px;margin-bottom:12px}
+  tbody tr{display:block;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px}
   td{display:grid;grid-template-columns:120px 1fr;gap:8px;padding:10px 12px;white-space:normal}
   td::before{content:attr(data-label);color:#a4a9b6;font-weight:600;text-transform:uppercase;font-size:11px}
   .row-actions{gap:8px;flex-wrap:wrap}

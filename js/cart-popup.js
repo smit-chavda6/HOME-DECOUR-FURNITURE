@@ -40,12 +40,22 @@ class CartPopupSystem {
     // Normalize id/quantity/price shapes
     _normalizeId(id) { return String(id); }
 
+    _normalizeImageUrl(url) {
+        if (!url) return '';
+        try {
+            return String(url).replace(/\\\\/g, '/').replace(/\\/g, '/');
+        } catch {
+            return url;
+        }
+    }
+
     _normalizeCartItems(items) {
         return (items || []).map(it => ({
             ...it,
             id: this._normalizeId(it.id),
             quantity: Math.max(1, parseInt(it.quantity, 10) || 1),
-            price: typeof it.price === 'number' ? it.price : (parseFloat(it.price) || 0)
+            price: typeof it.price === 'number' ? it.price : (parseFloat(it.price) || 0),
+            image: this._normalizeImageUrl(it.image)
         }));
     }
 
@@ -136,12 +146,22 @@ class CartPopupSystem {
 
         // Proceed to checkout - only enabled when cart has items
         if (proceedToCheckoutBtn) {
-            proceedToCheckoutBtn.addEventListener('click', () => {
-                if (this.cart.length > 0) {
-                    window.location.href = 'checkout.html';
-                } else {
+            proceedToCheckoutBtn.addEventListener('click', async () => {
+                if (this.cart.length === 0) {
                     this.showNotification('Your cart is empty! Please add items before checkout.', 'warning');
+                    return;
                 }
+                // Check auth status; if not logged in, send to login with redirect back
+                try {
+                    const res = await fetch('/api/check-auth', { credentials: 'include' });
+                    const data = await res.json().catch(()=>({authenticated:false}));
+                    if (!data?.authenticated) {
+                        const redirect = encodeURIComponent('checkout.html');
+                        window.location.href = `login.html?redirect=${redirect}`;
+                        return;
+                    }
+                } catch {}
+                window.location.href = 'checkout.html';
             });
         }
 
@@ -164,22 +184,23 @@ class CartPopupSystem {
 
     // Setup add to cart buttons
     setupAddToCartButtons() {
-        const addToCartButtons = document.querySelectorAll('[data-add-to-cart="true"], .add-to-cart-btn');
-        
-        // Don't add listeners to #add-to-cart-btn on product details page
-        // as it has its own handler
-        
-        addToCartButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
+    // Single delegated listener to handle both static and dynamically added buttons
+        if (!this._delegatedAddToCartBound) {
+            document.addEventListener('click', (e) => {
+                const btn = e.target && (e.target.closest && e.target.closest('[data-add-to-cart="true"], .add-to-cart-btn'));
+                if (!btn) return;
+                // Avoid intercepting the dedicated product details add-to-cart button (handled elsewhere)
+                if (btn.id === 'add-to-cart-btn') return;
                 e.preventDefault();
-                this.addToCart(button);
+                this.addToCart(btn);
             });
-        });
+            this._delegatedAddToCartBound = true;
+        }
     }
 
     // Add item to cart (for gallery and other pages, not product details)
     addToCart(button) {
-        let productId, productName, productPrice, productImage;
+        let productId, productName, productPrice, productImage, selectedVariants = null;
 
         // Gallery or other pages
     productId = button.getAttribute('data-product-id') || this.generateProductId();
@@ -190,15 +211,46 @@ class CartPopupSystem {
             const priceElement = productCard.querySelector('.current-price');
             const imageElement = productCard.querySelector('img');
             const modelViewer = productCard.querySelector('model-viewer');
+            // Optional stock gating
+            let stock = null;
+            const stockAttr = productCard.getAttribute('data-stock') || productCard.querySelector('[data-stock]')?.getAttribute?.('data-stock') || null;
+            if (stockAttr != null) {
+                const n = parseInt(stockAttr, 10);
+                if (!isNaN(n)) stock = n;
+            }
+            const stockText = productCard.querySelector('.stock-count, .stock, .inventory')?.textContent?.toLowerCase?.() || '';
+            if (stock === null && stockText.includes('out of stock')) stock = 0;
+            if (stock === 0) {
+                this.showNotification('This item is out of stock.', 'warning');
+                return;
+            }
             
             productName = titleElement ? titleElement.textContent : 'Product';
             productPrice = priceElement ? parseFloat(priceElement.textContent.replace(/[^\d.]/g, '')) : 0;
             
             if (imageElement) {
-                productImage = imageElement.src;
+                productImage = this._normalizeImageUrl(imageElement.src);
             } else if (modelViewer) {
                 // For 3D models, get the specific 3D model image
-                productImage = this.get3DModelImage(productCard);
+                productImage = this._normalizeImageUrl(this.get3DModelImage(productCard));
+            }
+
+            // Optional variant selection: read selects with class .variant-select
+            const variantSelects = productCard.querySelectorAll('.variant-select');
+            if (variantSelects && variantSelects.length) {
+                selectedVariants = {};
+                const parts = [];
+                variantSelects.forEach(sel => {
+                    const name = sel.getAttribute('data-variant-name') || sel.name || 'Option';
+                    const val = sel.value || sel.options?.[sel.selectedIndex]?.text || '';
+                    if (val) {
+                        selectedVariants[name] = val;
+                        parts.push(`${name}: ${val}`);
+                    }
+                });
+                if (parts.length) {
+                    productName = `${productName} (${parts.join(', ')})`;
+                }
             }
         } else {
             productName = button.textContent.replace('Add to Cart', '').trim() || 'Product';
@@ -218,7 +270,8 @@ class CartPopupSystem {
                 id: normalizedId,
                 name: productName,
                 price: productPrice,
-                image: productImage,
+                image: this._normalizeImageUrl(productImage) || 'image/1.png',
+                variant: selectedVariants,
                 quantity: 1
             });
         }
@@ -258,7 +311,7 @@ class CartPopupSystem {
                 id: normalizedId,
                 name: product.name,
                 price: price,
-                image: product.image,
+                image: this._normalizeImageUrl(product.image) || 'image/1.png',
                 quantity: qty
             });
             console.log('Added new item to cart');
@@ -426,12 +479,14 @@ class CartPopupSystem {
             // Check if this is a 3D model item (has 3D image path or specific pattern)
             const is3DModel = item.image && (item.image.includes('image/1.png') || item.image.includes('image/2.png') || item.image.includes('image/3.png') || item.image.includes('image/4.png') || item.image.includes('image/5.png') || item.image.includes('image/6.png') || item.image.includes('image/7.png') || item.image.includes('image/8.png') || item.name.toLowerCase().includes('3d'));
             
+            const variantLine = item.variant ? `<div class="cart-item-variant">${Object.entries(item.variant).map(([k,v])=>`${k}: ${v}`).join(', ')}</div>` : '';
             cartItem.innerHTML = `
                 <img src="${item.image}" alt="${item.name}" class="cart-item-image" 
                      onerror="this.src='image/1.png'"
                      style="${is3DModel ? 'background: #f8f8f8; border-radius: 8px;' : ''}">
                 <div class="cart-item-details">
                     <div class="cart-item-name">${item.name}</div>
+                    ${variantLine}
                     <div class="cart-item-price">₹${(typeof item.price === 'number' ? item.price : parseFloat(item.price) || 0).toLocaleString('en-IN')}</div>
                     <div class="cart-item-quantity">
                         <button class="quantity-btn decrease-btn" data-product-id="${item.id}">-</button>

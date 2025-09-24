@@ -374,7 +374,7 @@ const loadProductDetails = async () => {
                     product = {
                         name: p.name,
                         price: p.price,
-                        image: p.image || 'image/Logo maker project.webp',
+                        image: (p.image || '').replace(/\\\\/g,'/').replace(/\\/g,'/') || 'image/Logo maker project.webp',
                         description: p.description || '',
                         material: p.material || '-',
                         dimensions: '-',
@@ -385,7 +385,7 @@ const loadProductDetails = async () => {
                     // For 3D products, adjust rendering later via model_src
                     if (p.is_3d) {
                         product.__is3d = true;
-                        product.__model_src = p.model_src || '';
+                        product.__model_src = (p.model_src || '').replace(/\\\\/g,'/').replace(/\\/g,'/');
                     }
                 }
             }
@@ -393,7 +393,7 @@ const loadProductDetails = async () => {
     }
     
     if (product) {
-    currentProduct = { ...product, id: String(productId) };
+    currentProduct = { ...product, id: String(productIdNum) };
         console.log('Current product set:', currentProduct);
         
         // Update page title
@@ -446,8 +446,9 @@ const loadProductDetails = async () => {
         }
         } else {
             // Standard product: show image and zoom button
+            const safeImg = (product.image || '').trim() || 'image/Logo maker project.webp';
             cachedElements.mediaContainer.innerHTML = `
-                <img id="product-img" src="${product.image}" alt="${product.name}" loading="lazy">
+                <img id="product-img" src="${safeImg}" alt="${product.name}" loading="lazy" onerror="this.src='image/Logo maker project.webp'">
                 <button class="zoom-btn" id="zoom-btn" title="View Full Size">
                     <svg viewBox="0 0 24 24">
                         <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
@@ -509,6 +510,11 @@ const loadProductDetails = async () => {
     if ([101,102,103,104,105,106,107,108].includes(productIdNum) || (currentProduct && currentProduct.__is3d)) {
             initializeARFunctionality();
         }
+
+        // Load and render product reviews
+        try {
+            await loadAndRenderProductReviews(productIdNum);
+        } catch(e) { console.warn('Failed to load reviews for product', productIdNum, e); }
         
     } else {
         // Handle invalid product ID
@@ -519,6 +525,67 @@ const loadProductDetails = async () => {
         }
     }
 };
+
+// Fetch and render reviews in product-details page
+async function loadAndRenderProductReviews(productId) {
+    const res = await fetch(`/api/products/${productId}/reviews`, { credentials: 'include' });
+    if (!res.ok) return;
+    const data = await res.json();
+    const reviews = Array.isArray(data.reviews) ? data.reviews : [];
+
+    // Update header rating numbers if product info is present
+    const ratingNumberEl = document.querySelector('.reviews-summary .overall-rating .rating-number');
+    const ratingTextEl = document.querySelector('.reviews-summary .overall-rating .rating-text');
+    const ratingStarsEl = document.querySelector('.reviews-summary .overall-rating .rating-stars');
+    if (reviews.length) {
+        const avg = Math.round((reviews.reduce((s, r)=> s + (parseInt(r.rating,10)||0), 0) / reviews.length) * 10) / 10;
+        if (ratingNumberEl) ratingNumberEl.textContent = String(avg);
+        if (ratingTextEl) ratingTextEl.textContent = `Based on ${reviews.length} review${reviews.length>1?'s':''}`;
+        if (ratingStarsEl) ratingStarsEl.textContent = '★★★★★☆☆☆☆☆'.slice(5 - Math.round(avg)).slice(0,5);
+    } else {
+        if (ratingNumberEl) ratingNumberEl.textContent = '—';
+        if (ratingTextEl) ratingTextEl.textContent = 'No reviews yet';
+        if (ratingStarsEl) ratingStarsEl.textContent = '☆☆☆☆☆';
+    }
+
+    // Render list under the reviews tab (append after summary)
+    const reviewsTab = document.getElementById('reviews-tab');
+    if (reviewsTab) {
+        let list = reviewsTab.querySelector('.reviews-list');
+        if (!list) {
+            list = document.createElement('div');
+            list.className = 'reviews-list';
+            list.style.marginTop = '12px';
+            reviewsTab.appendChild(list);
+        }
+        list.innerHTML = '';
+        if (!reviews.length) {
+            const p = document.createElement('p');
+            p.className = 'muted';
+            p.textContent = 'No reviews yet. Be the first to review after your order is delivered!';
+            list.appendChild(p);
+        } else {
+            reviews.forEach(r => {
+                const item = document.createElement('div');
+                item.className = 'review-item';
+                item.style.borderTop = '1px solid rgba(0,0,0,0.08)';
+                item.style.padding = '10px 0';
+                const name = (r.full_name || r.username || 'User');
+                const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                const when = new Date(r.updated_at || r.created_at).toLocaleDateString();
+                item.innerHTML = `
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                        <strong>${name}</strong>
+                        <span class="muted" style="font-size:12px;">${when}</span>
+                    </div>
+                    <div class="muted" style="margin:4px 0 6px;">${stars}</div>
+                    <div>${(r.comment||'').replace(/</g,'&lt;')}</div>
+                `;
+                list.appendChild(item);
+            });
+        }
+    }
+}
 
 // Initialize quantity controls
 const initializeQuantityControls = () => {

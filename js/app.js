@@ -29,6 +29,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             // Let cart popup system rebind later
         }
+        // If returning to desktop, remove the mobile clone if present
+        if (window.innerWidth > 768 && existingMobileCart && existingMobileCart.parentNode) {
+            existingMobileCart.parentNode.removeChild(existingMobileCart);
+        }
     };
     ensureMobileCartIcon();
     
@@ -98,16 +102,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Smooth scrolling for anchor links
+    // Smooth scrolling for anchor links (ignore bare '#')
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href') || '';
+            // Ignore or safely handle anchors with just '#'
+            if (href.trim() === '#' || href.trim() === '') {
+                e.preventDefault();
+                return;
+            }
             e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
+            const id = href.slice(1);
+            if (!id) return;
+            const target = document.getElementById(id);
             if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
     });
@@ -179,7 +188,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 </svg>
             `;
             loginBtn.title = 'Login';
-            loginBtn.href = 'login.html';
+            try {
+                const current = window.location.pathname.split('/').pop() || 'index.html';
+                const qs = window.location.search || '';
+                const target = encodeURIComponent(current + qs);
+                loginBtn.href = `login.html?redirect=${target}`;
+            } catch {
+                loginBtn.href = 'login.html';
+            }
         }
     }
     

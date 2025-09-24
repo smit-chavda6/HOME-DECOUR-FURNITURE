@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin • Products</title>
+  <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico">
+  <link rel="stylesheet" href="CSS/style.css" />
+  <link rel="stylesheet" href="CSS/admin.css" />
+  <link rel="stylesheet" href="CSS/dark-mode.css" />
+  <script defer src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+  <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" aria-label="Admin navigation">
+      <div class="admin-profile">
+        <div class="avatar" aria-hidden="true">A</div>
+        <div class="profile-meta">
+          <div class="name" id="admin-user-name">Admin</div>
+          <a class="open-profile" href="/profile.html" target="_blank" rel="noopener">Open Profile ↗</a>
+        </div>
+      </div>
+      <nav class="admin-nav">
+        <a class="nav-link" href="/admin.html"><span class="nav-icon"><i data-feather="grid"></i></span><span class="nav-label">Dashboard</span></a>
+        <a class="nav-link" href="/admin-users.html"><span class="nav-icon"><i data-feather="users"></i></span><span class="nav-label">Users</span></a>
+        <a class="nav-link" href="/admin-orders.html"><span class="nav-icon"><i data-feather="file-text"></i></span><span class="nav-label">Orders</span></a>
+        <a class="nav-link" href="/admin-messages.html"><span class="nav-icon"><i data-feather="mail"></i></span><span class="nav-label">Messages</span></a>
+        <a class="nav-link active" href="/admin-products.html"><span class="nav-icon"><i data-feather="shopping-bag"></i></span><span class="nav-label">Products</span></a>
+        <a class="nav-link" href="/admin-notifications.html"><span class="nav-icon"><i data-feather="bell"></i></span><span class="nav-label">Notifications</span></a>
+      </nav>
+    </aside>
+    <div class="admin-main">
+      <div class="admin-wrap">
+        <div class="admin-header">
+          <h1><span class="brand">Admin</span> — Products</h1>
+          <div class="admin-actions">
+            <button class="btn" id="btn-refresh">Refresh</button>
+            <button class="btn" id="btn-logout">Logout</button>
+            <a class="btn primary" href="/">Go to site</a>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Products</h2>
+          <div class="content">
+            <div class="notice">Add new products to your catalog. You can also delete products here. Use the View link to open Product Details page.</div>
+            <div class="section-actions" style="margin-bottom:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+              <button class="btn primary" type="button" id="btn-open-add">Add New Product</button>
+              <button class="btn" type="button" id="btn-prod-refresh">Refresh Products</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Brand</th>
+                    <th>Material</th>
+                    <th>3D</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="prod-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Product Modal -->
+  <div id="prod-modal" class="modal-overlay hidden">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="prod-modal-title" tabindex="-1">
+      <div class="modal-header">
+        <h3 id="prod-modal-title">Add Product</h3>
+        <button class="modal-close" id="prod-modal-close" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="prod-form" style="display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));">
+          <input type="hidden" id="p-id" value="" />
+          <div>
+            <label>Name *</label>
+            <input id="p-name" required placeholder="e.g., Elegant Sofa" />
+          </div>
+          <div>
+            <label>Price (₹) *</label>
+            <input id="p-price" type="number" min="0" step="1" required />
+          </div>
+          <div>
+            <label>Product Image (optional)</label>
+            <input id="p-image-file" type="file" accept="image/*" />
+            <input id="p-image" placeholder="Or paste image URL" style="margin-top:6px" />
+            <div id="p-image-preview-wrap" style="display:none;align-items:center;gap:8px;margin-top:6px">
+              <img id="p-image-preview" alt="Preview" style="max-width:120px;border-radius:10px;border:1px solid #e5e7eb;box-shadow:0 6px 20px rgba(17,17,17,.12)" />
+              <button type="button" class="btn" id="p-image-clear">Remove</button>
+            </div>
+            <small class="muted" id="p-image-status"></small>
+          </div>
+          <div>
+            <label>Category (optional)</label>
+            <select id="p-category">
+              <option value="">—</option>
+              <option value="living">Living Room</option>
+              <option value="dining">Dining Room</option>
+              <option value="bedroom">Bedroom</option>
+              <option value="office">Office</option>
+              <option value="3d">3D Models</option>
+            </select>
+          </div>
+          <div>
+            <label>Brand (optional)</label>
+            <input id="p-brand" list="brands-list" placeholder="e.g., UrbanWood" />
+            <datalist id="brands-list"></datalist>
+          </div>
+          <div>
+            <label>Material (optional)</label>
+            <input id="p-material" list="materials-list" placeholder="e.g., Leather" />
+            <datalist id="materials-list"></datalist>
+          </div>
+          <div style="grid-column:1/-1;">
+            <label>Description (optional)</label>
+            <textarea id="p-desc" placeholder="Short description" style="width:100%;min-height:70px"></textarea>
+          </div>
+          <div>
+            <label>Original Price (optional)</label>
+            <input id="p-original" type="number" min="0" step="1" />
+          </div>
+          <div>
+            <label>Discount (%) (optional)</label>
+            <input id="p-discount" type="number" min="0" max="90" step="1" />
+          </div>
+          <div>
+            <label>Badge (optional)</label>
+            <input id="p-badge" placeholder="e.g., New, Sale, Hot" />
+          </div>
+          <div>
+            <label>Is 3D Model?</label>
+            <select id="p-is3d">
+              <option value="0">No</option>
+              <option value="1">Yes</option>
+            </select>
+          </div>
+          <div id="p-model-row" style="display:none;grid-column:1/-1;">
+            <label>3D Model Path (required if 3D)</label>
+            <input id="p-model" placeholder="3d models/your_model.glb" />
+          </div>
+          <div style="grid-column:1/-1;display:flex;gap:8px;align-items:center;justify-content:flex-end;">
+            <button class="btn" type="button" id="btn-prod-cancel" style="display:none;">Cancel Edit</button>
+            <button class="btn primary" type="submit" id="btn-prod-submit">Add Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  const fmtDate = (d) => new Date(d).toLocaleString();
+  (function highlight(){
+    const path = location.pathname.replace(/\\+/g,'/');
+    document.querySelectorAll('.admin-sidebar .nav-link').forEach(a => {
+      const href = a.getAttribute('href');
+      const matches = (href === '/' ? path === '/' : path.endsWith(href));
+      a.classList.toggle('active', matches);
+    });
+    try { if (window.feather) feather.replace(); } catch {}
+  })();
+  // Modal helpers
+  const modal = document.getElementById('prod-modal');
+  const modalTitle = document.getElementById('prod-modal-title');
+  const modalClose = document.getElementById('prod-modal-close');
+  const modalDialog = modal ? modal.querySelector('.modal') : null;
+  let lastActiveEl = null;
+  function getFocusable(root){
+    return root.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+  }
+  function focusTrap(e){
+    if (!modal || modal.classList.contains('hidden')) return;
+    if (e.key !== 'Tab') return;
+    const nodes = modalDialog ? Array.from(getFocusable(modalDialog)) : [];
+    if (!nodes.length) return;
+    const first = nodes[0];
+    const last = nodes[nodes.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey){
+      if (active === first || !modalDialog.contains(active)) { e.preventDefault(); last.focus(); }
+    } else {
+      if (active === last) { e.preventDefault(); first.focus(); }
+    }
+  }
+  function showModal(title){
+    if (modalTitle) modalTitle.textContent = title||'Add Product';
+    lastActiveEl = document.activeElement;
+    modal.classList.remove('hidden');
+    document.body.style.overflow='hidden';
+    setTimeout(()=>{
+      const nameInput = document.getElementById('p-name');
+      if (nameInput) { nameInput.focus(); nameInput.select && nameInput.select(); }
+      else if (modalDialog) modalDialog.focus();
+    }, 0);
+    document.addEventListener('keydown', focusTrap);
+  }
+  function hideModal(){
+    modal.classList.add('hidden');
+    document.body.style.overflow='';
+    document.removeEventListener('keydown', focusTrap);
+    if (lastActiveEl && typeof lastActiveEl.focus === 'function') { setTimeout(()=> lastActiveEl.focus(), 0); }
+  }
+  if (modalClose) modalClose.addEventListener('click', hideModal);
+  modal.addEventListener('click', (e)=>{ if (e.target === modal) hideModal(); });
+  document.addEventListener('keydown', (e)=>{ if (e.key==='Escape' && !modal.classList.contains('hidden')) hideModal(); });
+  async function api(path, opts={}){
+    const res = await fetch(path, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
+    const data = await res.json().catch(()=>({}));
+    if (!res.ok) throw new Error(data.error || 'Request failed');
+    return data;
+  }
+  async function ensureAdmin(){
+    const auth = await api('/api/check-auth');
+    if (!auth.authenticated || auth.user.role !== 'admin') {
+      try { await api('/api/admin/check'); } catch(e) {}
+      location.href = '/login.html';
+      return false;
+    }
+    try { document.getElementById('admin-user-name').textContent = auth.user?.full_name || auth.user?.username || 'Admin'; } catch{}
+    return true;
+  }
+  const fmtINR = (n)=> '₹'+(Number(n)||0).toLocaleString('en-IN');
+  function productRow(p){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td data-label="ID">${p.id}</td>
+      <td data-label="Name">${p.name}</td>
+      <td data-label="Price">₹${Number(p.price||0).toLocaleString('en-IN')}</td>
+      <td data-label="Category" class="muted">${p.category||''}</td>
+      <td data-label="Brand" class="muted">${p.brand||''}</td>
+      <td data-label="Material" class="muted">${p.material||''}</td>
+      <td data-label="3D">${p.is_3d ? 'Yes' : 'No'}</td>
+      <td data-label="Actions">
+        <div class="row-actions">
+          <a class="btn" href="product-details.html?id=${p.id}" target="_blank">View</a>
+          <button class="btn js-edit">Edit</button>
+          <button class="btn js-del">Delete</button>
+        </div>
+      </td>`;
+    tr.querySelector('.js-edit').addEventListener('click', ()=>{ startEditProduct(p); });
+    tr.querySelector('.js-del').addEventListener('click', async ()=>{
+      if (!confirm('Delete this product?')) return;
+      try { await api(`/api/admin/products/${p.id}`, { method:'DELETE' }); await loadProducts(); } catch(e){ alert(e.message); }
+    });
+    return tr;
+  }
+  async function loadProducts(){
+    const tbody = document.getElementById('prod-body');
+    if (!tbody) return;
+    try {
+      const data = await api('/api/products');
+      tbody.innerHTML = '';
+      const list = (data.products||[]);
+      list.forEach(p=> tbody.appendChild(productRow(p)) );
+      // Populate datalists
+      try {
+        const brandSet = new Set(), materialSet = new Set();
+        list.forEach(p=>{ if(p.brand) brandSet.add(String(p.brand).trim()); if(p.material) materialSet.add(String(p.material).trim()); });
+        const brandsDl = document.getElementById('brands-list');
+        const materialsDl = document.getElementById('materials-list');
+        if (brandsDl) brandsDl.innerHTML = Array.from(brandSet).sort((a,b)=>a.localeCompare(b)).map(v=>`<option value="${v}"></option>`).join('');
+        if (materialsDl) materialsDl.innerHTML = Array.from(materialSet).sort((a,b)=>a.localeCompare(b)).map(v=>`<option value="${v}"></option>`).join('');
+      } catch(e){ console.warn('List fill failed', e); }
+    } catch(e){ console.warn('Failed to load products', e); }
+  }
+  // Form handlers
+  const byId = (id)=>document.getElementById(id);
+  const is3dSel = byId('p-is3d');
+  const modelRow = byId('p-model-row');
+  const hiddenId = byId('p-id');
+  const btnSubmit = byId('btn-prod-submit');
+  const btnCancel = byId('btn-prod-cancel');
+  const fileInput = byId('p-image-file');
+  const imageUrlInput = byId('p-image');
+  const previewWrap = byId('p-image-preview-wrap');
+  const previewImg = byId('p-image-preview');
+  const clearBtn = byId('p-image-clear');
+  const statusEl = byId('p-image-status');
+  if (is3dSel) {
+    const onToggle = ()=>{ const req = is3dSel.value === '1'; modelRow.style.display = req ? '' : 'none'; var m=byId('p-model'); if (m) m.required = req; };
+    is3dSel.addEventListener('change', onToggle);
+    onToggle();
+  }
+  function resetFormToCreate(){ hiddenId.value = ''; btnSubmit.textContent = 'Add Product'; if (btnCancel) btnCancel.style.display = 'none'; }
+  function startEditProduct(p){
+    hiddenId.value = p.id;
+    byId('p-name').value = p.name || '';
+    byId('p-price').value = p.price ?? '';
+    byId('p-image').value = p.image || '';
+    if (p.image) { try { previewImg.src = p.image; previewWrap.style.display = ''; } catch(e) { previewWrap.style.display='none'; } } else { previewWrap.style.display = 'none'; }
+    byId('p-category').value = p.category || '';
+    byId('p-brand').value = p.brand || '';
+    byId('p-material').value = p.material || '';
+    byId('p-desc').value = p.description || '';
+    byId('p-original').value = (p.original_price ?? '') || '';
+    byId('p-discount').value = (p.discount ?? '') || '';
+    byId('p-badge').value = p.badge || '';
+    byId('p-model').value = p.model_src || '';
+    is3dSel.value = (p.is_3d ? '1' : '0');
+    modelRow.style.display = is3dSel.value === '1' ? '' : 'none';
+    btnSubmit.textContent = 'Save Changes';
+    if (btnCancel) btnCancel.style.display = '';
+    if (modalTitle) modalTitle.textContent = 'Edit Product';
+    showModal('Edit Product');
+  }
+  async function uploadImage(file){
+    if (!file) return; statusEl.textContent = 'Uploading image…'; btnSubmit && (btnSubmit.disabled = true);
+    try{
+      const fd = new FormData(); fd.append('image', file);
+      const res = await fetch('/api/admin/upload-image', { method:'POST', body: fd, credentials:'include' });
+      const data = await res.json().catch(()=>({}));
+      if (!res.ok || !data.success) throw new Error(data.error || 'Upload failed');
+      const url = data.url; imageUrlInput.value = url; previewImg.src = url; previewWrap.style.display = ''; statusEl.textContent = 'Image uploaded';
+    }catch(e){ alert(e.message || 'Upload failed'); statusEl.textContent = e.message || 'Upload failed'; previewWrap.style.display = 'none'; }
+    finally { btnSubmit && (btnSubmit.disabled = false); }
+  }
+  if (fileInput) fileInput.addEventListener('change', ()=>{ const f = fileInput.files && fileInput.files[0]; if (f) uploadImage(f); });
+  if (imageUrlInput) imageUrlInput.addEventListener('change', ()=>{ const v = imageUrlInput.value.trim(); if (v) { try { previewImg.src = v; previewWrap.style.display=''; } catch(e){ previewWrap.style.display='none'; } } else { previewWrap.style.display='none'; } });
+  if (clearBtn) clearBtn.addEventListener('click', ()=>{ if (fileInput) fileInput.value = ''; imageUrlInput.value = ''; previewWrap.style.display = 'none'; statusEl.textContent = ''; });
+  const form = byId('prod-form');
+  if (form) form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const norm = (s) => (s || '').trim().replace(/\\/g,'/');
+    const payload = {
+      name: byId('p-name').value.trim(),
+      price: parseInt(byId('p-price').value,10)||0,
+      image: norm(byId('p-image').value),
+      description: byId('p-desc').value.trim(),
+      category: byId('p-category').value,
+      brand: byId('p-brand').value.trim(),
+      material: byId('p-material').value.trim(),
+      original_price: byId('p-original').value ? parseInt(byId('p-original').value,10) : null,
+      discount: byId('p-discount').value ? parseInt(byId('p-discount').value,10) : null,
+      badge: byId('p-badge').value.trim(),
+      model_src: norm(byId('p-model').value),
+      is_3d: byId('p-is3d').value === '1'
+    };
+    if (payload.is_3d && !payload.model_src) { alert('3D Model Path is required when Is 3D Model is Yes.'); return; }
+    try {
+      const editingId = hiddenId.value;
+      if (editingId) { await api(`/api/admin/products/${editingId}`, { method:'PUT', body: JSON.stringify(payload) }); alert('Product updated'); }
+      else { await api('/api/admin/products', { method:'POST', body: JSON.stringify(payload) }); alert('Product added'); }
+      form.reset(); if (is3dSel) is3dSel.value = '0'; if (modelRow) modelRow.style.display = 'none'; resetFormToCreate(); await loadProducts();
+      hideModal();
+    } catch(e){ alert(e.message); }
+  });
+  const btnProdRefresh = byId('btn-prod-refresh'); if (btnProdRefresh) btnProdRefresh.addEventListener('click', loadProducts);
+  const btnOpenAdd = document.getElementById('btn-open-add');
+  if (btnOpenAdd) btnOpenAdd.addEventListener('click', ()=>{ resetFormToCreate(); if (form) form.reset(); if (is3dSel) is3dSel.value='0'; if (modelRow) modelRow.style.display='none'; hidePreview(); showModal('Add Product'); });
+  function hidePreview(){ try{ const w=document.getElementById('p-image-preview-wrap'); if (w) w.style.display='none'; const s=document.getElementById('p-image-status'); if (s) s.textContent=''; const f=document.getElementById('p-image-file'); if (f) f.value=''; const u=document.getElementById('p-image'); if (u) u.value=''; }catch{} }
+  if (btnCancel) btnCancel.addEventListener('click', ()=>{ form.reset(); if (is3dSel) is3dSel.value = '0'; if (modelRow) modelRow.style.display = 'none'; if (previewWrap) previewWrap.style.display = 'none'; if (statusEl) statusEl.textContent = ''; resetFormToCreate(); });
+  async function refresh(){ await loadProducts(); }
+  document.getElementById('btn-refresh').addEventListener('click', refresh);
+  document.getElementById('btn-logout').addEventListener('click', async ()=>{ try { await api('/api/logout', { method:'POST' }); } catch(e) {} location.href = '/login.html'; });
+  (async ()=>{ if(await ensureAdmin()) await refresh(); })();
+  </script>
+  <script src="js/app.js"></script>
+</body>
+</html>

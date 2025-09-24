@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin • Orders</title>
+  <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico">
+  <link rel="stylesheet" href="CSS/style.css" />
+  <link rel="stylesheet" href="CSS/admin.css" />
+  <link rel="stylesheet" href="CSS/dark-mode.css" />
+  <script defer src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+  <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" aria-label="Admin navigation">
+      <div class="admin-profile">
+        <div class="avatar" aria-hidden="true">A</div>
+        <div class="profile-meta">
+          <div class="name" id="admin-user-name">Admin</div>
+          <a class="open-profile" href="/profile.html" target="_blank" rel="noopener">Open Profile ↗</a>
+        </div>
+      </div>
+      <nav class="admin-nav">
+        <a class="nav-link" href="/admin.html"><span class="nav-icon"><i data-feather="grid"></i></span><span class="nav-label">Dashboard</span></a>
+        <a class="nav-link" href="/admin-users.html"><span class="nav-icon"><i data-feather="users"></i></span><span class="nav-label">Users</span></a>
+        <a class="nav-link active" href="/admin-orders.html"><span class="nav-icon"><i data-feather="file-text"></i></span><span class="nav-label">Orders</span></a>
+        <a class="nav-link" href="/admin-messages.html"><span class="nav-icon"><i data-feather="mail"></i></span><span class="nav-label">Messages</span></a>
+        <a class="nav-link" href="/admin-products.html"><span class="nav-icon"><i data-feather="shopping-bag"></i></span><span class="nav-label">Products</span></a>
+        <a class="nav-link" href="/admin-notifications.html"><span class="nav-icon"><i data-feather="bell"></i></span><span class="nav-label">Notifications</span></a>
+      </nav>
+    </aside>
+    <div class="admin-main">
+      <div class="admin-wrap">
+        <div class="admin-header">
+          <h1><span class="brand">Admin</span> — Orders</h1>
+          <div class="admin-actions">
+            <button class="btn" id="btn-refresh">Refresh</button>
+            <button class="btn" id="btn-logout">Logout</button>
+            <a class="btn primary" href="/">Go to site</a>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Orders</h2>
+          <div class="content">
+            <div class="notice">Recent orders placed via checkout. Click View Items to see line items.</div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Email</th>
+                    <th>Payment</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  const fmtDate = (d) => new Date(d).toLocaleString();
+  (function highlight(){
+    const path = location.pathname.replace(/\\+/g,'/');
+    document.querySelectorAll('.admin-sidebar .nav-link').forEach(a => {
+      const href = a.getAttribute('href');
+      const matches = (href === '/' ? path === '/' : path.endsWith(href));
+      a.classList.toggle('active', matches);
+    });
+    try { if (window.feather) feather.replace(); } catch {}
+  })();
+  async function api(path, opts={}){
+    const res = await fetch(path, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
+    const data = await res.json().catch(()=>({}));
+    if (!res.ok) throw new Error(data.error || 'Request failed');
+    return data;
+  }
+  async function ensureAdmin(){
+    const auth = await api('/api/check-auth');
+    if (!auth.authenticated || auth.user.role !== 'admin') {
+      try { await api('/api/admin/check'); } catch(e) {}
+      location.href = '/login.html';
+      return false;
+    }
+    try { document.getElementById('admin-user-name').textContent = auth.user?.full_name || auth.user?.username || 'Admin'; } catch{}
+    return true;
+  }
+  const fmtINR = (n)=> '₹'+(Number(n)||0).toLocaleString('en-IN');
+  function orderRow(o){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td data-label="ID">${o.id}</td>
+      <td data-label="Customer">${(o.full_name||'') + (o.city?`, ${o.city}`:'')}</td>
+      <td data-label="Email" class="muted">${o.email||''}</td>
+      <td data-label="Payment" class="muted">${o.payment_method?.toUpperCase()||''}</td>
+      <td data-label="Total"><strong>${fmtINR(o.total)}</strong></td>
+      <td data-label="Status">${o.status||'placed'}</td>
+      <td data-label="Created" class="muted">${fmtDate(o.created_at)}</td>
+      <td data-label="Actions"><div class="row-actions"><button class="btn js-items">View Items</button></div></td>`;
+    tr.querySelector('.js-items').addEventListener('click', async ()=>{
+      try{
+        const data = await api(`/api/admin/orders/${o.id}/items`);
+        const items = data.items || [];
+        const lines = items.map(it=>`• ${it.name} × ${it.quantity} — ${fmtINR(it.price*it.quantity)}`).join('\n');
+        alert(lines || 'No items.');
+      }catch(e){ alert(e.message); }
+    });
+    return tr;
+  }
+  async function loadOrders(){
+    try {
+      const data = await api('/api/admin/orders');
+      const tbody = document.getElementById('orders-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      (data.orders||[]).forEach(o=> tbody.appendChild(orderRow(o)));
+    } catch(e){ console.warn('Failed to load orders', e); }
+  }
+  async function refresh(){ await loadOrders(); }
+  document.getElementById('btn-refresh').addEventListener('click', refresh);
+  document.getElementById('btn-logout').addEventListener('click', async ()=>{ try { await api('/api/logout', { method:'POST' }); } catch(e) {} location.href = '/login.html'; });
+  (async ()=>{ if(await ensureAdmin()) await refresh(); })();
+  </script>
+  <script src="js/app.js"></script>
+</body>
+</html>

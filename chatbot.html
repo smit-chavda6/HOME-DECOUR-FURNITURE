@@ -104,6 +104,8 @@
             font-size: 14px;
             line-height: 1.4;
             animation: fadeIn 0.3s ease-out;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .user-message {
@@ -120,6 +122,12 @@
             border: 1px solid #e0e0e0;
             border-bottom-left-radius: 5px;
         }
+
+    /* Bot message rich text basics (light) */
+    .bot-message a { color: #8B4513; text-decoration: underline; }
+    .bot-message code { background: #f3f4f6; padding: 0.1rem 0.3rem; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .bot-message ul { margin: 6px 0 6px 18px; padding: 0; }
+    .bot-message li { margin: 2px 0; }
 
         .chat-input-area {
             padding: 15px;
@@ -209,9 +217,82 @@
                 left: 20px;
             }
         }
+
+        /* Dark mode optimization for AI (bot) side and chat UI */
+        body.dark-mode .chat-window {
+            background: #111317;
+            color: #e5e7eb;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.55);
+            border: 1px solid #22262c;
+        }
+
+        body.dark-mode .chat-header {
+            /* keep brand gradient; ensure text contrast */
+            color: #fff;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        body.dark-mode .chat-messages {
+            background: #0c0d10;
+        }
+
+        /* Bot bubbles get a richer dark surface and subtle ring */
+        body.dark-mode .bot-message {
+            background: #171a1f;
+            color: #e6e7eb;
+            border-color: #2a2f36;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+        }
+
+        /* Add a gentle left accent to bot messages in dark mode for readability */
+        body.dark-mode .bot-message {
+            border-left: 3px solid #A0522D; /* brand accent */
+            border-bottom-left-radius: 7px;
+        }
+
+    /* Rich text in bot bubble (dark) */
+    body.dark-mode .bot-message a { color: #f0b35f; text-decoration: underline; }
+    body.dark-mode .bot-message code { background: #0f1115; color: #e6e7eb; border: 1px solid #2a2f36; }
+    body.dark-mode .bot-message ul { margin: 6px 0 6px 18px; }
+
+        body.dark-mode .user-message {
+            /* keep gradient; enhance lift */
+            box-shadow: 0 4px 14px rgba(160, 82, 45, 0.2);
+        }
+
+        body.dark-mode .chat-input-area {
+            background: #111317;
+            border-top-color: #22262c;
+        }
+
+        body.dark-mode .chat-input {
+            background: #0c0d10;
+            color: #e5e7eb;
+            border-color: #2a2f36;
+        }
+
+        body.dark-mode .chat-input::placeholder {
+            color: #9aa4b2;
+        }
+
+        body.dark-mode .chat-input:focus {
+            border-color: #A0522D;
+            box-shadow: 0 0 0 3px rgba(160,82,45,0.2);
+        }
+
+        body.dark-mode .loading-dots div {
+            background-color: #f0b35f; /* warmer accent for visibility on dark */
+        }
+
+        /* Subtle dark scrollbars within chat */
+        body.dark-mode .chat-messages::-webkit-scrollbar { width: 10px; }
+        body.dark-mode .chat-messages::-webkit-scrollbar-track { background: #0c0d10; }
+        body.dark-mode .chat-messages::-webkit-scrollbar-thumb { background-color: #2a2f36; border-radius: 6px; border: 2px solid #0c0d10; }
+        body.dark-mode .chat-messages { scrollbar-color: #2a2f36 #0c0d10; }
     </style>
 </head>
 <body>
+    <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
     <div class="chatbot-container">
         <button class="chat-toggle" id="chatToggle">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -311,11 +392,34 @@ Keep responses concise and helpful. If you don't know something specific, sugges
             });
 
             // Add message to chat
+            function linkify(text) {
+                const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/gi;
+                return text.replace(urlRegex, (match) => {
+                    const href = match.startsWith('http') ? match : `https://${match}`;
+                    return `<a href="${href}" target="_blank" rel="noopener noreferrer">${match}</a>`;
+                });
+            }
+
+            function formatBotText(text) {
+                // escape basic HTML to avoid injection, then add simple formatting
+                const escaped = text
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+                const withLinks = linkify(escaped);
+                const withBreaks = withLinks.replace(/\n/g, '<br>');
+                return withBreaks;
+            }
+
             function addMessage(text, sender) {
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message');
                 messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
-                messageDiv.textContent = text;
+                if (sender === 'bot') {
+                    messageDiv.innerHTML = formatBotText(text);
+                } else {
+                    messageDiv.textContent = text; // keep user text plain for safety
+                }
                 chatMessages.appendChild(messageDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }

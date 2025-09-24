@@ -784,16 +784,18 @@ body {
 }
 
 .redesigned-contact-form .form-row {
-    display: flex;
+    display: flex !important;
     gap: 1.2rem;
     flex-wrap: wrap;
 }
 
 .redesigned-contact-form .form-group {
-    flex: 1 1 240px;
+    flex: 1 1 120px;
+    min-width: 140px;
     display: flex;
     flex-direction: column;
     gap: 0.45rem;
+    margin-bottom: 1.1rem;
 }
 
 .redesigned-contact-form .form-group.full-width { flex-basis: 100%; }
@@ -1495,10 +1497,10 @@ body {
 
     /* Make the form denser on small screens */
     .message-form-container { padding: 0 6px; }
-    .contact-form { padding: 1.1rem 0.9rem; }
-    .redesigned-contact-form { padding: 1rem 0.9rem 1.25rem; gap: 0.9rem; }
+    .contact-form { padding: 1rem 0.8rem; }
+    .redesigned-contact-form { padding: 0.9rem 0.85rem 1.1rem; gap: 0.8rem; }
     /* Stack fields compactly and remove inherited margins from legacy rules */
-    .redesigned-contact-form .form-row { flex-direction: column; gap: 0.6rem; margin: 0; }
+    .redesigned-contact-form .form-row { flex-direction: column; gap: 0.5rem; margin: 0; }
     .redesigned-contact-form .form-group { margin: 0; }
     /* Slightly smaller controls so the form feels tighter */
     .redesigned-contact-form input,

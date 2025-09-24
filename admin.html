@@ -8,9 +8,50 @@
   <link rel="stylesheet" href="CSS/style.css" />
   <link rel="stylesheet" href="CSS/admin.css" />
   <link rel="stylesheet" href="CSS/dark-mode.css" />
+  <script defer src="https://unpkg.com/feather-icons"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <div class="admin-wrap">
+  <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" aria-label="Admin navigation">
+      <div class="admin-profile">
+        <div class="avatar" aria-hidden="true">A</div>
+        <div class="profile-meta">
+          <div class="name" id="admin-user-name">Admin</div>
+          <a class="open-profile" href="/profile.html" target="_blank" rel="noopener">Open Profile ↗</a>
+        </div>
+      </div>
+      <nav class="admin-nav">
+        <a class="nav-link active" href="/admin.html">
+          <span class="nav-icon" aria-hidden="true"><i data-feather="grid"></i></span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a class="nav-link" href="/admin-users.html">
+          <span class="nav-icon" aria-hidden="true"><i data-feather="users"></i></span>
+          <span class="nav-label">Users</span>
+        </a>
+        <a class="nav-link" href="/admin-orders.html">
+          <span class="nav-icon" aria-hidden="true"><i data-feather="file-text"></i></span>
+          <span class="nav-label">Orders</span>
+        </a>
+        <a class="nav-link" href="/admin-messages.html">
+          <span class="nav-icon" aria-hidden="true"><i data-feather="mail"></i></span>
+          <span class="nav-label">Messages</span>
+        </a>
+        <a class="nav-link" href="/admin-products.html">
+          <span class="nav-icon" aria-hidden="true"><i data-feather="shopping-bag"></i></span>
+          <span class="nav-label">Products</span>
+        </a>
+        <a class="nav-link" href="/admin-notifications.html">
+          <span class="nav-icon" aria-hidden="true"><i data-feather="bell"></i></span>
+          <span class="nav-label">Notifications</span>
+        </a>
+        
+      </nav>
+    </aside>
+    <div class="admin-main">
+    <div class="admin-wrap">
     <div class="admin-header">
   <h1><span class="brand">HOME DECOR FURNITURE</span> — Admin Dashboard</h1>
       <div class="admin-actions">
@@ -20,7 +61,19 @@
       </div>
     </div>
 
-    <div class="cards">
+  <div class="cards" id="dashboard">
+      <div class="card">
+        <h3>Orders</h3>
+        <div class="metric" id="m-orders">–</div>
+      </div>
+      <div class="card">
+        <h3>Revenue</h3>
+        <div class="metric" id="m-revenue">–</div>
+      </div>
+      <div class="card">
+        <h3>Messages</h3>
+        <div class="metric" id="m-messages">–</div>
+      </div>
       <div class="card">
         <h3>Total Users</h3>
         <div class="metric" id="m-total">–</div>
@@ -34,150 +87,51 @@
         <div class="metric" id="m-users">–</div>
       </div>
       <div class="card">
-        <h3>Messages</h3>
-        <div class="metric" id="m-messages">–</div>
+        <h3>Notifications</h3>
+        <div class="metric" id="m-notifs">–</div>
       </div>
     </div>
 
-    <div class="panel">
-      <h2>Users</h2>
+    <div class="panel" id="charts-panel">
+      <h2>Insights</h2>
       <div class="content">
-        <div class="notice">Promote/demote users between admin and user roles. You cannot modify or delete your own account.</div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Name</th>
-                <th>Role</th>
-                <th>Created</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="users-body"></tbody>
-          </table>
+        <div class="charts-grid">
+          <div class="chart-card">
+            <h3>Orders by Status (last 30)</h3>
+            <canvas id="ordersByStatus" height="140"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Orders per Day (last 14)</h3>
+            <canvas id="ordersPerDay" height="140"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Revenue per Day (last 14)</h3>
+            <canvas id="revenuePerDay" height="140"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Top Products (by qty)</h3>
+            <canvas id="topProducts" height="140"></canvas>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="panel">
-      <h2>Contact Messages</h2>
-      <div class="content">
-        <div class="notice">Recent messages sent via the Contact page.</div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Subject</th>
-                <th>Message</th>
-                <th>Received</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="messages-body"></tbody>
-          </table>
-        </div>
-      </div>
+    <!-- Other sections moved to their own pages: admin-users.html, admin-orders.html, admin-messages.html, admin-products.html -->
     </div>
-
-    <div class="panel">
-      <h2>Products</h2>
-      <div class="content">
-        <div class="notice">Add new products to your catalog. You can also delete products here. Use the View link to open Product Details page.</div>
-        <form id="prod-form" style="margin-bottom:14px;display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));">
-          <input type="hidden" id="p-id" value="" />
-          <div>
-            <label>Name *</label>
-            <input id="p-name" required placeholder="e.g., Elegant Sofa" />
-          </div>
-          <div>
-            <label>Price (₹) *</label>
-            <input id="p-price" type="number" min="0" step="1" required />
-          </div>
-          <div>
-            <label>Image URL</label>
-            <input id="p-image" placeholder="image/sofa.webp or https://…" />
-          </div>
-          <div>
-            <label>Category</label>
-            <select id="p-category">
-              <option value="">—</option>
-              <option value="living">Living Room</option>
-              <option value="dining">Dining Room</option>
-              <option value="bedroom">Bedroom</option>
-              <option value="office">Office</option>
-              <option value="3d">3D Models</option>
-            </select>
-          </div>
-          <div>
-            <label>Brand</label>
-            <input id="p-brand" placeholder="e.g., UrbanWood" />
-          </div>
-          <div>
-            <label>Material</label>
-            <input id="p-material" placeholder="e.g., Leather" />
-          </div>
-          <div style="grid-column:1/-1;">
-            <label>Description</label>
-            <textarea id="p-desc" placeholder="Short description" style="width:100%;min-height:70px"></textarea>
-          </div>
-          <div>
-            <label>Original Price</label>
-            <input id="p-original" type="number" min="0" step="1" />
-          </div>
-          <div>
-            <label>Discount (%)</label>
-            <input id="p-discount" type="number" min="0" max="90" step="1" />
-          </div>
-          <div>
-            <label>Badge</label>
-            <input id="p-badge" placeholder="e.g., New, Sale, Hot" />
-          </div>
-          <div>
-            <label>Is 3D Model?</label>
-            <select id="p-is3d">
-              <option value="0">No</option>
-              <option value="1">Yes</option>
-            </select>
-          </div>
-          <div id="p-model-row" style="display:none;grid-column:1/-1;">
-            <label>3D Model Path</label>
-            <input id="p-model" placeholder="3d models/your_model.glb" />
-          </div>
-          <div style="grid-column:1/-1;display:flex;gap:8px;align-items:center;">
-            <button class="btn primary" type="submit" id="btn-prod-submit">Add Product</button>
-            <button class="btn" type="button" id="btn-prod-cancel" style="display:none;">Cancel Edit</button>
-            <button class="btn" type="button" id="btn-prod-refresh">Refresh Products</button>
-          </div>
-        </form>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Category</th>
-                <th>Brand</th>
-                <th>Material</th>
-                <th>3D</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="prod-body"></tbody>
-          </table>
-        </div>
-      </div>
     </div>
   </div>
 
   <script>
+  // Sidebar nav: active link by pathname
+  (function(){
+    const path = location.pathname.replace(/\/+/g,'/');
+    document.querySelectorAll('.admin-sidebar .nav-link').forEach(a => {
+      const href = a.getAttribute('href');
+      const matches = (href === '/' ? path === '/' : path.endsWith(href));
+      a.classList.toggle('active', matches);
+    });
+    try { if (window.feather && typeof window.feather.replace === 'function') feather.replace(); } catch(e) {}
+  })();
   const fmtDate = (d) => new Date(d).toLocaleString();
   async function api(path, opts={}){
     const res = await fetch(path, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
@@ -206,6 +160,11 @@
       location.href = '/login.html';
       return false;
     }
+    try {
+      const name = (auth.user?.full_name || auth.user?.username || 'Admin');
+      const nameEl = document.getElementById('admin-user-name');
+      if (nameEl) nameEl.textContent = name;
+    } catch {}
     return true;
   }
   async function loadStats(){
@@ -216,7 +175,43 @@
     if (typeof data.stats.messages !== 'undefined') {
       document.getElementById('m-messages').textContent = data.stats.messages;
     }
+    if (typeof data.stats.orders !== 'undefined') {
+      document.getElementById('m-orders').textContent = data.stats.orders;
+    }
+    if (typeof data.stats.notifications !== 'undefined') {
+      const el = document.getElementById('m-notifs'); if (el) el.textContent = data.stats.notifications;
+    }
+    try {
+      await maybeFetchForCharts();
+      const orders = window.__orders || [];
+      const totalRevenue = orders.reduce((sum,o)=> sum + (parseInt(o.total||0,10)||0), 0);
+      const revEl = document.getElementById('m-revenue'); if (revEl) revEl.textContent = fmtINR(totalRevenue);
+      await renderCharts();
+    } catch(e) { console.warn('Charts failed:', e.message); }
   }
+  const fmtINR = (n)=> '₹'+(Number(n)||0).toLocaleString('en-IN');
+  function orderRow(o){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td data-label="ID">${o.id}</td>
+      <td data-label="Customer">${(o.full_name||'') + (o.city?`, ${o.city}`:'')}</td>
+      <td data-label="Email" class="muted">${o.email||''}</td>
+      <td data-label="Payment" class="muted">${o.payment_method?.toUpperCase()||''}</td>
+      <td data-label="Total"><strong>${fmtINR(o.total)}</strong></td>
+      <td data-label="Status">${o.status||'placed'}</td>
+      <td data-label="Created" class="muted">${fmtDate(o.created_at)}</td>
+      <td data-label="Actions"><div class="row-actions"><button class="btn js-items">View Items</button></div></td>`;
+    tr.querySelector('.js-items').addEventListener('click', async ()=>{
+      try{
+        const data = await api(`/api/admin/orders/${o.id}/items`);
+        const items = data.items || [];
+        const lines = items.map(it=>`• ${it.name} × ${it.quantity} — ${fmtINR(it.price*it.quantity)}`).join('\n');
+        alert(lines || 'No items.');
+      }catch(e){ alert(e.message); }
+    });
+    return tr;
+  }
+  // Orders table moved to admin-orders.html
   function row(user, currentId){
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -248,14 +243,7 @@
     });
     return tr;
   }
-  async function loadUsers(){
-    const auth = await api('/api/check-auth');
-    const me = auth.user?.id;
-    const data = await api('/api/admin/users');
-    const tbody = document.getElementById('users-body');
-    tbody.innerHTML = '';
-    data.users.forEach(u=> tbody.appendChild(row(u, me)) );
-  }
+  // Users table moved to admin-users.html
   function msgRow(m){
     const tr = document.createElement('tr');
     const preview = (m.message || '').slice(0, 80).replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -274,14 +262,9 @@
     });
     return tr;
   }
-  async function loadMessages(){
-    const data = await api('/api/admin/messages');
-    const tbody = document.getElementById('messages-body');
-    tbody.innerHTML = '';
-    data.messages.forEach(m=> tbody.appendChild(msgRow(m)) );
-  }
+  // Messages table moved to admin-messages.html
   async function refresh(){
-  await Promise.all([loadStats(), loadUsers(), loadMessages(), loadProducts()]);
+    await loadStats();
   }
   document.getElementById('btn-refresh').addEventListener('click', refresh);
   document.getElementById('btn-logout').addEventListener('click', async ()=>{
@@ -290,10 +273,10 @@
   });
   (async ()=>{ if(await ensureAdmin()) await refresh(); })();
 
-  // ===== Products Management =====
+  // ===== Dashboard only on this page =====
   const qsel = (s)=>document.querySelector(s);
   const byId = (id)=>document.getElementById(id);
-  const productsTbody = byId('prod-body');
+  const productsTbody = null;
 
   function productRow(p){
     const tr = document.createElement('tr');
@@ -330,7 +313,34 @@
     try {
       const data = await api('/api/products');
       productsTbody.innerHTML = '';
-      (data.products||[]).forEach(p=> productsTbody.appendChild(productRow(p)) );
+      const list = (data.products||[]);
+      list.forEach(p=> productsTbody.appendChild(productRow(p)) );
+
+      // Populate Brand/Material datalists for ease of selection
+      try {
+        const brandSet = new Set();
+        const materialSet = new Set();
+        list.forEach(p => {
+          if (p.brand && String(p.brand).trim()) brandSet.add(String(p.brand).trim());
+          if (p.material && String(p.material).trim()) materialSet.add(String(p.material).trim());
+        });
+        const brandsDl = document.getElementById('brands-list');
+        const materialsDl = document.getElementById('materials-list');
+        if (brandsDl) {
+          brandsDl.innerHTML = Array.from(brandSet)
+            .sort((a,b)=>a.localeCompare(b))
+            .map(b=>`<option value="${b}"></option>`)
+            .join('');
+        }
+        if (materialsDl) {
+          materialsDl.innerHTML = Array.from(materialSet)
+            .sort((a,b)=>a.localeCompare(b))
+            .map(m=>`<option value="${m}"></option>`)
+            .join('');
+        }
+      } catch (e) {
+        console.warn('Failed to populate brand/material lists', e);
+      }
     } catch(e){
       console.warn('Failed to load products', e);
     }
@@ -343,8 +353,15 @@
   const hiddenId = byId('p-id');
   const btnSubmit = byId('btn-prod-submit');
   const btnCancel = byId('btn-prod-cancel');
+  // Image upload elements
+  const fileInput = byId('p-image-file');
+  const imageUrlInput = byId('p-image');
+  const previewWrap = byId('p-image-preview-wrap');
+  const previewImg = byId('p-image-preview');
+  const clearBtn = byId('p-image-clear');
+  const statusEl = byId('p-image-status');
   if (is3dSel) {
-    const onToggle = ()=>{ modelRow.style.display = is3dSel.value === '1' ? '' : 'none'; };
+    const onToggle = ()=>{ const req = is3dSel.value === '1'; modelRow.style.display = req ? '' : 'none'; var m=byId('p-model'); if (m) m.required = req; };
     is3dSel.addEventListener('change', onToggle);
     onToggle();
   }
@@ -362,6 +379,10 @@
     byId('p-name').value = p.name || '';
     byId('p-price').value = p.price ?? '';
     byId('p-image').value = p.image || '';
+    // Update preview if image exists
+    if (p.image) {
+      try { previewImg.src = p.image; previewWrap.style.display = ''; } catch(e) { previewWrap.style.display='none'; }
+    } else { previewWrap.style.display = 'none'; }
     byId('p-category').value = p.category || '';
     byId('p-brand').value = p.brand || '';
     byId('p-material').value = p.material || '';
@@ -376,6 +397,52 @@
     if (btnCancel) btnCancel.style.display = '';
     // Scroll to form for convenience
     document.getElementById('prod-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function uploadImage(file){
+    if (!file) return;
+    statusEl.textContent = 'Uploading image…';
+    btnSubmit && (btnSubmit.disabled = true);
+    try{
+      const fd = new FormData();
+      fd.append('image', file);
+      const res = await fetch('/api/admin/upload-image', { method:'POST', body: fd, credentials:'include' });
+      const data = await res.json().catch(()=>({}));
+      if (!res.ok || !data.success) throw new Error(data.error || 'Upload failed');
+      const url = data.url;
+      imageUrlInput.value = url;
+      previewImg.src = url;
+      previewWrap.style.display = '';
+      statusEl.textContent = 'Image uploaded';
+    }catch(e){
+      alert(e.message || 'Upload failed');
+      statusEl.textContent = e.message || 'Upload failed';
+      previewWrap.style.display = 'none';
+    } finally {
+      btnSubmit && (btnSubmit.disabled = false);
+    }
+  }
+
+  if (fileInput) {
+    fileInput.addEventListener('change', () => {
+      const f = fileInput.files && fileInput.files[0];
+      if (f) uploadImage(f);
+    });
+  }
+  if (imageUrlInput) {
+    imageUrlInput.addEventListener('change', ()=>{
+      const v = imageUrlInput.value.trim();
+      if (v) { try { previewImg.src = v; previewWrap.style.display=''; } catch(e){ previewWrap.style.display='none'; } }
+      else { previewWrap.style.display='none'; }
+    });
+  }
+  if (clearBtn) {
+    clearBtn.addEventListener('click', ()=>{
+      if (fileInput) fileInput.value = '';
+      imageUrlInput.value = '';
+      previewWrap.style.display = 'none';
+      statusEl.textContent = '';
+    });
   }
 
   if (form) {
@@ -397,6 +464,10 @@
         model_src: norm(byId('p-model').value),
         is_3d: byId('p-is3d').value === '1'
       };
+      if (payload.is_3d && !payload.model_src) {
+        alert('3D Model Path is required when Is 3D Model is Yes.');
+        return;
+      }
       try {
         const editingId = hiddenId.value;
         if (editingId) {
@@ -422,8 +493,123 @@
     form.reset();
     if (is3dSel) is3dSel.value = '0';
     if (modelRow) modelRow.style.display = 'none';
+  if (previewWrap) previewWrap.style.display = 'none';
+  if (statusEl) statusEl.textContent = '';
     resetFormToCreate();
   });
+  
+  // ---------- Charts ----------
+  async function waitForChart(maxMs=3000){
+    const start = Date.now();
+    while (!window.Chart && Date.now()-start < maxMs) {
+      await new Promise(r=>setTimeout(r,50));
+    }
+    if (!window.Chart) throw new Error('Chart.js not loaded');
+  }
+  async function fetchJSON(url){
+    const res = await fetch(url, { credentials: 'include' });
+    if (!res.ok) throw new Error('Failed ' + url);
+    return res.json();
+  }
+  async function maybeFetchForCharts(){
+    const data = await fetchJSON('/api/admin/orders');
+    window.__orders = data.orders || [];
+    const top = await deriveTopProducts(window.__orders);
+    window.__topProducts = top;
+  }
+  async function renderCharts(){
+    await waitForChart();
+    if (!window.__orders) await maybeFetchForCharts();
+    const orders = window.__orders || [];
+
+    // Orders by Status (last 30)
+    const last30 = orders.slice(0, 30);
+    const statusCounts = last30.reduce((acc,o)=>{acc[o.status||'placed']=(acc[o.status||'placed']||0)+1;return acc;},{});
+    paintDoughnut('ordersByStatus', Object.keys(statusCounts), Object.values(statusCounts));
+
+    // Orders per Day (last 14)
+    const byDay = {};
+    const now = new Date();
+    for(let i=13;i>=0;i--){
+      const d = new Date(now);
+      d.setDate(now.getDate()-i);
+      const key = d.toISOString().slice(0,10);
+      byDay[key] = 0;
+    }
+    orders.forEach(o=>{
+      const key = (o.created_at||'').slice(0,10);
+      if (key in byDay) byDay[key]++;
+    });
+    paintLine('ordersPerDay', Object.keys(byDay), Object.values(byDay), 'Orders', '#c08457');
+
+    // Revenue per Day (last 14)
+    const byDayRev = {};
+    const now2 = new Date();
+    for(let i=13;i>=0;i--){
+      const d = new Date(now2);
+      d.setDate(now2.getDate()-i);
+      const key = d.toISOString().slice(0,10);
+      byDayRev[key] = 0;
+    }
+    orders.forEach(o=>{
+      const key = (o.created_at||'').slice(0,10);
+      if (key in byDayRev) byDayRev[key] += (parseInt(o.total||0,10)||0);
+    });
+    paintLine('revenuePerDay', Object.keys(byDayRev), Object.values(byDayRev), 'Revenue', '#16a34a');
+
+    // Top Products (qty)
+    const top = window.__topProducts || { labels: [], data: [] };
+    paintBar('topProducts', top.labels, top.data);
+  }
+  const __chartRefs = window.__chartRefs || (window.__chartRefs = {});
+  function paintDoughnut(id, labels, data){
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (__chartRefs[id]) { try { __chartRefs[id].destroy(); } catch {} }
+    const ctx = el.getContext('2d');
+    __chartRefs[id] = new Chart(ctx, {
+      type: 'doughnut',
+      data: { labels, datasets: [{ data, backgroundColor: ['#60a5fa','#34d399','#fbbf24','#f87171','#a78bfa'] }] },
+      options: { plugins: { legend: { position: 'bottom' } }, maintainAspectRatio: false, animation: false }
+    });
+  }
+  function paintLine(id, labels, data, seriesLabel='Series', color='#c08457'){
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (__chartRefs[id]) { try { __chartRefs[id].destroy(); } catch {} }
+    const ctx = el.getContext('2d');
+    __chartRefs[id] = new Chart(ctx, {
+      type: 'line',
+      data: { labels, datasets: [{ label: seriesLabel, data, fill:false, borderColor: color, tension:0.3 }] },
+      options: { scales: { y: { beginAtZero:true } }, maintainAspectRatio: false, animation: false }
+    });
+  }
+  function paintBar(id, labels, data){
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (__chartRefs[id]) { try { __chartRefs[id].destroy(); } catch {} }
+    const ctx = el.getContext('2d');
+    __chartRefs[id] = new Chart(ctx, {
+      type: 'bar',
+      data: { labels, datasets: [{ label:'Qty', data, backgroundColor:'#d4a373' }] },
+      options: { scales: { y: { beginAtZero:true } }, maintainAspectRatio: false, animation: false }
+    });
+  }
+  async function deriveTopProducts(orders){
+    const first = (orders||[]).slice(0,10);
+    const counts = {};
+    for (const o of first){
+      try{
+        const data = await fetchJSON(`/api/admin/orders/${o.id}/items`);
+        (data.items||[]).forEach(it=>{
+          const key = it.name || String(it.product_id||'');
+          counts[key] = (counts[key]||0) + (it.quantity||0);
+        });
+      }catch{}
+    }
+    const pairs = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    return { labels: pairs.map(p=>p[0]), data: pairs.map(p=>p[1]) };
+  }
   </script>
 </body>
 <script src="js/app.js"></script>

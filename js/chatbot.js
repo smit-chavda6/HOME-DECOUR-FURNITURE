@@ -34,6 +34,134 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
     };
 
+    // === Live Product Catalog Awareness ===
+    // We load the latest products from the backend (or scrape the gallery as a fallback)
+    // and use this for price-aware answers and suggestions.
+    const CATALOG_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+    let catalogCache = { products: [], fetchedAt: 0 };
+
+    function parsePriceToNumber(text) {
+        if (!text) return 0;
+        const num = parseFloat(String(text).replace(/[^0-9.]/g, ''));
+        return isNaN(num) ? 0 : num;
+    }
+
+    function buildProductUrl(id){
+        return `product-details.html?id=${encodeURIComponent(id)}`;
+    }
+
+    async function fetchCatalogFromApi(){
+        try {
+            const res = await fetch('/api/products', { credentials: 'include' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+            const items = (data.products || []).map(p => ({
+                id: p.id,
+                name: p.name || `Product ${p.id}`,
+                category: p.category || '',
+                brand: p.brand || '',
+                material: p.material || '',
+                price: Number(p.price || 0),
+                priceText: `₹${Number(p.price || 0).toLocaleString('en-IN')}`,
+                is3d: !!p.is_3d,
+                model_src: p.model_src || '',
+                image: p.image || 'image/Logo maker project.webp',
+                url: buildProductUrl(p.id)
+            }));
+            return items;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function scrapeCatalogFromDom(){
+        try {
+            const cards = Array.from(document.querySelectorAll('.product-card'));
+            return cards.map(card => {
+                const id = card.getAttribute('data-product-id') || '';
+                const name = card.querySelector('.product-title')?.textContent?.trim() || `Product ${id}`;
+                const priceText = card.querySelector('.current-price')?.textContent?.trim() || '';
+                const price = parsePriceToNumber(priceText);
+                const category = card.getAttribute('data-category') || '';
+                const brand = card.getAttribute('data-brand') || '';
+                const material = card.getAttribute('data-material') || '';
+                const is3d = card.classList.contains('product-card-3d') || !!card.querySelector('model-viewer');
+                const model_src = card.querySelector('model-viewer')?.getAttribute('src') || '';
+                const image = card.querySelector('.product-image img')?.getAttribute('src') || 'image/Logo maker project.webp';
+                return { id, name, category, brand, material, price, priceText: priceText || `₹${price.toLocaleString('en-IN')}`, is3d, model_src, image, url: buildProductUrl(id) };
+            });
+        } catch (e) { return []; }
+    }
+
+    async function ensureCatalogLoaded(force=false){
+        const now = Date.now();
+        if (!force && catalogCache.products.length && (now - catalogCache.fetchedAt) < CATALOG_CACHE_TTL_MS) {
+            return catalogCache.products;
+        }
+        // Try API first
+        const apiItems = await fetchCatalogFromApi();
+        const items = apiItems && apiItems.length ? apiItems : scrapeCatalogFromDom();
+        catalogCache = { products: items, fetchedAt: Date.now() };
+        return items;
+    }
+
+    function tokenize(str){
+        return (str||'').toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+    }
+
+    function matchScore(product, message){
+        const qTokens = tokenize(message);
+        const fields = [product.name, product.category, product.brand, product.material].join(' ').toLowerCase();
+        const fTokens = tokenize(fields);
+        let score = 0;
+        qTokens.forEach(t => { if (fTokens.includes(t)) score += 2; });
+        // Boost by category keywords
+        if (/sofa|couch/.test(message.toLowerCase()) && /sofa|couch/i.test(product.name)) score += 2;
+        if (/chair/.test(message.toLowerCase()) && /chair/i.test(product.name)) score += 2;
+        if (/table/.test(message.toLowerCase()) && /table/i.test(product.name)) score += 2;
+        if (/bed|mattress/.test(message.toLowerCase()) && /bed|mattress/i.test(product.name)) score += 2;
+        return score;
+    }
+
+    function parseBudget(message){
+        const lower = message.toLowerCase();
+        const nums = message.match(/\d{1,3}(?:,\d{3})*(?:\.\d+)?/g);
+        if (!nums) return null;
+        // Use the largest number as a likely budget cap
+        const values = nums.map(n => parsePriceToNumber(n)).filter(n => n>0).sort((a,b)=>b-a);
+        const max = values[0];
+        if (/under|below|less than|<=|upto|up to/.test(lower)) return { type: 'max', value: max };
+        if (/above|over|more than|>=/.test(lower)) return { type: 'min', value: max };
+        return { type: 'around', value: max };
+    }
+
+    async function findProductMatches(message, limit=5){
+        const items = await ensureCatalogLoaded();
+        if (!items.length) return [];
+        const budget = parseBudget(message);
+        let filtered = items;
+        if (budget) {
+            if (budget.type === 'max') filtered = filtered.filter(p => p.price <= budget.value);
+            else if (budget.type === 'min') filtered = filtered.filter(p => p.price >= budget.value);
+            else {
+                const delta = Math.max(2000, Math.round(budget.value * 0.25));
+                filtered = filtered.filter(p => Math.abs(p.price - budget.value) <= delta);
+            }
+        }
+        const withScores = filtered.map(p => ({ p, s: matchScore(p, message) + (p.is3d && /ar|3d|view in room/i.test(message) ? 1 : 0) }));
+        withScores.sort((a,b) => b.s - a.s || a.p.price - b.p.price);
+        const top = withScores.filter(x => x.s > 0).slice(0, limit).map(x => x.p);
+        // If no token match but we have a budget, propose by price
+        if (!top.length && budget) return items.sort((a,b)=>a.price-b.price).slice(0, limit);
+        return top;
+    }
+
+    function formatProductSuggestionList(matches){
+        if (!matches || !matches.length) return '';
+        // Show clean names and prices only; provide clickable buttons separately
+        return matches.map(m => `• ${m.name} — ${m.priceText}${m.is3d ? ' (3D/AR)' : ''}`).join('\n');
+    }
+
     // Create chatbot HTML structure
     function createChatbot() {
         const chatbotHTML = `
@@ -405,7 +533,7 @@ Keep responses concise and helpful. If you don't know something specific, sugges
                 }
 
     // AI response system using Google Gemini API
-    async function generateResponse(userMessage) {
+    async function generateResponse(userMessage, productContext = '') {
         try {
             const apiKey = 'AIzaSyD7-x3lvSxHApV-Q_G0LaqdRnFCE8NXfqk';
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
@@ -422,7 +550,9 @@ You should answer questions about:
 - Contact info: Phone: ${websiteData.contact.phone}, Email: ${websiteData.contact.email}
 - Company features: ${websiteData.features.join(', ')}
 
-Keep responses concise and helpful (max 150 words). If you don't know something specific, suggest visiting the FAQ page or contacting human support at ${websiteData.contact.phone}. Maintain a warm, inviting tone that matches our elegant furniture brand.`;
+Keep responses concise and helpful (max 150 words). If you don't know something specific, suggest visiting the FAQ page or contacting human support at ${websiteData.contact.phone}. Maintain a warm, inviting tone that matches our elegant furniture brand.
+
+${productContext ? ('Live catalog context (use for accurate names/prices):\n' + productContext) : ''}`;
 
             const payload = {
                 contents: [{
@@ -680,12 +810,25 @@ Keep responses concise and helpful (max 150 words). If you don't know something 
         showLoading(true);
 
         try {
-            const botResponse = await generateResponse(userText);
+            // Prepare live catalog matches for product-aware suggestions
+            let matches = [];
+            try { matches = await findProductMatches(userText, 4); } catch {}
+            const contextText = formatProductSuggestionList(matches);
+
+            const botResponse = await generateResponse(userText, contextText);
             showLoading(false);
-            
-            // Generate navigation buttons based on the question and response
-            const navigationButtons = generateNavigationButtons(userText, botResponse);
-            addMessage(botResponse, 'bot', navigationButtons);
+
+            // Build a single combined message and buttons set
+            const navigationButtons = generateNavigationButtons(userText, botResponse) || [];
+            const productButtons = (matches && matches.length) ? matches.slice(0, 4).map(m => ({ text: `View ${m.name}`, url: m.url })) : [];
+            const combinedButtons = [...navigationButtons, ...productButtons];
+
+            const suggestionsText = (matches && matches.length)
+                ? `\n\nHere are a few options you might like:\n\n${formatProductSuggestionList(matches)}`
+                : '';
+            const combinedText = botResponse + suggestionsText;
+
+            addMessage(combinedText, 'bot', combinedButtons);
         } catch (error) {
             console.error('Error in sendMessage:', error);
             showLoading(false);

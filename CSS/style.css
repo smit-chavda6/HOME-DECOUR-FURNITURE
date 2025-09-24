@@ -43,6 +43,19 @@
   z-index: 1;
   padding-bottom: 3rem;
 }
+
+/* Accessibility utility: visually hidden but accessible to screen readers */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
 .modern-welcome-bg {
   position: absolute;
   top: -80px;
@@ -584,6 +597,13 @@
     flex-direction: column;
     gap: 0.7rem;
   }
+}
+
+/* Extra-small phones: tighter CTA */
+@media (max-width: 420px) {
+  .modern-cta-content h2 { font-size: 1.6rem; letter-spacing: .5px; }
+  .modern-cta-content p { font-size: 1rem; margin-bottom: 1.2rem; }
+  .modern-cta-buttons .cta-button { width: 100%; max-width: 320px; padding: 0.9rem 1.1rem; margin: 0 auto; }
 }
 
 /* Modern Shop by Category Section */

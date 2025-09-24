@@ -1,5 +1,10 @@
 // Gallery Page JavaScript
 document.addEventListener('DOMContentLoaded', function() {
+    if (window.__galleryInit) {
+        // Prevent double-binding which can invert wishlist add/remove
+        return;
+    }
+    window.__galleryInit = true;
     const filterButtons = document.querySelectorAll('.filter-btn');
     let galleryItems = Array.from(document.querySelectorAll('.product-card'));
     const galleryContainer = document.querySelector('.gallery-container');
@@ -109,6 +114,8 @@ document.addEventListener('DOMContentLoaded', function() {
         wishlist[data.id] = data;
         saveWishlist();
         renderWishlist();
+        // Immediately sync buttons to reflect state
+        syncWishlistButtons();
     }
 
     function removeFromWishlist(id) {
@@ -116,6 +123,8 @@ document.addEventListener('DOMContentLoaded', function() {
             delete wishlist[id];
             saveWishlist();
             renderWishlist();
+            // Immediately sync buttons to reflect state
+            syncWishlistButtons();
         }
     }
 
@@ -572,13 +581,34 @@ document.addEventListener('DOMContentLoaded', function() {
     updateClearButton();
     
     // Add event listeners for product card buttons
+    // Accepts: a single root Node, or an Array/NodeList of card elements to scope binding
     function bindCardButtons(context){
-        const root = context || document;
-        const viewDetailsBtns = root.querySelectorAll('.view-details-btn');
-        const addToCartBtns = root.querySelectorAll('.add-to-cart-btn');
-        const quickViewBtns = root.querySelectorAll('.quick-view-btn');
-    const wishlistBtns = root.querySelectorAll('.wishlist-btn');
-    const viewInRoomBtnsDyn = root.querySelectorAll('.view-in-room-btn');
+        let scopes = [];
+        if (!context) {
+            scopes = [document];
+        } else if (Array.isArray(context)) {
+            scopes = context;
+        } else if (NodeList.prototype.isPrototypeOf(context)) {
+            scopes = Array.from(context);
+        } else {
+            scopes = [context];
+        }
+
+        // Aggregate elements from all scopes
+        const viewDetailsBtns = [];
+        const addToCartBtns = [];
+        const quickViewBtns = [];
+        const wishlistBtns = [];
+        const viewInRoomBtnsDyn = [];
+
+        scopes.forEach(root => {
+            if (!root || !root.querySelectorAll) return;
+            viewDetailsBtns.push(...root.querySelectorAll('.view-details-btn'));
+            addToCartBtns.push(...root.querySelectorAll('.add-to-cart-btn'));
+            quickViewBtns.push(...root.querySelectorAll('.quick-view-btn'));
+            wishlistBtns.push(...root.querySelectorAll('.wishlist-btn'));
+            viewInRoomBtnsDyn.push(...root.querySelectorAll('.view-in-room-btn'));
+        });
     
         // View Details button styling
         viewDetailsBtns.forEach(btn => {
@@ -588,8 +618,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
     
+    // Add to Cart: handled globally via delegated listener in cart-popup.js to avoid duplicates
+
         // Quick View button functionality
         quickViewBtns.forEach(btn => {
+            if (btn.dataset.boundQuickView === '1') return;
+            btn.dataset.boundQuickView = '1';
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const productId = this.getAttribute('data-product-id');
@@ -603,6 +637,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
         // Wishlist button functionality with persistence
         wishlistBtns.forEach(btn => {
+            if (btn.dataset.boundWishlist === '1') return;
+            btn.dataset.boundWishlist = '1';
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const productCard = this.closest('.product-card');
@@ -616,23 +652,72 @@ document.addEventListener('DOMContentLoaded', function() {
                     addToWishlistFromCard(productCard);
                     window.cartPopupSystem?.showNotification(`${productTitle} added to wishlist!`, 'success');
                 }
+                // Ensure button UI updates even if no wishlist section on page
+                syncWishlistButtons();
             });
         });
 
         // AR view-in-room for dynamically added items
         viewInRoomBtnsDyn.forEach(btn => {
+            if (btn.dataset.boundViewInRoom === '1') return;
+            btn.dataset.boundViewInRoom = '1';
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 const productCard = btn.closest('.product-card');
                 const productTitle = productCard.querySelector('.product-title').textContent;
-                const modelSrc = btn.getAttribute('data-model-src');
+                const modelSrc = (btn.getAttribute('data-model-src')||'').replace(/\s/g, '%20');
                 const productId = btn.getAttribute('data-product-id');
+                // Try to trigger AR directly from the on-card model-viewer if supported (Android Scene Viewer / WebXR)
+                const mvOnCard = productCard.querySelector('model-viewer');
+                if (mvOnCard && mvOnCard.canActivateAR) {
+                    try { mvOnCard.activateAR(); return; } catch {}
+                }
+                // Fallback: open our AR/3D modal
                 showGalleryARExperience(productTitle, modelSrc, productId);
             });
         });
     }
 
     bindCardButtons(document);
+
+    // Delegated handlers as a safety net: ensures clicks work even if buttons are added later
+    if (galleryContainer) {
+        galleryContainer.addEventListener('click', (e) => {
+            const quickBtn = e.target.closest('.quick-view-btn');
+            if (quickBtn && galleryContainer.contains(quickBtn)) {
+                e.preventDefault();
+                const card = quickBtn.closest('.product-card');
+                const id = quickBtn.getAttribute('data-product-id') || card?.getAttribute('data-product-id');
+                if (id) {
+                    window.location.href = `product-details.html?id=${id}`;
+                }
+                return;
+            }
+
+            const arBtn = e.target.closest('.view-in-room-btn');
+            if (arBtn && galleryContainer.contains(arBtn)) {
+                e.preventDefault();
+                const card = arBtn.closest('.product-card');
+                const title = card?.querySelector('.product-title')?.textContent || 'Item';
+                const rawSrc = arBtn.getAttribute('data-model-src') || '';
+                const modelSrc = rawSrc.replace(/\s/g, '%20');
+                const id = arBtn.getAttribute('data-product-id') || card?.getAttribute('data-product-id');
+                // Prefer direct AR from on-card viewer
+                const mv = card?.querySelector('model-viewer');
+                if (mv && mv.canActivateAR) {
+                    try { mv.activateAR(); return; } catch {}
+                }
+                showGalleryARExperience(title, modelSrc, id);
+            }
+        });
+    }
+
+    // Initialize wishlist state immediately so buttons reflect saved items
+    try {
+        loadWishlist();
+        renderWishlist(); // safe no-op if section doesn't exist
+        syncWishlistButtons();
+    } catch (e) { console.debug('Wishlist init skipped:', e); }
 
     // Fetch products from API and append to gallery (if any)
     async function fetchAndAppendProducts(){
@@ -645,14 +730,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!products.length) return;
             const created = [];
             products.forEach(p => {
-                // Skip if a card with same id already exists
-                if (galleryContainer.querySelector(`.product-card[data-product-id="${p.id}"]`)) return;
-                const card = document.createElement('div');
-                card.className = 'product-card' + (p.is_3d ? ' product-card-3d' : '');
-                card.setAttribute('data-category', p.category || '');
-                card.setAttribute('data-product-id', p.id);
-                if (p.brand) card.setAttribute('data-brand', p.brand);
-                if (p.material) card.setAttribute('data-material', p.material);
+                const existing = galleryContainer.querySelector(`.product-card[data-product-id="${p.id}"]`);
                 const priceHtml = `<span class="current-price">₹${Number(p.price||0).toLocaleString('en-IN')}</span>`;
                 const originalHtml = p.original_price ? `<span class=\"original-price\">₹${Number(p.original_price).toLocaleString('en-IN')}</span>` : '';
                 const discountHtml = p.discount ? `<span class=\"discount\">-${p.discount}%</span>` : '';
@@ -662,34 +740,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 ` : `
                     <img src="${p.image || 'image/Logo maker project.webp'}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='image/Logo maker project.webp';">
                 `;
-                card.innerHTML = `
-                    <div class="product-image">
-                        ${mediaHtml}
-                        <div class="product-overlay">
-                            <button class="quick-view-btn" data-product-id="${p.id}">Quick View</button>
-                            <button class="add-to-cart-btn" data-product-id="${p.id}">Add to Cart</button>
-                            ${p.is_3d && p.model_src ? `<button class="view-in-room-btn" data-product-id="${p.id}" data-model-src="${p.model_src}">View in Room</button>` : ''}
+                if (existing) {
+                    // Update existing static card with latest DB data
+                    existing.setAttribute('data-category', p.category || '');
+                    if (p.brand) existing.setAttribute('data-brand', p.brand); else existing.removeAttribute('data-brand');
+                    if (p.material) existing.setAttribute('data-material', p.material); else existing.removeAttribute('data-material');
+                    const imgWrap = existing.querySelector('.product-image');
+                    if (imgWrap) {
+                        const overlay = imgWrap.querySelector('.product-overlay');
+                        imgWrap.innerHTML = `${mediaHtml}${overlay ? overlay.outerHTML : ''}${badgeHtml}`;
+                    }
+                    const titleEl = existing.querySelector('.product-title');
+                    if (titleEl) titleEl.textContent = p.name;
+                    const ratingWrap = existing.querySelector('.product-rating');
+                    if (ratingWrap) ratingWrap.innerHTML = `<span class="stars">${'★'.repeat(Math.round(p.rating||4))}${'☆'.repeat(5-Math.round(p.rating||4))}</span><span class="rating-count">(${p.rating_count||0})</span>`;
+                    const priceWrap = existing.querySelector('.product-price');
+                    if (priceWrap) priceWrap.innerHTML = `${priceHtml}${originalHtml}${discountHtml}`;
+                    // Re-bind buttons on this card
+                    bindCardButtons(existing);
+                } else {
+                    // Create a new card if it doesn't exist in static markup
+                    const card = document.createElement('div');
+                    card.className = 'product-card' + (p.is_3d ? ' product-card-3d' : '');
+                    card.setAttribute('data-category', p.category || '');
+                    card.setAttribute('data-product-id', p.id);
+                    if (p.brand) card.setAttribute('data-brand', p.brand);
+                    if (p.material) card.setAttribute('data-material', p.material);
+                    card.innerHTML = `
+                        <div class="product-image">
+                            ${mediaHtml}
+                            <div class="product-overlay">
+                                <button class="quick-view-btn" data-product-id="${p.id}">Quick View</button>
+                                <button class="add-to-cart-btn" data-product-id="${p.id}">Add to Cart</button>
+                                ${p.is_3d && p.model_src ? `<button class="view-in-room-btn" data-product-id="${p.id}" data-model-src="${p.model_src}">View in Room</button>` : ''}
+                            </div>
+                            ${badgeHtml}
                         </div>
-                        ${badgeHtml}
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-title">${p.name}</h3>
-                        <div class="product-rating">
-                            <span class="stars">${'★'.repeat(Math.round(p.rating||4))}${'☆'.repeat(5-Math.round(p.rating||4))}</span>
-                            <span class="rating-count">(${p.rating_count||0})</span>
-                        </div>
-                        <div class="product-price">
-                            ${priceHtml}
-                            ${originalHtml}
-                            ${discountHtml}
-                        </div>
-                        <div class="product-actions">
-                            <a href="product-details.html?id=${p.id}" class="view-details-btn">View Details</a>
-                            <button class="wishlist-btn" data-product-id="${p.id}">♡</button>
-                        </div>
-                    </div>`;
-                galleryContainer.appendChild(card);
-                created.push(card);
+                        <div class="product-info">
+                            <h3 class="product-title">${p.name}</h3>
+                            <div class="product-rating">
+                                <span class="stars">${'★'.repeat(Math.round(p.rating||4))}${'☆'.repeat(5-Math.round(p.rating||4))}</span>
+                                <span class="rating-count">(${p.rating_count||0})</span>
+                            </div>
+                            <div class="product-price">
+                                ${priceHtml}
+                                ${originalHtml}
+                                ${discountHtml}
+                            </div>
+                            <div class="product-actions">
+                                <a href="product-details.html?id=${p.id}" class="view-details-btn">View Details</a>
+                                <button class="wishlist-btn" data-product-id="${p.id}">♡</button>
+                            </div>
+                        </div>`;
+                    galleryContainer.appendChild(card);
+                    created.push(card);
+                }
             });
             if (created.length){
                 // Update references and bindings
@@ -697,7 +802,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 observeItems(created);
                 bindHover(created);
                 bindRipple(created);
-                bindCardButtons(galleryContainer);
+                // Bind only the newly created cards to avoid double-binding existing buttons
+                bindCardButtons(created);
                 updatePriceRange();
                 applyFilters();
                 syncWishlistButtons();
@@ -710,14 +816,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add event listeners for AR buttons
     const viewInRoomBtns = document.querySelectorAll('.view-in-room-btn');
     viewInRoomBtns.forEach(btn => {
+        if (btn.dataset.boundViewInRoom === '1') return;
+        btn.dataset.boundViewInRoom = '1';
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             const productCard = btn.closest('.product-card');
             const productTitle = productCard.querySelector('.product-title').textContent;
-            const modelSrc = btn.getAttribute('data-model-src');
+            const modelSrc = (btn.getAttribute('data-model-src')||'').replace(/\s/g, '%20');
             const productId = btn.getAttribute('data-product-id');
-            
-            // Show AR experience
+            // Try direct AR from on-card viewer first
+            const mvOnCard = productCard.querySelector('model-viewer');
+            if (mvOnCard && mvOnCard.canActivateAR) {
+                try { mvOnCard.activateAR(); return; } catch {}
+            }
+            // Otherwise open fallback modal
             showGalleryARExperience(productTitle, modelSrc, productId);
         });
     });
@@ -936,7 +1048,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const viewDetailsBtn = modal.querySelector('.gallery-ar-view-details-btn');
         const modelViewer = modal.querySelector('model-viewer');
         
-        const closeModal = () => modal.remove();
+    const closeModal = () => { try { document.body.classList.remove('no-scroll'); } catch {} modal.remove(); };
         
         closeBtn.addEventListener('click', closeModal);
         overlay.addEventListener('click', closeModal);
@@ -957,6 +1069,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         document.body.appendChild(modal);
+        try { document.body.classList.add('no-scroll'); } catch {}
     }
 
     // --- Initialize wishlist UI ---

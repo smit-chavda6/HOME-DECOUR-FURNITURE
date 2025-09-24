@@ -250,6 +250,9 @@
         display: none;
     }
     
+    /* Hide the cart button inside the slide-in menu on mobile to avoid duplicate with the mobile-cart-icon */
+    .navbar-menu .cart-icon { display: none; }
+
     .cart-icon {
         margin: 1rem auto;
         width: fit-content;
@@ -276,6 +279,20 @@
     .navbar .mobile-cart-icon .cart-count {
         position: static;
         width: 18px; height: 18px; font-size: 0.7rem; border: none; background: #e74c3c;
+    }
+
+    /* Make the login button in the mobile menu easier to tap */
+    .navbar-link.navbar-login-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 0.9rem 1.2rem;
+        font-size: 1.1rem;
+    }
+    .navbar-link.navbar-login-btn svg {
+        width: 24px;
+        height: 24px;
     }
 }
 
