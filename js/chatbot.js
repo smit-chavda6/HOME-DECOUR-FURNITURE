@@ -535,7 +535,7 @@ Keep responses concise and helpful. If you don't know something specific, sugges
     // AI response system using Google Gemini API
     async function generateResponse(userMessage, productContext = '') {
         try {
-            const apiKey = 'AIzaSyD7-x3lvSxHApV-Q_G0LaqdRnFCE8NXfqk';
+            const apiKey = 'YOUR-API-KEY';
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
             
             const systemPrompt = `You are a friendly, knowledgeable, and professional customer support chatbot for ${websiteData.company}. Your name is 'DecorBot'. 
