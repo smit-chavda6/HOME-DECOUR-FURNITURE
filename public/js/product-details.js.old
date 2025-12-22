@@ -1,0 +1,1256 @@
+const productData = {
+    1: {
+        name: 'Comfortable Sofa',
+        price: 41500,
+        image: 'image/toa-heftiba-FV3GConVSss-unsplash.webp',
+        description: 'A luxurious and comfortable sofa perfect for your living room. This elegant piece features premium fabric upholstery and sturdy construction for lasting comfort and style.',
+        material: 'Premium Fabric, Solid Wood Frame',
+        dimensions: '200cm W x 90cm H x 100cm D',
+        weight: '45 kg',
+        color: 'Beige',
+        warranty: '3 Years'
+    },
+    2: {
+        name: 'Modern Armchair',
+        price: 20750,
+        image: 'image/becca-tapert-dO3qTKxwik0-unsplash.webp',
+        description: 'Contemporary armchair with sleek design and exceptional comfort. Perfect as an accent piece or for creating a cozy reading corner.',
+        material: 'Leather, Metal Frame',
+        dimensions: '80cm W x 100cm H x 90cm D',
+        weight: '25 kg',
+        color: 'Brown',
+        warranty: '2 Years'
+    },
+    3: {
+        name: 'Wooden Coffee Table',
+        price: 12450,
+        image: 'image/christopher-jolly-GqbU78bdJFM-unsplash.webp',
+        description: 'Handcrafted wooden coffee table with natural finish. Features elegant design and durable construction perfect for any living space.',
+        material: 'Solid Oak Wood',
+        dimensions: '120cm W x 45cm H x 60cm D',
+        weight: '30 kg',
+        color: 'Natural Oak',
+        warranty: '5 Years'
+    },
+    4: {
+        name: 'Dining Table',
+        price: 33200,
+        image: 'image/davide-cantelli-ajisKc2uuFk-unsplash.webp',
+        description: 'Elegant dining table perfect for family gatherings and dinner parties. Seats 6-8 people comfortably with a timeless design.',
+        material: 'Solid Wood, Glass Top',
+        dimensions: '180cm W x 75cm H x 90cm D',
+        weight: '60 kg',
+        color: 'Walnut',
+        warranty: '3 Years'
+    },
+    5: {
+        name: 'Bookshelf',
+        price: 16600,
+        image: 'image/denys-striyeshyn-wJ7yGwz2-00-unsplash.webp',
+        description: 'Versatile bookshelf with multiple shelves for organizing books, decorative items, and more. Sturdy construction with adjustable shelves.',
+        material: 'Engineered Wood, Metal Hardware',
+        dimensions: '90cm W x 180cm H x 30cm D',
+        weight: '35 kg',
+        color: 'White',
+        warranty: '2 Years'
+    },
+    6: {
+        name: 'Queen Size Bed',
+        price: 49800,
+        image: 'image/hutomo-abrianto-X5BWooeO4Cw-unsplash.webp',
+        description: 'Elegant queen-size bed frame with upholstered headboard. Creates a sophisticated bedroom atmosphere with premium materials.',
+        material: 'Upholstered Fabric, Wood Frame',
+        dimensions: '160cm W x 120cm H x 200cm D',
+        weight: '50 kg',
+        color: 'Grey',
+        warranty: '5 Years'
+    },
+    7: {
+        name: 'Office Chair',
+        price: 10790,
+        image: 'image/inside-weather-Uxqlfigh6oE-unsplash.webp',
+        description: 'Ergonomic office chair designed for comfort during long work hours. Features adjustable height and lumbar support.',
+        material: 'Mesh Fabric, Aluminum Base',
+        dimensions: '60cm W x 110cm H x 65cm D',
+        weight: '15 kg',
+        color: 'Black',
+        warranty: '1 Year'
+    },
+    8: {
+        name: 'Side Table',
+        price: 7470,
+        image: 'image/kari-shea-AMyjxxLEHU4-unsplash.webp',
+        description: 'Compact side table perfect for holding lamps, books, or drinks. Versatile design that fits any room style.',
+        material: 'Solid Wood',
+        dimensions: '50cm W x 60cm H x 50cm D',
+        weight: '8 kg',
+        color: 'Natural',
+        warranty: '2 Years'
+    },
+    9: {
+        name: 'Dresser',
+        price: 29050,
+        image: 'image/kari-shea-ItMggD0EguY-unsplash.webp',
+        description: 'Spacious dresser with multiple drawers for organized storage. Classic design with smooth-gliding drawers.',
+        material: 'Solid Wood, Brass Hardware',
+        dimensions: '140cm W x 90cm H x 50cm D',
+        weight: '40 kg',
+        color: 'Cherry',
+        warranty: '3 Years'
+    },
+    10: {
+        name: 'Bar Stool',
+        price: 6640,
+        image: 'image/kari-shea-tOVmshavtoo-unsplash.webp',
+        description: 'Modern bar stool with comfortable seating and sleek design. Perfect for kitchen islands or home bars.',
+        material: 'Fabric Upholstery, Metal Frame',
+        dimensions: '40cm W x 105cm H x 40cm D',
+        weight: '12 kg',
+        color: 'Black',
+        warranty: '1 Year'
+    },
+    11: {
+        name: 'L-shaped Sofa',
+        price: 74700,
+        image: 'image/kirill-9uH-hM0VwPg-unsplash.webp',
+        description: 'Spacious L-shaped sofa perfect for large living rooms. Offers maximum seating comfort and contemporary style.',
+        material: 'Premium Fabric, Solid Frame',
+        dimensions: '250cm W x 90cm H x 160cm D',
+        weight: '80 kg',
+        color: 'Navy Blue',
+        warranty: '5 Years'
+    },
+    12: {
+        name: 'Accent Chair',
+        price: 16600,
+        image: 'image/olena-bohovyk-gxKL334bUK4-unsplash.webp',
+        description: 'Stylish accent chair that adds personality to any room. Comfortable seating with eye-catching design.',
+        material: 'Velvet Fabric, Wooden Legs',
+        dimensions: '70cm W x 85cm H x 80cm D',
+        weight: '18 kg',
+        color: 'Emerald Green',
+        warranty: '2 Years'
+    },
+    13: {
+        name: 'Modern Minimalist Chair',
+        price: 8500,
+        image: 'image/quino-al-4SNUcHPiC8c-unsplash.jpg',
+        description: 'A sleek, minimalist chair perfect for modern interiors.',
+        material: 'Metal, Fabric',
+        dimensions: '60cm W x 80cm H x 60cm D',
+        weight: '10 kg',
+        color: 'Grey',
+        warranty: '2 Years'
+    },
+    14: {
+        name: 'Elegant Lounge Chair',
+        price: 12000,
+        image: 'image/alexander-andrews-JYGnB9gTCls-unsplash.jpg',
+        description: 'An elegant lounge chair for stylish living rooms.',
+        material: 'Wood, Leather',
+        dimensions: '70cm W x 90cm H x 80cm D',
+        weight: '12 kg',
+        color: 'Brown',
+        warranty: '3 Years'
+    },
+    101: {
+        name: 'Modern Sofa 43 (3D Model)',
+        price: 4500,
+        image: 'image/1.png',
+        description: 'Explore this 3D model of a modern sofa, perfect for virtual staging or AR experiences. High-quality geometry and realistic textures.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'High-quality, optimized 3D geometry',
+            'Realistic PBR textures (if available)',
+            'Ready for AR/VR and virtual staging',
+            'Lightweight and easy to use in any project',
+            'Compatible with major 3D and AR platforms'
+        ]
+    },
+    102: {
+        name: 'Sofa Chair (3D Model)',
+        price: 3200,
+        image: 'image/2.png',
+        description: 'A detailed 3D model of a sofa chair, ideal for AR, VR, or design visualization. Includes textures and optimized mesh.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'Detailed mesh and textures',
+            'Optimized for AR/VR',
+            'Easy to use in any 3D project',
+            'Compatible with major 3D and AR platforms'
+        ]
+    },
+    103: {
+        name: 'Low Poly Modern Sofa (3D Model)',
+        price: 2500,
+        image: 'image/3.png',
+        description: 'Low poly 3D model of a modern sofa, suitable for games, AR, or quick visualizations. Lightweight and easy to use.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'Low poly, lightweight mesh',
+            'Ideal for games and AR',
+            'Quick to load and render',
+            'Compatible with major 3D and AR platforms'
+        ]
+    },
+    104: {
+        name: 'Old Sofa (3D Model)',
+        price: 2900,
+        image: 'image/4.png',
+        description: 'A classic old sofa 3D model, perfect for vintage scenes or AR/VR projects. Includes detailed mesh and textures.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'Classic/vintage design',
+            'Detailed mesh and textures',
+            'Ready for AR/VR and virtual staging',
+            'Compatible with major 3D and AR platforms'
+        ]
+    },
+    105: {
+        name: 'Leather Sofa Stool (3D Model)',
+        price: 3200,
+        image: 'image/5.png',
+        description: 'A 3D model of a leather sofa stool, perfect for AR/VR.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'High-quality 3D geometry',
+            'Realistic textures',
+            'Ready for AR/VR',
+            'Compatible with major 3D platforms'
+        ]
+    },
+    106: {
+        name: 'White Chair (3D Model)',
+        price: 4500,
+        image: 'image/6.png',
+        description: 'A 3D model of a white chair, ideal for modern spaces.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'Detailed mesh',
+            'Optimized for AR/VR',
+            'Easy to use in any 3D project',
+            'Compatible with major 3D and AR platforms'
+        ]
+    },
+    107: {
+        name: 'Simple Modern Chair (3D Model)',
+        price: 2800,
+        image: 'image/7.png',
+        description: 'A simple modern chair 3D model for visualization.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'Low poly, lightweight',
+            'Ideal for games and AR',
+            'Quick to load and render',
+            'Compatible with major 3D and AR platforms'
+        ]
+    },
+    108: {
+        name: 'Modern Table (3D Model)',
+        price: 5200,
+        image: 'image/8.png',
+        description: 'A modern table 3D model for AR/VR and design projects.',
+        material: '3D Model (GLB)',
+        dimensions: 'Virtual',
+        weight: '-',
+        color: '-',
+        warranty: '-',
+        features: [
+            'Modern design',
+            'Detailed mesh and textures',
+            'Ready for AR/VR',
+            'Compatible with major 3D and AR platforms'
+        ]
+    }
+};
+
+// Product details functionality
+let currentProduct = null;
+
+// Test cart functionality
+const testCartFunctionality = () => {
+    console.log('Testing cart functionality...');
+    
+    if (window.cartPopupSystem) {
+        console.log('✅ Cart popup system is available');
+        console.log('✅ Cart methods available:', Object.getOwnPropertyNames(Object.getPrototypeOf(window.cartPopupSystem)));
+        console.log('✅ Current cart:', window.cartPopupSystem.cart);
+        
+        // Test remove functionality
+        if (typeof window.cartPopupSystem.removeFromCart === 'function') {
+            console.log('✅ Remove function is available');
+        } else {
+            console.error('❌ Remove function is missing');
+        }
+        
+        // Test update quantity functionality
+        if (typeof window.cartPopupSystem.updateQuantity === 'function') {
+            console.log('✅ Update quantity function is available');
+        } else {
+            console.error('❌ Update quantity function is missing');
+        }
+    } else {
+        console.error('❌ Cart popup system is not available');
+    }
+};
+
+// Initialize product details
+const initializeProductDetails = () => {
+    // Cart is now handled by the main cart popup system
+    console.log('Product details initialized');
+    
+    // Debug: Check if cart popup system is available
+    if (window.cartPopupSystem && typeof window.cartPopupSystem.init === 'function') {
+        window.cartPopupSystem.init();
+        console.log('Cart popup system is available:', window.cartPopupSystem);
+    } else {
+        console.warn('Cart popup system not found, initializing...');
+        // Ensure singleton init
+        const ensureInit = () => {
+            if (window.cartPopupSystem && typeof window.cartPopupSystem.init === 'function') {
+                window.cartPopupSystem.init();
+            } else {
+                window.cartPopupSystem = new CartPopupSystem();
+                window.cartPopupSystem.init();
+            }
+        };
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', ensureInit, { once: true });
+        } else {
+            setTimeout(ensureInit, 0);
+        }
+    }
+};
+
+// Cache DOM elements for better performance
+let cachedElements = {};
+
+const loadProductDetails = async () => {
+    // Initialize product details
+    initializeProductDetails();
+    
+    // Get product ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+    
+    // Check if product ID exists
+    if (!productId) {
+        console.error('No product ID provided in URL');
+        const container = document.querySelector('.product-details');
+        if (container) {
+            container.innerHTML = `
+                <div style="text-align:center;padding:60px 20px;">
+                    <h1 style="color:#D2691E;margin-bottom:20px;">Product Not Found</h1>
+                    <p style="margin-bottom:30px;">No product ID was provided. Please select a product from the gallery.</p>
+                    <a href="gallery.html" style="display:inline-block;padding:12px 30px;background:#D2691E;color:white;text-decoration:none;border-radius:8px;">Back to Gallery</a>
+                </div>
+            `;
+        }
+        return;
+    }
+    
+    const productIdNum = parseInt(productId, 10);
+    console.log('Loading product with ID:', productId, 'Numeric:', productIdNum);
+    
+    // Get product data (prefer static map for numeric IDs; fetch from API for ObjectIds or missing products)
+    let product = productData[productIdNum];
+    
+    // If not in static data or productId is an ObjectId string, fetch from API
+    if (!product || isNaN(productIdNum)) {
+        try {
+            const fetchId = isNaN(productIdNum) ? productId : productIdNum;
+            console.log('Fetching product from API with ID:', fetchId);
+            const res = await fetch(`/api/products/${fetchId}`, { credentials: 'include' });
+            if (res.ok) {
+                const data = await res.json();
+                const p = data.product;
+                console.log('Product data from API:', p);
+                if (p) {
+                    product = {
+                        name: p.name,
+                        price: p.price,
+                        image: (p.image || '').replace(/\\\\/g,'/').replace(/\\/g,'/') || 'image/Logo maker project.webp',
+                        description: p.description || '',
+                        material: p.material || '-',
+                        dimensions: '-',
+                        weight: '-',
+                        color: '-',
+                        warranty: '-',
+                    };
+                    // For 3D products, adjust rendering later via model_src
+                    if (p.is_3d) {
+                        product.__is3d = true;
+                        product.__model_src = (p.model_src || '').replace(/\\\\/g,'/').replace(/\\/g,'/');
+                        console.log('3D product detected, model_src:', product.__model_src);
+                    }
+                }
+            } else {
+                console.error('Failed to fetch product, status:', res.status);
+            }
+        } catch (e) { console.error('Failed to fetch product by id', e); }
+    }
+    
+    if (product) {
+    currentProduct = { ...product, id: isNaN(productIdNum) ? productId : String(productIdNum) };
+        console.log('Current product set:', currentProduct);
+        
+        // Update page title
+        document.title = `${product.name} - HOME DECOR FURNITURE`;
+        
+        // Update breadcrumb navigation
+        const breadcrumbProductName = document.getElementById('breadcrumb-product-name');
+        if (breadcrumbProductName) {
+            breadcrumbProductName.textContent = product.name;
+        }
+        
+        // Cache DOM elements
+        if (!cachedElements.productName) {
+            cachedElements.productName = document.getElementById('product-name');
+            cachedElements.productPrice = document.getElementById('product-price');
+            cachedElements.productDescription = document.getElementById('product-description');
+            cachedElements.productMaterial = document.getElementById('product-material');
+            cachedElements.productDimensions = document.getElementById('product-dimensions');
+            cachedElements.productWeight = document.getElementById('product-weight');
+            cachedElements.productColor = document.getElementById('product-color');
+            cachedElements.productWarranty = document.getElementById('product-warranty');
+            cachedElements.mediaContainer = document.getElementById('media-container');
+        }
+        
+        // Check if critical elements exist
+        if (!cachedElements.mediaContainer) {
+            console.error('Critical DOM element missing: media-container');
+            return;
+        }
+        // Render media (image or 3D model)
+        if (product.__is3d) {
+            // 3D Model: use model-viewer
+            let modelSrc = product.__model_src || '';
+            // Fallback to numeric ID mappings for legacy products
+            if (productIdNum === 101) modelSrc = '3d models/no_43.glb';
+            if (productIdNum === 102) modelSrc = '3d models/sofa_chair.glb';
+            if (productIdNum === 103) modelSrc = '3d models/low_poly_modern_sofa_free_model.glb';
+            if (productIdNum === 104) modelSrc = '3d models/old_sofa_free.glb';
+            if (productIdNum === 105) modelSrc = '3d models/free_leather_sofa_stool.glb';
+            if (productIdNum === 106) modelSrc = '3d models/white_chair.glb';
+            if (productIdNum === 107) modelSrc = '3d models/simple_modern_chair_free_model.glb';
+            if (productIdNum === 108) modelSrc = '3d models/table_mr_ft.glb';
+            
+            console.log('Rendering 3D model with src:', modelSrc);
+            cachedElements.mediaContainer.innerHTML = `
+                <model-viewer id="product-model-viewer" src="${modelSrc}" alt="${product.name}" camera-controls auto-rotate background-color="#121419" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:320px;border-radius:1.2rem;box-shadow:0 2px 12px #00000044;margin-bottom:1rem;"></model-viewer>
+            `;
+        
+        // Show AR button for 3D models
+        const viewInRoomBtn = document.getElementById('view-in-room-btn');
+        if (viewInRoomBtn) {
+            viewInRoomBtn.style.display = 'flex';
+            viewInRoomBtn.innerHTML = `
+                <svg viewBox="0 0 24 24" style="margin-right: 8px;">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                View in Room
+            `;
+        }
+        } else {
+            // Standard product: show image and zoom button
+            const safeImg = (product.image || '').trim() || 'image/Logo maker project.webp';
+            console.log('Rendering standard product image:', safeImg);
+            cachedElements.mediaContainer.innerHTML = `
+                <img id="product-img" src="${safeImg}" alt="${product.name}" loading="lazy" onerror="console.error('Image load error:', this.src); this.src='image/Logo maker project.webp';">
+                <button class="zoom-btn" id="zoom-btn" title="View Full Size">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                </button>
+            `;
+        }
+        
+        // Update product information
+        if (cachedElements.productName) cachedElements.productName.textContent = product.name;
+        if (cachedElements.productPrice) cachedElements.productPrice.textContent = typeof product.price === 'number' ? `₹${product.price.toLocaleString('en-IN')}` : product.price;
+        if (cachedElements.productDescription) cachedElements.productDescription.textContent = product.description;
+        if (cachedElements.productMaterial) cachedElements.productMaterial.textContent = product.material;
+        if (cachedElements.productDimensions) cachedElements.productDimensions.textContent = product.dimensions;
+        if (cachedElements.productWeight) cachedElements.productWeight.textContent = product.weight;
+        if (cachedElements.productColor) cachedElements.productColor.textContent = product.color;
+        if (cachedElements.productWarranty) cachedElements.productWarranty.textContent = product.warranty;
+        // Render features (for both standard and 3D model products)
+        const featuresList = document.querySelector('.features-list');
+        if (featuresList) {
+            featuresList.innerHTML = '';
+            const features = product.features || [
+                'Premium Quality',
+                'Durable Construction',
+                'Elegant Design',
+                'Easy Assembly'
+            ];
+            features.forEach(f => {
+                const div = document.createElement('div');
+                div.className = 'feature-item';
+                div.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>${f}</span>`;
+                featuresList.appendChild(div);
+            });
+        }
+        
+        // Initialize cart count
+        updateCartCount();
+        
+        // Initialize quantity controls
+        initializeQuantityControls();
+        
+    // Initialize zoom functionality (only for standard products, not 3D models)
+    if (!product.__is3d) {
+            initializeZoomFunctionality();
+        }
+        
+        // Initialize cart functionality
+        initializeCartFunctionality();
+        
+        // Initialize tab functionality
+        initializeTabFunctionality();
+        
+        // Test cart functionality
+        setTimeout(() => {
+            testCartFunctionality();
+        }, 1000);
+        
+    // Initialize AR functionality for 3D models
+    if ([101,102,103,104,105,106,107,108].includes(productIdNum) || (currentProduct && currentProduct.__is3d)) {
+            initializeARFunctionality();
+        }
+
+        // Load and render product reviews
+        try {
+            const reviewProductId = isNaN(productIdNum) ? productId : productIdNum;
+            await loadAndRenderProductReviews(reviewProductId);
+        } catch(e) { console.warn('Failed to load reviews for product', productId, e); }
+        
+    } else {
+        // Handle invalid product ID
+        console.error('Product not found for ID:', productId);
+        const container = document.querySelector('.product-details');
+        if (container) {
+            container.innerHTML = `
+                <div style="text-align:center;padding:60px 20px;">
+                    <h1 style="color:#D2691E;margin-bottom:20px;">Product Not Found</h1>
+                    <p style="margin-bottom:30px;">The requested product could not be found.</p>
+                    <a href="gallery.html" style="display:inline-block;padding:12px 30px;background:#D2691E;color:white;text-decoration:none;border-radius:8px;">Back to Gallery</a>
+                </div>
+            `;
+        }
+    }
+};
+
+// Fetch and render reviews in product-details page
+async function loadAndRenderProductReviews(productId) {
+    const res = await fetch(`/api/products/${productId}/reviews`, { credentials: 'include' });
+    if (!res.ok) return;
+    const data = await res.json();
+    const reviews = Array.isArray(data.reviews) ? data.reviews : [];
+
+    // Update header rating numbers if product info is present
+    const ratingNumberEl = document.querySelector('.reviews-summary .overall-rating .rating-number');
+    const ratingTextEl = document.querySelector('.reviews-summary .overall-rating .rating-text');
+    const ratingStarsEl = document.querySelector('.reviews-summary .overall-rating .rating-stars');
+    if (reviews.length) {
+        const avg = Math.round((reviews.reduce((s, r)=> s + (parseInt(r.rating,10)||0), 0) / reviews.length) * 10) / 10;
+        if (ratingNumberEl) ratingNumberEl.textContent = String(avg);
+        if (ratingTextEl) ratingTextEl.textContent = `Based on ${reviews.length} review${reviews.length>1?'s':''}`;
+        if (ratingStarsEl) ratingStarsEl.textContent = '★★★★★☆☆☆☆☆'.slice(5 - Math.round(avg)).slice(0,5);
+    } else {
+        if (ratingNumberEl) ratingNumberEl.textContent = '—';
+        if (ratingTextEl) ratingTextEl.textContent = 'No reviews yet';
+        if (ratingStarsEl) ratingStarsEl.textContent = '☆☆☆☆☆';
+    }
+
+    // Render list under the reviews tab (append after summary)
+    const reviewsTab = document.getElementById('reviews-tab');
+    if (reviewsTab) {
+        let list = reviewsTab.querySelector('.reviews-list');
+        if (!list) {
+            list = document.createElement('div');
+            list.className = 'reviews-list';
+            list.style.marginTop = '12px';
+            reviewsTab.appendChild(list);
+        }
+        list.innerHTML = '';
+        if (!reviews.length) {
+            const p = document.createElement('p');
+            p.className = 'muted';
+            p.textContent = 'No reviews yet. Be the first to review after your order is delivered!';
+            list.appendChild(p);
+        } else {
+            reviews.forEach(r => {
+                const item = document.createElement('div');
+                item.className = 'review-item';
+                item.style.borderTop = '1px solid rgba(0,0,0,0.08)';
+                item.style.padding = '10px 0';
+                const name = (r.full_name || r.username || 'User');
+                const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                const when = new Date(r.updated_at || r.created_at).toLocaleDateString();
+                item.innerHTML = `
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                        <strong>${name}</strong>
+                        <span class="muted" style="font-size:12px;">${when}</span>
+                    </div>
+                    <div class="muted" style="margin:4px 0 6px;">${stars}</div>
+                    <div>${(r.comment||'').replace(/</g,'&lt;')}</div>
+                `;
+                list.appendChild(item);
+            });
+        }
+    }
+}
+
+// Initialize quantity controls
+const initializeQuantityControls = () => {
+    const quantityInput = document.getElementById('quantity');
+    const decreaseBtn = document.getElementById('decrease-btn');
+    const increaseBtn = document.getElementById('increase-btn');
+    
+    if (decreaseBtn && increaseBtn && quantityInput) {
+        decreaseBtn.addEventListener('click', () => {
+            const currentValue = parseInt(quantityInput.value);
+            if (currentValue > 1) {
+                quantityInput.value = currentValue - 1;
+            }
+            updateQuantityButtons();
+        });
+        
+        increaseBtn.addEventListener('click', () => {
+            const currentValue = parseInt(quantityInput.value);
+            if (currentValue < 10) {
+                quantityInput.value = currentValue + 1;
+            }
+            updateQuantityButtons();
+        });
+        
+        quantityInput.addEventListener('input', updateQuantityButtons);
+        updateQuantityButtons();
+    }
+};
+
+// Update quantity buttons state
+const updateQuantityButtons = () => {
+    const quantityInput = document.getElementById('quantity');
+    const decreaseBtn = document.getElementById('decrease-btn');
+    const increaseBtn = document.getElementById('increase-btn');
+    
+    if (quantityInput && decreaseBtn && increaseBtn) {
+        const value = parseInt(quantityInput.value);
+        decreaseBtn.disabled = value <= 1;
+        increaseBtn.disabled = value >= 10;
+    }
+};
+
+// Initialize zoom functionality
+const initializeZoomFunctionality = () => {
+    const zoomBtn = document.getElementById('zoom-btn');
+    const imageModal = document.getElementById('image-modal');
+    const modalOverlay = document.getElementById('modal-overlay');
+    const modalClose = document.getElementById('modal-close');
+    const modalImage = document.getElementById('modal-image');
+    const productImg = document.getElementById('product-img');
+    const modalContent = document.querySelector('.modal-content');
+    
+    // Open modal when zoom button is clicked
+    if (zoomBtn) {
+        zoomBtn.addEventListener('click', () => {
+            modalImage.src = productImg.src;
+            modalImage.alt = productImg.alt;
+            imageModal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        });
+    }
+    
+    // Close modal when overlay is clicked
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', closeImageModal);
+    }
+    // Close when clicking the empty area of the modal (outside the image)
+    if (imageModal) {
+        imageModal.addEventListener('click', (e) => {
+            if (e.target === imageModal || e.target === modalOverlay || e.target === modalContent) {
+                closeImageModal();
+            }
+        });
+    }
+    // Prevent closing when clicking directly on the image
+    if (modalImage) {
+        modalImage.addEventListener('click', (e) => e.stopPropagation());
+    }
+    
+    // Close modal when close button is clicked
+    if (modalClose) {
+        modalClose.addEventListener('click', closeImageModal);
+    }
+    
+    // Close modal when Escape key is pressed
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && imageModal.classList.contains('show')) {
+            closeImageModal();
+        }
+    });
+    
+    function closeImageModal() {
+        imageModal.classList.remove('show');
+        document.body.style.overflow = ''; // Restore scrolling
+    }
+    
+    if (imageModal) {
+        imageModal.setAttribute('role', 'dialog');
+        imageModal.setAttribute('aria-modal', 'true');
+        imageModal.setAttribute('tabindex', '-1');
+    }
+};
+
+// Initialize cart functionality
+const initializeCartFunctionality = () => {
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    const contactBtn = document.getElementById('contact-btn');
+    
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            addToCart();
+        });
+    }
+    
+    if (contactBtn) {
+        contactBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = 'contact.html';
+        });
+    }
+};
+
+// Add to cart function - Use the main cart popup system (same as gallery)
+const addToCart = () => {
+    if (!currentProduct) {
+        console.error('No product loaded');
+        return;
+    }
+    
+    const quantityInput = document.getElementById('quantity');
+    if (!quantityInput) {
+        console.error('Quantity input not found');
+        return;
+    }
+    
+    const quantity = parseInt(quantityInput.value) || 1;
+    
+    console.log('Adding to cart:', currentProduct);
+    console.log('Quantity:', quantity);
+    
+    // Use the main cart popup system to add items (same as gallery)
+    if (window.cartPopupSystem) {
+    // Add the item with desired quantity in one call (merges correctly)
+    window.cartPopupSystem.addToCartFromProductDetails(currentProduct, quantity);
+        // Persist cart immediately and update UI
+        try {
+            localStorage.setItem('cart', JSON.stringify(window.cartPopupSystem.cart));
+        } catch (e) {}
+        window.cartPopupSystem.updateCartCount();
+        
+        // Show success message using the same notification system as gallery
+        window.cartPopupSystem.showNotification(`${currentProduct.name} added to cart!`, 'success');
+        
+        // Add button animation (same as gallery)
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
+        if (addToCartBtn) {
+            addToCartBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                addToCartBtn.style.transform = 'scale(1)';
+            }, 150);
+        }
+    } else {
+        // Fallback to direct localStorage manipulation (same logic as gallery)
+        let currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existingItemIndex = currentCart.findIndex(item => item.id === currentProduct.id);
+        
+        if (existingItemIndex > -1) {
+            currentCart[existingItemIndex].quantity += quantity;
+        } else {
+            currentCart.push({
+                id: currentProduct.id,
+                name: currentProduct.name,
+                price: currentProduct.price,
+                image: currentProduct.image,
+                quantity: quantity
+            });
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(currentCart));
+        
+        // Update cart count
+        updateCartCount();
+        
+        // Show success message
+        showCartSuccess();
+    }
+    
+    console.log('Item added to cart:', currentProduct.name, 'Quantity:', quantity);
+};
+
+// Update cart count - Use the main cart popup system
+const updateCartCount = () => {
+    if (window.cartPopupSystem) {
+        window.cartPopupSystem.updateCartCount();
+    } else {
+        // Fallback to direct calculation
+        const cartCountElements = document.querySelectorAll('.cart-count');
+        const currentCart = JSON.parse(localStorage.getItem('cart')) || [];
+        const totalItems = currentCart.reduce((total, item) => total + (item.quantity || 0), 0);
+        
+        cartCountElements.forEach(element => {
+            element.textContent = totalItems;
+            element.style.display = totalItems > 0 ? 'flex' : 'none';
+        });
+    }
+};
+
+// Show cart success message - Now handled by main cart system
+const showCartSuccess = () => {
+    // Success messages are now handled by the main cart popup system
+    console.log('Cart success - handled by main cart system');
+};
+
+// Cart icon click handler - Use the main cart popup system
+const initializeCartIcon = () => {
+    // The cart icon functionality is handled by the main cart popup system
+    // No need to add additional event listeners here
+};
+
+// Initialize tab functionality
+const initializeTabFunctionality = () => {
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetTab = button.getAttribute('data-tab');
+            
+            // Remove active class from all buttons and panes
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabPanes.forEach(pane => pane.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding pane
+            button.classList.add('active');
+            const targetPane = document.getElementById(`${targetTab}-tab`);
+            if (targetPane) {
+                targetPane.classList.add('active');
+            }
+        });
+    });
+};
+
+// Initialize AR functionality for 3D models
+const initializeARFunctionality = () => {
+    const viewInRoomBtn = document.getElementById('view-in-room-btn');
+    const modelViewer = document.getElementById('product-model-viewer');
+    
+    if (viewInRoomBtn && modelViewer) {
+        viewInRoomBtn.addEventListener('click', () => {
+            // Check if AR is supported
+            if (modelViewer.canActivateAR) {
+                // Show AR instructions
+                showARInstructions();
+                
+                // Activate AR after a short delay
+        setTimeout(() => {
+                    modelViewer.activateAR();
+                }, 1000);
+            } else {
+                // Fallback for devices without AR support
+                showARNotSupported();
+            }
+        });
+    }
+};
+
+// Show AR instructions modal
+const showARInstructions = () => {
+    const modal = document.createElement('div');
+    modal.className = 'ar-instructions-modal';
+    modal.innerHTML = `
+        <div class="ar-instructions-overlay"></div>
+        <div class="ar-instructions-content">
+            <div class="ar-instructions-header">
+                <h3>View in Your Room</h3>
+                <button class="ar-instructions-close">&times;</button>
+            </div>
+            <div class="ar-instructions-body">
+                <div class="ar-instruction-step">
+                    <div class="ar-step-number">1</div>
+                    <div class="ar-step-text">
+                        <strong>Point your camera</strong> at a flat surface like a floor or table
+                    </div>
+                </div>
+                <div class="ar-instruction-step">
+                    <div class="ar-step-number">2</div>
+                    <div class="ar-step-text">
+                        <strong>Tap to place</strong> the furniture in your space
+                    </div>
+                </div>
+                <div class="ar-instruction-step">
+                    <div class="ar-step-number">3</div>
+                    <div class="ar-step-text">
+                        <strong>Move around</strong> to see how it looks from different angles
+                    </div>
+                </div>
+                <div class="ar-instruction-step">
+                    <div class="ar-step-number">4</div>
+                    <div class="ar-step-text">
+                        <strong>Resize and rotate</strong> to find the perfect fit
+                    </div>
+                </div>
+            </div>
+            <div class="ar-instructions-footer">
+                <button class="ar-start-btn">Start AR Experience</button>
+            </div>
+        </div>
+    `;
+    
+    // Add styles
+    const styles = document.createElement('style');
+    styles.textContent = `
+        .ar-instructions-modal {
+        position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ar-instructions-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .ar-instructions-content {
+            position: relative;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: arModalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes arModalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .ar-instructions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .ar-instructions-header h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .ar-instructions-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .ar-instructions-close:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .ar-instruction-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .ar-step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .ar-step-text {
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        
+        .ar-step-text strong {
+            color: #667eea;
+        }
+        
+        .ar-instructions-footer {
+            margin-top: 25px;
+            text-align: center;
+        }
+        
+        .ar-start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .ar-start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        @media (max-width: 768px) {
+            .ar-instructions-content {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            .ar-instructions-header h3 {
+                font-size: 1.3rem;
+            }
+            
+            .ar-instruction-step {
+                padding: 12px;
+                gap: 12px;
+            }
+            
+            .ar-step-number {
+                width: 25px;
+                height: 25px;
+                font-size: 1rem;
+            }
+        }
+    `;
+    document.head.appendChild(styles);
+    
+    // Event listeners
+    const closeBtn = modal.querySelector('.ar-instructions-close');
+    const overlay = modal.querySelector('.ar-instructions-overlay');
+    const startBtn = modal.querySelector('.ar-start-btn');
+    
+    const closeModal = () => {
+        modal.remove();
+        // Activate AR after closing instructions
+        const modelViewer = document.getElementById('product-model-viewer');
+        if (modelViewer && modelViewer.canActivateAR) {
+            modelViewer.activateAR();
+        }
+    };
+    
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+    startBtn.addEventListener('click', closeModal);
+    
+    document.body.appendChild(modal);
+};
+
+// Show AR not supported message
+const showARNotSupported = () => {
+    const modal = document.createElement('div');
+    modal.className = 'ar-not-supported-modal';
+    modal.innerHTML = `
+        <div class="ar-not-supported-overlay"></div>
+        <div class="ar-not-supported-content">
+            <div class="ar-not-supported-icon">
+                <svg viewBox="0 0 24 24" width="60" height="60">
+                    <circle cx="12" cy="12" r="10" fill="#f8d7da"/>
+                    <path d="M12 8v4m0 4h.01" stroke="#721c24" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h3>AR Not Available</h3>
+            <p>Your device doesn't support AR features. You can still view the 3D model using the controls below.</p>
+            <button class="ar-not-supported-close">Got it</button>
+        </div>
+    `;
+    
+    // Add styles
+    const styles = document.createElement('style');
+    styles.textContent = `
+        .ar-not-supported-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ar-not-supported-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .ar-not-supported-content {
+            position: relative;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: arModalSlideIn 0.3s ease-out;
+        }
+        
+        .ar-not-supported-icon {
+            margin-bottom: 20px;
+        }
+        
+        .ar-not-supported-content h3 {
+            margin: 0 0 15px 0;
+            color: #721c24;
+            font-size: 1.5rem;
+        }
+        
+        .ar-not-supported-content p {
+            margin: 0 0 25px 0;
+            color: #6c757d;
+            line-height: 1.5;
+        }
+        
+        .ar-not-supported-close {
+            background: #721c24;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .ar-not-supported-close:hover {
+            background: #5a1a1a;
+            transform: translateY(-1px);
+        }
+    `;
+    document.head.appendChild(styles);
+    
+    // Event listeners
+    const closeBtn = modal.querySelector('.ar-not-supported-close');
+    const overlay = modal.querySelector('.ar-not-supported-overlay');
+    
+    const closeModal = () => modal.remove();
+    
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+    
+    document.body.appendChild(modal);
+};
+
+// Initialize product details
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            // Ensure cart popup system is initialized
+            if (!window.cartPopupSystem) {
+                window.cartPopupSystem = new CartPopupSystem();
+            }
+            await loadProductDetails();
+            initializeCartIcon();
+        } catch (error) {
+            console.error('Error initializing product details:', error);
+        }
+    });
+} else {
+    try {
+        // Ensure cart popup system is initialized
+        if (!window.cartPopupSystem) {
+            window.cartPopupSystem = new CartPopupSystem();
+        }
+        (async () => { await loadProductDetails(); })();
+        initializeCartIcon();
+    } catch (error) {
+        console.error('Error initializing product details:', error);
+    }
+} 

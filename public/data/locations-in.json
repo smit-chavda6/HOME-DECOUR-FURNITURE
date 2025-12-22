@@ -1,0 +1,72 @@
+{
+  "Gujarat": [
+    { "city": "Ahmedabad", "postal": "380001" },
+    { "city": "Surat", "postal": "395001" },
+    { "city": "Vadodara", "postal": "390001" },
+    { "city": "Rajkot", "postal": "360001" },
+    { "city": "Gandhinagar", "postal": "382010" }
+  ],
+  "Maharashtra": [
+    { "city": "Mumbai", "postal": "400001" },
+    { "city": "Pune", "postal": "411001" },
+    { "city": "Nagpur", "postal": "440001" },
+    { "city": "Nashik", "postal": "422001" },
+    { "city": "Aurangabad", "postal": "431001" }
+  ],
+  "Delhi": [
+    { "city": "New Delhi", "postal": "110001" },
+    { "city": "South Delhi", "postal": "110019" },
+    { "city": "North Delhi", "postal": "110006" },
+    { "city": "East Delhi", "postal": "110051" },
+    { "city": "West Delhi", "postal": "110015" }
+  ],
+  "Karnataka": [
+    { "city": "Bangalore", "postal": "560001" },
+    { "city": "Mysore", "postal": "570001" },
+    { "city": "Mangalore", "postal": "575001" },
+    { "city": "Hubli", "postal": "580001" },
+    { "city": "Belgaum", "postal": "590001" }
+  ],
+  "Tamil Nadu": [
+    { "city": "Chennai", "postal": "600001" },
+    { "city": "Coimbatore", "postal": "641001" },
+    { "city": "Madurai", "postal": "625001" },
+    { "city": "Tiruchirappalli", "postal": "620001" },
+    { "city": "Salem", "postal": "636001" }
+  ],
+  "Rajasthan": [
+    { "city": "Jaipur", "postal": "302001" },
+    { "city": "Jodhpur", "postal": "342001" },
+    { "city": "Udaipur", "postal": "313001" },
+    { "city": "Kota", "postal": "324001" },
+    { "city": "Ajmer", "postal": "305001" }
+  ],
+  "West Bengal": [
+    { "city": "Kolkata", "postal": "700001" },
+    { "city": "Howrah", "postal": "711101" },
+    { "city": "Durgapur", "postal": "713201" },
+    { "city": "Siliguri", "postal": "734001" },
+    { "city": "Asansol", "postal": "713301" }
+  ],
+  "Uttar Pradesh": [
+    { "city": "Lucknow", "postal": "226001" },
+    { "city": "Kanpur", "postal": "208001" },
+    { "city": "Agra", "postal": "282001" },
+    { "city": "Varanasi", "postal": "221001" },
+    { "city": "Noida", "postal": "201301" }
+  ],
+  "Telangana": [
+    { "city": "Hyderabad", "postal": "500001" },
+    { "city": "Warangal", "postal": "506001" },
+    { "city": "Nizamabad", "postal": "503001" },
+    { "city": "Karimnagar", "postal": "505001" },
+    { "city": "Khammam", "postal": "507001" }
+  ],
+  "Kerala": [
+    { "city": "Thiruvananthapuram", "postal": "695001" },
+    { "city": "Kochi", "postal": "682001" },
+    { "city": "Kozhikode", "postal": "673001" },
+    { "city": "Kollam", "postal": "691001" },
+    { "city": "Thrissur", "postal": "680001" }
+  ]
+}
