@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const uri = 'mongodb+srv://smitchavda22ce_db_user:Qj83RgUaqLcam3TY@cluster0.nhobysj.mongodb.net/home-decor-furniture?appName=Cluster0';
+const uri = '{mongodb url}';
 
 // Define schemas
 const userSchema = new mongoose.Schema({
