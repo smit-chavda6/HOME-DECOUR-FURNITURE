@@ -8,12 +8,22 @@ const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
 const multer = require('multer');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/home-decor-furniture';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+
+// Helpers
+const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(String(id || ''));
+const escapeRegExp = (s) => String(s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const sanitizeCategory = (c) => {
+    const val = String(c || '').toLowerCase();
+    const allowed = new Set(['living', 'dining', 'bedroom', 'office', '3d']);
+    return allowed.has(val) ? val : undefined;
+};
 
 // Middleware
 app.use(express.json());
@@ -22,6 +32,12 @@ app.use(cors({
     origin: true,
     credentials: true
 }));
+
+// Basic rate limiters
+const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false });
+const writeLimiter = rateLimit({ windowMs: 10 * 60 * 1000, max: 60, standardHeaders: true, legacyHeaders: false });
+const strictWriteLimiter = rateLimit({ windowMs: 10 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false });
+const chatLimiter = rateLimit({ windowMs: 60 * 1000, max: 30, standardHeaders: true, legacyHeaders: false });
 
 // File uploads setup
 const uploadDir = path.join(__dirname, 'public', 'uploads');
@@ -402,7 +418,7 @@ app.get('/', (req, res) => {
 });
 
 // Register endpoint
-app.post('/api/register', async (req, res) => {
+app.post('/api/register', authLimiter, async (req, res) => {
     try {
         const { username, email, password, full_name, phone, address } = req.body;
 
@@ -440,7 +456,7 @@ app.post('/api/register', async (req, res) => {
 });
 
 // Login endpoint
-app.post('/api/login', async (req, res) => {
+app.post('/api/login', authLimiter, async (req, res) => {
     try {
         const { username, password } = req.body;
 
@@ -542,6 +558,7 @@ app.get('/api/admin/users', requireAdmin, async (req, res) => {
 app.put('/api/admin/users/:id/role', requireAdmin, async (req, res) => {
     try {
         const userId = req.params.id;
+        if (!isValidObjectId(userId)) return res.status(400).json({ error: 'Invalid user id' });
         const { role } = req.body || {};
 
         if (!['admin', 'user'].includes(role)) {
@@ -564,6 +581,7 @@ app.put('/api/admin/users/:id/role', requireAdmin, async (req, res) => {
 app.delete('/api/admin/users/:id', requireAdmin, async (req, res) => {
     try {
         const userId = req.params.id;
+        if (!isValidObjectId(userId)) return res.status(400).json({ error: 'Invalid user id' });
         if (userId === req.session.userId) {
             return res.status(400).json({ error: 'You cannot delete your own account' });
         }
@@ -594,7 +612,7 @@ app.get('/api/admin/stats', requireAdmin, async (req, res) => {
 });
 
 // Public: receive contact form submissions
-app.post('/api/contact', async (req, res) => {
+app.post('/api/contact', strictWriteLimiter, async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body || {};
 
@@ -643,7 +661,9 @@ app.get('/api/admin/messages', requireAdmin, async (req, res) => {
 // Admin: delete a message
 app.delete('/api/admin/messages/:id', requireAdmin, async (req, res) => {
     try {
-        const result = await ContactMessage.findByIdAndDelete(req.params.id);
+        const id = req.params.id;
+        if (!isValidObjectId(id)) return res.status(400).json({ error: 'Invalid message id' });
+        const result = await ContactMessage.findByIdAndDelete(id);
         if (!result) return res.status(404).json({ error: 'Message not found' });
         res.json({ success: true });
     } catch (err) {
@@ -659,11 +679,14 @@ app.get('/api/products', async (req, res) => {
         const { category, q } = req.query || {};
         const filter = {};
 
-        if (category) filter.category = category;
+        const cat = sanitizeCategory(category);
+        if (cat) filter.category = cat;
         if (q) {
+            const qStr = String(q).slice(0, 50);
+            const safe = escapeRegExp(qStr);
             filter.$or = [
-                { name: { $regex: q, $options: 'i' } },
-                { description: { $regex: q, $options: 'i' } }
+                { name: { $regex: safe, $options: 'i' } },
+                { description: { $regex: safe, $options: 'i' } }
             ];
         }
 
@@ -738,6 +761,7 @@ app.post('/api/admin/products', requireAdmin, async (req, res) => {
 // Admin: update product
 app.put('/api/admin/products/:id', requireAdmin, async (req, res) => {
     try {
+        if (!isValidObjectId(req.params.id)) return res.status(400).json({ error: 'Invalid product id' });
         const { name, price, image, description, category, brand, material, original_price, discount, badge, model_src, is_3d } = req.body || {};
 
         const update = {};
@@ -768,6 +792,7 @@ app.put('/api/admin/products/:id', requireAdmin, async (req, res) => {
 // Admin: delete product
 app.delete('/api/admin/products/:id', requireAdmin, async (req, res) => {
     try {
+        if (!isValidObjectId(req.params.id)) return res.status(400).json({ error: 'Invalid product id' });
         const product = await Product.findById(req.params.id);
         if (!product) return res.status(404).json({ error: 'Product not found' });
 
@@ -799,7 +824,7 @@ app.delete('/api/admin/products/:id', requireAdmin, async (req, res) => {
 
 // ============= ORDERS API =============
 
-app.post('/api/orders', async (req, res) => {
+app.post('/api/orders', writeLimiter, async (req, res) => {
     try {
         const body = req.body || {};
         const items = Array.isArray(body.items) ? body.items : [];
@@ -917,7 +942,9 @@ app.get('/api/admin/orders', requireAdmin, async (req, res) => {
 // Admin: get order items
 app.get('/api/admin/orders/:id/items', requireAdmin, async (req, res) => {
     try {
-        const items = await OrderItem.find({ order_id: req.params.id });
+        const id = req.params.id;
+        if (!isValidObjectId(id)) return res.status(400).json({ error: 'Invalid order id' });
+        const items = await OrderItem.find({ order_id: id });
         res.json({ items: items || [] });
     } catch (err) {
         res.status(500).json({ error: 'Database error' });
@@ -997,7 +1024,7 @@ async function userHasDeliveredOrderForProduct(userId, productId) {
 }
 
 // Authenticated: create or update review
-app.post('/api/my/reviews', requireAuth, async (req, res) => {
+app.post('/api/my/reviews', requireAuth, writeLimiter, async (req, res) => {
     try {
         const { product_id, rating, comment, order_id } = req.body || {};
         const userId = req.session.userId;
@@ -1069,10 +1096,11 @@ app.post('/api/my/reviews', requireAuth, async (req, res) => {
 });
 
 // Authenticated: delete review
-app.delete('/api/my/reviews/:productId', requireAuth, async (req, res) => {
+app.delete('/api/my/reviews/:productId', requireAuth, writeLimiter, async (req, res) => {
     try {
         const userId = req.session.userId;
         const pid = req.params.productId;
+        if (!isValidObjectId(pid)) return res.status(400).json({ error: 'Invalid product id' });
         const result = await Review.deleteOne({
             user_id: userId,
             product_id: pid
@@ -1235,7 +1263,7 @@ process.on('SIGINT', async () => {
 
 // ================= CHATBOT (Gemini) BACKEND =================
 
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', chatLimiter, async (req, res) => {
     try {
         if (!GEMINI_API_KEY) {
             return res.status(500).json({ error: 'Server not configured with Gemini API key' });

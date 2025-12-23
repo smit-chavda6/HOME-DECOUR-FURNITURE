@@ -856,17 +856,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to show AR experience from gallery
     function showGalleryARExperience(productTitle, modelSrc, productId) {
+        const esc = (s) => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
         const modal = document.createElement('div');
         modal.className = 'gallery-ar-modal';
         modal.innerHTML = `
             <div class="gallery-ar-overlay"></div>
             <div class="gallery-ar-content">
                 <div class="gallery-ar-header">
-                    <h3>View ${productTitle} in Your Room</h3>
+                    <h3>View ${esc(productTitle)} in Your Room</h3>
                     <button class="gallery-ar-close">&times;</button>
                 </div>
                 <div class="gallery-ar-body">
-                    <model-viewer src="${modelSrc}" alt="${productTitle}" camera-controls auto-rotate background-color="#121419" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:400px;border-radius:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,0.35);"></model-viewer>
+                    <model-viewer src="${esc(modelSrc)}" alt="${esc(productTitle)}" camera-controls auto-rotate background-color="#121419" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:400px;border-radius:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,0.35);"></model-viewer>
                     <div class="gallery-ar-instructions">
                         <h4>How to use AR:</h4>
                         <ol>

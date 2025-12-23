@@ -512,11 +512,11 @@
             }
             
             function showAlert(message, type) {
-                alertContainer.innerHTML = `
-                    <div class="alert alert-${type}">
-                        ${message}
-                    </div>
-                `;
+                const wrapper = document.createElement('div');
+                wrapper.className = `alert alert-${type}`;
+                wrapper.textContent = String(message || '');
+                alertContainer.innerHTML = '';
+                alertContainer.appendChild(wrapper);
                 
                 // Auto-hide after 5 seconds
                 setTimeout(() => {

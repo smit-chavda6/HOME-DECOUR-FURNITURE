@@ -521,6 +521,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return stars;
     }
     
+    function escapeHTML(s){
+        return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+    }
+
     function openReviewModalWithHalfStars(productId, orderId, productName, parentModal) {
         const reviewModal = document.createElement('div');
         reviewModal.className = 'review-modal-overlay';
@@ -531,7 +535,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <h3 style="margin:0;font-size:20px;font-weight:600;">Write a Review</h3>
                         <button class="review-modal-close" style="background:rgba(255,255,255,0.2);border:none;width:32px;height:32px;border-radius:50%;font-size:20px;cursor:pointer;color:white;transition:all 0.3s;">×</button>
                     </div>
-                    <p style="margin:8px 0 0 0;font-size:14px;opacity:0.9;">${productName}</p>
+                    <p style="margin:8px 0 0 0;font-size:14px;opacity:0.9;">${escapeHTML(productName)}</p>
                 </div>
                 
                 <div style="padding:24px;">

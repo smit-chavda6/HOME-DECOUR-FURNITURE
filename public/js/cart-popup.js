@@ -663,10 +663,10 @@ class CartPopupSystem {
                 break;
         }
         
-        notification.innerHTML = `
-            <span style="flex-shrink: 0;">${iconSvg}</span>
-            <span>${message}</span>
-        `;
+        // Build notification safely to avoid injecting untrusted HTML in message
+        notification.innerHTML = `<span style="flex-shrink:0;">${iconSvg}</span><span></span>`;
+        const msgSpan = notification.querySelector('span:last-child');
+        if (msgSpan) msgSpan.textContent = String(message || '');
         
         // Add to page
         document.body.appendChild(notification);
