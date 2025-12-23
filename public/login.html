@@ -475,9 +475,10 @@
                         localStorage.setItem('isLoggedIn', 'true');
                         // Determine where to go next: redirect param > role-based default
                         const params = new URLSearchParams(window.location.search);
-                        const redirect = params.get('redirect');
+                        let redirect = params.get('redirect');
                         let target = null;
-                        if (redirect && redirect !== 'login.html') {
+                        // Validate redirect URL to prevent open redirect
+                        if (redirect && isValidRedirectUrl(redirect)) {
                             target = redirect;
                         } else if (data.user && data.user.role === 'admin') {
                             target = 'admin.html';
@@ -535,8 +536,8 @@
                     if (data.authenticated) {
                         // Already logged in: honor redirect param or route by role
                         const params = new URLSearchParams(window.location.search);
-                        const redirect = params.get('redirect');
-                        if (redirect && redirect !== 'login.html') {
+                        let redirect = params.get('redirect');
+                        if (redirect && isValidRedirectUrl(redirect)) {
                             window.location.href = redirect;
                         } else if (data.user && data.user.role === 'admin') {
                             window.location.href = 'admin.html';
@@ -547,6 +548,20 @@
                 } catch (error) {
                     console.log('Auth check failed:', error);
                 }
+            }
+            
+            // Validate redirect URL to prevent open redirect vulnerability
+            function isValidRedirectUrl(url) {
+                if (!url || typeof url !== 'string') return false;
+                // Only allow relative URLs or same-origin URLs
+                if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')) {
+                    try {
+                        const urlObj = new URL(url, window.location.origin);
+                        return urlObj.origin === window.location.origin;
+                    } catch { return false; }
+                }
+                // Allow relative paths to same origin (profile.html, admin.html, etc.)
+                return /^[a-zA-Z0-9._\-\/]+\.html$/.test(url);
             }
             
             // Forgot password functionality

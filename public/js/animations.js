@@ -61,9 +61,11 @@ document.addEventListener("DOMContentLoaded", () => {
             counterObserver.observe(number);
         } else {
             // If it doesn't have data-target, set it up from text content
-            const value = parseInt(number.textContent.replace('+', '').replace('%', ''), 10);
+            // Ensure we only extract numeric value and sanitize
+            const rawText = String(number.textContent || '').trim();
+            const value = parseInt(rawText.replace(/[^\d]/g, ''), 10) || 0;
             number.dataset.target = value;
-            if(number.textContent.includes('%')) {
+            if(rawText.includes('%')) {
                 number.dataset.suffix = '%';
             }
             counterObserver.observe(number);

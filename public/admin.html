@@ -329,13 +329,13 @@
         if (brandsDl) {
           brandsDl.innerHTML = Array.from(brandSet)
             .sort((a,b)=>a.localeCompare(b))
-            .map(b=>`<option value="${b}"></option>`)
+            .map(b=>`<option value="${String(b).replace(/"/g, '&quot;')}"></option>`)
             .join('');
         }
         if (materialsDl) {
           materialsDl.innerHTML = Array.from(materialSet)
             .sort((a,b)=>a.localeCompare(b))
-            .map(m=>`<option value="${m}"></option>`)
+            .map(m=>`<option value="${String(m).replace(/"/g, '&quot;')}"></option>`)
             .join('');
         }
       } catch (e) {

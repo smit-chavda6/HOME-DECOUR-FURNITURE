@@ -396,7 +396,14 @@ Keep responses concise and helpful. If you don't know something specific, sugges
                 const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/gi;
                 return text.replace(urlRegex, (match) => {
                     const href = match.startsWith('http') ? match : `https://${match}`;
-                    return `<a href="${href}" target="_blank" rel="noopener noreferrer">${match}</a>`;
+                    // Validate URL to prevent javascript: protocol
+                    try {
+                        new URL(href);
+                        const safeHref = href.replace(/"/g, '&quot;');
+                        return `<a href="${safeHref}" target="_blank" rel="noopener noreferrer">${match}</a>`;
+                    } catch (e) {
+                        return match; // If URL is invalid, return plain text
+                    }
                 });
             }
 

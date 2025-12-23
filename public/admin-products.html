@@ -267,8 +267,8 @@
         list.forEach(p=>{ if(p.brand) brandSet.add(String(p.brand).trim()); if(p.material) materialSet.add(String(p.material).trim()); });
         const brandsDl = document.getElementById('brands-list');
         const materialsDl = document.getElementById('materials-list');
-        if (brandsDl) brandsDl.innerHTML = Array.from(brandSet).sort((a,b)=>a.localeCompare(b)).map(v=>`<option value="${v}"></option>`).join('');
-        if (materialsDl) materialsDl.innerHTML = Array.from(materialSet).sort((a,b)=>a.localeCompare(b)).map(v=>`<option value="${v}"></option>`).join('');
+        if (brandsDl) brandsDl.innerHTML = Array.from(brandSet).sort((a,b)=>a.localeCompare(b)).map(v=>`<option value="${String(v).replace(/"/g, '&quot;')}"></option>`).join('');
+        if (materialsDl) materialsDl.innerHTML = Array.from(materialSet).sort((a,b)=>a.localeCompare(b)).map(v=>`<option value="${String(v).replace(/"/g, '&quot;')}"></option>`).join('');
       } catch(e){ console.warn('List fill failed', e); }
     } catch(e){ console.warn('Failed to load products', e); }
   }

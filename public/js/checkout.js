@@ -535,16 +535,28 @@
 
 	// Open a printable order confirmation preview (fake email)
 	function renderEmailPreview(email, items, totals, orderId){
+		// HTML escape helper
+		const escapeHTML = (str) => {
+			const map = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#39;'
+			};
+			return String(str || '').replace(/[&<>"']/g, c => map[c]);
+		};
+
 		const rows = items.map(it => `
 		  <tr>
-		    <td style="padding:6px 8px;border-bottom:1px solid #eee;">${(it.name||'Item')}</td>
+		    <td style="padding:6px 8px;border-bottom:1px solid #eee;">${escapeHTML(it.name||'Item')}</td>
 		    <td style="padding:6px 8px;border-bottom:1px solid #eee;">${(it.quantity||1)}</td>
 		    <td style="padding:6px 8px;border-bottom:1px solid #eee;">${fmtINR((Number(it.price)||0))}</td>
 		  </tr>`).join('');
 		const html = `
 		  <div style="font-family: Jost, Arial, sans-serif; padding:16px; max-width:720px; margin:16px auto;">
 		    <h2 style="margin:0 0 8px;">Order Confirmation</h2>
-		    <p style="margin:0 0 12px;">Thanks for your purchase${email?`, ${email}`:''}! ${orderId?`Your order <strong>#${orderId}</strong> `:'Your order '}has been received.</p>
+		    <p style="margin:0 0 12px;">Thanks for your purchase${email?`, ${escapeHTML(email)}`:''}! ${orderId?`Your order <strong>#${escapeHTML(String(orderId))}</strong> `:'Your order '}has been received.</p>
 		    <table style="width:100%; border-collapse:collapse; margin:16px 0;">
 		      <thead>
 		        <tr>

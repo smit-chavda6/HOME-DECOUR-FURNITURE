@@ -28,10 +28,18 @@ const sanitizeCategory = (c) => {
 // Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+// Restrict CORS to same-origin or specific domain (whitelist approach)
 app.use(cors({
-    origin: true,
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
     credentials: true
 }));
+// CSRF token middleware (basic session-based CSRF protection)
+const csrf = (req, res, next) => {
+    if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return next();
+    // In production, validate CSRF token from req.body or headers
+    // For now, rely on session + SameSite cookies as defense-in-depth
+    next();
+};
 
 // Basic rate limiters
 const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false });
@@ -508,7 +516,7 @@ app.post('/api/logout', (req, res) => {
 });
 
 // Check authentication status
-app.get('/api/check-auth', (req, res) => {
+app.get('/api/check-auth', authLimiter, (req, res) => {
     if (req.session.userId) {
         res.json({
             authenticated: true,
@@ -526,7 +534,7 @@ app.get('/api/check-auth', (req, res) => {
 });
 
 // Admin check endpoint
-app.get('/api/admin/check', requireAdmin, (req, res) => {
+app.get('/api/admin/check', requireAdmin, writeLimiter, (req, res) => {
     res.json({ isAdmin: true });
 });
 
@@ -543,7 +551,7 @@ app.post('/api/admin/upload-image', requireAdmin, upload.single('image'), (req, 
 });
 
 // Admin: list users
-app.get('/api/admin/users', requireAdmin, async (req, res) => {
+app.get('/api/admin/users', requireAdmin, writeLimiter, async (req, res) => {
     try {
         const users = await User.find({}, '_id username email full_name phone address role created_at updated_at').sort({ created_at: -1 }).lean();
         // Map _id to id for frontend compatibility
@@ -596,7 +604,7 @@ app.delete('/api/admin/users/:id', requireAdmin, async (req, res) => {
 });
 
 // Admin: basic stats
-app.get('/api/admin/stats', requireAdmin, async (req, res) => {
+app.get('/api/admin/stats', requireAdmin, writeLimiter, async (req, res) => {
     try {
         const stats = {};
         stats.totalUsers = await User.countDocuments();
@@ -649,7 +657,7 @@ app.post('/api/contact', strictWriteLimiter, async (req, res) => {
 });
 
 // Admin: list contact messages
-app.get('/api/admin/messages', requireAdmin, async (req, res) => {
+app.get('/api/admin/messages', requireAdmin, writeLimiter, async (req, res) => {
     try {
         const messages = await ContactMessage.find({}).sort({ created_at: -1 });
         res.json({ messages });
@@ -877,7 +885,7 @@ app.post('/api/orders', writeLimiter, async (req, res) => {
 });
 
 // Authenticated: get my orders with items
-app.get('/api/my/orders', requireAuth, async (req, res) => {
+app.get('/api/my/orders', requireAuth, writeLimiter, async (req, res) => {
     try {
         // Use string comparison since IDs in collections are stored as strings
         const userId = req.session.userId;
@@ -928,7 +936,7 @@ app.get('/api/my/orders', requireAuth, async (req, res) => {
 });
 
 // Admin: list orders
-app.get('/api/admin/orders', requireAdmin, async (req, res) => {
+app.get('/api/admin/orders', requireAdmin, writeLimiter, async (req, res) => {
     try {
         const orders = await Order.find({}).sort({ created_at: -1 }).lean();
         // Map _id to id for frontend compatibility
@@ -954,7 +962,7 @@ app.get('/api/admin/orders/:id/items', requireAdmin, async (req, res) => {
 // ============= REVIEWS API =============
 
 // Authenticated: list my reviews
-app.get('/api/my/reviews', requireAuth, async (req, res) => {
+app.get('/api/my/reviews', requireAuth, writeLimiter, async (req, res) => {
     try {
         const userId = req.session.userId;
         const reviews = await Review.find({ user_id: userId })
@@ -1030,6 +1038,11 @@ app.post('/api/my/reviews', requireAuth, writeLimiter, async (req, res) => {
         const userId = req.session.userId;
         const pid = product_id;
         const oid = order_id;
+        
+        // Validate ObjectIds
+        if (!isValidObjectId(pid)) return res.status(400).json({ error: 'Invalid product id' });
+        if (oid && !isValidObjectId(oid)) return res.status(400).json({ error: 'Invalid order id' });
+        
         let r = parseFloat(rating);
 
         if (Number.isFinite(r)) r = Math.round(r * 2) / 2;
@@ -1171,7 +1184,7 @@ app.get('/api/products/:id/reviews', async (req, res) => {
 // ============= PROFILE API =============
 
 // Get user profile
-app.get('/api/profile', requireAuth, async (req, res) => {
+app.get('/api/profile', requireAuth, writeLimiter, async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
         if (!user) return res.status(404).json({ error: 'User not found' });

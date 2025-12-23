@@ -773,7 +773,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     const titleEl = existing.querySelector('.product-title');
                     if (titleEl) titleEl.textContent = p.name;
                     const ratingWrap = existing.querySelector('.product-rating');
-                    if (ratingWrap) ratingWrap.innerHTML = `<span class="stars">${renderStars(p.rating||0)}</span><span class="rating-count">(${(p.rating||0).toFixed(1)}) ${p.rating_count||0} reviews</span>`;
+                    if (ratingWrap) {
+                        const starsHtml = renderStars(p.rating || 0);
+                        ratingWrap.innerHTML = `<span class="stars">${starsHtml}</span>`;
+                        const countSpan = document.createElement('span');
+                        countSpan.className = 'rating-count';
+                        countSpan.textContent = `(${(p.rating||0).toFixed(1)}) ${p.rating_count||0} reviews`;
+                        ratingWrap.appendChild(countSpan);
+                    }
                     const priceWrap = existing.querySelector('.product-price');
                     if (priceWrap) priceWrap.innerHTML = `${priceHtml}${originalHtml}${discountHtml}`;
                     // Re-bind buttons on this card
