@@ -2,6 +2,23 @@
 
 This repository powers the Home Decor Furniture storefront. Below is the quick start guide merged as the main README for fast onboarding and testing.
 
+## 🔐 Security: API Keys & Public GitHub
+- Use a local `.env` file to store secrets. Do not commit it. This repo now ignores `.env`, `.env.*`, `users.db`, and `public/uploads`.
+- Configure Gemini securely: copy `.env.example` to `.env` and set `GEMINI_API_KEY`. Optionally set `GEMINI_MODEL`.
+- The chatbot calls a backend route `/api/chat`, so your key is never exposed client-side.
+- If any key was ever committed, rotate it immediately in the provider dashboard and purge it from git history if needed.
+
+### Setup
+1. Copy `.env.example` to `.env` and add your real key.
+2. Install dependencies and run:
+
+```bash
+npm install
+npm run dev
+```
+
+Server reads `GEMINI_API_KEY` and serves the site at `http://localhost:3000`.
+
 
 # 🚀 QUICK START - ORDERS & REVIEWS MODAL
 

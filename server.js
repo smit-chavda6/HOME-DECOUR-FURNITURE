@@ -1,4 +1,6 @@
 const express = require('express');
+// Load environment variables early
+try { require('dotenv').config(); } catch {}
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
@@ -10,6 +12,8 @@ const multer = require('multer');
 const app = express();
 const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/home-decor-furniture';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
 
 // Middleware
 app.use(express.json());
@@ -1227,4 +1231,57 @@ process.on('SIGINT', async () => {
     await mongoose.connection.close();
     console.log('Database connection closed');
     process.exit(0);
+});
+
+// ================= CHATBOT (Gemini) BACKEND =================
+
+app.post('/api/chat', async (req, res) => {
+    try {
+        if (!GEMINI_API_KEY) {
+            return res.status(500).json({ error: 'Server not configured with Gemini API key' });
+        }
+
+        const { message, context } = req.body || {};
+        const userMessage = (message || '').toString().trim();
+        const productContext = (context || '').toString();
+        if (!userMessage) {
+            return res.status(400).json({ error: 'Message is required' });
+        }
+
+        const systemPrompt = `You are a friendly, knowledgeable, and professional customer support chatbot for Home Decor Furniture. Your name is 'DecorBot'.\n\nKeep responses concise and helpful (max 150 words). Maintain a warm, inviting tone.\n\n${productContext ? ('Live catalog context (use for accurate names/prices):\n' + productContext) : ''}`;
+
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent?key=${GEMINI_API_KEY}`;
+        const payload = {
+            contents: [{
+                role: 'user',
+                parts: [{ text: systemPrompt + "\n\nUser question: " + userMessage }]
+            }],
+            generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 200,
+                topP: 0.8,
+                topK: 40
+            }
+        };
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            return res.status(502).json({ error: 'Gemini API error', details: text.slice(0, 500) });
+        }
+
+        const result = await response.json();
+        const candidate = result && result.candidates && result.candidates[0];
+        const partText = candidate && candidate.content && candidate.content.parts && candidate.content.parts[0] && candidate.content.parts[0].text;
+        const reply = partText || "I'm sorry, I couldn't generate a response right now.";
+        return res.json({ reply });
+    } catch (err) {
+        console.error('Chat API error:', err?.message || err);
+        return res.status(500).json({ error: 'Server error' });
+    }
 });

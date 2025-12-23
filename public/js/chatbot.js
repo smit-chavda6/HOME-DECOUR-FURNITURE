@@ -532,62 +532,23 @@ Keep responses concise and helpful. If you don't know something specific, sugges
                     }
                 }
 
-    // AI response system using Google Gemini API
+    // AI response system via backend to protect API key
     async function generateResponse(userMessage, productContext = '') {
         try {
-            const apiKey = 'YOUR-API-KEY';
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-            
-            const systemPrompt = `You are a friendly, knowledgeable, and professional customer support chatbot for ${websiteData.company}. Your name is 'DecorBot'. 
-
-You should answer questions about:
-- Products and categories: ${websiteData.products.categories.join(', ')}
-- Featured products: ${websiteData.products.featured.join(', ')}
-- Shipping: ${websiteData.policies.shipping}
-- Returns: ${websiteData.policies.returns}
-- Payment: ${websiteData.policies.payment}
-- Warranty: ${websiteData.policies.warranty}
-- Contact info: Phone: ${websiteData.contact.phone}, Email: ${websiteData.contact.email}
-- Company features: ${websiteData.features.join(', ')}
-
-Keep responses concise and helpful (max 150 words). If you don't know something specific, suggest visiting the FAQ page or contacting human support at ${websiteData.contact.phone}. Maintain a warm, inviting tone that matches our elegant furniture brand.
-
-${productContext ? ('Live catalog context (use for accurate names/prices):\n' + productContext) : ''}`;
-
-            const payload = {
-                contents: [{
-                    role: "user",
-                    parts: [{ text: systemPrompt + "\n\nUser question: " + userMessage }]
-                }],
-                generationConfig: {
-                    temperature: 0.7,
-                    maxOutputTokens: 200,
-                    topP: 0.8,
-                    topK: 40
-                }
-            };
-
-            const response = await fetch(apiUrl, {
+            const response = await fetch('/api/chat', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userMessage, context: productContext })
             });
 
-            const result = await response.json();
-            
-            if (result.candidates && result.candidates.length > 0 &&
-                result.candidates[0].content && result.candidates[0].content.parts &&
-                result.candidates[0].content.parts.length > 0) {
-                return result.candidates[0].content.parts[0].text;
-            } else {
-                throw new Error('Invalid response format from API');
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
             }
-            
+            const data = await response.json();
+            if (data && data.reply) return data.reply;
+            throw new Error('Invalid response format from server');
         } catch (error) {
-            console.error('Error calling Gemini API:', error);
-            // Fallback to simple responses if API fails
+            console.error('Chat backend error:', error);
             return generateFallbackResponse(userMessage);
         }
     }

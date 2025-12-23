@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+try { require('dotenv').config(); } catch {}
 
-const uri = '{mongodb url}';
+const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/home-decor-furniture';
 
 // Define schemas
 const userSchema = new mongoose.Schema({
@@ -12,7 +13,6 @@ const userSchema = new mongoose.Schema({
 });
 
 const productSchema = new mongoose.Schema({
-    id: String,
     name: String,
     price: Number,
     description: String,
@@ -32,7 +32,7 @@ const orderSchema = new mongoose.Schema({
 const orderItemSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     order_id: mongoose.Schema.Types.ObjectId,
-    product_id: mongoose.Schema.Types.ObjectId,
+    product_id: String, // match app schema: stored as String
     name: String,
     product_name: String,
     quantity: Number,
@@ -86,7 +86,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
             await OrderItem.create({
                 _id: new mongoose.Types.ObjectId(),
                 order_id: order1._id,
-                product_id: products[0]._id,
+                product_id: String(products[0]._id),
                 name: products[0].name,
                 product_name: products[0].name,
                 quantity: 2,
@@ -108,7 +108,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
             await OrderItem.create({
                 _id: new mongoose.Types.ObjectId(),
                 order_id: order2._id,
-                product_id: products[1]._id,
+                product_id: String(products[1]._id),
                 name: products[1].name,
                 product_name: products[1].name,
                 quantity: 1,
@@ -118,7 +118,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
             await OrderItem.create({
                 _id: new mongoose.Types.ObjectId(),
                 order_id: order2._id,
-                product_id: products[2]._id,
+                product_id: String(products[2]._id),
                 name: products[2].name,
                 product_name: products[2].name,
                 quantity: 1,
