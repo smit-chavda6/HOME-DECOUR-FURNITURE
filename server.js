@@ -28,6 +28,8 @@ const sanitizeCategory = (c) => {
 // Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+// Trust proxy for Vercel/production environments
+app.set('trust proxy', 1);
 // Restrict CORS to same-origin or specific domain (whitelist approach)
 app.use(cors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
@@ -71,11 +73,13 @@ const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024
 
 // Session configuration
 app.use(session({
-    secret: 'home-decor-furniture-secret-key',
+    secret: process.env.SESSION_SECRET || 'home-decor-furniture-secret-key',
     resave: false,
     saveUninitialized: false,
     cookie: { 
-        secure: false,
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000
     }
 }));

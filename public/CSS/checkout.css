@@ -59,6 +59,27 @@
 .pay-option input { accent-color: #8B4513; }
 .pay-option input:checked + span, .pay-option:has(input:checked) { border-color: #C67D35; background: linear-gradient(135deg, #fff8f3 0%, #ffe5c1 100%); box-shadow: 0 6px 18px rgba(198,125,53,.18); }
 
+/* Shipping methods */
+.shipping-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 8px 0 6px; }
+.ship-option { display: grid; grid-template-columns: 20px 1fr; align-items: center; gap: 10px; background: #fff; border: 2px solid #f0e1d3; border-radius: 12px; padding: 12px 14px; cursor: pointer; transition: .2s transform, .2s box-shadow, .2s border-color; }
+.ship-option:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(139,69,19,.10); border-color: #e3c6a1; }
+.ship-option input { accent-color: #8B4513; }
+.ship-option small.cost { color: #806247; font-size: .85rem; grid-column: 2; }
+.delivery-estimate { margin: 6px 0 0; color: #6d4c2b; font-size: .9rem; }
+
+/* Promo code */
+.promo-apply { margin: 8px 0 12px; display: flex; flex-direction: column; gap: 6px; }
+.promo-apply label { font-weight: 600; color: #3b2a1a; }
+.promo-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.promo-row input { background: #fff8f3; border: 2px solid #f0e1d3; border-radius: 10px; padding: 10px 12px; font-size: 1rem; }
+.promo-help { color: #806247; }
+.summary-totals .discount { color: #1f7a30; }
+
+/* CVV toggle */
+.cvv-wrap { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; }
+.cvv-toggle { appearance: none; border: 2px solid #EED9C4; background: #fff; color: #8B4513; border-radius: 10px; padding: 8px 10px; font-weight: 700; cursor: pointer; }
+.cvv-toggle:hover { background: #FFF6EE; }
+
 .payment-fields[hidden] { display: none !important; }
 .payment-fields { margin-top: 6px; }
 
@@ -73,6 +94,14 @@
 .summary-item .name { font-weight: 600; color: #2c1a0a; }
 .summary-item .meta { color: #806247; font-size: .9rem; }
 .summary-item .price { font-weight: 700; color: #8B4513; }
+
+/* Quantity controls */
+.qty-controls { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; }
+.qty-btn { appearance: none; border: 2px solid #EED9C4; background: #fff; color: #8B4513; border-radius: 8px; width: 28px; height: 28px; display: grid; place-items: center; cursor: pointer; font-weight: 800; }
+.qty-btn:hover { background: #FFF6EE; }
+.qty-count { min-width: 20px; text-align: center; font-weight: 700; color: #4a3626; }
+.remove-item { margin-left: 8px; color: #a33; background: transparent; border: 0; cursor: pointer; font-weight: 700; }
+.remove-item:hover { text-decoration: underline; }
 
 .summary-totals { display: flex; flex-direction: column; gap: 8px; }
 .summary-totals .row { display: flex; justify-content: space-between; color: #4a3626; }
@@ -116,6 +145,8 @@
 	.summary-item { grid-template-columns: 48px 1fr auto; gap: 10px; }
 	.summary-item img { width: 48px; height: 48px; }
 	/* no-op: linear progress removed */
+	.shipping-methods { grid-template-columns: 1fr; }
+	.promo-row { grid-template-columns: 1fr; }
 }
 
 /* Dark mode tweaks */
@@ -130,6 +161,13 @@ body.dark-mode .form-group label { color: #ddd1c7; }
 body.dark-mode .form-group input, body.dark-mode .form-group select, body.dark-mode .form-group textarea { background: #101318; border-color: #262b33; color: #f1e6dc; }
 body.dark-mode .form-group input:focus, body.dark-mode .form-group select:focus, body.dark-mode .form-group textarea:focus { box-shadow: 0 0 0 3px #8B451360; }
 body.dark-mode .pay-option { background: #121419; border-color: #262b33; }
+/* Dark mode: shipping methods */
+body.dark-mode .shipping-methods .ship-option { background: var(--dm-panel); border-color: var(--dm-border); }
+body.dark-mode .shipping-methods .ship-option:hover { box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent2) 18%, transparent); }
+body.dark-mode .delivery-estimate { color: var(--dm-muted); }
+body.dark-mode .promo-row input { background: var(--dm-panel); border-color: var(--dm-border); color: var(--dm-text); }
+body.dark-mode .promo-help { color: var(--dm-muted); }
+body.dark-mode .cvv-toggle { background: var(--dm-panel); color: var(--dm-text); border-color: var(--dm-border); }
 body.dark-mode .summary-item { border-color: #262b33; }
 body.dark-mode .summary-item .name, body.dark-mode .summary-totals .row { color: #f1e6dc; }
 body.dark-mode .summary-item .meta { color: #b9a999; }

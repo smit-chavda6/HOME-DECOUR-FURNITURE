@@ -26,10 +26,26 @@
 	}
 
 	function prefillFromUser(user){
-		if (!user) return;
 		const fullNameEl = document.getElementById('fullName');
 		const emailEl = document.getElementById('email');
 		const phoneEl = document.getElementById('phone');
+		const countryEl = document.getElementById('country');
+		const address1El = document.getElementById('address1');
+		const address2El = document.getElementById('address2');
+		const stateEl = document.getElementById('state');
+		const cityEl = document.getElementById('city');
+		const postalEl = document.getElementById('postal');
+
+		// Load from local storage first (user can resume later)
+		try {
+			const saved = JSON.parse(localStorage.getItem('checkoutFormData') || '{}');
+			const assign = (el, key)=>{ if (el && saved && saved[key] && !String(el.value||'').trim()) el.value = saved[key]; };
+			assign(fullNameEl, 'fullName'); assign(emailEl, 'email'); assign(phoneEl, 'phone');
+			assign(countryEl, 'country'); assign(address1El, 'address1'); assign(address2El, 'address2');
+			assign(stateEl, 'state'); assign(cityEl, 'city'); assign(postalEl, 'postal');
+		} catch {}
+
+		if (!user) return;
 		const name = user.full_name || user.name || [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || '';
 		if (fullNameEl && !fullNameEl.value && name) fullNameEl.value = name;
 		if (emailEl && !emailEl.value && user.email) emailEl.value = user.email;
@@ -196,6 +212,35 @@
 			if (postalEl) postalEl.value = pin || postalEl.value || '';
 		});
 
+		// Reverse lookup by PIN: when user types a valid 6-digit PIN, auto-select state/city if known
+		if (postalEl) {
+			postalEl.addEventListener('input', () => {
+				const pin = String(postalEl.value || '').trim();
+				if (!/^\d{6}$/.test(pin)) return;
+				// Find state and city with matching PIN
+				let foundState = '';
+				let foundCity = '';
+				for (const st of Object.keys(LOCATION_DATA)) {
+					const list = LOCATION_DATA[st] || [];
+					const match = list.find(entry => String(entry.postal) === pin);
+					if (match) { foundState = st; foundCity = String(match.city); break; }
+				}
+				if (foundState) {
+					stateEl.value = foundState;
+					populateCities(foundState, true);
+					// Try set city
+					const option = Array.from(cityEl.options).find(o => o.value === foundCity);
+					if (option) {
+						cityEl.value = foundCity;
+					} else {
+						cityEl.value = '__OTHER__';
+						cityOtherEl.style.display = '';
+						cityOtherEl.value = foundCity;
+					}
+				}
+			});
+		}
+
 		// Try to restore previous values if present
 		const initState = stateEl.getAttribute('data-initial') || '';
 		if (initState && states.includes(initState)) {
@@ -233,12 +278,29 @@
 		} catch { return []; }
 	}
 
+	// Checkout state
+	let selectedShippingMethod = 'standard';
+	let promo = { code: '', percent: 0, freeShip: false };
+
 	function calcTotals(items){
 		const subtotal = items.reduce((s, it)=> s + (it.price * it.quantity), 0);
-		const shipping = subtotal >= 50000 ? 0 : (items.length ? 499 : 0);
-		const tax = Math.round(subtotal * 0.18); // 18% GST estimate
-		const total = subtotal + shipping + tax;
-		return { subtotal, shipping, tax, total };
+		// Shipping based on method
+		let shipping = 0;
+		if (selectedShippingMethod === 'pickup') {
+			shipping = 0;
+		} else if (selectedShippingMethod === 'express') {
+			shipping = items.length ? 999 : 0;
+		} else {
+			// standard
+			const base = items.length ? 499 : 0;
+			shipping = (subtotal >= 50000 ? 0 : base);
+		}
+		// Promo free shipping overrides shipping
+		if (promo.freeShip) shipping = 0;
+		const discount = Math.round(subtotal * (promo.percent / 100));
+		const tax = Math.round((subtotal - discount) * 0.18); // GST based on discounted subtotal
+		const total = Math.max(0, subtotal - discount) + shipping + tax;
+		return { subtotal, shipping, discount, tax, total };
 	}
 
 	function renderSummary(items){
@@ -247,6 +309,8 @@
 		const shippingEl = document.getElementById('shipping');
 		const taxEl = document.getElementById('tax');
 		const totalEl = document.getElementById('grandTotal');
+		const discountEl = document.getElementById('discount');
+		const discountRow = document.getElementById('discountRow');
 		if (!container) return;
 		container.innerHTML = '';
 		if (!items.length) {
@@ -255,23 +319,73 @@
 			div.textContent = 'Your cart is empty.';
 			container.appendChild(div);
 		} else {
-			items.forEach(it => {
+			items.forEach((it, idx) => {
 				const row = document.createElement('div');
 				row.className = 'summary-item';
-				row.innerHTML = `
-					<img src="${it.image || 'image/1.png'}" alt="${it.name || 'Item'}" onerror="this.src='image/1.png'" />
-					<div>
-						<div class="name">${it.name || 'Item'}</div>
-						<div class="meta">Qty: ${it.quantity}</div>
-					</div>
-					<div class="price">${fmtINR((it.price||0) * (it.quantity||1))}</div>
-				`;
+				const img = document.createElement('img');
+				img.src = String(it.image || 'image/1.png');
+				img.alt = String(it.name || 'Item');
+				img.addEventListener('error', () => { img.src = 'image/1.png'; });
+				const info = document.createElement('div');
+				const nameDiv = document.createElement('div');
+				nameDiv.className = 'name';
+				nameDiv.textContent = String(it.name || 'Item');
+				const metaDiv = document.createElement('div');
+				metaDiv.className = 'meta';
+				metaDiv.textContent = 'Qty: ' + String(it.quantity || 1);
+				// Quantity controls
+				const qty = document.createElement('div');
+				qty.className = 'qty-controls';
+				const minus = document.createElement('button'); minus.type = 'button'; minus.className = 'qty-btn'; minus.textContent = '−';
+				const count = document.createElement('span'); count.className = 'qty-count'; count.textContent = String(it.quantity || 1);
+				const plus = document.createElement('button'); plus.type = 'button'; plus.className = 'qty-btn'; plus.textContent = '+';
+				const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'remove-item'; remove.textContent = 'Remove';
+
+				function persistCart(updated){ try { localStorage.setItem('cart', JSON.stringify(updated)); } catch {} }
+				minus.addEventListener('click', ()=>{
+					const current = readCart();
+					const target = current[idx];
+					if (!target) return;
+					target.quantity = Math.max(1, (target.quantity||1) - 1);
+					persistCart(current);
+					// Re-render
+					renderSummary(current);
+				});
+				plus.addEventListener('click', ()=>{
+					const current = readCart();
+					const target = current[idx];
+					if (!target) return;
+					target.quantity = Math.min(99, (target.quantity||1) + 1);
+					persistCart(current);
+					renderSummary(current);
+				});
+				remove.addEventListener('click', ()=>{
+					const current = readCart();
+					const next = current.filter((_, i) => i !== idx);
+					persistCart(next);
+					renderSummary(next);
+				});
+				qty.appendChild(minus);
+				qty.appendChild(count);
+				qty.appendChild(plus);
+				qty.appendChild(remove);
+				metaDiv.appendChild(qty);
+				info.appendChild(nameDiv);
+				info.appendChild(metaDiv);
+				const priceDiv = document.createElement('div');
+				priceDiv.className = 'price';
+				priceDiv.textContent = fmtINR((Number(it.price)||0) * (Number(it.quantity)||1));
+				row.appendChild(img);
+				row.appendChild(info);
+				row.appendChild(priceDiv);
 				container.appendChild(row);
 			});
 		}
 		const t = calcTotals(items);
 		if (subtotalEl) subtotalEl.textContent = fmtINR(t.subtotal);
 		if (shippingEl) shippingEl.textContent = fmtINR(t.shipping);
+		if (discountEl) discountEl.textContent = '−' + fmtINR(t.discount);
+		if (discountRow) discountRow.hidden = !(t.discount > 0);
 		if (taxEl) taxEl.textContent = fmtINR(t.tax);
 		if (totalEl) totalEl.textContent = fmtINR(t.total);
 	}
@@ -367,14 +481,56 @@
 		if (checked) set(checked.value);
 	}
 
+	// Shipping method toggles & delivery estimate
+	function bindShippingToggles(items){
+		const radios = document.querySelectorAll('input[name="shippingMethod"]');
+		const estimate = document.getElementById('deliveryEstimate');
+		const updateEstimate = ()=>{
+			let text = 'Estimated delivery: 3–5 days';
+			if (selectedShippingMethod === 'express') text = 'Estimated delivery: 1–2 days';
+			if (selectedShippingMethod === 'pickup') text = 'Pickup today at store';
+			if (estimate) estimate.textContent = text;
+		};
+		radios.forEach(r => r.addEventListener('change', ()=>{
+			selectedShippingMethod = document.querySelector('input[name="shippingMethod"]:checked')?.value || 'standard';
+			updateEstimate();
+			renderSummary(items);
+		}));
+		updateEstimate();
+	}
+
 	// Validate required fields and payment-specific inputs
+	// Luhn algorithm for card validation
+	function luhnCheck(num){
+		const digits = String(num).replace(/\s+/g, '');
+		if (!/^\d{14,19}$/.test(digits)) return false;
+		let sum = 0; let alt = false;
+		for (let i = digits.length - 1; i >= 0; i--) {
+			let n = parseInt(digits[i], 10);
+			if (alt) { n *= 2; if (n > 9) n -= 9; }
+			sum += n; alt = !alt;
+		}
+		return (sum % 10) === 0;
+	}
+
 	function validate(form){
 		const need = authState.authenticated
 			? ['address1','city','state','postal']
 			: ['fullName','email','address1','city','state','postal'];
+		// Clear existing error states
+		form.querySelectorAll('.field-error').forEach(e => e.remove());
+		function flag(el, msg){
+			if (!el) return;
+			el.setAttribute('aria-invalid','true');
+			const small = document.createElement('small');
+			small.className = 'field-error';
+			small.style.color = '#a33';
+			small.textContent = msg;
+			el.insertAdjacentElement('afterend', small);
+		}
 		for (const id of need) {
 			const el = form.querySelector('#'+id);
-			if (!el || !String(el.value).trim()) return { ok:false, message:'Please fill all required fields.' };
+			if (!el || !String(el.value).trim()) { flag(el, 'Required'); return { ok:false, message:'Please fill all required fields.' }; }
 		}
 		// Extra rule: if city is Other, ensure manual city is provided
 		const citySel = form.querySelector('#city');
@@ -386,6 +542,7 @@
 		if (pm === 'upi') {
 			const upi = form.querySelector('#upiId');
 			if (!upi || !/^[\w.-]+@[\w.-]+$/.test(String(upi.value).trim())) {
+				flag(upi, 'Enter a valid UPI ID (e.g., name@bank).');
 				return { ok:false, message:'Enter a valid UPI ID (e.g., name@bank).' };
 			}
 		}
@@ -393,9 +550,9 @@
 			const num = form.querySelector('#cardNumber');
 			const exp = form.querySelector('#expiry');
 			const cvv = form.querySelector('#cvv');
-			if (!num || String(num.value).replace(/\s/g,'').length < 14) return { ok:false, message:'Enter a valid card number.' };
-			if (!exp || !/^(0[1-9]|1[0-2])\/\d{2}$/.test(String(exp.value))) return { ok:false, message:'Enter expiry as MM/YY.' };
-			if (!cvv || String(cvv.value).trim().length < 3) return { ok:false, message:'Enter a valid CVV.' };
+			if (!num || !luhnCheck(num.value)) { flag(num, 'Invalid card number'); return { ok:false, message:'Enter a valid card number.' }; }
+			if (!exp || !/^(0[1-9]|1[0-2])\/\d{2}$/.test(String(exp.value))) { flag(exp, 'Use MM/YY'); return { ok:false, message:'Enter expiry as MM/YY.' }; }
+			if (!cvv || String(cvv.value).trim().length < 3) { flag(cvv, '3–4 digits'); return { ok:false, message:'Enter a valid CVV.' }; }
 		}
 		return { ok:true };
 	}
@@ -587,6 +744,16 @@
 		const exp = document.getElementById('expiry');
 		if (num) num.addEventListener('input', ()=> { num.value = num.value.replace(/[^\d]/g,'').replace(/(.{4})/g,'$1 ').trim(); });
 		if (exp) exp.addEventListener('input', ()=> { exp.value = exp.value.replace(/[^\d]/g,'').slice(0,4).replace(/^(\d{2})(\d{0,2}).*/, (m,a,b)=> b?`${a}/${b}`:a); });
+		const toggle = document.getElementById('toggleCvv');
+		const cvv = document.getElementById('cvv');
+		if (toggle && cvv) {
+			toggle.addEventListener('click', ()=>{
+				const isPwd = cvv.type === 'password';
+				cvv.type = isPwd ? 'text' : 'password';
+				toggle.textContent = isPwd ? 'Hide' : 'Show';
+				toggle.setAttribute('aria-label', isPwd ? 'Hide CVV' : 'Show CVV');
+			});
+		}
 	}
 
 	function notify(msg, type='info'){
@@ -607,6 +774,36 @@
 	await initLocationSelectors();
 		attachFormatters();
 		initLinearProgress();
+		bindShippingToggles(items);
+		// Persist form fields to local storage
+		const persistTargets = ['fullName','email','phone','country','address1','address2','state','city','postal','upiId','cardNumber','expiry'];
+		persistTargets.forEach(id => {
+			const el = document.getElementById(id);
+			if (!el) return;
+			const handler = ()=>{
+				try {
+					const saved = JSON.parse(localStorage.getItem('checkoutFormData') || '{}');
+					saved[id] = String(el.value || '');
+					localStorage.setItem('checkoutFormData', JSON.stringify(saved));
+				} catch {}
+			};
+			el.addEventListener('input', handler);
+			el.addEventListener('change', handler);
+		});
+		// Promo code apply
+		const promoInput = document.getElementById('promoCode');
+		const applyBtn = document.getElementById('applyPromoBtn');
+		function applyPromo(){
+			const code = String(promoInput?.value || '').trim().toUpperCase();
+			promo = { code: '', percent: 0, freeShip: false };
+			if (code === 'SAVE10') promo = { code, percent: 10, freeShip: false };
+			else if (code === 'NEWYEAR15') promo = { code, percent: 15, freeShip: false };
+			else if (code === 'FREESHIP') promo = { code, percent: 0, freeShip: true };
+			renderSummary(items);
+			if (applyBtn) applyBtn.textContent = promo.code ? 'Applied' : 'Apply';
+		}
+		if (applyBtn) applyBtn.addEventListener('click', applyPromo);
+		if (promoInput) promoInput.addEventListener('keydown', (e)=>{ if (e.key === 'Enter') { e.preventDefault(); applyPromo(); } });
 		// Enforce login before allowing checkout
 		await checkAuth();
 		const form = document.getElementById('checkoutForm');
