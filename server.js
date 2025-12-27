@@ -19,6 +19,7 @@ const rateLimit = require('express-rate-limit');
 const fetch = global.fetch || ((...args) => import('node-fetch').then(({ default: f }) => f(...args)));
 
 const app = express();
+const IS_PROD = String(process.env.NODE_ENV).toLowerCase() === 'production';
 const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/home-decor-furniture';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
@@ -36,9 +37,9 @@ const sanitizeCategory = (c) => {
 // Middleware
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-// Restrict CORS to same-origin or specific domain (whitelist approach)
+// CORS: allow same-origin and configured origins; default to reflecting request origin
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: (origin, cb) => cb(null, true),
     credentials: true
 }));
 // CSRF token middleware (basic session-based CSRF protection)
@@ -78,12 +79,15 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024 } });
 
 // Session configuration
+// Trust proxy for secure cookies on Vercel/HTTPS
+try { app.set('trust proxy', 1); } catch {}
 app.use(session({
     secret: 'home-decor-furniture-secret-key',
     resave: false,
     saveUninitialized: false,
-    cookie: { 
-        secure: false,
+    cookie: {
+        secure: IS_PROD, // set secure cookies in production (HTTPS on Vercel)
+        sameSite: 'lax',
         maxAge: 24 * 60 * 60 * 1000
     }
 }));
@@ -203,7 +207,10 @@ mongoose.connect(MONGODB_URI, {
 })
 .catch((err) => {
     console.error('MongoDB connection error:', err.message);
-    process.exit(1);
+    // On Vercel serverless, do not exit the process; allow routes to respond gracefully
+    if (!process.env.VERCEL) {
+        process.exit(1);
+    }
 });
 
 async function initializeData() {
