@@ -4,10 +4,6 @@
     {
       "src": "server.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "public/**/*",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -16,17 +12,11 @@
       "dest": "server.js"
     },
     {
-      "src": "/uploads/(.*)",
-      "dest": "/public/uploads/$1"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/public/$1"
+      "dest": "server.js"
     }
   ],
   "env": {
-    "MONGODB_URI": "@mongodb_uri",
-    "GEMINI_API_KEY": "@gemini_api_key",
-    "CORS_ORIGIN": "https://your-vercel-domain.vercel.app"
+    "NODE_ENV": "production"
   }
 }
