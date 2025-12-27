@@ -2,7 +2,13 @@ const express = require('express');
 // Load environment variables early
 try { require('dotenv').config(); } catch {}
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');
+const hashPassword = (password, rounds = 10) => new Promise((resolve, reject) => {
+    bcryptjs.hash(password, rounds, (err, hash) => err ? reject(err) : resolve(hash));
+});
+const comparePassword = (password, hash) => new Promise((resolve, reject) => {
+    bcryptjs.compare(password, hash, (err, same) => err ? reject(err) : resolve(same));
+});
 const session = require('express-session');
 const path = require('path');
 const cors = require('cors');
@@ -244,7 +250,7 @@ async function seedInitialReviews() {
         // Create a demo user for initial reviews if doesn't exist
         let demoUser = await User.findOne({ username: 'demo_reviewer_' + Date.now() });
         if (!demoUser) {
-            const hash = await bcrypt.hash('demo123', 10);
+            const hash = await hashPassword('demo123', 10);
             demoUser = await User.create({
                 username: 'demo_reviewer_' + Date.now(),
                 email: 'demo' + Date.now() + '@homedecor.com',
@@ -352,7 +358,7 @@ async function seedDefaultAdmin() {
             return;
         }
 
-        const hash = await bcrypt.hash('admin123', 10);
+        const hash = await hashPassword('admin123', 10);
         await User.create({
             username: 'admin',
             email: 'admin@homedecor.com',
@@ -444,7 +450,7 @@ app.post('/api/register', authLimiter, async (req, res) => {
             return res.status(400).json({ error: 'Username or email already exists' });
         }
 
-        const hash = await bcrypt.hash(password, 10);
+        const hash = await hashPassword(password, 10);
         const user = await User.create({
             username,
             email,
@@ -479,7 +485,7 @@ app.post('/api/login', authLimiter, async (req, res) => {
             return res.status(401).json({ error: 'Invalid username or password' });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await comparePassword(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ error: 'Invalid username or password' });
         }
@@ -1229,12 +1235,12 @@ app.put('/api/change-password', requireAuth, async (req, res) => {
         const user = await User.findById(req.session.userId);
         if (!user) return res.status(404).json({ error: 'User not found' });
 
-        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        const isMatch = await comparePassword(currentPassword, user.password);
         if (!isMatch) {
             return res.status(401).json({ error: 'Current password is incorrect' });
         }
 
-        const hash = await bcrypt.hash(newPassword, 10);
+        const hash = await hashPassword(newPassword, 10);
         user.password = hash;
         user.updated_at = new Date();
         await user.save();

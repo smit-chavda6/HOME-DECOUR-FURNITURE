@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');
+const hashPassword = (password, rounds = 10) => new Promise((resolve, reject) => {
+    bcryptjs.hash(password, rounds, (err, hash) => err ? reject(err) : resolve(hash));
+});
 try { require('dotenv').config(); } catch {}
 
 const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/home-decor-furniture';
@@ -52,7 +55,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
             // Get or create a test user
             let testUser = await User.findOne({ username: 'testuser' });
             if (!testUser) {
-                const hash = await bcrypt.hash('testuser123', 10);
+                const hash = await hashPassword('testuser123', 10);
                 testUser = await User.create({
                     username: 'testuser',
                     email: 'testuser@homedecor.com',
