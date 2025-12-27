@@ -9,6 +9,8 @@ const cors = require('cors');
 const fs = require('fs');
 const multer = require('multer');
 const rateLimit = require('express-rate-limit');
+// Ensure fetch is available in all Node runtimes (fallback for Node < 18)
+const fetch = global.fetch || ((...args) => import('node-fetch').then(({ default: f }) => f(...args)));
 
 const app = express();
 const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
