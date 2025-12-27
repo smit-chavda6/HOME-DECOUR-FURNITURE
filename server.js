@@ -1264,7 +1264,14 @@ function startServer(port) {
     });
 }
 
-startServer(DEFAULT_PORT);
+// On Vercel (@vercel/node) we must export the Express app instead of binding to a port.
+// Only start the HTTP listener when running outside Vercel (e.g., local dev).
+if (!process.env.VERCEL) {
+    startServer(DEFAULT_PORT);
+}
+
+// Export for Vercel serverless handler
+module.exports = app;
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
