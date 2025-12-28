@@ -321,8 +321,14 @@ function addToCart() {
         id: currentProduct.id || currentProduct._id,
         name: currentProduct.name,
         price: currentProduct.price,
-        image: currentProduct.image,
-        quantity: quantity
+        // Use product image if available; otherwise fall back for 3D models
+        image: (currentProduct.image && String(currentProduct.image).trim())
+            ? currentProduct.image
+            : (currentProduct.is_3d ? "image/Logo maker project.webp" : "image/Logo maker project.webp"),
+        quantity: quantity,
+        // Preserve 3D flags and source so checkout can render appropriate thumbnails
+        is_3d: !!currentProduct.is_3d,
+        model_src: currentProduct.model_src || null
     };
     
     let cart = JSON.parse(localStorage.getItem("cart") || "[]");

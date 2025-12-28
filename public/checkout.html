@@ -4,227 +4,921 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Checkout - HOME DECOR FURNITURE</title>
-  <meta name="description" content="Secure checkout for Home Decor Furniture — review your cart, enter shipping, and pay safely." />
+  <meta name="description" content="4-step secure checkout" />
   <meta name="theme-color" content="#8B4513" />
   <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico" />
-  <link rel="icon" type="image/png" sizes="16x16" href="image/Logo maker project.webp" />
-  <link rel="icon" type="image/png" sizes="32x32" href="image/Logo maker project.webp" />
-  <link rel="apple-touch-icon" sizes="180x180" href="image/Logo maker project.webp" />
-  <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="CSS/style.css" />
-  <link rel="stylesheet" href="CSS/cart-popup.css" />
   <link rel="stylesheet" href="CSS/dark-mode.css" />
-  <link rel="stylesheet" href="CSS/checkout.css" />
   <link rel="stylesheet" href="CSS/animations.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: #f5f5f5; }
+    body.dark-mode { background: #0f0f11; }
+
+    .checkout-wrapper { max-width: 800px; margin: 0 auto; padding: 20px; min-height: 100vh; }
+
+    /* NAVBAR */
+    .navbar { background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 15px 0; position: sticky; top: 0; z-index: 100; }
+    body.dark-mode .navbar { background: #1a1a1a; }
+    .navbar-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; gap: 15px; justify-content: space-between; }
+    .navbar-logo { height: 40px; width: auto; }
+    .navbar-name { font-size: 16px; font-weight: 600; color: #333; }
+    body.dark-mode .navbar-name { color: #e0e0e0; }
+
+    /* THEME TOGGLE */
+    .theme-toggle { border: 1px solid #ddd; background: white; color: #333; padding: 10px 14px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: all 0.25s; }
+    body.dark-mode .theme-toggle { border-color: #444; background: #0f0f11; color: #e0e0e0; }
+    .theme-toggle:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+
+    /* PROGRESS BAR */
+    .progress-container { margin-bottom: 40px; position: sticky; top: 64px; z-index: 90; padding: 10px 0; background: inherit; border-bottom: 1px solid rgba(0,0,0,0.08); }
+    /* Light mode glassy blur under sticky steps */
+    body:not(.dark-mode) .progress-container {
+      background: rgba(255,255,255,0.65);
+      -webkit-backdrop-filter: saturate(1.2) blur(8px);
+      backdrop-filter: saturate(1.2) blur(8px);
+    }
+    body.dark-mode .progress-container { border-bottom-color: #222; background: #0f0f11; }
+
+    /* STICKY ORDER SUMMARY */
+    .sticky-order-summary { position: sticky; top: 140px; z-index: 89; padding: 14px 18px; background: rgba(255,255,255,0.65); border-radius: 10px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.08); display: none; -webkit-backdrop-filter: saturate(1.2) blur(8px); backdrop-filter: saturate(1.2) blur(8px); }
+    .sticky-order-summary.visible { display: block; }
+    body.dark-mode .sticky-order-summary { background: #1a1a1a; border-color: #333; box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+    .sticky-summary-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #999; margin-bottom: 10px; }
+    .sticky-summary-items { display: flex; flex-direction: column; gap: 10px; max-height: 180px; overflow-y: auto; scrollbar-width: thin; margin-bottom: 12px; }
+    .sticky-summary-items::-webkit-scrollbar { width: 4px; }
+    .sticky-summary-items::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 2px; }
+    .sticky-summary-items::-webkit-scrollbar-thumb { background: rgba(139,69,19,0.3); border-radius: 2px; }
+    body.dark-mode .sticky-summary-items::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+    body.dark-mode .sticky-summary-items::-webkit-scrollbar-thumb { background: rgba(139,69,19,0.5); }
+    .sticky-summary-item { display: flex; align-items: center; gap: 10px; }
+    .sticky-summary-item-img { width: 45px; height: 45px; flex-shrink: 0; border-radius: 6px; background: #eee; background-size: cover; background-position: center; }
+    body.dark-mode .sticky-summary-item-img { background-color: #0f0f11; }
+    .sticky-summary-item-info { flex: 1; min-width: 0; }
+    .sticky-summary-item-name { font-size: 12px; font-weight: 600; color: #333; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 2px; }
+    body.dark-mode .sticky-summary-item-name { color: #e0e0e0; }
+    .sticky-summary-item-qty { font-size: 10px; color: #999; }
+    .sticky-summary-total { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.08); }
+    body.dark-mode .sticky-summary-total { border-top-color: #333; }
+    .sticky-summary-total-label { font-size: 13px; font-weight: 600; color: #333; }
+    body.dark-mode .sticky-summary-total-label { color: #e0e0e0; }
+    .sticky-summary-total-amount { font-size: 17px; font-weight: 700; color: #8B4513; }
+    .progress-title { font-size: 12px; font-weight: 600; color: #999; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+    .progress-steps { display: flex; gap: 0; align-items: center; }
+    .progress-step { flex: 1; display: flex; align-items: center; gap: 10px; }
+    .progress-step-circle { width: 40px; height: 40px; border-radius: 50%; background: #e0e0e0; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #666; font-size: 14px; flex-shrink: 0; transition: all 0.3s; }
+    .progress-step.active .progress-step-circle { background: #8B4513; color: white; box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3); }
+    .progress-step.completed .progress-step-circle { background: #4CAF50; color: white; }
+    .progress-step-label { font-size: 12px; font-weight: 500; color: #666; }
+    body.dark-mode .progress-step-label { color: #999; }
+    .progress-line { flex: 1; height: 2px; background: #e0e0e0; margin: 0 5px; transition: all 0.3s; }
+    .progress-step.completed .progress-line { background: #4CAF50; }
+
+    /* CARD */
+    .checkout-card { background: white; border-radius: 12px; padding: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    body.dark-mode .checkout-card { background: #1a1a1a; }
+
+    /* STEP CONTENT */
+    .step-content { display: none; animation: fadeIn 0.5s ease-out; }
+    .step-content.active { display: block; }
+    .step-title { font-size: 28px; font-weight: 700; margin-bottom: 10px; color: #333; }
+    body.dark-mode .step-title { color: #e0e0e0; }
+    .step-subtitle { font-size: 14px; color: #999; margin-bottom: 30px; }
+
+    /* FORM STYLES */
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #333; }
+    body.dark-mode .form-label { color: #e0e0e0; }
+    .form-input, .form-select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; background: white; color: #333; transition: all 0.3s; }
+    body.dark-mode .form-input, body.dark-mode .form-select { background: #0f0f11; color: #e0e0e0; border-color: #333; }
+    .form-input:focus, .form-select:focus { outline: none; border-color: #8B4513; box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1); }
+    .form-input.error { border-color: #ff3333; }
+    .form-error { color: #ff3333; font-size: 12px; margin-top: 4px; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .form-row.full { grid-template-columns: 1fr; }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+    /* RADIO/CHECKBOX OPTIONS */
+    .option-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 15px; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 10px; cursor: pointer; transition: all 0.3s; }
+    body.dark-mode .option-item { border-color: #333; }
+    .option-item:hover { border-color: #8B4513; background: #f9f9f9; }
+    body.dark-mode .option-item:hover { background: #0f0f11; }
+    .option-item.selected { border-color: #8B4513; background: rgba(139, 69, 19, 0.05); }
+    .option-input { width: 18px; height: 18px; margin-top: 2px; accent-color: #8B4513; cursor: pointer; }
+    .option-content { flex: 1; }
+    .option-title { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 2px; }
+    body.dark-mode .option-title { color: #e0e0e0; }
+    .option-desc { font-size: 12px; color: #999; }
+    .option-price { font-weight: 600; color: #8B4513; margin-left: auto; }
+
+    /* CART SUMMARY */
+    .cart-summary { background: #f9f9f9; padding: 20px; border-radius: 6px; margin-bottom: 30px; }
+    body.dark-mode .cart-summary { background: #0f0f11; }
+    .cart-items { max-height: 200px; overflow-y: auto; margin-bottom: 15px; }
+    .cart-item { display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #ddd; }
+    body.dark-mode .cart-item { border-color: #333; }
+    .cart-item-img { width: 50px; height: 50px; background: #ddd; border-radius: 4px; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-size: 12px; font-weight: 600; color: #333; }
+    body.dark-mode .cart-item-name { color: #e0e0e0; }
+    .cart-item-qty { font-size: 11px; color: #999; }
+    .cart-item-price { font-size: 12px; font-weight: 600; color: #8B4513; }
+
+    .price-breakdown { display: flex; flex-direction: column; gap: 8px; font-size: 13px; padding-top: 15px; border-top: 1px solid #ddd; }
+    body.dark-mode .price-breakdown { border-top-color: #333; }
+    .price-row { display: flex; justify-content: space-between; }
+    .price-row.total { font-weight: 700; font-size: 16px; color: #8B4513; }
+
+    /* BUTTONS */
+    .button-group { display: flex; gap: 15px; margin-top: 30px; }
+    .btn { padding: 12px 24px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+    .btn-primary { background: #8B4513; color: white; flex: 1; }
+    .btn-primary:hover { background: #6d3510; box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-secondary { background: white; color: #8B4513; border: 2px solid #8B4513; }
+    body.dark-mode .btn-secondary { background: transparent; }
+    .btn-secondary:hover { background: rgba(139, 69, 19, 0.05); }
+
+    /* CONFIRMATION */
+    .confirmation { display: none; text-align: center; padding: 40px 20px; }
+    .confirmation.active { display: block; animation: fadeIn 0.6s ease-out; }
+    .confirmation-icon { width: 80px; height: 80px; background: #4CAF50; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 40px; animation: scaleIn 0.5s ease-out; }
+    .confirmation-title { font-size: 24px; font-weight: 700; color: #333; margin-bottom: 10px; }
+    body.dark-mode .confirmation-title { color: #e0e0e0; }
+    .confirmation-text { color: #999; margin-bottom: 15px; }
+    .order-id { font-size: 14px; background: #f9f9f9; padding: 12px; border-radius: 6px; margin: 20px 0; font-weight: 600; font-family: monospace; }
+    body.dark-mode .order-id { background: #0f0f11; }
+
+    /* TOAST NOTIFICATIONS */
+    .toast-container { position: fixed; top: 76px; right: 16px; z-index: 999; display: flex; flex-direction: column; gap: 10px; }
+    .toast { min-width: 260px; max-width: 360px; padding: 12px 14px; border-radius: 10px; box-shadow: 0 6px 22px rgba(0,0,0,0.15); font-size: 14px; font-weight: 600; color: #333; background: #ffffff; border: 1px solid #eee; transform: translateY(-6px); opacity: 0; transition: all 0.25s ease; }
+    .toast.visible { transform: translateY(0); opacity: 1; }
+    .toast-error { border-color: #ffcccc; background: #fff6f6; color: #a10000; }
+    .toast-success { border-color: #c8e6c9; background: #f1fff1; color: #0f6a12; }
+    .toast-info { border-color: #bbdefb; background: #f3faff; color: #0d47a1; }
+    body.dark-mode .toast { background: #1a1a1a; color: #e0e0e0; border-color: #333; box-shadow: 0 6px 22px rgba(0,0,0,0.35); }
+    body.dark-mode .toast-error { background: #2a1010; border-color: #5c1f1f; color: #ffb3b3; }
+    body.dark-mode .toast-success { background: #0f2a12; border-color: #245027; color: #a6e3ae; }
+    body.dark-mode .toast-info { background: #0f1f2a; border-color: #27455e; color: #9cc7ff; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+  </style>
 </head>
-<body class="checkout-page-only">
+<body>
   <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode" hidden>
+    <svg id="themeIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M21.64 13a1 1 0 0 0-1.05-.14A8 8 0 1 1 11.14 3.41a1 1 0 0 0-.14-1.05 1 1 0 0 0-1.09-.33A10 10 0 1 0 22 14.09a1 1 0 0 0-.36-1.09z"/>
+    </svg>
+  </button>
   <nav class="navbar">
     <div class="navbar-container">
-      <div class="navbar-brand" role="banner" aria-label="HOME DECOR FURNITURE">
-        <img src="image/Logo maker project.webp" alt="Home Decor Furniture Logo" class="navbar-logo" loading="lazy" />
-        <h1 class="navbar-name">HOME DECOR FURNITURE</h1>
-      </div>
+      <img src="image/Logo maker project.webp" alt="Logo" class="navbar-logo" />
+      <h1 class="navbar-name">HOME DECOR FURNITURE</h1>
     </div>
   </nav>
 
-  <header class="checkout-hero animate-on-scroll slide-in-up">
-    <div class="container">
-      <div class="checkout-hero-inner">
-        <h1>Secure Checkout</h1>
-        <p>Review your items, add your details, and complete payment securely.</p>
+  <div class="checkout-wrapper">
+    <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+    <!-- PROGRESS BAR -->
+    <div class="progress-container">
+      <div class="progress-title">Step <span id="currentStep">1</span> of 4</div>
+      <div class="progress-steps">
+        <div class="progress-step active" data-step="1">
+          <div class="progress-step-circle">1</div>
+          <div class="progress-step-label">Cart</div>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="2">
+          <div class="progress-step-circle">2</div>
+          <div class="progress-step-label">Shipping</div>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="3">
+          <div class="progress-step-circle">3</div>
+          <div class="progress-step-label">Billing</div>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="4">
+          <div class="progress-step-circle">4</div>
+          <div class="progress-step-label">Payment</div>
+        </div>
       </div>
     </div>
-  </header>
 
-  <main class="checkout-page">
-    <div class="container">
-      <!-- Removed linear progress bar (using floating circular progress instead) -->
-      <div class="checkout-grid">
-        <section class="checkout-form-section animate-on-scroll slide-in-left">
-          <h2 class="section-title" data-step="Details">Shipping Details</h2>
-          <form id="checkoutForm" novalidate>
+    <!-- STICKY ORDER SUMMARY (Steps 2-4) -->
+    <div id="stickyOrderSummary" class="sticky-order-summary">
+      <div class="sticky-summary-title">Order Summary</div>
+      <div class="sticky-summary-items" id="stickySummaryItems"></div>
+      <div class="sticky-summary-total">
+        <span class="sticky-summary-total-label">Total</span>
+        <span class="sticky-summary-total-amount" id="stickyTotalAmount">₹0</span>
+      </div>
+    </div>
+
+    <!-- CARD CONTAINER -->
+    <div class="checkout-card">
+      <!-- STEP 1: CART -->
+      <div class="step-content active" data-step="1">
+        <h2 class="step-title">🛒 Review Your Cart</h2>
+        <p class="step-subtitle">Check your items before proceeding</p>
+        
+        <div class="cart-summary" id="cartSummary">
+          <div class="cart-items" id="cartItems"></div>
+          <div class="price-breakdown">
+            <div class="price-row">
+              <span>Subtotal</span>
+              <span id="summarySubtotal">₹0</span>
+            </div>
+            <div class="price-row">
+              <span>Shipping</span>
+              <span id="summaryShipping">₹0</span>
+            </div>
+            <div class="price-row">
+              <span>GST (18%)</span>
+              <span id="summaryGST">₹0</span>
+            </div>
+            <div class="price-row">
+              <span>Other Charges</span>
+              <span id="summaryOther">₹0</span>
+            </div>
+            <div class="price-row total">
+              <span>Total</span>
+              <span id="summaryTotal">₹0</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #f0f8ff; padding: 15px; border-radius: 6px; margin-bottom: 30px; border-left: 4px solid #2196F3;">
+          <p style="font-size: 12px; color: #333; margin: 0;">
+            <strong>💡 Tip:</strong> You can modify your cart from the <a href="index.html" style="color: #8B4513; text-decoration: none;">home page</a> before checkout.
+          </p>
+        </div>
+      </div>
+
+      <!-- STEP 2: SHIPPING -->
+      <div class="step-content" data-step="2">
+        <h2 class="step-title">📦 Shipping Address</h2>
+        <p class="step-subtitle">Where should we deliver?</p>
+        
+        <form id="shippingForm" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input type="text" class="form-input" name="fullName" placeholder="John Doe" required />
+              <div class="form-error"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email *</label>
+              <input type="email" class="form-input" name="email" placeholder="john@example.com" required />
+              <div class="form-error"></div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Phone *</label>
+              <input type="tel" class="form-input" name="phone" placeholder="+91 98765 43210" required />
+              <div class="form-error"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Country *</label>
+              <input type="text" class="form-input" name="country" value="India" required />
+              <div class="form-error"></div>
+            </div>
+          </div>
+
+          <div class="form-row full">
+            <div class="form-group">
+              <label class="form-label">Address Line 1 *</label>
+              <input type="text" class="form-input" name="address1" placeholder="House no., street" required />
+              <div class="form-error"></div>
+            </div>
+          </div>
+
+          <div class="form-row full">
+            <div class="form-group">
+              <label class="form-label">Address Line 2 (Optional)</label>
+              <input type="text" class="form-input" name="address2" placeholder="Landmark, area" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">City *</label>
+              <input type="text" class="form-input" name="city" placeholder="Mumbai" required />
+              <div class="form-error"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">State *</label>
+              <input type="text" class="form-input" name="state" placeholder="Maharashtra" required />
+              <div class="form-error"></div>
+            </div>
+          </div>
+
+          <div class="form-row full">
+            <div class="form-group">
+              <label class="form-label">PIN Code *</label>
+              <input type="text" class="form-input" name="postal" placeholder="400001" pattern="[0-9]{6}" required />
+              <div class="form-error"></div>
+            </div>
+          </div>
+
+          <div style="margin-top: 30px; margin-bottom: 20px;">
+            <label class="form-label">Delivery Method *</label>
+            <label class="option-item">
+              <input type="radio" class="option-input" name="shippingMethod" value="standard" checked onchange="updateShippingCost()" />
+              <div class="option-content">
+                <div class="option-title">Standard Delivery</div>
+                <div class="option-desc">3-5 business days • ₹199 (Free over ₹50,000)</div>
+              </div>
+            </label>
+            <label class="option-item">
+              <input type="radio" class="option-input" name="shippingMethod" value="express" onchange="updateShippingCost()" />
+              <div class="option-content">
+                <div class="option-title">Express Delivery</div>
+                <div class="option-desc">1-2 business days</div>
+              </div>
+              <div class="option-price">₹999</div>
+            </label>
+            <label class="option-item">
+              <input type="radio" class="option-input" name="shippingMethod" value="pickup" onchange="updateShippingCost()" />
+              <div class="option-content">
+                <div class="option-title">Store Pickup</div>
+                <div class="option-desc">Free • Pick up tomorrow</div>
+              </div>
+            </label>
+          </div>
+        </form>
+      </div>
+
+      <!-- STEP 3: BILLING -->
+      <div class="step-content" data-step="3">
+        <h2 class="step-title">💳 Billing Address</h2>
+        <p class="step-subtitle">Where should we send the invoice?</p>
+        
+        <label class="option-item">
+          <input type="checkbox" class="option-input" id="sameAsShipping" checked onchange="toggleBillingForm()" />
+          <div class="option-content">
+            <div class="option-title">Same as shipping address</div>
+            <div class="option-desc">Use the address from previous step</div>
+          </div>
+        </label>
+
+        <div id="billingFormContainer" style="display: none; margin-top: 20px;">
+          <form id="billingForm" novalidate>
             <div class="form-row">
               <div class="form-group">
-                <label for="fullName">Full Name</label>
-                <input id="fullName" name="fullName" type="text" placeholder="Your full name" required autocomplete="name" />
+                <label class="form-label">Full Name *</label>
+                <input type="text" class="form-input" name="fullName" placeholder="John Doe" />
+                <div class="form-error"></div>
               </div>
               <div class="form-group">
-                <label for="email">Email</label>
-                <input id="email" name="email" type="email" placeholder="you@example.com" required autocomplete="email" />
+                <label class="form-label">Email *</label>
+                <input type="email" class="form-input" name="email" placeholder="john@example.com" />
+                <div class="form-error"></div>
               </div>
             </div>
+
+            <div class="form-row full">
+              <div class="form-group">
+                <label class="form-label">Address *</label>
+                <input type="text" class="form-input" name="address1" placeholder="House no., street" />
+                <div class="form-error"></div>
+              </div>
+            </div>
+
             <div class="form-row">
               <div class="form-group">
-                <label for="phone">Phone</label>
-                <input id="phone" name="phone" type="tel" placeholder="Your phone" autocomplete="tel" />
+                <label class="form-label">City *</label>
+                <input type="text" class="form-input" name="city" placeholder="Mumbai" />
+                <div class="form-error"></div>
               </div>
               <div class="form-group">
-                <label for="country">Country</label>
-                <input id="country" name="country" type="text" placeholder="Country" value="India" required autocomplete="country-name" />
+                <label class="form-label">State *</label>
+                <input type="text" class="form-input" name="state" placeholder="Maharashtra" />
+                <div class="form-error"></div>
               </div>
             </div>
-            <div class="form-row">
-              <div class="form-group full-width">
-                <label for="address1">Address Line 1</label>
-                <input id="address1" name="address1" type="text" placeholder="House no., street" required autocomplete="address-line1" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group full-width">
-                <label for="address2">Address Line 2 (optional)</label>
-                <input id="address2" name="address2" type="text" placeholder="Apartment, suite, landmark" autocomplete="address-line2" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="city">City</label>
-                <input id="city" name="city" type="text" placeholder="City" required autocomplete="address-level2" />
-              </div>
-              <div class="form-group">
-                <label for="state">State</label>
-                <input id="state" name="state" type="text" placeholder="State" required autocomplete="address-level1" />
-              </div>
-              <div class="form-group">
-                <label for="postal">PIN Code</label>
-                <input id="postal" name="postal" type="text" placeholder="PIN" required autocomplete="postal-code" />
-              </div>
-            </div>
-
-            <h2 class="section-title" data-step="Shipping" style="margin-top:10px">Shipping Method</h2>
-            <div class="shipping-methods" id="shippingMethods">
-              <label class="ship-option"><input type="radio" name="shippingMethod" value="standard" checked /> <span>Standard (3–5 days)</span><small class="cost">₹499 • Free over ₹50,000</small></label>
-              <label class="ship-option"><input type="radio" name="shippingMethod" value="express" /> <span>Express (1–2 days)</span><small class="cost">₹999</small></label>
-              <label class="ship-option"><input type="radio" name="shippingMethod" value="pickup" /> <span>Store Pickup</span><small class="cost">Free</small></label>
-            </div>
-            <p class="delivery-estimate" id="deliveryEstimate" aria-live="polite">Estimated delivery: 3–5 days</p>
-
-            <h2 class="section-title" data-step="Payment" style="margin-top:10px">Payment</h2>
-            <div class="payment-methods">
-              <label class="pay-option"><input type="radio" name="paymentMethod" value="cod" checked /> <span>Cash on Delivery</span></label>
-              <label class="pay-option"><input type="radio" name="paymentMethod" value="upi" /> <span>UPI</span></label>
-              <label class="pay-option"><input type="radio" name="paymentMethod" value="card" /> <span>Credit/Debit Card</span></label>
-            </div>
-
-            <div id="upiFields" class="payment-fields" hidden>
-              <div class="form-group full-width">
-                <label for="upiId">UPI ID</label>
-                <input id="upiId" name="upiId" type="text" placeholder="yourname@bank" autocomplete="off" />
-              </div>
-            </div>
-
-            <div id="cardFields" class="payment-fields" hidden>
-              <div class="form-row">
-                <div class="form-group full-width">
-                  <label for="cardNumber">Card Number</label>
-                  <input id="cardNumber" name="cardNumber" type="text" placeholder="1234 5678 9012 3456" maxlength="19" autocomplete="cc-number" inputmode="numeric" />
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="expiry">Expiry</label>
-                  <input id="expiry" name="expiry" type="text" placeholder="MM/YY" maxlength="5" autocomplete="cc-exp" inputmode="numeric" />
-                </div>
-                <div class="form-group">
-                  <label for="cvv">CVV</label>
-                  <div class="cvv-wrap">
-                    <input id="cvv" name="cvv" type="password" placeholder="***" maxlength="4" autocomplete="cc-csc" inputmode="numeric" />
-                    <button type="button" id="toggleCvv" class="cvv-toggle" aria-label="Show CVV">Show</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <button type="submit" id="placeOrderBtn" class="contact-send-btn contact-send-btn--primary place-order-btn">
-              <span class="contact-send-btn__content">
-                <span class="contact-send-btn__label">Place Order</span>
-                <span class="contact-send-btn__icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 2L11 13" />
-                    <path d="M22 2l-7 20-4-9-9-4 20-7z" />
-                  </svg>
-                </span>
-              </span>
-            </button>
-            <!-- Review sentinel no longer needed for linear progress; removed -->
           </form>
-        </section>
+        </div>
+      </div>
 
-        <aside class="order-summary animate-on-scroll slide-in-right">
-          <h2 class="section-title">Order Summary</h2>
-          <div id="summaryItems" class="summary-items"></div>
-          <div class="promo-apply">
-            <label for="promoCode">Promo Code</label>
-            <div class="promo-row">
-              <input id="promoCode" name="promoCode" type="text" placeholder="SAVE10 or NEWYEAR15" aria-describedby="promoHelp" />
-              <button id="applyPromoBtn" type="button" class="btn btn-secondary">Apply</button>
+      <!-- STEP 4: PAYMENT -->
+      <div class="step-content" data-step="4">
+        <h2 class="step-title">💰 Payment Method</h2>
+        <p class="step-subtitle">Choose how you want to pay</p>
+
+        <div style="margin-bottom: 30px;">
+          <label class="option-item">
+            <input type="radio" class="option-input" name="paymentMethod" value="upi" onchange="selectPayment('upi')" />
+            <div class="option-content">
+              <div class="option-title">UPI / Mobile Wallet</div>
+              <div class="option-desc">Google Pay • PhonePe • Paytm • BHIM</div>
             </div>
-            <small id="promoHelp" class="promo-help">Eligible codes: SAVE10 (10%), NEWYEAR15 (15%), FREESHIP.</small>
+          </label>
+
+          <label class="option-item">
+            <input type="radio" class="option-input" name="paymentMethod" value="card" onchange="selectPayment('card')" />
+            <div class="option-content">
+              <div class="option-title">Credit / Debit Card</div>
+              <div class="option-desc">Visa • MasterCard • RuPay</div>
+            </div>
+          </label>
+
+          <label class="option-item">
+            <input type="radio" class="option-input" name="paymentMethod" value="netbanking" onchange="selectPayment('netbanking')" />
+            <div class="option-content">
+              <div class="option-title">Net Banking</div>
+              <div class="option-desc">All major banks supported</div>
+            </div>
+          </label>
+
+          <label class="option-item">
+            <input type="radio" class="option-input" name="paymentMethod" value="cod" onchange="selectPayment('cod')" />
+            <div class="option-content">
+              <div class="option-title">Cash on Delivery</div>
+              <div class="option-desc">Pay when you receive your order</div>
+            </div>
+          </label>
+        </div>
+
+        <!-- UPI FORM -->
+        <form id="upiPayment" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">UPI ID *</label>
+            <input type="text" class="form-input" placeholder="yourname@upi" required />
+            <div class="form-error"></div>
           </div>
-          <div class="summary-totals">
-            <div class="row"><span>Subtotal</span><strong id="subtotal">₹0</strong></div>
-            <div class="row"><span>Shipping</span><strong id="shipping">₹0</strong></div>
-            <div class="row"><span>Tax</span><strong id="tax">₹0</strong></div>
-            <div class="row discount" id="discountRow" hidden><span>Discount</span><strong id="discount">−₹0</strong></div>
-            <div class="row total"><span>Total</span><strong id="grandTotal">₹0</strong></div>
+        </form>
+
+        <!-- CARD FORM -->
+        <form id="cardPayment" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">Cardholder Name *</label>
+            <input type="text" class="form-input" placeholder="John Doe" required />
           </div>
-          <p class="summary-note">Prices include all applicable taxes. Free delivery over ₹50,000.</p>
-        </aside>
+          <div class="form-group">
+            <label class="form-label">Card Number *</label>
+            <input type="text" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19" required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Expiry Date *</label>
+              <input type="text" class="form-input" placeholder="MM/YY" maxlength="5" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">CVV *</label>
+              <input type="password" class="form-input" placeholder="***" maxlength="4" required />
+            </div>
+          </div>
+        </form>
+
+        <!-- NET BANKING FORM -->
+        <form id="netBankingPayment" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">Select Your Bank *</label>
+            <select class="form-select" required>
+              <option value="">-- Choose Bank --</option>
+              <option value="sbi">State Bank of India</option>
+              <option value="hdfc">HDFC Bank</option>
+              <option value="icici">ICICI Bank</option>
+              <option value="axis">Axis Bank</option>
+            </select>
+          </div>
+        </form>
+
+        <!-- COD INFO -->
+        <div id="codPayment" style="display: none; background: #f0f8ff; padding: 20px; border-radius: 6px; border-left: 4px solid #2196F3;">
+          <p style="font-size: 13px; color: #333; line-height: 1.6; margin: 0;">
+            <strong>✓ Cash on Delivery Selected</strong><br/>
+            You will pay the full amount (₹<span id="codAmount">0</span>) when your order arrives at your doorstep.<br/>
+            <small style="color: #999;">Available in select areas. Delivery may take 5-7 business days.</small>
+          </p>
+        </div>
+      </div>
+
+      <!-- CONFIRMATION -->
+      <div class="confirmation" id="confirmationStep">
+        <div class="confirmation-icon">✓</div>
+        <h2 class="confirmation-title">Order Confirmed!</h2>
+        <p class="confirmation-text">Thank you for your purchase</p>
+        <div class="order-id" id="orderId"></div>
+        <p class="confirmation-text" style="font-size: 13px;">A confirmation email has been sent to your email address.</p>
+        <div class="button-group" style="margin-top: 30px;">
+          <button class="btn btn-secondary" onclick="continueShopping()">← Continue Shopping</button>
+          <button class="btn btn-primary" onclick="viewOrder()">View My Orders →</button>
+        </div>
+      </div>
+
+      <!-- NAVIGATION BUTTONS -->
+      <div class="button-group" id="navigationButtons">
+        <button class="btn btn-secondary" id="backBtn" onclick="previousStep()" style="display: none;">← Back</button>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">Continue →</button>
       </div>
     </div>
-
-    <div class="checkout-success" id="checkoutSuccess" aria-hidden="true">
-      <div class="success-backdrop"></div>
-      <div class="success-dialog" role="dialog" aria-modal="true" aria-labelledby="successTitle" aria-describedby="successText">
-        <button id="successCloseBtn" class="success-close" aria-label="Close">
-          &times;
-        </button>
-        <div class="success-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
-        </div>
-        <h3 id="successTitle" class="success-title">Order Confirmed</h3>
-        <p id="successText" class="success-message">Thank you for your purchase!</p>
-        <div class="success-actions">
-          <a id="successContinueBtn" class="btn btn-primary" href="index.html">Continue Shopping</a>
-          <button id="successPrintBtn" class="btn btn-secondary" type="button">Print Receipt</button>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Floating circular checkout progress -->
-  <div class="checkout-progress-fab" role="progressbar" aria-label="Checkout progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-    <svg viewBox="0 0 44 44" class="progress-ring" aria-hidden="true">
-      <circle class="ring-bg" cx="22" cy="22" r="20" />
-      <circle class="ring-fg" cx="22" cy="22" r="20" />
-    </svg>
-    <span class="progress-text">0%</span>
   </div>
 
-  <!-- Cart Popup Modal (shared) -->
-  <div id="cartPopupOverlay" class="cart-popup-overlay">
-    <div class="cart-popup">
-      <div class="cart-popup-header">
-        <h3>🛒 Your Cart</h3>
-        <button id="closeCartBtn" class="close-cart-btn" aria-label="Close cart">&times;</button>
-      </div>
-      <div id="cartItemsContainer" class="cart-items-container"></div>
-      <div class="cart-popup-footer">
-        <div class="cart-total">
-          <span>Total:</span>
-          <span id="cartTotalPrice">₹0</span>
-        </div>
-        <div class="cart-actions">
-          <button id="continueShoppingBtn" class="btn btn-secondary">Continue Shopping</button>
-          <button id="proceedToCheckoutBtn" class="btn btn-primary">Proceed to Checkout</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <script>
+    let currentStepNum = 1;
+    const totalSteps = 4;
+    // Theme handled globally via js/app.js using 'hdf-theme'
+    let checkoutData = {
+      shipping: {},
+      billing: {},
+      payment: {},
+      cart: [],
+      shippingCost: 0,
+      gstRate: 0.18,
+      otherCharge: 0
+    };
 
-  <script src="js/app.js"></script>
-  <script src="js/cart-popup.js"></script>
-  <script src="js/animations.js"></script>
-  <script src="js/checkout.js"></script>
+    // (Theme toggle is initialized by js/app.js)
+
+    // LOAD CART
+    function loadCart() {
+      try {
+        const stored = localStorage.getItem('cart');
+        checkoutData.cart = stored ? JSON.parse(stored) : [];
+      } catch {
+        checkoutData.cart = [];
+      }
+      populateCart();
+    }
+
+    // POPULATE CART
+    function populateCart() {
+      const container = document.getElementById('cartItems');
+      if (checkoutData.cart.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">Your cart is empty</p>';
+        return;
+      }
+
+      // Resolve image for each item, including 3D products
+      function resolveItemImage(item) {
+        if (item && item.image && String(item.image).trim()) return item.image;
+        if (item && (item.is_3d || item.model_src)) return 'image/Logo maker project.webp';
+        return 'image/Logo maker project.webp';
+      }
+
+      container.innerHTML = checkoutData.cart.map(item => {
+        const img = resolveItemImage(item);
+        return `
+        <div class="cart-item">
+          <div class="cart-item-img" style="background-image: url('${img}'); background-size: cover; background-position: center;"></div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-qty">Qty: ${item.quantity}</div>
+          </div>
+          <div class="cart-item-price">₹${(item.price * item.quantity).toLocaleString()}</div>
+        </div>
+        `;
+      }).join('');
+
+      updatePriceSummary();
+    }
+
+    // TOAST
+    function showToast(message, type = 'error') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.setAttribute('role', 'alert');
+      toast.textContent = message;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.add('visible'));
+      setTimeout(() => {
+        toast.classList.remove('visible');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // UPDATE STICKY ORDER SUMMARY
+    function updateStickySummary() {
+      const stickyItems = document.getElementById('stickySummaryItems');
+      const stickyTotal = document.getElementById('stickyTotalAmount');
+      
+      if (stickyItems) {
+        // Reuse the same resolver used in cart list
+        function resolveItemImage(item) {
+          if (item && item.image && String(item.image).trim()) return item.image;
+          if (item && (item.is_3d || item.model_src)) return 'image/Logo maker project.webp';
+          return 'image/Logo maker project.webp';
+        }
+
+        stickyItems.innerHTML = checkoutData.cart.map(item => {
+          const img = resolveItemImage(item);
+          return `
+          <div class="sticky-summary-item">
+            <div class="sticky-summary-item-img" style="background-image: url('${img}');"></div>
+            <div class="sticky-summary-item-info">
+              <div class="sticky-summary-item-name">${item.name || 'Product'}</div>
+              <div class="sticky-summary-item-qty">Qty: ${item.quantity || 1}</div>
+            </div>
+          </div>
+          `;
+        }).join('');
+      }
+
+      const subtotal = checkoutData.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const gst = Math.round(subtotal * checkoutData.gstRate);
+      const other = checkoutData.otherCharge || 0;
+      const total = subtotal + checkoutData.shippingCost + gst + other;
+      
+      if (stickyTotal) {
+        stickyTotal.textContent = `₹${total.toLocaleString()}`;
+      }
+    }
+
+    // UPDATE PRICE SUMMARY
+    function updatePriceSummary() {
+      const subtotal = checkoutData.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const gst = Math.round(subtotal * checkoutData.gstRate);
+      const other = checkoutData.otherCharge || 0;
+      const total = subtotal + checkoutData.shippingCost + gst + other;
+
+      document.getElementById('summarySubtotal').textContent = `₹${subtotal.toLocaleString()}`;
+      const shippingEl = document.getElementById('summaryShipping');
+      if (shippingEl) shippingEl.textContent = `₹${checkoutData.shippingCost.toLocaleString()}`;
+      const gstEl = document.getElementById('summaryGST');
+      if (gstEl) gstEl.textContent = `₹${gst.toLocaleString()}`;
+      const otherEl = document.getElementById('summaryOther');
+      if (otherEl) otherEl.textContent = `₹${other.toLocaleString()}`;
+      document.getElementById('summaryTotal').textContent = `₹${total.toLocaleString()}`;
+      const codAmt = document.getElementById('codAmount');
+      if (codAmt) codAmt.textContent = total.toLocaleString();
+
+      updateStickySummary();
+    }
+
+    // UPDATE SHIPPING COST
+    function updateShippingCost() {
+      const method = document.querySelector('input[name="shippingMethod"]:checked')?.value;
+      const subtotal = checkoutData.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+      if (method === 'express') checkoutData.shippingCost = 999;
+      else if (method === 'pickup') checkoutData.shippingCost = 0;
+      else checkoutData.shippingCost = subtotal >= 50000 ? 0 : 199;
+
+      updatePriceSummary();
+    }
+
+    // TOGGLE BILLING FORM
+    function toggleBillingForm() {
+      const isChecked = document.getElementById('sameAsShipping').checked;
+      document.getElementById('billingFormContainer').style.display = isChecked ? 'none' : 'block';
+    }
+
+    // SELECT PAYMENT
+    function selectPayment(method) {
+      document.querySelectorAll('form[id$="Payment"]').forEach(form => form.style.display = 'none');
+
+      if (method === 'upi') document.getElementById('upiPayment').style.display = 'block';
+      else if (method === 'card') document.getElementById('cardPayment').style.display = 'block';
+      else if (method === 'netbanking') document.getElementById('netBankingPayment').style.display = 'block';
+      else if (method === 'cod') document.getElementById('codPayment').style.display = 'block';
+
+      checkoutData.payment.method = method;
+      // Example other charge: COD handling fee ₹49; otherwise ₹0
+      checkoutData.otherCharge = (method === 'cod') ? 49 : 0;
+      updatePriceSummary();
+    }
+
+    // VALIDATE INDIVIDUAL FIELD
+    function validateField(input) {
+      const errorEl = input.parentElement.querySelector('.form-error');
+      const value = input.value.trim();
+      let error = '';
+
+      if (input.hasAttribute('required') && !value) {
+        error = 'This field is required';
+      } else if (input.type === 'email' && value) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) error = 'Invalid email format';
+      } else if (input.type === 'tel' && value) {
+        const phoneRegex = /^[+]?[0-9\s-]{10,15}$/;
+        if (!phoneRegex.test(value)) error = 'Invalid phone number';
+      } else if (input.name === 'postal' && value) {
+        const postalRegex = /^[0-9]{6}$/;
+        if (!postalRegex.test(value)) error = 'PIN code must be 6 digits';
+      } else if (input.name === 'fullName' && value) {
+        if (value.length < 3) error = 'Name must be at least 3 characters';
+      }
+
+      if (error) {
+        input.classList.add('error');
+        if (errorEl) errorEl.textContent = error;
+        return false;
+      } else {
+        input.classList.remove('error');
+        if (errorEl) errorEl.textContent = '';
+        return true;
+      }
+    }
+
+    // VALIDATE FORM
+    function validateStep(step) {
+      if (step === 1) return checkoutData.cart.length > 0;
+      if (step === 2) {
+        const form = document.getElementById('shippingForm');
+        const inputs = form.querySelectorAll('input[required], select[required]');
+        let valid = true;
+        let firstErrorField = null;
+
+        inputs.forEach(input => {
+          if (!validateField(input)) {
+            valid = false;
+            if (!firstErrorField) firstErrorField = input;
+          }
+        });
+
+        if (valid) {
+          const formData = new FormData(form);
+          checkoutData.shipping = Object.fromEntries(formData);
+        } else if (firstErrorField) {
+          firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(() => firstErrorField.focus(), 300);
+        }
+        return valid;
+      }
+      if (step === 3) {
+        if (!document.getElementById('sameAsShipping').checked) {
+          const form = document.getElementById('billingForm');
+          const inputs = form.querySelectorAll('input[required]');
+          let valid = true;
+          let firstErrorField = null;
+
+          inputs.forEach(input => {
+            if (!validateField(input)) {
+              valid = false;
+              if (!firstErrorField) firstErrorField = input;
+            }
+          });
+
+          if (!valid && firstErrorField) {
+            firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => firstErrorField.focus(), 300);
+          }
+          return valid;
+        }
+        return true;
+      }
+      if (step === 4) {
+        if (!checkoutData.payment.method) {
+          showToast('Please select a payment method', 'error');
+          return false;
+        }
+        return true;
+      }
+      return true;
+    }
+
+    // NEXT STEP
+    function nextStep() {
+      if (!validateStep(currentStepNum)) {
+        showToast('Please fill all required fields', 'error');
+        return;
+      }
+
+      if (currentStepNum < totalSteps) {
+        currentStepNum++;
+        updateUI();
+      } else {
+        placeOrder();
+      }
+    }
+
+    // PREVIOUS STEP
+    function previousStep() {
+      if (currentStepNum > 1) {
+        currentStepNum--;
+        updateUI();
+      }
+    }
+
+    // UPDATE UI
+    function updateUI() {
+      document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+      document.querySelector(`.step-content[data-step="${currentStepNum}"]`).classList.add('active');
+
+      document.querySelectorAll('.progress-step').forEach(el => el.classList.remove('active', 'completed'));
+      for (let i = 1; i < currentStepNum; i++) {
+        document.querySelector(`.progress-step[data-step="${i}"]`).classList.add('completed');
+      }
+      document.querySelector(`.progress-step[data-step="${currentStepNum}"]`).classList.add('active');
+
+      document.getElementById('currentStep').textContent = currentStepNum;
+      document.getElementById('backBtn').style.display = currentStepNum > 1 ? 'block' : 'none';
+      document.getElementById('nextBtn').textContent = currentStepNum === totalSteps ? 'Place Order' : 'Continue →';
+
+      // Show sticky summary on steps 2-4
+      const stickySummary = document.getElementById('stickyOrderSummary');
+      if (stickySummary) {
+        if (currentStepNum >= 2 && currentStepNum <= 4) {
+          stickySummary.classList.add('visible');
+          updateStickySummary();
+        } else {
+          stickySummary.classList.remove('visible');
+        }
+      }
+    }
+
+    // PLACE ORDER
+    async function placeOrder() {
+      const btn = document.getElementById('nextBtn');
+      btn.disabled = true;
+      btn.textContent = 'Processing...';
+
+      try {
+        const payload = {
+          items: checkoutData.cart,
+          shipping: checkoutData.shipping,
+          payment: {
+            method: checkoutData.payment.method,
+            upiId: document.querySelector('#upiPayment input')?.value,
+            cardLast4: document.querySelector('#cardPayment input[maxlength="19"]')?.value?.slice(-4)
+          },
+          amounts: {
+            subtotal: checkoutData.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+            shipping: checkoutData.shippingCost,
+            tax: Math.round(checkoutData.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) * checkoutData.gstRate),
+            other: checkoutData.otherCharge,
+            total: (function(){
+              const s = checkoutData.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+              const g = Math.round(s * checkoutData.gstRate);
+              const o = checkoutData.otherCharge || 0;
+              return s + checkoutData.shippingCost + g + o;
+            })()
+          }
+        };
+
+        const res = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          localStorage.removeItem('cart');
+          document.getElementById('navigationButtons').style.display = 'none';
+          document.getElementById('orderId').textContent = `Order ID: ${data.orderId}`;
+          document.getElementById('confirmationStep').classList.add('active');
+          document.querySelectorAll('.step-content[data-step]').forEach(el => el.style.display = 'none');
+          // Mark step 4 as completed (green) in progress bar
+          document.querySelectorAll('.progress-step').forEach(el => el.classList.remove('active', 'completed'));
+          for (let i = 1; i <= 4; i++) {
+            const stepEl = document.querySelector(`.progress-step[data-step="${i}"]`);
+            if (stepEl) stepEl.classList.add('completed');
+          }
+        } else {
+          alert(data.error || 'Order placement failed');
+          btn.disabled = false;
+          btn.textContent = 'Place Order';
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+        btn.disabled = false;
+        btn.textContent = 'Place Order';
+      }
+    }
+
+    // NAVIGATION
+    function continueShopping() {
+      window.location.href = 'index.html';
+    }
+
+    function viewOrder() {
+      window.location.href = 'profile.html';
+    }
+
+    // REAL-TIME VALIDATION
+    function attachRealTimeValidation() {
+      const forms = [document.getElementById('shippingForm'), document.getElementById('billingForm')];
+      forms.forEach(form => {
+        if (!form) return;
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+          input.addEventListener('blur', () => validateField(input));
+          input.addEventListener('input', () => {
+            if (input.classList.contains('error')) validateField(input);
+          });
+        });
+      });
+    }
+
+    // INIT
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCart();
+      updateUI();
+      attachRealTimeValidation();
+    });
+  </script>
 </body>
+  <script src="js/app.js"></script>
 </html>

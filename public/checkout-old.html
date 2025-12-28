@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout - HOME DECOR FURNITURE</title>
+  <meta name="description" content="Secure checkout for Home Decor Furniture — review your cart, enter shipping, and pay safely." />
+  <meta name="theme-color" content="#8B4513" />
+  <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="16x16" href="image/Logo maker project.webp" />
+  <link rel="icon" type="image/png" sizes="32x32" href="image/Logo maker project.webp" />
+  <link rel="apple-touch-icon" sizes="180x180" href="image/Logo maker project.webp" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="CSS/style.css" />
+  <link rel="stylesheet" href="CSS/cart-popup.css" />
+  <link rel="stylesheet" href="CSS/dark-mode.css" />
+  <link rel="stylesheet" href="CSS/checkout.css" />
+  <link rel="stylesheet" href="CSS/animations.css" />
+</head>
+<body class="checkout-page-only">
+  <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
+  <nav class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand" role="banner" aria-label="HOME DECOR FURNITURE">
+        <img src="image/Logo maker project.webp" alt="Home Decor Furniture Logo" class="navbar-logo" loading="lazy" />
+        <h1 class="navbar-name">HOME DECOR FURNITURE</h1>
+      </div>
+    </div>
+  </nav>
+
+  <header class="checkout-hero animate-on-scroll slide-in-up">
+    <div class="container">
+      <div class="checkout-hero-inner">
+        <h1>Secure Checkout</h1>
+        <p>Review your items, add your details, and complete payment securely.</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="checkout-page">
+    <div class="container">
+      <!-- Removed linear progress bar (using floating circular progress instead) -->
+      <div class="checkout-grid">
+        <section class="checkout-form-section animate-on-scroll slide-in-left">
+          <h2 class="section-title" data-step="Details">Shipping Details</h2>
+          <form id="checkoutForm" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input id="fullName" name="fullName" type="text" placeholder="Your full name" required autocomplete="name" />
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="you@example.com" required autocomplete="email" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="phone">Phone</label>
+                <input id="phone" name="phone" type="tel" placeholder="Your phone" autocomplete="tel" />
+              </div>
+              <div class="form-group">
+                <label for="country">Country</label>
+                <input id="country" name="country" type="text" placeholder="Country" value="India" required autocomplete="country-name" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label for="address1">Address Line 1</label>
+                <input id="address1" name="address1" type="text" placeholder="House no., street" required autocomplete="address-line1" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group full-width">
+                <label for="address2">Address Line 2 (optional)</label>
+                <input id="address2" name="address2" type="text" placeholder="Apartment, suite, landmark" autocomplete="address-line2" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="city">City</label>
+                <input id="city" name="city" type="text" placeholder="City" required autocomplete="address-level2" />
+              </div>
+              <div class="form-group">
+                <label for="state">State</label>
+                <input id="state" name="state" type="text" placeholder="State" required autocomplete="address-level1" />
+              </div>
+              <div class="form-group">
+                <label for="postal">PIN Code</label>
+                <input id="postal" name="postal" type="text" placeholder="PIN" required autocomplete="postal-code" />
+              </div>
+            </div>
+
+            <h2 class="section-title" data-step="Shipping" style="margin-top:10px">Shipping Method</h2>
+            <div class="shipping-methods" id="shippingMethods">
+              <label class="ship-option"><input type="radio" name="shippingMethod" value="standard" checked /> <span>Standard (3–5 days)</span><small class="cost">₹499 • Free over ₹50,000</small></label>
+              <label class="ship-option"><input type="radio" name="shippingMethod" value="express" /> <span>Express (1–2 days)</span><small class="cost">₹999</small></label>
+              <label class="ship-option"><input type="radio" name="shippingMethod" value="pickup" /> <span>Store Pickup</span><small class="cost">Free</small></label>
+            </div>
+            <p class="delivery-estimate" id="deliveryEstimate" aria-live="polite">Estimated delivery: 3–5 days</p>
+
+            <h2 class="section-title" data-step="Payment" style="margin-top:10px">Payment</h2>
+            <div class="payment-methods">
+              <label class="pay-option"><input type="radio" name="paymentMethod" value="cod" checked /> <span>Cash on Delivery</span></label>
+              <label class="pay-option"><input type="radio" name="paymentMethod" value="upi" /> <span>UPI</span></label>
+              <label class="pay-option"><input type="radio" name="paymentMethod" value="card" /> <span>Credit/Debit Card</span></label>
+            </div>
+
+            <div id="upiFields" class="payment-fields" hidden>
+              <div class="form-group full-width">
+                <label for="upiId">UPI ID</label>
+                <input id="upiId" name="upiId" type="text" placeholder="yourname@bank" autocomplete="off" />
+              </div>
+            </div>
+
+            <div id="cardFields" class="payment-fields" hidden>
+              <div class="form-row">
+                <div class="form-group full-width">
+                  <label for="cardNumber">Card Number</label>
+                  <input id="cardNumber" name="cardNumber" type="text" placeholder="1234 5678 9012 3456" maxlength="19" autocomplete="cc-number" inputmode="numeric" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="expiry">Expiry</label>
+                  <input id="expiry" name="expiry" type="text" placeholder="MM/YY" maxlength="5" autocomplete="cc-exp" inputmode="numeric" />
+                </div>
+                <div class="form-group">
+                  <label for="cvv">CVV</label>
+                  <div class="cvv-wrap">
+                    <input id="cvv" name="cvv" type="password" placeholder="***" maxlength="4" autocomplete="cc-csc" inputmode="numeric" />
+                    <button type="button" id="toggleCvv" class="cvv-toggle" aria-label="Show CVV">Show</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" id="placeOrderBtn" class="contact-send-btn contact-send-btn--primary place-order-btn">
+              <span class="contact-send-btn__content">
+                <span class="contact-send-btn__label">Place Order</span>
+                <span class="contact-send-btn__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 2L11 13" />
+                    <path d="M22 2l-7 20-4-9-9-4 20-7z" />
+                  </svg>
+                </span>
+              </span>
+            </button>
+            <!-- Review sentinel no longer needed for linear progress; removed -->
+          </form>
+        </section>
+
+        <aside class="order-summary animate-on-scroll slide-in-right">
+          <h2 class="section-title">Order Summary</h2>
+          <div id="summaryItems" class="summary-items"></div>
+          <div class="promo-apply">
+            <label for="promoCode">Promo Code</label>
+            <div class="promo-row">
+              <input id="promoCode" name="promoCode" type="text" placeholder="SAVE10 or NEWYEAR15" aria-describedby="promoHelp" />
+              <button id="applyPromoBtn" type="button" class="btn btn-secondary">Apply</button>
+            </div>
+            <small id="promoHelp" class="promo-help">Eligible codes: SAVE10 (10%), NEWYEAR15 (15%), FREESHIP.</small>
+          </div>
+          <div class="summary-totals">
+            <div class="row"><span>Subtotal</span><strong id="subtotal">₹0</strong></div>
+            <div class="row"><span>Shipping</span><strong id="shipping">₹0</strong></div>
+            <div class="row"><span>Tax</span><strong id="tax">₹0</strong></div>
+            <div class="row discount" id="discountRow" hidden><span>Discount</span><strong id="discount">−₹0</strong></div>
+            <div class="row total"><span>Total</span><strong id="grandTotal">₹0</strong></div>
+          </div>
+          <p class="summary-note">Prices include all applicable taxes. Free delivery over ₹50,000.</p>
+        </aside>
+      </div>
+    </div>
+
+    <div class="checkout-success" id="checkoutSuccess" aria-hidden="true">
+      <div class="success-backdrop"></div>
+      <div class="success-dialog" role="dialog" aria-modal="true" aria-labelledby="successTitle" aria-describedby="successText">
+        <button id="successCloseBtn" class="success-close" aria-label="Close">
+          &times;
+        </button>
+        <div class="success-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <h3 id="successTitle" class="success-title">Order Confirmed</h3>
+        <p id="successText" class="success-message">Thank you for your purchase!</p>
+        <div class="success-actions">
+          <a id="successContinueBtn" class="btn btn-primary" href="index.html">Continue Shopping</a>
+          <button id="successPrintBtn" class="btn btn-secondary" type="button">Print Receipt</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Floating circular checkout progress -->
+  <div class="checkout-progress-fab" role="progressbar" aria-label="Checkout progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <svg viewBox="0 0 44 44" class="progress-ring" aria-hidden="true">
+      <circle class="ring-bg" cx="22" cy="22" r="20" />
+      <circle class="ring-fg" cx="22" cy="22" r="20" />
+    </svg>
+    <span class="progress-text">0%</span>
+  </div>
+
+  <!-- Cart Popup Modal (shared) -->
+  <div id="cartPopupOverlay" class="cart-popup-overlay">
+    <div class="cart-popup">
+      <div class="cart-popup-header">
+        <h3>🛒 Your Cart</h3>
+        <button id="closeCartBtn" class="close-cart-btn" aria-label="Close cart">&times;</button>
+      </div>
+      <div id="cartItemsContainer" class="cart-items-container"></div>
+      <div class="cart-popup-footer">
+        <div class="cart-total">
+          <span>Total:</span>
+          <span id="cartTotalPrice">₹0</span>
+        </div>
+        <div class="cart-actions">
+          <button id="continueShoppingBtn" class="btn btn-secondary">Continue Shopping</button>
+          <button id="proceedToCheckoutBtn" class="btn btn-primary">Proceed to Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script src="js/cart-popup.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>

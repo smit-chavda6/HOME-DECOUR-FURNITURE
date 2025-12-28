@@ -89,9 +89,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const title = card.querySelector('.product-title')?.textContent?.trim() || `Product ${id}`;
         const price = card.querySelector('.current-price')?.textContent?.trim() || '';
         const imgEl = card.querySelector('.product-image img');
-        const image = imgEl ? imgEl.getAttribute('src') : 'image/Logo maker project.webp';
+        const is3d = card.getAttribute('data-is-3d') === '1';
+        const modelSrc = card.getAttribute('data-model-src') || '';
+        const imageAttr = card.getAttribute('data-image');
+        const image = imgEl ? imgEl.getAttribute('src') : (imageAttr || '');
         const category = card.getAttribute('data-category') || '';
-        return { id, title, price, image, category };
+        return { id, title, price, image, category, is_3d: is3d, model_src: modelSrc };
     }
 
     function parsePriceToNumber(priceText) {
@@ -108,11 +111,23 @@ document.addEventListener('DOMContentLoaded', function() {
             wishlistEmptyEl.style.display = 'block';
         } else {
             wishlistEmptyEl.style.display = 'none';
+            const resolveThumb = (item) => {
+                const hasImage = item.image && String(item.image).trim().length > 0;
+                const is3d = !!item.is_3d || !!item.model_src;
+                if (hasImage) return { type: 'img', value: item.image };
+                if (is3d) return { type: 'badge', value: '3D Model' };
+                return { type: 'img', value: 'image/Logo maker project.webp' };
+            };
             const html = items.map(item => `
                 <div class="wishlist-item" data-product-id="${item.id}">
-                    <div class="wishlist-thumb">
-                        <img src="${item.image}" alt="${item.title}" loading="lazy"/>
-                    </div>
+                    ${(() => {
+                        const thumb = resolveThumb(item);
+                        if (thumb.type === 'img') {
+                            const src = thumb.value;
+                            return `<div class=\"wishlist-thumb\"><img src=\"${src}\" alt=\"${item.title}\" loading=\"lazy\" onerror=\"this.onerror=null;this.src='image/Logo maker project.webp';\"/></div>`;
+                        }
+                        return `<div class=\"wishlist-thumb wishlist-thumb-3d\" aria-label=\"3D model\">3D Model</div>`;
+                    })()}
                     <div class="wishlist-meta">
                         <a class="wishlist-title" href="product-details.html?id=${item.id}">${item.title}</a>
                         ${item.price ? `<div class="wishlist-price">${item.price}</div>` : ''}
@@ -761,6 +776,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     <img src="${p.image || 'image/Logo maker project.webp'}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='image/Logo maker project.webp';">
                 `;
                 if (existing) {
+                    existing.setAttribute('data-is-3d', p.is_3d ? '1' : '0');
+                    existing.setAttribute('data-model-src', p.model_src || '');
+                    if (p.image) existing.setAttribute('data-image', p.image); else existing.removeAttribute('data-image');
                     // Update existing static card with latest DB data
                     existing.setAttribute('data-category', p.category || '');
                     if (p.brand) existing.setAttribute('data-brand', p.brand); else existing.removeAttribute('data-brand');
@@ -791,6 +809,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     card.className = 'product-card' + (p.is_3d ? ' product-card-3d' : '');
                     card.setAttribute('data-category', p.category || '');
                     card.setAttribute('data-product-id', p.id);
+                    card.setAttribute('data-is-3d', p.is_3d ? '1' : '0');
+                    card.setAttribute('data-model-src', p.model_src || '');
+                    if (p.image) card.setAttribute('data-image', p.image);
                     if (p.brand) card.setAttribute('data-brand', p.brand);
                     if (p.material) card.setAttribute('data-material', p.material);
                     card.innerHTML = `
@@ -1141,7 +1162,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         id: String(data.id),
                         name: data.title,
                         price: parsePriceToNumber(data.price),
-                        image: data.image
+                        image: (data.image && String(data.image).trim()) ? data.image : (data.is_3d || data.model_src ? 'image/Logo maker project.webp' : 'image/Logo maker project.webp'),
+                        is_3d: !!data.is_3d,
+                        model_src: data.model_src || ''
                     };
                     if (window.cartPopupSystem && typeof window.cartPopupSystem.addToCartFromProductDetails === 'function') {
                         window.cartPopupSystem.addToCartFromProductDetails(product, 1);
