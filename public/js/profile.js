@@ -504,12 +504,13 @@
     });
   }
 
-  // Handle URL hash to open My Orders modal on page load
+  // Handle URL hash to open Orders/Reviews modal on page load
   async function handleHashNavigation() {
-    if (window.location.hash === '#my-orders') {
+    const hash = window.location.hash;
+    if (hash === '#my-orders' || hash === '#my-reviews') {
       if (ordersReviewsModal) {
         ordersReviewsModal.classList.add('active');
-        showTab('orders');
+        showTab(hash === '#my-reviews' ? 'reviews' : 'orders');
         if (!ordersLoaded) { await loadOrders(); ordersLoaded = true; }
         if (!reviewsLoaded) { await loadReviews(); reviewsLoaded = true; }
       }
