@@ -281,16 +281,27 @@ function initializeEventListeners() {
     }
     
     if (viewInRoomBtn) {
-        viewInRoomBtn.addEventListener("click", () => {
+        viewInRoomBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (!currentProduct || !currentProduct.model_src) {
+                if (window.cartPopupSystem) {
+                    window.cartPopupSystem.showNotification("3D model not available for this product", "warning");
+                } else {
+                    alert("3D model not available for this product");
+                }
+                return;
+            }
             const modelViewer = document.querySelector("model-viewer");
             if (modelViewer && modelViewer.canActivateAR) {
                 try {
                     modelViewer.activateAR();
+                    return;
                 } catch (e) {
-                    console.error("AR not supported:", e);
-                    alert("Augmented Reality is not supported on your device");
+                    console.warn("AR activation failed, falling back to modal:", e);
                 }
             }
+            // Fallback: open modal with 3D viewer
+            showProductARExperience(currentProduct.name || "Product", String(currentProduct.model_src).replace(/\s/g, "%20"), currentProduct.id || currentProduct._id);
         });
     }
 }
@@ -400,6 +411,95 @@ function showProductNotFound(message) {
     if (container) {
         container.innerHTML = `<div style="text-align:center;padding:60px 20px;min-height:60vh;display:flex;align-items:center;justify-content:center;"><div><h1 style="color:#D2691E;margin-bottom:20px;font-size:48px;"> Product Not Found</h1><p style="margin-bottom:30px;font-size:18px;color:#666;">${message}</p><a href="gallery.html" style="display:inline-block;padding:12px 30px;background:#D2691E;color:white;text-decoration:none;border-radius:8px;font-weight:600;">Back to Gallery</a></div></div>`;
     }
+}
+
+// Show AR/3D experience in a modal on Product Details page
+function showProductARExperience(productTitle, modelSrc, productId) {
+    const esc = (s) => String(s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+    const modal = document.createElement("div");
+    modal.className = "product-ar-modal";
+    modal.innerHTML = `
+        <div class="product-ar-overlay"></div>
+        <div class="product-ar-content">
+            <div class="product-ar-header">
+                <h3>View ${esc(productTitle)} in Your Room</h3>
+                <button class="product-ar-close" aria-label="Close">&times;</button>
+            </div>
+            <div class="product-ar-body">
+                <model-viewer src="${esc(modelSrc)}" alt="${esc(productTitle)}" camera-controls auto-rotate background-color="#121419" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:420px;border-radius:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,0.35);"></model-viewer>
+                <div class="product-ar-instructions">
+                    <h4>How to use AR:</h4>
+                    <ol>
+                        <li>Point your camera at a flat surface</li>
+                        <li>Tap to place the furniture</li>
+                        <li>Move around to see different angles</li>
+                        <li>Resize and rotate as needed</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="product-ar-footer">
+                <button class="product-ar-start-btn">Start AR Experience</button>
+                <button class="product-ar-close-btn">Close</button>
+            </div>
+        </div>
+    `;
+
+    const styles = document.createElement("style");
+    styles.textContent = `
+        .product-ar-modal { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .product-ar-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+        .product-ar-content { position: relative; background: #fff; border-radius: 20px; padding: 28px; max-width: 640px; width: 92%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: productArModalIn 0.25s ease-out; }
+        @keyframes productArModalIn { from { opacity: 0; transform: translateY(-24px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .product-ar-header { display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid #f0f0f0; }
+        .product-ar-header h3 { margin:0; color:#2c3e50; font-size:1.3rem; font-weight:700; }
+        .product-ar-close { background:none; border:none; font-size:2rem; color:#999; cursor:pointer; width:30px; height:30px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition: all 0.3s ease; }
+        .product-ar-close:hover { background:#f0f0f0; color:#333; }
+        .product-ar-body { margin-bottom: 18px; }
+        .product-ar-instructions { margin-top: 16px; padding: 14px; background: linear-gradient(135deg, #fff8f3 0%, #ffe5c1 100%); border-radius: 12px; border-left: 4px solid #8B4513; }
+        .product-ar-instructions h4 { margin:0 0 10px 0; color:#2c3e50; font-size:1.05rem; }
+        .product-ar-instructions ol { margin:0; padding-left:20px; color:#2c3e50; line-height:1.6; }
+        .product-ar-footer { display:flex; gap:12px; justify-content:center; }
+        .product-ar-start-btn { padding: 12px 22px; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; border: none; background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%); color: #fff; box-shadow: 0 4px 15px rgba(139,69,19,0.3); }
+        .product-ar-start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(139,69,19,0.4); }
+        .product-ar-close-btn { padding: 12px 22px; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; border: 2px solid #8B4513; background: linear-gradient(135deg, #ffe5c1 0%, #f5e6d3 100%); color: #8B4513; }
+        .product-ar-close-btn:hover { background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%); color: #fff; transform: translateY(-2px); }
+        @media (max-width: 768px) { .product-ar-content { padding: 20px; margin: 20px; } .product-ar-header h3 { font-size: 1.15rem; } .product-ar-footer { flex-direction: column; } .product-ar-start-btn, .product-ar-close-btn { width: 100%; } }
+    `;
+    document.head.appendChild(styles);
+
+    const closeModal = () => { try { document.body.classList.remove('no-scroll'); } catch {} modal.remove(); };
+    const closeBtn = modal.querySelector('.product-ar-close');
+    const overlay = modal.querySelector('.product-ar-overlay');
+    const startBtn = modal.querySelector('.product-ar-start-btn');
+    const closeFooterBtn = modal.querySelector('.product-ar-close-btn');
+
+    // Append first so we can query the model-viewer inside
+    document.body.appendChild(modal);
+    try { document.body.classList.add('no-scroll'); } catch {}
+
+    const modelViewer = modal.querySelector('model-viewer');
+
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+    closeFooterBtn.addEventListener('click', closeModal);
+
+    startBtn.addEventListener('click', () => {
+        if (modelViewer && modelViewer.canActivateAR) {
+            try { modelViewer.activateAR(); } catch (e) {
+                if (window.cartPopupSystem) {
+                    window.cartPopupSystem.showNotification('AR not supported on this device', 'warning');
+                } else {
+                    alert('AR not supported on this device');
+                }
+            }
+        } else {
+            if (window.cartPopupSystem) {
+                window.cartPopupSystem.showNotification('AR not supported on this device', 'warning');
+            } else {
+                alert('AR not supported on this device');
+            }
+        }
+    });
 }
 
 async function generateAIDescription(product) {

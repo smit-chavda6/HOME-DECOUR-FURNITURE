@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="CSS/cart-popup.css">
     <link rel="stylesheet" href="CSS/dark-mode.css">
+    <link rel="stylesheet" href="CSS/login.css">
+    <link rel="stylesheet" href="CSS/responsive.css">
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -17,259 +19,7 @@
     <link rel="icon" type="image/png" sizes="48x48" href="image/Logo maker project.webp">
     <link rel="apple-touch-icon" sizes="180x180" href="image/Logo maker project.webp">
     <link rel="manifest" href="manifest.json">
-    <style>
-        .login-section {
-            min-height: 80vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* Gradient overlay over background image (fallback to gradient if image missing) */
-            background-image: linear-gradient(135deg, rgba(248,249,250,0.75) 0%, rgba(233,236,239,0.75) 100%), url('image/au.jpeg');
-            background-size: cover;
-            /* Align visual focal point consistently with dark theme */
-            background-position: center 35%;
-            background-repeat: no-repeat;
-            background-blend-mode: overlay;
-            padding: 20px;
-        }
-        
-        .login-form {
-            background: white;
-            padding: 40px 30px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-            max-width: 400px;
-            width: 100%;
-            position: relative;
-        }
-        
-        .login-form h2 {
-            text-align: center;
-            margin-bottom: 24px;
-            color: #8B4513;
-            font-family: 'Jost', sans-serif;
-            font-size: 1.8rem;
-        }
-        
-        .form-group {
-            margin-bottom: 18px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            color: #333;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 8px;
-            border: 2px solid #e0e0e0;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-            box-sizing: border-box;
-        }
-        
-        .form-group input:focus {
-            outline: none;
-            border-color: #8B4513;
-            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
-        }
-        
-        .btn-primary {
-            width: 100%;
-            padding: 14px 0;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #8B4513, #A0522D);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
-        }
-        
-        .btn-primary:disabled {
-            opacity: 0.8;
-            cursor: not-allowed;
-            transform: none;
-            background: linear-gradient(135deg, #A0522D, #8B4513);
-        }
-        
-        .btn-primary:disabled:hover {
-            transform: none;
-            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
-        }
-        
-        .form-links {
-            text-align: center;
-            font-size: 0.95rem;
-        }
-        
-        .form-links a {
-            color: #8B4513;
-            text-decoration: underline;
-            transition: color 0.3s ease;
-        }
-        
-        .form-links a:hover {
-            color: #A0522D;
-        }
-        
-        .alert {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-            font-weight: 500;
-        }
-        
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-            margin-left: 8px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .demo-credentials {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
-        
-        .demo-credentials h4 {
-            margin: 0 0 8px 0;
-            color: #495057;
-            font-size: 1rem;
-        }
-        
-        .demo-credentials p {
-            margin: 4px 0;
-            color: #6c757d;
-        }
-        
-        .demo-credentials strong {
-            color: #495057;
-        }
-        /* ---------- Background effect: soft animated blobs ---------- */
-        .login-section {
-            position: relative; /* ensure background children are positioned relative to the section */
-            overflow: hidden;
-        }
-
-        .login-bg {
-            position: absolute;
-            inset: 0; /* top:0; right:0; bottom:0; left:0 */
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .login-bg .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(36px);
-            opacity: 0.55;
-            transform: translate3d(0,0,0);
-            will-change: transform, opacity;
-            mix-blend-mode: screen;
-        }
-
-        .login-bg .b1 {
-            width: 420px;
-            height: 420px;
-            background: radial-gradient(circle at 20% 30%, rgba(139,69,19,0.24), rgba(210,105,30,0.12) 40%, transparent 60%);
-            top: -80px;
-            left: -100px;
-            animation: floatBlob 9s ease-in-out infinite;
-        }
-
-        .login-bg .b2 {
-            width: 320px;
-            height: 320px;
-            background: radial-gradient(circle at 70% 40%, rgba(208,105,30,0.18), rgba(139,69,19,0.08) 40%, transparent 60%);
-            bottom: -60px;
-            right: -60px;
-            animation: floatBlob 11s ease-in-out infinite reverse;
-            opacity: 0.48;
-        }
-
-        .login-bg .b3 {
-            width: 220px;
-            height: 220px;
-            background: radial-gradient(circle at 40% 60%, rgba(255,210,170,0.18), rgba(139,69,19,0.06) 40%, transparent 60%);
-            top: 30%;
-            right: 10%;
-            animation: floatBlob 13s ease-in-out infinite;
-            opacity: 0.42;
-        }
-
-        .login-form {
-            position: relative; /* keep above blobs */
-            z-index: 2;
-            animation: popIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-        }
-
-        @keyframes floatBlob {
-            0% { transform: translateY(0) translateX(0) scale(1); }
-            50% { transform: translateY(-18px) translateX(12px) scale(1.03); }
-            100% { transform: translateY(0) translateX(0) scale(1); }
-        }
-
-        @keyframes popIn {
-            0% { transform: translateY(18px) scale(.98); opacity: 0; }
-            100% { transform: translateY(0) scale(1); opacity: 1; }
-        }
-
-        /* Respect user preference for reduced motion */
-        @media (prefers-reduced-motion: reduce) {
-            .login-bg .blob,
-            .login-form { animation: none !important; }
-        }
-        /* Dark theme: use au3 as background image (page-local override) */
-        body.dark-mode .login-section {
-            background-image: linear-gradient(135deg, rgba(15,15,17,0.40) 0%, rgba(18,20,25,0.40) 100%), url('image/au4.png') !important;
-            background-size: cover !important;
-            /* Match the light theme focal position */
-            background-position: center 35% !important;
-            background-repeat: no-repeat !important;
-            background-blend-mode: normal !important;
-        }
-    </style>
+    <!-- Inline styles migrated to CSS/login.css -->
 </head>
 <body>
     <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
@@ -391,8 +141,7 @@
                     <li><a href="contact.html">Contact Us</a></li>
                     <li><a href="blog.html">Blog</a></li>
                     <li><a href="faq.html">FAQ</a></li>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
+            
                 </ul>
             </div>
             <div class="footer-section">
@@ -400,7 +149,7 @@
                 <div class="contact-info">
                     <div class="contact-item"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span>Ahmedabad, Gujarat, India</span></div>
                     <div class="contact-item"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span>+91 9825000000</span></div>
-                    <div class="contact-item"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>support@homedecorfurniturestore.com</span></div>
+                    <div class="contact-item"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>support@homedecorfurniture.com</span></div>
                 </div>
             </div>
             <div class="footer-section">
@@ -560,8 +309,8 @@
                         return urlObj.origin === window.location.origin;
                     } catch { return false; }
                 }
-                // Allow relative paths to same origin (profile.html, admin.html, etc.)
-                return /^[a-zA-Z0-9._\-\/]+\.html$/.test(url);
+                // Allow relative paths to same origin (profile.html, /contact.html, etc.)
+                return /^[\/]?[a-zA-Z0-9._\-\/]+\.html(\?.*)?$/.test(url);
             }
             
             // Forgot password functionality
@@ -572,5 +321,6 @@
         });
     </script>
     <script src="js/chatbot.js"></script>
-    </body>
+        <script src="js/mobile-menu.js"></script>
+</body>
     </html>

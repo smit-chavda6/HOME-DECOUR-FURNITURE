@@ -402,3 +402,238 @@ styleSheet.textContent = additionalStyles;
 document.head.appendChild(styleSheet); 
 
 
+// ============================================================
+// CONTACT FORM HANDLER WITH LOGIN MODAL
+// ============================================================
+// Handles contact form submission with:
+// - Login state detection via API
+// - Custom styled modal popup (no browser alert)
+// - Form data preservation in sessionStorage
+// - Automatic redirect after login
+// - Form data restoration after login redirect
+// ============================================================
+
+(function() {
+    'use strict';
+
+    // ============= DOM ELEMENTS =============
+    const contactForm = document.getElementById('contactForm');
+    const formSuccess = document.getElementById('formSuccess');
+    const loginModal = document.getElementById('loginRequiredModal');
+    const modalOverlay = loginModal?.querySelector('.modal-overlay');
+    const modalCancelBtn = loginModal?.querySelector('.modal-cancel-btn');
+    const modalOkBtn = loginModal?.querySelector('.modal-ok-btn');
+
+    // ============= STORAGE KEY =============
+    const FORM_DATA_KEY = 'contactFormData';
+    const REDIRECT_KEY = 'contactRedirect';
+
+    // ============= MODAL FUNCTIONS =============
+    
+    /**
+     * Show the login required modal
+     * Displays a styled popup instead of browser alert
+     */
+    function showLoginModal() {
+        if (loginModal) {
+            loginModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        }
+    }
+
+    /**
+     * Hide the login required modal
+     */
+    function hideLoginModal() {
+        if (loginModal) {
+            loginModal.classList.remove('active');
+            document.body.style.overflow = ''; // Restore scroll
+        }
+    }
+
+    /**
+     * Save form data to sessionStorage
+     * Preserves user's typed message for restoration after login
+     */
+    function saveFormData() {
+        if (!contactForm) return;
+        
+        const formData = new FormData(contactForm);
+        const data = Object.fromEntries(formData.entries());
+        
+        // Save to sessionStorage (cleared when browser closes)
+        sessionStorage.setItem(FORM_DATA_KEY, JSON.stringify(data));
+        // Mark that user should be redirected back to contact page
+        sessionStorage.setItem(REDIRECT_KEY, 'true');
+        
+        console.log('Form data saved to sessionStorage');
+    }
+
+    /**
+     * Restore form data from sessionStorage
+     * Called on page load to restore previously typed message
+     */
+    function restoreFormData() {
+        if (!contactForm) return;
+        
+        const savedData = sessionStorage.getItem(FORM_DATA_KEY);
+        const shouldRestore = sessionStorage.getItem(REDIRECT_KEY);
+        
+        if (savedData && shouldRestore) {
+            try {
+                const data = JSON.parse(savedData);
+                
+                // Restore each form field
+                Object.keys(data).forEach(key => {
+                    const field = contactForm.querySelector(`[name="${key}"]`);
+                    if (field) {
+                        field.value = data[key];
+                    }
+                });
+                
+                console.log('Form data restored from sessionStorage');
+                
+                // Clear the storage after restoration
+                sessionStorage.removeItem(FORM_DATA_KEY);
+                sessionStorage.removeItem(REDIRECT_KEY);
+            } catch (err) {
+                console.error('Error restoring form data:', err);
+            }
+        }
+    }
+
+    /**
+     * Handle redirect to login page
+     * Saves form data and redirects user
+     */
+    function redirectToLogin() {
+        saveFormData();
+        hideLoginModal();
+        // Redirect to login page with return URL
+        window.location.href = '/login.html?redirect=/contact.html';
+    }
+
+    // ============= EVENT LISTENERS =============
+    
+    // Modal Cancel button
+    if (modalCancelBtn) {
+        modalCancelBtn.addEventListener('click', hideLoginModal);
+    }
+
+    // Modal overlay click (close on outside click)
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', hideLoginModal);
+    }
+
+    // Modal OK/Login button - save data and redirect
+    if (modalOkBtn) {
+        modalOkBtn.addEventListener('click', redirectToLogin);
+    }
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && loginModal?.classList.contains('active')) {
+            hideLoginModal();
+        }
+    });
+
+    // ============= FORM SUBMISSION =============
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Step 1: Check if user is logged in
+            let isAuthenticated = false;
+            
+            try {
+                const authCheck = await fetch('/api/check-auth', { credentials: 'include' });
+                const authData = await authCheck.json();
+                isAuthenticated = authData.authenticated;
+            } catch (err) {
+                console.error('Auth check failed:', err);
+                isAuthenticated = false;
+            }
+
+            // Step 2: If NOT logged in, show modal (NOT alert)
+            if (!isAuthenticated) {
+                showLoginModal();
+                // Form data is preserved - we don't reset or clear anything
+                return;
+            }
+
+            // Step 3: User is logged in - proceed with form submission
+            const formData = new FormData(contactForm);
+            const data = Object.fromEntries(formData.entries());
+            
+            try {
+                // Submit to API
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    // Show error notification
+                    showErrorNotification('Error sending message: ' + (result.error || 'Unknown error'));
+                    return;
+                }
+                
+                console.log('Message sent successfully:', result);
+                
+                // Hide form and show success message
+                contactForm.style.display = 'none';
+                formSuccess.removeAttribute('hidden');
+                
+                // Reset form after 3 seconds
+                setTimeout(() => {
+                    contactForm.reset();
+                    contactForm.style.display = 'block';
+                    formSuccess.setAttribute('hidden', '');
+                }, 3000);
+                
+            } catch (err) {
+                console.error('Form submission error:', err);
+                showErrorNotification('Error sending message. Please try again.');
+            }
+        });
+    }
+
+    /**
+     * Show error notification (styled toast)
+     */
+    function showErrorNotification(message) {
+        // Create toast element
+        const toast = document.createElement('div');
+        toast.className = 'contact-toast error';
+        toast.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            <span>${message}</span>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Trigger animation
+        setTimeout(() => toast.classList.add('show'), 10);
+        
+        // Remove after 4 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
+
+    // ============= INITIALIZATION =============
+    
+    // Restore form data on page load (if redirected back from login)
+    restoreFormData();
+
+})();

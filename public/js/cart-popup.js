@@ -187,7 +187,7 @@ class CartPopupSystem {
     // Single delegated listener to handle both static and dynamically added buttons
         if (!this._delegatedAddToCartBound) {
             document.addEventListener('click', (e) => {
-                const btn = e.target && (e.target.closest && e.target.closest('[data-add-to-cart="true"], .add-to-cart-btn'));
+                const btn = e.target && (e.target.closest && e.target.closest('[data-add-to-cart="true"], .add-to-cart-btn, .action-cart-btn'));
                 if (!btn) return;
                 // Avoid intercepting the dedicated product details add-to-cart button (handled elsewhere)
                 if (btn.id === 'add-to-cart-btn') return;

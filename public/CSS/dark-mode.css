@@ -57,6 +57,16 @@ body.dark-mode.accent-sapphire { --accent1: #60a5fa; --accent2: #3b82f6; --accen
 .theme-toggle:active { transform: translateY(0); }
 .theme-toggle svg { width: 22px; height: 22px; }
 
+/* Make the toggle more visible on small screens */
+@media (max-width: 768px) {
+  .theme-toggle {
+    width: 56px;
+    height: 56px;
+    box-shadow: 0 12px 26px rgba(0,0,0,0.28);
+  }
+  .theme-toggle svg { width: 26px; height: 26px; }
+}
+
 /* Base dark mode */
 body.dark-mode {
   background: var(--dm-bg);
@@ -409,7 +419,7 @@ body.dark-mode .gallery-ar-header h3 { color: var(--dm-text) !important; }
 body.dark-mode .gallery-ar-close { color: var(--dm-muted) !important; }
 body.dark-mode .gallery-ar-close:hover { background: var(--dm-panel) !important; color: var(--dm-text) !important; }
 body.dark-mode .gallery-ar-body { color: var(--dm-text) !important; }
-body.dark-mode .gallery-ar-body model-viewer { background: var(--dm-panel) !important; box-shadow: 0 2px 12px rgba(0,0,0,0.35) !important; }
+body.dark-mode .gallery-ar-body model-viewer { background: var(--dm-panel) !important; background-color: var(--dm-panel) !important; box-shadow: 0 2px 12px rgba(0,0,0,0.35) !important; }
 body.dark-mode .gallery-ar-instructions { background: var(--dm-panel) !important; border-left: 4px solid var(--accent2) !important; }
 body.dark-mode .gallery-ar-instructions h4,
 body.dark-mode .gallery-ar-instructions ol,
@@ -420,6 +430,23 @@ body.dark-mode .gallery-ar-view-details-btn { background: transparent !important
 body.dark-mode .gallery-ar-view-details-btn:hover { background: var(--accent2) !important; color: var(--accentText) !important; }
 body.dark-mode .btn-secondary:hover,
 body.dark-mode .btn-ar:hover { background: var(--accent2) !important; color: var(--accentText) !important; }
+
+/* Product Details AR modal (View in Room) dark theme */
+body.dark-mode .product-ar-content { background: var(--dm-surface) !important; color: var(--dm-text) !important; border: 1px solid var(--dm-border) !important; }
+body.dark-mode .product-ar-header { border-bottom: 1px solid var(--dm-border) !important; }
+body.dark-mode .product-ar-header h3 { color: var(--dm-text) !important; }
+body.dark-mode .product-ar-close { color: var(--dm-muted) !important; }
+body.dark-mode .product-ar-close:hover { background: var(--dm-panel) !important; color: var(--dm-text) !important; }
+body.dark-mode .product-ar-body { color: var(--dm-text) !important; }
+body.dark-mode .product-ar-body model-viewer { background: var(--dm-panel) !important; background-color: var(--dm-panel) !important; box-shadow: 0 2px 12px rgba(0,0,0,0.35) !important; }
+body.dark-mode .product-ar-instructions { background: var(--dm-panel) !important; border-left: 4px solid var(--accent2) !important; }
+body.dark-mode .product-ar-instructions h4,
+body.dark-mode .product-ar-instructions ol,
+body.dark-mode .product-ar-instructions li { color: var(--dm-text) !important; }
+body.dark-mode .product-ar-footer { border-top: 1px solid var(--dm-border) !important; }
+body.dark-mode .product-ar-start-btn { background: linear-gradient(135deg, var(--accent1), var(--accent2)) !important; color: var(--accentText) !important; border: none !important; }
+body.dark-mode .product-ar-close-btn { background: transparent !important; border: 2px solid var(--accent2) !important; color: var(--accent2) !important; }
+body.dark-mode .product-ar-close-btn:hover { background: var(--accent2) !important; color: var(--accentText) !important; }
 /* Benefits */
 body.dark-mode .product-benefits { background: transparent !important; }
 body.dark-mode .benefit-item { background: var(--dm-panel) !important; border: 1px solid var(--dm-border) !important; color: var(--dm-text) !important; }
@@ -830,7 +857,7 @@ body.dark-mode .modal-tab-btn.active {
 }
 
 body.dark-mode .modal-content {
-  background: var(--dm-surface) !important;
+  background: #121214 !important;
   color: var(--dm-text) !important;
 }
 

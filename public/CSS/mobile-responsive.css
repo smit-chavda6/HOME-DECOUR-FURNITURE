@@ -1,0 +1,1373 @@
+/* ========================================
+   MOBILE RESPONSIVE STYLES
+   All mobile-only styles (max-width: 768px)
+   Desktop styles remain untouched
+   ======================================== */
+
+/* ==========================================
+   1. MOBILE NAVIGATION & HEADER
+   ========================================== */
+
+@media (max-width: 768px) {
+    /* Navigation already handled in navbar.css */
+    /* Additional mobile nav tweaks if needed */
+    
+    .navbar-menu {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Ensure menu doesn't interfere with other fixed elements */
+    body.no-scroll {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+}
+
+/* ==========================================
+   2. HERO SECTION / SLIDER
+   ========================================== */
+
+@media (max-width: 768px) {
+    .hero-section {
+        height: 60vh;
+        min-height: 450px;
+        margin-top: 70px;
+    }
+
+    .slide-content {
+        padding: 20px;
+        max-width: 90%;
+    }
+
+    .slide-content h1 {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+
+    .slide-content p {
+        font-size: 1rem;
+        margin-bottom: 20px;
+        line-height: 1.5;
+    }
+
+    .cta-button {
+        padding: 12px 24px;
+        font-size: 0.95rem;
+    }
+
+    /* Slider controls */
+    .slide-btn {
+        font-size: 1.5rem;
+        padding: 10px 15px;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .slide-btn.prev {
+        left: 10px;
+    }
+
+    .slide-btn.next {
+        right: 10px;
+    }
+
+    /* Slide dots */
+    .slide-dots {
+        bottom: 15px;
+        gap: 8px;
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+    }
+}
+
+/* ==========================================
+   3. SHOP BY CATEGORY SECTION
+   ========================================== */
+
+@media (max-width: 768px) {
+    .categories-section,
+    .shop-by-category {
+        padding: 2rem 1rem;
+    }
+
+    .categories-grid,
+    .category-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .category-card {
+        min-height: 180px;
+    }
+
+    .category-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .category-card img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .category-card .category-icon {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .categories-grid,
+    .category-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================
+   4. PRODUCT CARDS (GALLERY PAGE)
+   ========================================== */
+
+@media (max-width: 768px) {
+    .products-grid,
+    .product-grid,
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+
+    .product-card {
+        padding: 1rem;
+    }
+
+    .product-image {
+        height: 180px;
+    }
+
+    .product-title,
+    .product-name {
+        font-size: 0.95rem;
+        margin: 0.5rem 0;
+    }
+
+    .product-price,
+    .current-price {
+        font-size: 1.1rem;
+    }
+
+    .original-price {
+        font-size: 0.85rem;
+    }
+
+    .product-rating {
+        font-size: 0.85rem;
+    }
+
+    /* Action buttons */
+    .add-to-cart-btn,
+    .quick-view-btn,
+    .product-btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+        min-height: 44px;
+    }
+
+    /* Remove hover-only elements on mobile */
+    .product-card:hover .product-overlay {
+        opacity: 0;
+    }
+
+    .product-actions {
+        position: static;
+        opacity: 1;
+        transform: none;
+        margin-top: 0.75rem;
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    /* Wishlist button */
+    .wishlist-btn {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+@media (max-width: 480px) {
+    .products-grid,
+    .product-grid,
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .product-card {
+        max-width: 100%;
+    }
+
+    .product-image {
+        height: 220px;
+    }
+}
+
+/* ==========================================
+   5. ABOUT US & STATS SECTION
+   ========================================== */
+
+@media (max-width: 768px) {
+    .about-section,
+    .stats-section {
+        padding: 2rem 1rem;
+    }
+
+    .about-container {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .about-image,
+    .about-content {
+        max-width: 100%;
+    }
+
+    .about-image img {
+        max-height: 300px;
+    }
+
+    /* Stats cards */
+    .stats-grid,
+    .features-grid,
+    .modern-features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .stat-card,
+    .feature-card,
+    .modern-feature-card {
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .stat-number,
+    .stat-value {
+        font-size: 2rem;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+    }
+
+    /* Team section */
+    .team-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+/* ==========================================
+   6. CONTACT PAGE & FORMS
+   ========================================== */
+
+@media (max-width: 768px) {
+    .contact-section,
+    .contact-container {
+        padding: 2rem 1rem;
+    }
+
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    /* Form inputs */
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .form-input,
+    .form-textarea,
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea {
+        width: 100%;
+        padding: 14px;
+        font-size: 1rem;
+        min-height: 48px;
+    }
+
+    textarea {
+        min-height: 120px;
+    }
+
+    /* Submit buttons */
+    .submit-btn,
+    button[type="submit"] {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.05rem;
+        min-height: 50px;
+    }
+
+    /* Contact info cards */
+    .contact-info-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .contact-info-card {
+        padding: 1.5rem;
+    }
+
+    /* Two-column form fields to stack */
+    .form-row {
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .form-col {
+        width: 100%;
+    }
+}
+
+/* ==========================================
+   7. FOOTER
+   ========================================== */
+
+@media (max-width: 768px) {
+    .footer {
+        padding: 2rem 0 1rem;
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 0 1.5rem;
+    }
+
+    .cart-item {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        text-align: center;
+        padding: 1rem;
+        background: var(--surface, #16181d);
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        border: 1px solid var(--border, #22262f);
+    }
+
+    .cart-item-image {
+        width: 80px !important;
+        height: 80px !important;
+        min-width: 80px;
+        border-radius: 10px;
+        object-fit: cover;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+
+    .cart-item-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .cart-item-name {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text, #eaeef5);
+        margin-bottom: 0.25rem;
+    }
+
+    .cart-item-price {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #D2691E;
+    }
+
+    /* QUANTITY BUTTONS - Touch-Friendly Mobile UI */
+    .cart-item-quantity,
+    .quantity-controls {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        flex-wrap: nowrap !important;
+    }
+
+    .quantity-btn {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+        min-height: 40px !important;
+        border-radius: 50% !important;
+        background: #f0f0f0 !important;
+        border: none !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.2rem !important;
+        font-weight: 700 !important;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+    }
+
+    .quantity-btn:hover {
+        background: #D2691E !important;
+        color: white !important;
+        transform: scale(1.05);
+    }
+
+    .quantity-display {
+        font-weight: 600;
+        min-width: 30px;
+        text-align: center;
+        font-size: 1rem;
+        color: var(--text, #eaeef5);
+    }
+
+    .remove-item-btn {
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        min-height: 40px;
+        cursor: pointer;
+    }
+
+    /* Cart Popup Mobile Adjustments */
+    .cart-popup {
+        width: 95% !important;
+        max-width: 100% !important;
+        max-height: 90vh !important;
+        border-radius: 16px !important;
+    }
+
+    .cart-popup-header {
+        padding: 1rem !important;
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 10;
+    }
+
+    .cart-items-container {
+        max-height: 50vh !important;
+        padding: 1rem !important;
+    }
+
+    .cart-popup-footer {
+        padding: 1rem !important;
+        position: sticky;
+        bottom: 0;
+        background: #f8f8f8;
+    }
+
+    .cart-total {
+        font-size: 1.2rem !important;
+        margin-bottom: 1rem;
+    }
+
+    .cart-actions {
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+    }
+
+    .cart-btn {
+        width: 100% !important;
+        padding: 1rem !important;
+        font-size: 1rem !important;
+        min-height: 50px;
+        border-radius: 12px !important;
+    }
+
+    .clear-cart-btn {
+        width: 100% !important;
+        padding: 1rem !important;
+        min-height: 50px !important;
+        border-radius: 12px !important;
+        font-size: 1rem !important;
+    /* Quick Links - reduce spacing */
+    .footer-links {
+    /* Cart Summary / Price Breakdown */
+    .cart-summary {
+        width: 100% !important;
+        padding: 1.5rem;
+        background: var(--surface, #16181d);
+        border-radius: 12px;
+        border: 1px solid var(--border, #22262f);
+    }
+
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--border, #22262f);
+        font-size: 1rem;
+    }
+
+    .price-row.total {
+        font-size: 1.3rem;
+        font-weight: 700;
+        border-bottom: none;
+        margin-top: 0.5rem;
+        color: #D2691E;
+    }
+
+    /* Checkout Page Mobile */
+    .checkout-container {
+        padding: 1rem;
+    }
+
+    .checkout-main {
+        flex-direction: column !important;
+        gap: 1.5rem;
+    }
+
+    .checkout-form {
+        width: 100% !important;
+    }
+
+    .checkout-form input,
+    .checkout-form select,
+    .checkout-form textarea {
+        width: 100% !important;
+        padding: 1rem !important;
+        font-size: 1rem;
+        min-height: 48px;
+        border-radius: 8px;
+        gap: 0.5rem;
+        padding: 0;
+        margin: 0;
+    }
+
+    .footer-links li {
+        margin: 0;
+        padding: 0;
+    }
+
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .checkout-submit-btn,
+    .proceed-checkout-btn,
+    .continue-shopping-btn {
+        width: 100% !important;
+        padding: 1rem !important;
+        font-size: 1.1rem !important;
+        min-height: 50px !important;
+        border-radius: 12px !important;
+        margin-top: 1rem;
+    .footer-links a {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+/* ==========================================
+   11B. FOOTER QUICK LINKS FIX
+   ========================================== */
+
+@media (max-width: 768px) {
+    .footer-links,
+    .quick-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem !important;
+        margin-bottom: 0;
+    }
+
+    .footer-links a,
+    .quick-links a {
+        padding: 0.5rem 0 !important;
+        margin: 0 !important;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        display: block;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+
+    .footer-column {
+        margin-bottom: 1.5rem;
+    }
+
+    .footer-column h3 {
+        margin-bottom: 0.75rem;
+        font-size: 1.1rem;
+    }
+}
+
+/* ==========================================
+   11C. LOGIN POPUP - MOBILE DRAGGABLE & CLOSEABLE
+   ========================================== */
+
+@media (max-width: 768px) {
+    /* Login popup overlay */
+    .login-popup-overlay {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background: rgba(0, 0, 0, 0.6) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        z-index: 9999 !important;
+        padding: 1rem;
+        backdrop-filter: blur(5px);
+    }
+
+    .login-popup-box {
+        position: relative !important;
+        width: 90% !important;
+        max-width: 400px !important;
+        min-width: 280px !important;
+        max-height: 85vh;
+        overflow-y: auto;
+        background: rgba(255, 255, 255, 0.97) !important;
+        border-radius: 1.2rem !important;
+        padding: 1.5rem !important;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+        border: 1.5px solid #f3e6d6 !important;
+        cursor: move;
+        touch-action: none;
+    }
+
+    /* Close button for login popup */
+    .login-popup-close {
+        position: absolute !important;
+        top: 10px !important;
+        right: 10px !important;
+        width: 40px !important;
+        height: 40px !important;
+        background: rgba(0, 0, 0, 0.1) !important;
+        border: none !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.5rem !important;
+        color: #8B4513 !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+
+    .login-popup-close:hover {
+        background: rgba(0, 0, 0, 0.2) !important;
+        transform: scale(1.1);
+    }
+
+    /* Prevent background scroll when popup is open */
+    body.login-popup-open {
+        overflow: hidden !important;
+        position: fixed !important;
+        width: 100% !important;
+    }
+
+    .login-popup-content {
+        padding-top: 1rem;
+    }
+
+    .login-popup-user {
+        font-size: 1rem !important;
+        margin-bottom: 1rem;
+    }
+
+    .login-popup-logout-btn {
+        padding: 1rem !important;
+        font-size: 1rem !important;
+        min-height: 48px;
+        border-radius: 12px !important;
+    }
+}
+
+/* Dark mode login popup adjustments */
+@media (max-width: 768px) {
+    body.dark-mode .login-popup-box {
+        background: rgba(22, 24, 29, 0.97) !important;
+        border-color: #3a2a1e !important;
+    }
+
+    body.dark-mode .login-popup-close {
+        color: #eac8a3 !important;
+    }
+
+    body.dark-mode .login-popup-user {
+        color: #eac8a3 !important;
+    }
+}
+
+/* ==========================================
+   11D. ADMIN PANEL - MOBILE TOGGLE MENU
+   ========================================== */
+
+@media (max-width: 768px) {
+    /* Admin mobile toggle button */
+    .admin-mobile-toggle {
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, var(--accent1, #d4a373), var(--accent2, #c08457));
+        border: none;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        cursor: pointer;
+        z-index: 1001;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .admin-mobile-toggle:hover {
+        transform: scale(1.05);
+    }
+
+    .admin-mobile-toggle span {
+        width: 24px;
+        height: 3px;
+        background: white;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+
+    .admin-mobile-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(6px, 6px);
+    }
+
+    .admin-mobile-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .admin-mobile-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    /* Admin sidebar mobile overlay */
+    .admin-layout {
+        position: relative;
+    }
+
+    .admin-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: -100% !important;
+        height: 100vh !important;
+        width: 280px !important;
+        max-width: 85vw !important;
+        background: var(--surface, #16181d) !important;
+        border-right: 1px solid var(--border, #22262f) !important;
+        padding: 80px 1rem 1.5rem 1rem !important;
+        transition: left 0.3s ease !important;
+        z-index: 1000 !important;
+        overflow-y: auto;
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .admin-sidebar.active {
+        left: 0 !important;
+    }
+
+    /* Admin overlay backdrop */
+    .admin-sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+        backdrop-filter: blur(3px);
+    }
+
+    .admin-sidebar-overlay.active {
+        display: block;
+    }
+
+    /* Admin navigation mobile */
+    .admin-nav {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+
+    .admin-nav .nav-link {
+        padding: 1rem !important;
+        font-size: 1rem;
+        border-radius: 8px;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+    }
+
+    .admin-profile {
+        padding: 1rem !important;
+        border-bottom: 1px solid var(--border, #22262f);
+        margin-bottom: 1rem;
+    }
+
+    /* Admin main content spacing */
+    .admin-main {
+        width: 100% !important;
+        padding-top: 70px;
+    }
+
+    .admin-wrap {
+        margin-top: 1rem !important;
+        padding: 0 1rem !important;
+    }
+
+    /* Ensure admin sidebar closes on link click */
+    .admin-nav .nav-link {
+        cursor: pointer;
+    }
+}
+        min-height: 40px;
+        line-height: 1.5;
+    }
+
+    /* Social links */
+    .social-links {
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .social-link {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* Contact info */
+    .contact-info {
+        text-align: center;
+    }
+
+    .contact-item {
+        justify-content: center;
+        padding: 0.75rem 0;
+    }
+
+    /* Newsletter */
+    .newsletter-form {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .newsletter-input {
+        width: 100%;
+    }
+
+    .newsletter-btn {
+        width: 100%;
+        min-height: 48px;
+    }
+
+    /* Footer bottom */
+    .footer-bottom {
+        padding: 1.5rem 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .footer-bottom-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .footer-bottom-links {
+        justify-content: center;
+        gap: 1rem;
+    }
+}
+
+/* ==========================================
+   8. GENERAL MOBILE UX IMPROVEMENTS
+   ========================================== */
+
+@media (max-width: 768px) {
+    /* Container and spacing */
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Section spacing */
+    section {
+        padding: 2rem 0;
+    }
+
+    /* Headings */
+    h1 {
+        font-size: 2rem;
+        line-height: 1.3;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+        line-height: 1.3;
+    }
+
+    h3 {
+        font-size: 1.35rem;
+    }
+
+    h4 {
+        font-size: 1.1rem;
+    }
+
+    /* Typography */
+    body {
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    p {
+        margin-bottom: 1rem;
+    }
+
+    /* Buttons - minimum tap size */
+    button,
+    .btn,
+    a.button {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 12px 20px;
+        font-size: 0.95rem;
+    }
+
+    /* Links */
+    a {
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* Remove horizontal overflow */
+    body,
+    html {
+        overflow-x: hidden;
+    }
+
+    * {
+        max-width: 100%;
+    }
+
+    /* Images responsive */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Tables */
+    table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Modals */
+    .modal-content {
+        width: 95%;
+        max-width: 500px;
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    /* Cards */
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    /* Grids - general fallback */
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    /* Flexbox adjustments */
+    .flex-row {
+        flex-direction: column;
+    }
+
+    /* CTA sections */
+    .cta-section {
+        padding: 2rem 1rem;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .cta-button {
+        width: 100%;
+    }
+}
+
+/* ==========================================
+   9. PRODUCT DETAILS PAGE
+   ========================================== */
+
+@media (max-width: 768px) {
+    .product-details-container {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .product-gallery {
+        max-width: 100%;
+        margin-bottom: 1.5rem;
+    }
+
+    .product-info {
+        max-width: 100%;
+    }
+
+    .product-thumbnails {
+        gap: 0.5rem;
+    }
+
+    .thumbnail {
+        width: 60px;
+        height: 60px;
+    }
+
+    /* Reviews section */
+    .reviews-section {
+        padding: 1.5rem 1rem;
+    }
+
+    .review-card {
+        padding: 1rem;
+    }
+}
+
+/* ==========================================
+   10. PROFILE & ACCOUNT PAGES
+   ========================================== */
+
+@media (max-width: 768px) {
+    .profile-container {
+        flex-direction: column;
+    }
+
+    .profile-sidebar {
+        width: 100%;
+        margin-bottom: 1.5rem;
+    }
+
+    .profile-content {
+        width: 100%;
+    }
+
+    .orders-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .order-card {
+        padding: 1rem;
+    }
+}
+
+/* ==========================================
+   11. CART & CHECKOUT
+   ========================================== */
+
+@media (max-width: 768px) {
+    .cart-container {
+        grid-template-columns: 1fr;
+    }
+
+    .cart-items {
+        margin-bottom: 1.5rem;
+    }
+
+    .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .cart-item-image {
+        width: 100%;
+        max-width: 200px;
+    }
+
+    .cart-item-details {
+        width: 100%;
+    }
+
+    .quantity-controls {
+        justify-content: flex-start;
+    }
+
+    /* Checkout steps */
+    .checkout-steps {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .checkout-step {
+        width: 100%;
+    }
+}
+
+/* ==========================================
+   12. BLOG & NEWS PAGES
+   ========================================== */
+
+@media (max-width: 768px) {
+    .blog-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .blog-card {
+        margin-bottom: 1rem;
+    }
+
+    .blog-image {
+        height: 200px;
+    }
+
+    .blog-content {
+        padding: 1rem;
+    }
+}
+
+/* ==========================================
+   13. FAQ & SUPPORT PAGES
+   ========================================== */
+
+@media (max-width: 768px) {
+    .faq-container {
+        padding: 1rem;
+    }
+
+    .faq-item {
+        padding: 1rem;
+    }
+
+    .faq-question {
+        font-size: 1rem;
+        padding-right: 2rem;
+    }
+
+    .faq-answer {
+        padding: 1rem 0;
+    }
+}
+
+/* ==========================================
+   14. CHATBOT MOBILE ADJUSTMENTS
+   ========================================== */
+
+@media (max-width: 768px) {
+    .chat-window {
+        width: 100%;
+        height: 100%;
+        bottom: 0;
+        right: 0;
+        border-radius: 0;
+        max-height: 100vh;
+    }
+
+    .chat-window.active {
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+
+    .chat-toggle {
+        width: 56px;
+        height: 56px;
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .chat-messages {
+        padding: 1rem;
+    }
+
+    .message {
+        max-width: 90%;
+    }
+}
+
+/* ==========================================
+   15. SEARCH & FILTERS
+   ========================================== */
+
+@media (max-width: 768px) {
+    .search-container {
+        width: 100%;
+        padding: 0 1rem;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+
+    .filters-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .filter-group {
+        width: 100%;
+    }
+
+    .filter-dropdown {
+        width: 100%;
+    }
+}
+
+/* ==========================================
+   16. DARK MODE MOBILE ADJUSTMENTS
+   ========================================== */
+
+@media (max-width: 768px) {
+    body.dark-mode {
+        background: #1a1a1a;
+    }
+
+    body.dark-mode .navbar-menu {
+        background: #2a2a2a;
+    }
+
+    body.dark-mode .navbar-item {
+        border-bottom-color: #3a3a3a;
+    }
+}
+
+/* ==========================================
+   17. PERFORMANCE OPTIMIZATIONS
+   ========================================== */
+
+@media (max-width: 768px) {
+    /* Disable complex animations on mobile */
+    .complex-animation {
+        animation: none !important;
+    }
+
+    /* Reduce motion for better performance */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    /* Optimize images */
+    img {
+        image-rendering: -webkit-optimize-contrast;
+    }
+}
+
+/* ==========================================
+   18. UTILITY CLASSES FOR MOBILE
+   ========================================== */
+
+@media (max-width: 768px) {
+    .mobile-hidden {
+        display: none !important;
+    }
+
+    .mobile-only {
+        display: block !important;
+    }
+
+    .mobile-center {
+        text-align: center !important;
+    }
+
+    .mobile-full-width {
+        width: 100% !important;
+    }
+
+    .mobile-no-padding {
+        padding: 0 !important;
+    }
+
+    .mobile-no-margin {
+        margin: 0 !important;
+    }
+}
+
+/* ==========================================
+   19. TABLET BREAKPOINT (768px - 1024px)
+   ========================================== */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .products-grid,
+    .product-grid,
+    .gallery-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .container {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+/* ==========================================
+   20. SMALL MOBILE (max-width: 375px)
+   ========================================== */
+
+@media (max-width: 375px) {
+    .navbar-name {
+        font-size: 1rem;
+    }
+
+    .slide-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .slide-content p {
+        font-size: 0.9rem;
+    }
+
+    .product-card {
+        padding: 0.75rem;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+}
+    }     
+}

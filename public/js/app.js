@@ -867,4 +867,130 @@ document.addEventListener('DOMContentLoaded', function() {
             applyTheme(theme);
         });
     })();
-}); 
+    });
+
+    /* ========================================
+       MOBILE ENHANCEMENTS
+       ======================================== */
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Only run mobile enhancements on mobile devices
+        const isMobile = () => window.innerWidth <= 768;
+
+        // ==========================================
+        // 1. LOGIN BUTTON - Direct Navigation (No Popup Overlay)
+        // ==========================================
+    
+        function initMobileLoginButton() {
+            const loginBtn = document.querySelector('.navbar-login-btn');
+            
+            // Simply navigate to login page on click
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = 'login.html';
+                });
+            }
+        }
+
+        // ==========================================
+        // 2. ADMIN PANEL - MOBILE TOGGLE MENU
+        // ==========================================
+    
+        function initAdminMobileMenu() {
+            if (!isMobile()) return;
+
+            const adminLayout = document.querySelector('.admin-layout');
+            const adminSidebar = document.querySelector('.admin-sidebar');
+        
+            if (!adminLayout || !adminSidebar) return;
+
+            // Create toggle button
+            let toggleBtn = document.querySelector('.admin-mobile-toggle');
+            if (!toggleBtn) {
+                toggleBtn = document.createElement('button');
+                toggleBtn.className = 'admin-mobile-toggle';
+                toggleBtn.innerHTML = '<span></span><span></span><span></span>';
+                toggleBtn.setAttribute('aria-label', 'Toggle admin menu');
+                document.body.appendChild(toggleBtn);
+            }
+
+            // Create overlay
+            let overlay = document.querySelector('.admin-sidebar-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.className = 'admin-sidebar-overlay';
+                document.body.appendChild(overlay);
+            }
+
+            // Toggle menu
+            function toggleAdminMenu() {
+                const isActive = adminSidebar.classList.contains('active');
+                adminSidebar.classList.toggle('active', !isActive);
+                overlay.classList.toggle('active', !isActive);
+                toggleBtn.classList.toggle('active', !isActive);
+                document.body.classList.toggle('no-scroll', !isActive);
+            }
+
+            // Close menu
+            function closeAdminMenu() {
+                adminSidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                toggleBtn.classList.remove('active');
+                document.body.classList.remove('no-scroll');
+            }
+
+            // Toggle button click
+            toggleBtn.addEventListener('click', toggleAdminMenu);
+
+            // Overlay click to close
+            overlay.addEventListener('click', closeAdminMenu);
+
+            // Close menu when clicking on nav link
+            const navLinks = adminSidebar.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', closeAdminMenu);
+            });
+        }
+
+        // ==========================================
+        // 3. INITIALIZE ALL MOBILE FEATURES
+        // ==========================================
+    
+        if (isMobile()) {
+            initMobileLoginButton();
+            initAdminMobileMenu();
+        }
+
+        // Re-initialize on resize (if switching between mobile/desktop)
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                if (isMobile()) {
+                    initMobileLoginButton();
+                    initAdminMobileMenu();
+                }
+            }, 250);
+        });
+
+        // ==========================================
+        // 4. GENERAL MOBILE UX IMPROVEMENTS
+        // ==========================================
+    
+        if (isMobile()) {
+            // Prevent horizontal scroll
+            document.body.style.overflowX = 'hidden';
+            document.documentElement.style.overflowX = 'hidden';
+
+            // Improve touch scrolling
+            document.body.style.webkitOverflowScrolling = 'touch';
+
+            // Add touch-friendly class to buttons
+            const buttons = document.querySelectorAll('button, .btn, .cart-btn, .quantity-btn');
+            buttons.forEach(btn => {
+                btn.style.cursor = 'pointer';
+                btn.style.webkitTapHighlightColor = 'rgba(0, 0, 0, 0.1)';
+            });
+        }
+    });

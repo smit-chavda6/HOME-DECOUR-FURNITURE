@@ -38,9 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const maxPriceInput = document.getElementById('maxPrice');
     const sortSelect = document.getElementById('sortSelect');
     const resultsCount = document.getElementById('resultsCount');
-    // Advanced filters (optional)
-    const advBrand = document.getElementById('advBrand');
-    const advMaterial = document.getElementById('advMaterial');
     // Wishlist elements
     const wishlistSection = document.querySelector('.wishlist-section');
     const wishlistItemsEl = document.getElementById('wishlistItems');
@@ -55,8 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentMinPrice = 0;
     let currentMaxPrice = 90000;
     let currentSort = '';
-    let currentBrand = '';
-    let currentMaterial = '';
+    // Advanced filters removed
     
     // If gallery is not present on this page, exit early to avoid errors
     const isGalleryPage = !!galleryContainer || galleryItems.length > 0;
@@ -105,11 +101,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderWishlist() {
         if (!wishlistItemsEl || !wishlistEmptyEl) return;
+        
+        // Get the wishlist section element
+        const wishlistSection = document.querySelector('.wishlist-section');
+        
         const items = Object.values(wishlist);
         if (items.length === 0) {
+            // Hide entire wishlist section if empty
+            if (wishlistSection) {
+                wishlistSection.style.display = 'none';
+            }
             wishlistItemsEl.innerHTML = '';
             wishlistEmptyEl.style.display = 'block';
         } else {
+            // Show entire wishlist section if items exist
+            if (wishlistSection) {
+                wishlistSection.style.display = 'block';
+            }
             wishlistEmptyEl.style.display = 'none';
             const resolveThumb = (item) => {
                 const hasImage = item.image && String(item.image).trim().length > 0;
@@ -166,17 +174,15 @@ document.addEventListener('DOMContentLoaded', function() {
     function isWishlisted(id) { return !!wishlist[id]; }
 
     function syncWishlistButtons() {
-        document.querySelectorAll('.wishlist-btn').forEach(btn => {
+        document.querySelectorAll('.action-wishlist-btn').forEach(btn => {
             const id = btn.getAttribute('data-product-id') || btn.closest('.product-card')?.getAttribute('data-product-id');
             if (!id) return;
             if (isWishlisted(id)) {
                 btn.classList.add('active');
-                btn.textContent = '♥';
-                btn.style.color = '#e74c3c';
+                btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
             } else {
                 btn.classList.remove('active');
-                btn.textContent = '♡';
-                btn.style.color = '#D2691E';
+                btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
             }
         });
     }
@@ -453,20 +459,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Advanced filters
-    if (advBrand) {
-        advBrand.addEventListener('change', function() {
-            currentBrand = this.value || '';
-            applyFilters();
-        });
-    }
-    if (advMaterial) {
-        advMaterial.addEventListener('change', function() {
-            currentMaterial = this.value || '';
-            applyFilters();
-        });
-    }
-    
     function sortItems(items, criteria) {
         return items.sort((a, b) => {
             if (criteria === 'price-low') {
@@ -502,7 +494,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const price = parseFloat(priceText.replace(/[^0-9.]/g, ''));
             const brand = item.getAttribute('data-brand') || '';
             const material = item.getAttribute('data-material') || '';
-            
+
             // Check category filter
             const categoryMatch = currentFilter === 'all' || category === currentFilter;
             
@@ -513,11 +505,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Check price filter
             const priceMatch = price >= currentMinPrice && price <= currentMaxPrice;
-            
-            const brandMatch = !currentBrand || brand === currentBrand;
-            const materialMatch = !currentMaterial || material === currentMaterial;
 
-            if (categoryMatch && searchMatch && priceMatch && brandMatch && materialMatch) {
+            if (categoryMatch && searchMatch && priceMatch) {
                 item.style.display = 'block';
                 item.style.opacity = '1';
                 item.style.transform = 'translateY(0)';
@@ -630,50 +619,61 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Aggregate elements from all scopes
-        const viewDetailsBtns = [];
-        const addToCartBtns = [];
-        const quickViewBtns = [];
-        const wishlistBtns = [];
-        const viewInRoomBtnsDyn = [];
+        const actionDetailsBtns = [];
+        const actionCartBtns = [];
+        const action3DBtns = [];
+        const actionWishlistBtns = [];
 
         scopes.forEach(root => {
             if (!root || !root.querySelectorAll) return;
-            viewDetailsBtns.push(...root.querySelectorAll('.view-details-btn'));
-            addToCartBtns.push(...root.querySelectorAll('.add-to-cart-btn'));
-            quickViewBtns.push(...root.querySelectorAll('.quick-view-btn'));
-            wishlistBtns.push(...root.querySelectorAll('.wishlist-btn'));
-            viewInRoomBtnsDyn.push(...root.querySelectorAll('.view-in-room-btn'));
+            actionDetailsBtns.push(...root.querySelectorAll('.action-details-btn'));
+            actionCartBtns.push(...root.querySelectorAll('.action-cart-btn'));
+            action3DBtns.push(...root.querySelectorAll('.action-3d-btn'));
+            actionWishlistBtns.push(...root.querySelectorAll('.action-wishlist-btn'));
         });
     
-        // View Details button styling
-        viewDetailsBtns.forEach(btn => {
-            btn.style.textDecoration = 'none';
-            btn.style.display = 'inline-block';
-        });
-    
-
-    
-    // Add to Cart: handled globally via delegated listener in cart-popup.js to avoid duplicates
-
-        // Quick View button functionality
-        quickViewBtns.forEach(btn => {
-            if (btn.dataset.boundQuickView === '1') return;
-            btn.dataset.boundQuickView = '1';
+        // Details button: navigate to product details page
+        actionDetailsBtns.forEach(btn => {
+            if (btn.dataset.boundActionDetails === '1') return;
+            btn.dataset.boundActionDetails = '1';
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                const productId = this.getAttribute('data-product-id');
-                const productCard = this.closest('.product-card');
+                const href = this.getAttribute('href');
+                if (href) window.location.href = href;
+            });
+        });
+
+        // Cart button: handled by delegated listener in cart-popup.js
+        actionCartBtns.forEach(btn => {
+            if (btn.dataset.boundActionCart === '1') return;
+            btn.dataset.boundActionCart = '1';
+            // No need to bind listener - delegated listener in cart-popup.js handles this
+        });
+
+        // 3D View button: open 3D viewer modal
+        action3DBtns.forEach(btn => {
+            if (btn.dataset.boundAction3D === '1') return;
+            btn.dataset.boundAction3D = '1';
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const productCard = btn.closest('.product-card');
                 const productTitle = productCard.querySelector('.product-title').textContent;
-                const productPrice = productCard.querySelector('.current-price').textContent;
-                console.log(`Quick view: ${productTitle} (${productPrice}) - ID: ${productId}`);
-                window.location.href = `product-details.html?id=${productId}`;
+                const modelSrc = (btn.getAttribute('data-model-src')||'').replace(/\s/g, '%20');
+                const productId = btn.getAttribute('data-product-id');
+                // Try to trigger AR directly from the on-card model-viewer if supported
+                const mvOnCard = productCard.querySelector('model-viewer');
+                if (mvOnCard && mvOnCard.canActivateAR) {
+                    try { mvOnCard.activateAR(); return; } catch {}
+                }
+                // Fallback: open our 3D modal
+                showGalleryARExperience(productTitle, modelSrc, productId);
             });
         });
     
         // Wishlist button functionality with persistence
-        wishlistBtns.forEach(btn => {
-            if (btn.dataset.boundWishlist === '1') return;
-            btn.dataset.boundWishlist = '1';
+        actionWishlistBtns.forEach(btn => {
+            if (btn.dataset.boundActionWishlist === '1') return;
+            btn.dataset.boundActionWishlist = '1';
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const productCard = this.closest('.product-card');
@@ -687,37 +687,60 @@ document.addEventListener('DOMContentLoaded', function() {
                     addToWishlistFromCard(productCard);
                     window.cartPopupSystem?.showNotification(`${productTitle} added to wishlist!`, 'success');
                 }
-                // Ensure button UI updates even if no wishlist section on page
+                // Ensure button UI updates
                 syncWishlistButtons();
-            });
-        });
-
-        // AR view-in-room for dynamically added items
-        viewInRoomBtnsDyn.forEach(btn => {
-            if (btn.dataset.boundViewInRoom === '1') return;
-            btn.dataset.boundViewInRoom = '1';
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const productCard = btn.closest('.product-card');
-                const productTitle = productCard.querySelector('.product-title').textContent;
-                const modelSrc = (btn.getAttribute('data-model-src')||'').replace(/\s/g, '%20');
-                const productId = btn.getAttribute('data-product-id');
-                // Try to trigger AR directly from the on-card model-viewer if supported (Android Scene Viewer / WebXR)
-                const mvOnCard = productCard.querySelector('model-viewer');
-                if (mvOnCard && mvOnCard.canActivateAR) {
-                    try { mvOnCard.activateAR(); return; } catch {}
-                }
-                // Fallback: open our AR/3D modal
-                showGalleryARExperience(productTitle, modelSrc, productId);
             });
         });
     }
 
     bindCardButtons(document);
 
+    // Make the entire product card clickable to open product details
+    function bindCardNavigation(context){
+        let scopes = [];
+        if (!context) {
+            scopes = [document];
+        } else if (Array.isArray(context)) {
+            scopes = context;
+        } else if (NodeList.prototype.isPrototypeOf(context)) {
+            scopes = Array.from(context);
+        } else {
+            scopes = [context];
+        }
+
+        scopes.forEach(root => {
+            if (!root || !root.querySelectorAll) return;
+            root.querySelectorAll('.product-card').forEach(card => {
+                if (card.dataset.navBound === '1') return;
+                card.dataset.navBound = '1';
+                card.addEventListener('click', (e) => {
+                    // Skip clicks on any actionable buttons/links inside the card
+                    if (e.target.closest('.action-btn') || e.target.closest('a')) return;
+                    const pid = card.getAttribute('data-product-id');
+                    if (!pid) return;
+                    window.location.href = `product-details.html?id=${encodeURIComponent(pid)}`;
+                });
+            });
+        });
+    }
+
+    bindCardNavigation(document);
+
     // Delegated handlers as a safety net: ensures clicks work even if buttons are added later
     if (galleryContainer) {
         galleryContainer.addEventListener('click', (e) => {
+            const card = e.target.closest('.product-card');
+            if (card && galleryContainer.contains(card)) {
+                // Ignore clicks on intentional action controls (anchors or action buttons)
+                if (!e.target.closest('.action-btn') && !e.target.closest('a')) {
+                    const id = card.getAttribute('data-product-id');
+                    if (id) {
+                        window.location.href = `product-details.html?id=${encodeURIComponent(id)}`;
+                        return;
+                    }
+                }
+            }
+
             const quickBtn = e.target.closest('.quick-view-btn');
             if (quickBtn && galleryContainer.contains(quickBtn)) {
                 e.preventDefault();
@@ -817,11 +840,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     card.innerHTML = `
                         <div class="product-image">
                             ${mediaHtml}
-                            <div class="product-overlay">
-                                <button class="quick-view-btn" data-product-id="${p.id}">Quick View</button>
-                                <button class="add-to-cart-btn" data-product-id="${p.id}">Add to Cart</button>
-                                ${p.is_3d && p.model_src ? `<button class="view-in-room-btn" data-product-id="${p.id}" data-model-src="${p.model_src}">View in Room</button>` : ''}
-                            </div>
+                            ${p.is_3d && p.model_src ? `<div class="product-3d-badge">3D</div>` : ''}
                             ${badgeHtml}
                         </div>
                         <div class="product-info">
@@ -835,10 +854,26 @@ document.addEventListener('DOMContentLoaded', function() {
                                 ${originalHtml}
                                 ${discountHtml}
                             </div>
-                            <div class="product-actions">
-                                <a href="product-details.html?id=${p.id}" class="view-details-btn">View Details</a>
-                                <button class="wishlist-btn" data-product-id="${p.id}">♡</button>
-                            </div>
+                        </div>
+                        <div class="product-actions-bar">
+                            <a href="product-details.html?id=${p.id}" class="action-btn action-details-btn" title="View Details">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                Details
+                            </a>
+                            <button class="action-btn action-cart-btn" data-product-id="${p.id}" title="Add to Cart">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                                </svg>
+                                Cart
+                            </button>
+                            <button class="action-btn action-wishlist-btn" data-product-id="${p.id}" title="Add to Wishlist">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                </svg>
+                            </button>
                         </div>`;
                     galleryContainer.appendChild(card);
                     created.push(card);
@@ -852,6 +887,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 bindRipple(created);
                 // Bind only the newly created cards to avoid double-binding existing buttons
                 bindCardButtons(created);
+                bindCardNavigation(created);
                 updatePriceRange();
                 applyFilters();
                 syncWishlistButtons();

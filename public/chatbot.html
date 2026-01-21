@@ -5,281 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Decor Support Chatbot</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        .chatbot-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .chat-toggle {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(139, 69, 19, 0.3);
-            transition: all 0.3s ease;
-            border: none;
-            color: white;
-        }
-
-        .chat-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 25px rgba(139, 69, 19, 0.4);
-        }
-
-        .chat-toggle svg {
-            width: 24px;
-            height: 24px;
-        }
-
-        .chat-window {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 350px;
-            height: 500px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 1001;
-        }
-
-        .chat-window.active {
-            display: flex;
-        }
-
-        .chat-header {
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .chat-header h3 {
-            margin: 0;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .close-chat {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 20px;
-            padding: 0;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            background: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .message {
-            max-width: 85%;
-            padding: 10px 15px;
-            border-radius: 15px;
-            font-size: 14px;
-            line-height: 1.4;
-            animation: fadeIn 0.3s ease-out;
-            overflow-wrap: anywhere;
-            word-break: break-word;
-        }
-
-        .user-message {
-            align-self: flex-end;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-            color: white;
-            border-bottom-right-radius: 5px;
-        }
-
-        .bot-message {
-            align-self: flex-start;
-            background: white;
-            color: #333;
-            border: 1px solid #e0e0e0;
-            border-bottom-left-radius: 5px;
-        }
-
-    /* Bot message rich text basics (light) */
-    .bot-message a { color: #8B4513; text-decoration: underline; }
-    .bot-message code { background: #f3f4f6; padding: 0.1rem 0.3rem; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-    .bot-message ul { margin: 6px 0 6px 18px; padding: 0; }
-    .bot-message li { margin: 2px 0; }
-
-        .chat-input-area {
-            padding: 15px;
-            border-top: 1px solid #e0e0e0;
-            background: white;
-            display: flex;
-            gap: 10px;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            outline: none;
-            font-size: 14px;
-            transition: border-color 0.3s ease;
-        }
-
-        .chat-input:focus {
-            border-color: #8B4513;
-        }
-
-        .send-button {
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .send-button:hover {
-            transform: scale(1.05);
-        }
-
-        .send-button svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        .loading-dots {
-            display: flex;
-            align-items: center;
-            height: 20px;
-            padding-left: 10px;
-        }
-
-        .loading-dots div {
-            width: 6px;
-            height: 6px;
-            background-color: #8B4513;
-            border-radius: 50%;
-            margin: 0 2px;
-            animation: bounce 0.6s infinite alternate;
-        }
-
-        .loading-dots div:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .loading-dots div:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes bounce {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-6px); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 768px) {
-            .chat-window {
-                width: calc(100vw - 40px);
-                height: 60vh;
-                bottom: 80px;
-                right: 20px;
-                left: 20px;
-            }
-        }
-
-        /* Dark mode optimization for AI (bot) side and chat UI */
-        body.dark-mode .chat-window {
-            background: #111317;
-            color: #e5e7eb;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.55);
-            border: 1px solid #22262c;
-        }
-
-        body.dark-mode .chat-header {
-            /* keep brand gradient; ensure text contrast */
-            color: #fff;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-
-        body.dark-mode .chat-messages {
-            background: #0c0d10;
-        }
-
-        /* Bot bubbles get a richer dark surface and subtle ring */
-        body.dark-mode .bot-message {
-            background: #171a1f;
-            color: #e6e7eb;
-            border-color: #2a2f36;
-            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
-        }
-
-        /* Add a gentle left accent to bot messages in dark mode for readability */
-        body.dark-mode .bot-message {
-            border-left: 3px solid #A0522D; /* brand accent */
-            border-bottom-left-radius: 7px;
-        }
-
-    /* Rich text in bot bubble (dark) */
-    body.dark-mode .bot-message a { color: #f0b35f; text-decoration: underline; }
-    body.dark-mode .bot-message code { background: #0f1115; color: #e6e7eb; border: 1px solid #2a2f36; }
-    body.dark-mode .bot-message ul { margin: 6px 0 6px 18px; }
-
-        body.dark-mode .user-message {
-            /* keep gradient; enhance lift */
-            box-shadow: 0 4px 14px rgba(160, 82, 45, 0.2);
-        }
-
-        body.dark-mode .chat-input-area {
-            background: #111317;
-            border-top-color: #22262c;
-        }
-
-        body.dark-mode .chat-input {
-            background: #0c0d10;
-            color: #e5e7eb;
-            border-color: #2a2f36;
-        }
-
-        body.dark-mode .chat-input::placeholder {
-            color: #9aa4b2;
-        }
-
-        body.dark-mode .chat-input:focus {
-            border-color: #A0522D;
-            box-shadow: 0 0 0 3px rgba(160,82,45,0.2);
-        }
-
+    <link rel="stylesheet" href="CSS/chatbot.css">
         body.dark-mode .loading-dots div {
             background-color: #f0b35f; /* warmer accent for visibility on dark */
         }
@@ -290,6 +16,7 @@
         body.dark-mode .chat-messages::-webkit-scrollbar-thumb { background-color: #2a2f36; border-radius: 6px; border: 2px solid #0c0d10; }
         body.dark-mode .chat-messages { scrollbar-color: #2a2f36 #0c0d10; }
     </style>
+    <link rel="stylesheet" href="CSS/responsive.css">
 </head>
 <body>
     <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
@@ -344,7 +71,7 @@
             },
             contact: {
                 phone: "+91 9825000000",
-                email: "support@homedecorfurniturestore.com",
+                email: "support@homedecorfurniture.com",
                 address: "Ahmedabad, Gujarat, India",
                 hours: "Monday-Friday: 9 AM - 6 PM IST"
             },
@@ -522,5 +249,6 @@ Keep responses concise and helpful. If you don't know something specific, sugges
             });
         });
     </script>
+    <script src="js/mobile-menu.js"></script>
 </body>
 </html> 

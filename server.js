@@ -179,6 +179,7 @@ reviewSchema.index({ user_id: 1, product_id: 1 }, { unique: true });
 
 // Contact Message Schema
 const contactMessageSchema = new mongoose.Schema({
+    user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     name: String,
     email: String,
     phone: String,
@@ -634,29 +635,30 @@ app.get('/api/admin/stats', requireAdmin, writeLimiter, async (req, res) => {
     }
 });
 
-// Public: receive contact form submissions
-app.post('/api/contact', strictWriteLimiter, async (req, res) => {
+// Protected: receive contact form submissions (requires login)
+app.post('/api/contact', requireAuth, strictWriteLimiter, async (req, res) => {
     try {
         const { name, email, phone, subject, message } = req.body || {};
 
-        let finalName = name && String(name).trim();
-        let finalEmail = email && String(email).trim();
-        const finalPhone = (phone || '').toString().trim();
-
-        const isAuthed = !!(req.session && req.session.userId);
-        if (isAuthed) {
-            finalName = finalName || req.session.fullName || req.session.username || 'User';
-            finalEmail = finalEmail || req.session.email || '';
+        // User must be authenticated
+        const userId = req.session && req.session.userId;
+        if (!userId) {
+            return res.status(401).json({ error: 'Must be logged in to send a message' });
         }
+
+        const finalName = (name && String(name).trim()) || req.session.fullName || req.session.username || 'User';
+        const finalEmail = (email && String(email).trim()) || req.session.email || '';
+        const finalPhone = (phone || '').toString().trim();
 
         if (!subject || !String(subject).trim() || !message || !String(message).trim()) {
             return res.status(400).json({ error: 'Subject and message are required' });
         }
         if (!finalName || !finalEmail) {
-            return res.status(400).json({ error: 'Name and email are required for guests' });
+            return res.status(400).json({ error: 'Name and email are required' });
         }
 
         const msg = await ContactMessage.create({
+            user_id: userId,
             name: String(finalName).trim(),
             email: String(finalEmail).trim(),
             phone: finalPhone,

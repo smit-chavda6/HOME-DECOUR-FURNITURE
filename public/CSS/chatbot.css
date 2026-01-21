@@ -8,8 +8,8 @@
 }
 
 .chat-toggle {
-    width: 60px;
-    height: 60px;
+    width: 64px;
+    height: 64px;
     background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
     border-radius: 50%;
     display: flex;
@@ -29,8 +29,24 @@
 }
 
 .chat-toggle svg {
-    width: 24px;
-    height: 24px;
+    width: 26px;
+    height: 26px;
+}
+
+@media (max-width: 768px) {
+    .chatbot-container {
+        bottom: 18px;
+        right: 18px;
+    }
+    .chat-toggle {
+        width: 68px;
+        height: 68px;
+        box-shadow: 0 8px 24px rgba(139, 69, 19, 0.35);
+    }
+    .chat-toggle svg {
+        width: 28px;
+        height: 28px;
+    }
 }
 
 .chat-window {
