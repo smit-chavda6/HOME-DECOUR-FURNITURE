@@ -6,8 +6,12 @@ class LoadingManager {
         this.loaderMessage = document.querySelector('.loader-message');
         this.isLoading = true;
         this.startTime = Date.now();
-        // Shorter minimum time for better responsiveness
-        this.minLoadingTime = 1200; // Minimum 1.2 seconds
+        
+        // Detect if mobile for faster loading
+        this.isMobile = window.innerWidth <= 768;
+        
+        // Shorter minimum time on mobile for better responsiveness
+        this.minLoadingTime = this.isMobile ? 800 : 1200; // 0.8s on mobile, 1.2s on desktop
         
         this.messages = [
             "Crafting your perfect space...",
@@ -36,12 +40,13 @@ class LoadingManager {
             this.hideLoadingScreen();
         });
         
-        // Fallback: hide after 6 seconds if load event doesn't fire
+        // Fallback: hide after 5 seconds on desktop, 4 seconds on mobile
+        const fallbackTime = this.isMobile ? 4000 : 5000;
         setTimeout(() => {
             if (this.isLoading) {
                 this.hideLoadingScreen();
             }
-        }, 6000);
+        }, fallbackTime);
     }
     
     updateLoadingMessages() {

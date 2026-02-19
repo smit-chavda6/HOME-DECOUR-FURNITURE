@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details - HOME DECOR FURNITURE</title>
+
+    <!-- Lenis Smooth Scroll CDN -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
     <!-- Favicons - Enhanced for better compatibility -->
     <link rel="icon" type="image/x-icon" href="image/Logo maker project.webp">
     <link rel="icon" type="image/png" sizes="16x16" href="image/Logo maker project.webp">
@@ -43,22 +47,28 @@
         href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Dancing+Script:wght@400..700&display=swap"
         rel="stylesheet">
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+    <!-- Smooth Animations CSS -->
+    <link rel="stylesheet" href="CSS/smooth-animations.css">
 </head>
 
 <body>
-    <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
+
+    <script>(function () { try { var d = document; var t = localStorage.getItem('hdf-theme'); if (!t) { t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; } var st = d.createElement('style'); st.id = 'no-fouc'; st.textContent = '*{transition:none!important}'; d.head.appendChild(st); d.body.style.visibility = 'hidden'; if (t === 'dark') { d.body.classList.add('dark-mode'); } var accent = localStorage.getItem('hdf-accent') || 'accent-amber'; if (accent) d.body.classList.add(accent); var meta = d.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', t === 'dark' ? '#0f0f11' : '#8B4513'); d.body.style.visibility = ''; st.remove(); } catch (e) { } })();</script>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode" hidden>
         <svg id="themeIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M21.64 13a1 1 0 0 0-1.05-.14A8 8 0 1 1 11.14 3.41a1 1 0 0 0-.14-1.05 1 1 0 0 0-1.09-.33A10 10 0 1 0 22 14.09a1 1 0 0 0-.36-1.09z"/>
+            <path
+                d="M21.64 13a1 1 0 0 0-1.05-.14A8 8 0 1 1 11.14 3.41a1 1 0 0 0-.14-1.05 1 1 0 0 0-1.09-.33A10 10 0 1 0 22 14.09a1 1 0 0 0-.36-1.09z" />
         </svg>
     </button>
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="navbar-brand">
-                <img src="image/Logo maker project.webp" alt="Home Decor Furniture Logo" class="navbar-logo" loading="lazy">
+                <img src="image/Logo maker project.webp" alt="Home Decor Furniture Logo" class="navbar-logo"
+                    loading="lazy">
                 <h1 class="navbar-name">HOME DECOR FURNITURE</h1>
             </a>
-            
+
             <ul class="navbar-menu" id="primary-navigation">
                 <li class="navbar-item">
                     <a href="index.html" class="navbar-link">Home</a>
@@ -80,14 +90,15 @@
                 <li class="navbar-item">
                     <a href="#" class="cart-icon" id="cart-icon">
                         <svg viewBox="0 0 24 24">
-                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                            <path
+                                d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
                         </svg>
                         Cart
                         <span class="cart-count" id="cart-count">0</span>
                     </a>
                 </li>
             </ul>
-            
+
             <div class="hamburger">
                 <div class="hamburger-line"></div>
                 <div class="hamburger-line"></div>
@@ -104,14 +115,15 @@
             <span class="breadcrumb-separator">/</span>
             <span class="breadcrumb-current" id="breadcrumb-product-name">Product</span>
         </div>
-        
+
         <div class="product-container">
             <div class="product-gallery">
                 <div class="main-image-container" id="media-container">
                     <!-- JS will inject <img> or <model-viewer> here -->
                     <button class="zoom-btn" id="zoom-btn" style="display: none;">
                         <svg viewBox="0 0 24 24">
-                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                            <path
+                                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
                         </svg>
                     </button>
                 </div>
@@ -119,7 +131,7 @@
                     <!-- Thumbnail images will be added here -->
                 </div>
             </div>
-            
+
             <div class="product-details-content">
                 <div class="product-header">
                     <h1 id="product-name" class="product-title"></h1>
@@ -129,7 +141,7 @@
                         <span class="review-count"></span>
                     </div>
                 </div>
-                
+
                 <div class="product-pricing">
                     <div class="price-container">
                         <span class="current-price" id="product-price"></span>
@@ -138,71 +150,79 @@
                     </div>
                     <div class="stock-status">
                         <span class="stock-indicator in-stock">● In Stock</span>
-                        <span class="free-shipping">🚚 Free Shipping</span>
+
                     </div>
                 </div>
-                
+
                 <div class="product-options">
                     <div class="option-group">
-                        <label class="option-label">Quantity</label>
+                        <label for="quantity" class="option-label">Quantity</label>
                         <div class="quantity-selector">
                             <button class="quantity-btn" id="decrease-btn" title="Decrease quantity">−</button>
-                            <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="10" title="Product quantity" aria-label="Product quantity">
+                            <input type="number" id="quantity" class="quantity-input" value="1" min="1" max="10"
+                                title="Product quantity" aria-label="Product quantity">
                             <button class="quantity-btn" id="increase-btn" title="Increase quantity">+</button>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="product-actions">
                     <button class="btn-primary" id="add-to-cart-btn">
                         <svg viewBox="0 0 24 24">
-                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                            <path
+                                d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
                         </svg>
                         Add to Cart
                     </button>
                     <button class="btn-secondary" id="contact-btn">
                         <svg viewBox="0 0 24 24">
-                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            <path
+                                d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
                         </svg>
                         Contact for Quote
                     </button>
                     <button class="btn-ar" id="view-in-room-btn" style="display: none;">
                         <svg viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                         </svg>
                         View in Room
                     </button>
                 </div>
-                
+
                 <div class="product-benefits">
                     <div class="benefit-item">
                         <svg viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                         </svg>
                         <span>Premium Quality</span>
                     </div>
                     <div class="benefit-item">
                         <svg viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                         </svg>
                         <span>Free Shipping</span>
                     </div>
                     <div class="benefit-item">
                         <svg viewBox="0 0 24 24">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                         </svg>
                         <span>Easy Returns</span>
                     </div>
                     <div class="benefit-item">
                         <svg viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                         </svg>
                         <span>2 Year Warranty</span>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="product-tabs">
             <div class="tab-navigation">
                 <button class="tab-btn active" data-tab="description">Description</button>
@@ -210,13 +230,13 @@
                 <button class="tab-btn" data-tab="reviews">Reviews</button>
                 <button class="tab-btn" data-tab="shipping">Shipping & Returns</button>
             </div>
-            
+
             <div class="tab-content">
                 <div class="tab-pane active" id="description-tab">
                     <h3>Product Description</h3>
                     <p id="product-description"></p>
                 </div>
-                
+
                 <div class="tab-pane" id="specifications-tab">
                     <h3>Product Specifications</h3>
                     <div class="specs-grid">
@@ -242,26 +262,66 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="tab-pane" id="reviews-tab">
                     <h3>Customer Reviews</h3>
                     <!-- Reviews will be populated by reviews.js -->
                 </div>
-                
+
                 <div class="tab-pane" id="shipping-tab">
-                    <h3>Shipping & Returns</h3>
+                    <h3>Delivery Information</h3>
                     <div class="shipping-info">
                         <div class="shipping-item">
-                            <h4>🚚 Free Shipping</h4>
-                            <p>Free standard shipping on all orders. Delivery within 3-5 business days.</p>
+                            <div class="shipping-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path
+                                        d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" />
+                                </svg>
+                            </div>
+                            <div class="shipping-content">
+                                <h4>Free Delivery</h4>
+                                <p>Free standard shipping on all orders over ₹999. Delivered safely to your doorstep
+                                    within 3-5 business days.</p>
+                            </div>
                         </div>
                         <div class="shipping-item">
-                            <h4>🔄 Easy Returns</h4>
-                            <p>30-day return policy. Return shipping is free for defective items.</p>
+                            <div class="shipping-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path
+                                        d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z" />
+                                </svg>
+                            </div>
+                            <div class="shipping-content">
+                                <h4>Easy Returns</h4>
+                                <p>Hassle-free 30-day return policy. If you don't love it, return it for a full refund
+                                    or exchange.</p>
+                            </div>
                         </div>
                         <div class="shipping-item">
-                            <h4>🛡️ Secure Payment</h4>
-                            <p>All payments are secure and encrypted. Multiple payment options available.</p>
+                            <div class="shipping-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z" />
+                                </svg>
+                            </div>
+                            <div class="shipping-content">
+                                <h4>Warranty Protection</h4>
+                                <p>Every piece comes with a comprehensive 2-year warranty against manufacturing defects.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="shipping-item">
+                            <div class="shipping-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path
+                                        d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z" />
+                                </svg>
+                            </div>
+                            <div class="shipping-content">
+                                <h4>Secure Payment</h4>
+                                <p>Your payment information is processed securely. We support all major credit cards and
+                                    UPI.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -284,26 +344,31 @@
         <div class="footer-container">
             <div class="footer-section">
                 <h3>About Us</h3>
-                <p>We are passionate about creating beautiful spaces with high-quality furniture that combines style, comfort, and functionality. Your home should reflect your personality and lifestyle.</p>
+                <p>We are passionate about creating beautiful spaces with high-quality furniture that combines style,
+                    comfort, and functionality. Your home should reflect your personality and lifestyle.</p>
                 <div class="social-links">
                     <a href="#" class="social-link" title="X (Twitter)">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="48" height="48" fill="#D2691E">
-                          <path d="M76.39 28H92L65.5 57.22 96 92H71.8L53.6 70.2 32 92H16L44.3 61.42 14 28h25l16.8 19.8L76.39 28Zm-4.8 58h7.3L38 34h-8.1L71.59 86Z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="48" height="48"
+                            fill="#D2691E">
+                            <path
+                                d="M76.39 28H92L65.5 57.22 96 92H71.8L53.6 70.2 32 92H16L44.3 61.42 14 28h25l16.8 19.8L76.39 28Zm-4.8 58h7.3L38 34h-8.1L71.59 86Z" />
                         </svg>
                     </a>
                     <a href="#" class="social-link" title="Pinterest">
                         <svg viewBox="0 0 24 24">
-                            <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.878-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z"/>
+                            <path
+                                d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.878-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z" />
                         </svg>
                     </a>
                     <a href="#" class="social-link" title="Instagram">
                         <svg viewBox="0 0 24 24">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            <path
+                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                         </svg>
                     </a>
                 </div>
             </div>
-            
+
             <div class="footer-section">
                 <h3>Quick Links</h3>
                 <ul class="footer-links">
@@ -313,48 +378,51 @@
                     <li><a href="contact.html">Contact Us</a></li>
                     <li><a href="blog.html">Blog</a></li>
                     <li><a href="faq.html">FAQ</a></li>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
+
                 </ul>
             </div>
-            
+
             <div class="footer-section">
                 <h3>Contact Info</h3>
                 <div class="contact-info">
                     <div class="contact-item">
                         <svg viewBox="0 0 24 24">
-                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            <path
+                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                         </svg>
                         <span>Ahmedabad, Gujarat, India</span>
                     </div>
                     <div class="contact-item">
                         <svg viewBox="0 0 24 24">
-                            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                            <path
+                                d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
                         </svg>
                         <span>+91 9825000000</span>
                     </div>
                     <div class="contact-item">
                         <svg viewBox="0 0 24 24">
-                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            <path
+                                d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
                         </svg>
                         <span>support@homedecorfurniture.com</span>
                     </div>
                 </div>
             </div>
-            
+
             <div class="footer-section">
                 <h3>Newsletter</h3>
                 <div class="newsletter">
                     <p>Subscribe to get updates on new arrivals and special offers!</p>
                     <form class="newsletter-form">
                         <label for="newsletterEmail" class="sr-only">Email address</label>
-                        <input type="email" id="newsletterEmail" name="email" class="newsletter-input" placeholder="Enter your email" required autocomplete="email">
+                        <input type="email" id="newsletterEmail" name="email" class="newsletter-input"
+                            placeholder="Enter your email" required autocomplete="email">
                         <button type="submit" class="newsletter-btn">Subscribe</button>
                     </form>
                 </div>
             </div>
         </div>
-        
+
         <div class="footer-bottom">
             <div class="footer-bottom-content">
                 <p class="copyright">© 2025 <strong>HOME DECOR FURNITURE</strong>. All Rights Reserved.</p>
@@ -366,7 +434,7 @@
             </div>
         </div>
     </footer>
-    
+
     <!-- Cart Popup Modal -->
     <div id="cartPopupOverlay" class="cart-popup-overlay">
         <div class="cart-popup">
@@ -400,6 +468,9 @@
     <script src="js/chatbot.js"></script>
 
     <script src="js/mobile-menu.js"></script>
+
+    <!-- Smooth Scroll & Animations -->
+    <script src="js/smooth-scroll.js"></script>
 </body>
 
 </html>

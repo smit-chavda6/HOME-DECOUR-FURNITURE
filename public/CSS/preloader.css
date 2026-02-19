@@ -1,0 +1,307 @@
+/* ============================================================================
+   ULTRA-PREMIUM MINIMALIST PRELOADER
+   Luxury Furniture Brand - Apple/Lenis Style
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+/* Preloader container - Full screen with greige/warm stone */
+.preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #f5f5f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    overflow: hidden;
+}
+
+/* Dark mode - Deep charcoal with warm undertones */
+body.dark-mode .preloader {
+    background: #1a1816;
+}
+
+/* Split-door effect for exit */
+.preloader-left,
+.preloader-right {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: #f5f5f3;
+    transition: transform 1.4s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+body.dark-mode .preloader-left,
+body.dark-mode .preloader-right {
+    background: #1a1816;
+}
+
+.preloader-left {
+    left: 0;
+}
+
+.preloader-right {
+    right: 0;
+}
+
+.preloader.split-exit .preloader-left {
+    transform: translateX(-100%);
+}
+
+.preloader.split-exit .preloader-right {
+    transform: translateX(100%);
+}
+
+/* Preloader content wrapper */
+.preloader-content {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+/* Premium typography - Centered brand name */
+.preloader-brand {
+    font-family: 'Jost', sans-serif;
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    font-weight: 600;
+    color: #2c2826;
+    letter-spacing: 1px;
+    word-spacing: 0.25em;
+    line-height: 1.2;
+    margin: 0;
+    position: relative;
+    overflow: visible;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+    will-change: transform;
+    text-transform: uppercase;
+}
+
+body.dark-mode .preloader-brand {
+    color: #f5f5f3;
+}
+
+/* Two-part brand structure */
+.brand-part-1,
+.brand-part-2 {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.brand-part-1::after {
+    content: '';
+    display: inline-block;
+    width: 0.25em;
+    vertical-align: baseline;
+}
+
+.brand-part-2 {
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+/* Split text animation - Each letter */
+.preloader-brand .letter {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(120%);
+    clip-path: inset(0 0 100% 0);
+}
+
+/* Space letter styling */
+.preloader-brand .space-letter {
+    width: 0.25em;
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+}
+
+/* Subtitle/Tagline */
+.preloader-subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.75rem, 1.5vw, 1rem);
+    font-weight: 400;
+    color: #7a7572;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-top: 1.5rem;
+    opacity: 0;
+}
+
+body.dark-mode .preloader-subtitle {
+    color: #9a9591;
+}
+
+/* Minimalist counter - Bottom right */
+.preloader-counter {
+    position: fixed;
+    bottom: 3rem;
+    right: 3rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #2c2826;
+    letter-spacing: 0.1em;
+    opacity: 0;
+}
+
+body.dark-mode .preloader-counter {
+    color: #f5f5f3;
+}
+
+/* Elegant line indicator (minimal) */
+.preloader-line {
+    position: fixed;
+    bottom: 2.5rem;
+    left: 3rem;
+    right: 3rem;
+    height: 1px;
+    background: #e0e0dd;
+    opacity: 0;
+}
+
+body.dark-mode .preloader-line {
+    background: #3a3734;
+}
+
+.preloader-line-fill {
+    height: 100%;
+    width: 0;
+    background: #2c2826;
+    transform-origin: left;
+}
+
+body.dark-mode .preloader-line-fill {
+    background: #f5f5f3;
+}
+
+/* Navbar initial state - hidden during preload */
+body.loading .navbar {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Hero section initial state - slightly scaled */
+body.loading .hero-section,
+body.loading .slide-content,
+body.loading section:first-of-type {
+    opacity: 0;
+    transform: scale(1.1);
+}
+
+/* Navbar brand positioning for morph */
+.navbar-brand {
+    transition: none;
+}
+
+/* Prevent scrolling during loading */
+body.loading {
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* Premium fade-in for navbar after morph */
+.navbar {
+    transition: opacity 1s cubic-bezier(0.77, 0, 0.175, 1) 0s;
+}
+
+body:not(.loading) .navbar {
+    opacity: 1;
+}
+
+/* Stagger animation for navbar menu items */
+.navbar-menu .navbar-item {
+    opacity: 0;
+    transform: translateX(10px);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .preloader-brand {
+        font-size: clamp(1.5rem, 7vw, 2rem);
+        gap: 0.25rem;
+        flex-direction: column;
+        letter-spacing: 0.5px;
+    }
+    
+    .brand-part-1::after {
+        content: '';
+        display: none;
+    }
+    
+    .brand-part-1,
+    .brand-part-2 {
+        font-size: clamp(1.5rem, 7vw, 2rem);
+        letter-spacing: 0.5px;
+    }
+    
+    .brand-part-2 {
+        transform: translateY(15px);
+    }
+    
+    .preloader-counter {
+        bottom: 2rem;
+        right: 2rem;
+        font-size: 0.75rem;
+    }
+    
+    .preloader-line {
+        bottom: 1.5rem;
+        left: 2rem;
+        right: 2rem;
+    }
+    
+    .preloader-subtitle {
+        font-size: 0.65rem;
+        letter-spacing: 0.2em;
+    }
+}
+
+@media (max-width: 480px) {
+    .preloader-brand {
+        letter-spacing: 0.5px;
+    }
+    
+    .brand-part-1,
+    .brand-part-2 {
+        font-size: clamp(1.3rem, 7vw, 1.8rem);
+        letter-spacing: 0.5px;
+    }
+    
+    .brand-part-2 {
+        transform: translateY(12px);
+    }
+    
+    .preloader-counter {
+        bottom: 1.5rem;
+        right: 1.5rem;
+    }
+    
+    .preloader-line {
+        left: 1.5rem;
+        right: 1.5rem;
+    }
+}
+
+/* Accessibility - Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .preloader-left,
+    .preloader-right,
+    .navbar,
+    .navbar-menu .navbar-item {
+        transition-duration: 0.3s !important;
+    }
+    
+    body.loading .hero-section,
+    body.loading .slide-content,
+    body.loading section:first-of-type {
+        transform: scale(1) !important;
+    }
+}

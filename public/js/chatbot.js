@@ -82,22 +82,28 @@ document.addEventListener('DOMContentLoaded', () => {
             if (product.category.includes(token)) score += 1;
         });
 
-        // Boost for exact category matches
+        // Boost for exact category matches and keywords
         const categoryKeywords = {
-            'living': ['sofa', 'couch', 'armchair', 'coffee table', 'tv stand', 'settee'],
-            'dining': ['dining table', 'dining chair', 'dinner', 'eat', 'kitchen table'],
-            'bedroom': ['bed', 'mattress', 'nightstand', 'wardrobe', 'dresser'],
-            'office': ['desk', 'office chair', 'work', 'study', 'workspace'],
+            'living': ['sofa', 'couch', 'armchair', 'coffee table', 'tv stand', 'settee', 'seating', 'lounger', 'recliner'],
+            'dining': ['dining table', 'dining chair', 'dinner', 'eat', 'kitchen table', 'dining set'],
+            'bedroom': ['bed', 'mattress', 'nightstand', 'wardrobe', 'dresser', 'bedframe'],
+            'office': ['desk', 'office chair', 'work', 'study', 'workspace', 'computer desk'],
             '3d': ['3d', 'ar', 'augmented', 'model', 'virtual']
         };
 
         Object.entries(categoryKeywords).forEach(([cat, keywords]) => {
             if (product.category.includes(cat)) {
                 keywords.forEach(kw => {
-                    if (queryLower.includes(kw)) score += 2;
+                    if (queryLower.includes(kw)) score += 5; // Increased boost for category keyword match
                 });
             }
         });
+
+        // Direct product type matches (highest priority)
+        if (queryLower.includes('sofa') && product.name.toLowerCase().includes('sofa')) score += 10;
+        if (queryLower.includes('table') && product.name.toLowerCase().includes('table')) score += 10;
+        if (queryLower.includes('chair') && product.name.toLowerCase().includes('chair')) score += 10;
+        if (queryLower.includes('bed') && product.name.toLowerCase().includes('bed')) score += 10;
 
         if (queryLower.includes('3d') && product.is3d) score += 3;
         return score;
@@ -195,42 +201,38 @@ document.addEventListener('DOMContentLoaded', () => {
         const category = classifyQuestion(query);
         const lower = (query || '').toLowerCase();
 
+        // For product queries, search products first
+        if (category === 'product' || category === 'category' || category === 'price') {
+            const products = await searchProducts(query, CONFIG.suggestionsLimit);
+            if (products.length > 0) {
+                return `Based on your requirements, here are my top recommendations:`;
+            } else {
+                return `I couldn't find exact matches for "${query}". Try different keywords or browse our gallery. Our prices range from ₹5,000 to ₹80,000+.`;
+            }
+        }
+
         switch (category) {
-            case 'product':
-                return "We offer sofas, dining sets, bedroom furniture, office desks, and 3D models. Tell me your room and budget and I'll suggest options.";
-            
-            case 'category':
-                if (lower.includes('living')) return 'Living room furniture: sofas, armchairs, coffee tables, TV stands. What interests you?';
-                if (lower.includes('dining')) return 'Dining room collection: tables, chairs, storage. Looking for something specific?';
-                if (lower.includes('bedroom')) return 'Bedroom furniture: beds, nightstands, wardrobes, dressers. What size/style?';
-                if (lower.includes('office')) return 'Office furniture: desks, chairs, storage solutions for your workspace.';
-                if (lower.includes('3d')) return 'We offer interactive 3D models for visualizing furniture in your space. Check the gallery!';
-                return 'Browse our collections: Living, Dining, Bedroom, Office, or 3D Models.';
-            
-            case 'price':
-                return `Prices range from ₹5,000 to ₹80,000+. Share your budget and room type for specific recommendations.`;
-            
             case 'shipping':
                 return websiteInfo.policies.shipping + ' Contact us for exact delivery dates.';
-            
+
             case 'returns':
                 return websiteInfo.policies.returns;
-            
+
             case 'payment':
                 return websiteInfo.policies.payment;
-            
+
             case 'contact':
                 return `📞 ${websiteInfo.contact.phone}\n📧 ${websiteInfo.contact.email}\n${websiteInfo.contact.hours}`;
-            
+
             case 'features':
                 return 'We offer 3D/AR models for interactive visualization. Browse our 3D collection to see furniture in your space!';
-            
+
             case 'brand':
                 return 'All our furniture features premium materials—solid wood, quality upholstery, and sustainable construction.';
-            
+
             case 'availability':
                 return 'Most items are in stock. For pre-order or availability, contact us.';
-            
+
             default:
                 return "Tell me your room, budget, or style preference and I'll help you find the perfect furniture.";
         }
@@ -286,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========== UI Creation & Management ==========
     function createChatbotUI() {
         if (document.querySelector('.chatbot-container')) return;
-        
+
         const html = `
             <div class="chatbot-container">
                 <button class="chat-toggle" id="chatToggle" title="Chat with us">

@@ -4,19 +4,19 @@ class CartPopupSystem {
         // Prevent duplicate initialization
         this._initialized = false;
 
-    // Load and normalize cart from storage
-    const stored = JSON.parse(localStorage.getItem('cart')) || [];
-    this.cart = this._consolidateCart(this._normalizeCartItems(stored));
-    // Persist normalized cart back to storage (once)
-    try { localStorage.setItem('cart', JSON.stringify(this.cart)); } catch (e) {}
-    console.log('Cart popup system initialized with cart:', this.cart);
-        
+        // Load and normalize cart from storage
+        const stored = JSON.parse(localStorage.getItem('cart')) || [];
+        this.cart = this._consolidateCart(this._normalizeCartItems(stored));
+        // Persist normalized cart back to storage (once)
+        try { localStorage.setItem('cart', JSON.stringify(this.cart)); } catch (e) { }
+        console.log('Cart popup system initialized with cart:', this.cart);
+
         // Debug: Check if there are any items with price 0
         const zeroPriceItems = this.cart.filter(item => item.price === 0 || item.price === '0');
         if (zeroPriceItems.length > 0) {
             console.warn('Found items with zero price in cart:', zeroPriceItems);
         }
-        
+
         this.init();
     }
 
@@ -26,7 +26,7 @@ class CartPopupSystem {
             try {
                 const fresh = JSON.parse(localStorage.getItem('cart')) || this.cart;
                 this.cart = this._consolidateCart(this._normalizeCartItems(fresh));
-            } catch (e) {}
+            } catch (e) { }
             this.updateCartCount();
             return;
         }
@@ -77,12 +77,12 @@ class CartPopupSystem {
     updateCartCount() {
         const totalItems = this.cart.reduce((total, item) => total + item.quantity, 0);
         const cartCountElements = document.querySelectorAll('.cart-count');
-        
+
         cartCountElements.forEach(element => {
             element.textContent = totalItems;
             element.style.display = totalItems > 0 ? 'flex' : 'none';
         });
-        
+
         // Also update checkout button state
         this.updateCheckoutButtonState();
     }
@@ -154,13 +154,13 @@ class CartPopupSystem {
                 // Check auth status; if not logged in, send to login with redirect back
                 try {
                     const res = await fetch('/api/check-auth', { credentials: 'include' });
-                    const data = await res.json().catch(()=>({authenticated:false}));
+                    const data = await res.json().catch(() => ({ authenticated: false }));
                     if (!data?.authenticated) {
                         const redirect = encodeURIComponent('checkout.html');
                         window.location.href = `login.html?redirect=${redirect}`;
                         return;
                     }
-                } catch {}
+                } catch { }
                 window.location.href = 'checkout.html';
             });
         }
@@ -184,7 +184,7 @@ class CartPopupSystem {
 
     // Setup add to cart buttons
     setupAddToCartButtons() {
-    // Single delegated listener to handle both static and dynamically added buttons
+        // Single delegated listener to handle both static and dynamically added buttons
         if (!this._delegatedAddToCartBound) {
             document.addEventListener('click', (e) => {
                 const btn = e.target && (e.target.closest && e.target.closest('[data-add-to-cart="true"], .add-to-cart-btn, .action-cart-btn'));
@@ -203,9 +203,9 @@ class CartPopupSystem {
         let productId, productName, productPrice, productImage, selectedVariants = null;
 
         // Gallery or other pages
-    productId = button.getAttribute('data-product-id') || this.generateProductId();
+        productId = button.getAttribute('data-product-id') || this.generateProductId();
         const productCard = button.closest('.product-card');
-        
+
         if (productCard) {
             const titleElement = productCard.querySelector('.product-title');
             const priceElement = productCard.querySelector('.current-price');
@@ -224,10 +224,10 @@ class CartPopupSystem {
                 this.showNotification('This item is out of stock.', 'warning');
                 return;
             }
-            
+
             productName = titleElement ? titleElement.textContent : 'Product';
             productPrice = priceElement ? parseFloat(priceElement.textContent.replace(/[^\d.]/g, '')) : 0;
-            
+
             if (imageElement) {
                 productImage = this._normalizeImageUrl(imageElement.src);
             } else if (modelViewer) {
@@ -258,11 +258,11 @@ class CartPopupSystem {
             productImage = '';
         }
 
-    // Normalize id for consistent merging across pages
-    const normalizedId = this._normalizeId(productId);
-    // Check if item already exists in cart
-    const existingItemIndex = this.cart.findIndex(item => item.id === normalizedId);
-        
+        // Normalize id for consistent merging across pages
+        const normalizedId = this._normalizeId(productId);
+        // Check if item already exists in cart
+        const existingItemIndex = this.cart.findIndex(item => item.id === normalizedId);
+
         if (existingItemIndex > -1) {
             this.cart[existingItemIndex].quantity += 1;
         } else {
@@ -278,13 +278,13 @@ class CartPopupSystem {
 
         // Save to localStorage
         localStorage.setItem('cart', JSON.stringify(this.cart));
-        
+
         // Update cart count
         this.updateCartCount();
-        
+
         // Show success message
         this.showNotification(`${productName} added to cart!`, 'success');
-        
+
         // Add animation effect
         button.style.transform = 'scale(0.95)';
         setTimeout(() => {
@@ -302,7 +302,7 @@ class CartPopupSystem {
 
         // Check if item already exists in cart
         const existingItemIndex = this.cart.findIndex(item => item.id === normalizedId);
-        
+
         if (existingItemIndex > -1) {
             this.cart[existingItemIndex].quantity += qty;
             console.log('Updated existing item quantity');
@@ -319,10 +319,10 @@ class CartPopupSystem {
 
         // Save to localStorage
         localStorage.setItem('cart', JSON.stringify(this.cart));
-        
+
         // Update cart count
         this.updateCartCount();
-        
+
         console.log('Current cart:', this.cart);
     }
 
@@ -347,33 +347,38 @@ class CartPopupSystem {
 
         // Map 3D models to their corresponding images
         const modelImageMap = {
-            // Modern Sofa (no_43.glb) -> image/1.png
+            // Existing
             'no_43.glb': 'image/1.png',
-            // Sofa Chair (sofa_chair.glb) -> image/4.png
             'sofa_chair.glb': 'image/4.png',
-            // Low Poly Modern Sofa (low_poly_modern_sofa_free_model.glb) -> image/2.png
             'low_poly_modern_sofa_free_model.glb': 'image/2.png',
-            // Old Sofa (old_sofa_free.glb) -> image/3.png
             'old_sofa_free.glb': 'image/3.png',
-            // Leather Sofa Stool (free_leather_sofa_stool.glb) -> image/5.png
             'free_leather_sofa_stool.glb': 'image/5.png',
-            // White Chair (white_chair.glb) -> image/6.png
             'white_chair.glb': 'image/6.png',
-            // Simple Modern Chair (simple_modern_chair_free_model.glb) -> image/7.png
             'simple_modern_chair_free_model.glb': 'image/7.png',
-            // Modern Table (table_mr_ft.glb) -> image/8.png
-            'table_mr_ft.glb': 'image/8.png'
+            'table_mr_ft.glb': 'image/8.png',
+            // New mappings based on generic matching requirement "product name = image name"
+            // Assuming pattern where new models might be named similarly to their images or following a sequence
+            'gaming_chair_1.glb': 'image/gaming_chair_1.png', // Example placeholder, will rely on accurate name matching below
         };
 
         // Extract the filename from the model source
         const fileName = modelSrc.split('/').pop();
-        
-        // Check if we have a mapping for this model
+
+        // Check if we have a mapping for this models
         if (fileName && modelImageMap[fileName]) {
             return modelImageMap[fileName];
         }
 
-        // Fallback: try to match by product name if filename doesn't match
+        // Feature: Try to match image name to model name directly (e.g., 'chair.glb' -> 'image/chair.png')
+        if (fileName) {
+            // Remove extension and replace underscores/spaces if needed
+            const baseName = fileName.replace(/\.(glb|gltf)$/i, '');
+            // We can return a constructed path. If it doesn't exist, the UI onError handler should catch it.
+            // Using a likely path format based on user description
+            return `image/${baseName}.png`;
+        }
+
+        // Generic Fallback: try to match by product name if filename doesn't match
         if (productName.includes('modern sofa') || productName.includes('sofa')) {
             return 'image/1.png';
         } else if (productName.includes('sofa chair')) {
@@ -416,17 +421,17 @@ class CartPopupSystem {
         // Sync cart from storage before rendering to avoid stale data
         try {
             this.cart = JSON.parse(localStorage.getItem('cart')) || this.cart;
-        } catch (e) {}
+        } catch (e) { }
         const cartItemsContainer = document.getElementById('cartItemsContainer');
         const cartTotalPrice = document.getElementById('cartTotalPrice');
         const cartPopupOverlay = document.getElementById('cartPopupOverlay');
         const proceedToCheckoutBtn = document.getElementById('proceedToCheckoutBtn');
-        
+
         if (cartItemsContainer && cartTotalPrice) {
             if (this.cart.length === 0) {
                 cartItemsContainer.innerHTML = '<div class="empty-cart-message">Your cart is empty</div>';
                 cartTotalPrice.textContent = '₹0';
-                
+
                 // Disable checkout button when cart is empty
                 if (proceedToCheckoutBtn) {
                     proceedToCheckoutBtn.disabled = true;
@@ -436,14 +441,14 @@ class CartPopupSystem {
             } else {
                 this.renderCartItems(cartItemsContainer);
                 this.updateCartTotal(cartTotalPrice);
-                
+
                 // Add clear cart button
                 const clearCartBtn = document.createElement('button');
                 clearCartBtn.className = 'clear-cart-btn';
                 clearCartBtn.textContent = 'Clear Cart';
                 clearCartBtn.addEventListener('click', () => this.clearCart());
                 cartItemsContainer.appendChild(clearCartBtn);
-                
+
                 // Enable checkout button when cart has items
                 if (proceedToCheckoutBtn) {
                     proceedToCheckoutBtn.disabled = false;
@@ -452,7 +457,7 @@ class CartPopupSystem {
                 }
             }
         }
-        
+
         if (cartPopupOverlay) {
             cartPopupOverlay.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -471,15 +476,15 @@ class CartPopupSystem {
     // Render cart items
     renderCartItems(container) {
         container.innerHTML = '';
-        
+
         this.cart.forEach(item => {
             const cartItem = document.createElement('div');
             cartItem.className = 'cart-item';
-            
+
             // Check if this is a 3D model item (has 3D image path or specific pattern)
             const is3DModel = item.image && (item.image.includes('image/1.png') || item.image.includes('image/2.png') || item.image.includes('image/3.png') || item.image.includes('image/4.png') || item.image.includes('image/5.png') || item.image.includes('image/6.png') || item.image.includes('image/7.png') || item.image.includes('image/8.png') || item.name.toLowerCase().includes('3d'));
-            
-            const variantLine = item.variant ? `<div class="cart-item-variant">${Object.entries(item.variant).map(([k,v])=>`${k}: ${v}`).join(', ')}</div>` : '';
+
+            const variantLine = item.variant ? `<div class="cart-item-variant">${Object.entries(item.variant).map(([k, v]) => `${k}: ${v}`).join(', ')}</div>` : '';
             cartItem.innerHTML = `
                 <img src="${item.image}" alt="${item.name}" class="cart-item-image" 
                      onerror="this.src='image/1.png'"
@@ -496,24 +501,24 @@ class CartPopupSystem {
                 </div>
                 <button class="remove-item-btn" data-product-id="${item.id}">Remove</button>
             `;
-            
+
             // Add event listeners for quantity buttons
             const decreaseBtn = cartItem.querySelector('.decrease-btn');
             const increaseBtn = cartItem.querySelector('.increase-btn');
             const removeBtn = cartItem.querySelector('.remove-item-btn');
-            
+
             decreaseBtn.addEventListener('click', () => {
                 this.updateQuantity(item.id, -1);
             });
-            
+
             increaseBtn.addEventListener('click', () => {
                 this.updateQuantity(item.id, 1);
             });
-            
+
             removeBtn.addEventListener('click', () => {
                 this.removeFromCart(item.id);
             });
-            
+
             container.appendChild(cartItem);
         });
     }
@@ -532,21 +537,21 @@ class CartPopupSystem {
     // Update quantity
     updateQuantity(productId, change) {
         console.log('Updating quantity for product:', productId, 'change:', change);
-        
-    const normalizedId = this._normalizeId(productId);
-    const itemIndex = this.cart.findIndex(item => item.id === normalizedId);
-        
+
+        const normalizedId = this._normalizeId(productId);
+        const itemIndex = this.cart.findIndex(item => item.id === normalizedId);
+
         if (itemIndex > -1) {
             this.cart[itemIndex].quantity += change;
-            
+
             if (this.cart[itemIndex].quantity <= 0) {
                 this.cart.splice(itemIndex, 1);
                 console.log('Item removed due to zero quantity');
             }
-            
+
             localStorage.setItem('cart', JSON.stringify(this.cart));
             this.updateCartCount();
-            
+
             // Refresh cart popup if open
             const cartPopupOverlay = document.getElementById('cartPopupOverlay');
             if (cartPopupOverlay && cartPopupOverlay.classList.contains('active')) {
@@ -573,17 +578,17 @@ class CartPopupSystem {
     removeFromCart(productId) {
         console.log('Attempting to remove item with ID:', productId);
         console.log('Current cart before removal:', this.cart);
-        
-    const normalizedId = this._normalizeId(productId);
-    const removedItem = this.cart.find(item => item.id === normalizedId);
+
+        const normalizedId = this._normalizeId(productId);
+        const removedItem = this.cart.find(item => item.id === normalizedId);
         console.log('Item to remove:', removedItem);
-        
-    this.cart = this.cart.filter(item => item.id !== normalizedId);
+
+        this.cart = this.cart.filter(item => item.id !== normalizedId);
         console.log('Cart after removal:', this.cart);
-        
+
         localStorage.setItem('cart', JSON.stringify(this.cart));
         this.updateCartCount();
-        
+
         // Refresh cart popup if open
         const cartPopupOverlay = document.getElementById('cartPopupOverlay');
         if (cartPopupOverlay && cartPopupOverlay.classList.contains('active')) {
@@ -603,7 +608,7 @@ class CartPopupSystem {
                 }
             }
         }
-        
+
         if (removedItem) {
             this.showNotification(`${removedItem.name} removed from cart!`, 'info');
         }
@@ -618,7 +623,7 @@ class CartPopupSystem {
         this.showNotification('Cart cleared successfully', 'success');
         console.log('Cart cleared');
     }
-    
+
     // Reset cart completely (for debugging)
     resetCart() {
         this.cart = [];
@@ -629,7 +634,7 @@ class CartPopupSystem {
 
     // Show notification
     showNotification(message, type = 'info') {
-        
+
         // Remove existing notifications
         const existingNotifications = document.querySelectorAll('.notification');
         existingNotifications.forEach(notification => {
@@ -640,40 +645,44 @@ class CartPopupSystem {
                 }
             }, 300);
         });
-        
+
         // Create notification element
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
-        
+
         // Add SVG icon based on type
         let iconSvg = '';
-        switch(type) {
+        switch (type) {
             case 'success':
-                iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+                // Check Circle
+                iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>';
                 break;
             case 'error':
-                iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+                // Error/Cancel Circle
+                iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>';
                 break;
             case 'warning':
-                iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+                // Warning Triangle
+                iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>';
                 break;
             case 'info':
             default:
-                iconSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+                // Info Circle
+                iconSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>';
                 break;
         }
-        
+
         // Build notification safely to avoid injecting untrusted HTML in message
-        notification.innerHTML = `<span style="flex-shrink:0;">${iconSvg}</span><span></span>`;
+        notification.innerHTML = `<span class="notification-icon-wrapper" style="flex-shrink:0;">${iconSvg}</span><span class="notification-message"></span>`;
         const msgSpan = notification.querySelector('span:last-child');
         if (msgSpan) msgSpan.textContent = String(message || '');
-        
+
         // Add to page
         document.body.appendChild(notification);
-        
+
         // Force reflow to ensure animation works
         notification.offsetHeight;
-        
+
         // Remove after 4 seconds
         setTimeout(() => {
             notification.classList.add('fade-out');
@@ -683,7 +692,7 @@ class CartPopupSystem {
                 }
             }, 300);
         }, 4000);
-        
+
         // Allow manual close on click
         notification.addEventListener('click', () => {
             notification.classList.add('fade-out');

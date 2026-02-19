@@ -502,6 +502,7 @@ app.post('/api/login', authLimiter, async (req, res) => {
         req.session.username = user.username;
         req.session.fullName = user.full_name;
         req.session.email = user.email;
+        req.session.phone = user.phone;
         req.session.role = user.role;
 
         res.json({
@@ -512,6 +513,7 @@ app.post('/api/login', authLimiter, async (req, res) => {
                 username: user.username,
                 email: user.email,
                 full_name: user.full_name,
+                phone: user.phone,
                 role: user.role
             }
         });
@@ -541,6 +543,7 @@ app.get('/api/check-auth', authLimiter, (req, res) => {
                 username: req.session.username,
                 full_name: req.session.fullName,
                 email: req.session.email,
+                phone: req.session.phone,
                 role: req.session.role || 'user'
             }
         });
@@ -1313,7 +1316,17 @@ app.post('/api/chat', chatLimiter, async (req, res) => {
             return res.status(400).json({ error: 'Message is required' });
         }
 
-        const systemPrompt = `You are a friendly, knowledgeable, and professional customer support chatbot for Home Decor Furniture. Your name is 'DecorBot'.\n\nKeep responses concise and helpful (max 150 words). Maintain a warm, inviting tone.\n\n${productContext ? ('Live catalog context (use for accurate names/prices):\n' + productContext) : ''}`;
+        const systemPrompt = `You are DecorBot, a furniture sales assistant for Home Decor Furniture.
+
+CRITICAL INSTRUCTIONS:
+1. If the user asks for product recommendations, ONLY suggest items from the "AVAILABLE PRODUCTS" list below
+2. Explain WHY each product matches their request (budget, category, features)
+3. DO NOT suggest generic "sofas" or "tables" - use EXACT product names and prices from the list
+4. If no products match, say "I don't have items in that range" and suggest contacting support
+5. Keep responses under 100 words
+
+${productContext ? ('AVAILABLE PRODUCTS matching this query:\n' + productContext) : 'No specific products loaded - ask user for preferences (room type, budget, style)'}`;
+
 
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(GEMINI_MODEL)}:generateContent?key=${GEMINI_API_KEY}`;
         const payload = {

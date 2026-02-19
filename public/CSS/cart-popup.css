@@ -57,6 +57,7 @@
         opacity: 0;
         transform: translateY(-50px) scale(0.9);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -112,6 +113,7 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem;
+    background: transparent;
     border-bottom: 1px solid #eee;
     animation: itemSlideIn 0.3s ease-out;
 }
@@ -121,6 +123,7 @@
         opacity: 0;
         transform: translateX(-20px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
@@ -320,136 +323,130 @@
     font-style: italic;
 }
 
-/* Notification Styles */
+/* Notification Styles - Minimalist & Aesthetic */
 .notification {
     position: fixed !important;
     top: 100px !important;
-    right: 20px !important;
-    background: linear-gradient(135deg, #D2691E 0%, #CD853F 100%);
-    color: white;
-    padding: 12px 18px;
+    right: 24px !important;
+    background: rgba(255, 255, 255, 0.98);
+    color: #1F2937;
+    padding: 14px 20px;
     border-radius: 12px;
-    box-shadow: 
-        0 6px 20px rgba(0,0,0,0.15),
-        0 3px 12px rgba(210, 105, 30, 0.3);
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06),
+        0 10px 30px rgba(0, 0, 0, 0.1);
     z-index: 99999 !important;
     transform: translateX(0) !important;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     font-weight: 500;
     cursor: pointer;
-    max-width: 280px;
+    min-width: 300px;
+    max-width: 360px;
     opacity: 1 !important;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    position: relative;
-    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     display: flex !important;
     align-items: center;
-    gap: 12px;
-    visibility: visible !important;
-    font-size: 14px;
+    gap: 15px;
+    font-size: 0.95rem;
     line-height: 1.4;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+/* Icon centering */
+.notification-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: normal;
+    height: 100%;
+}
+
+.notification-message {
+    display: block;
+    padding-top: 1px;
+    /* Optical adjustment for vertical centering */
+}
+
+.notification svg {
+    display: block;
+    margin: auto;
+}
+
+/* Status Indicators (Left Border) */
 .notification::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #D2691E, #CD853F, #8B4513);
-    background-size: 200% 100%;
-    animation: gradientShift 2s ease-in-out infinite;
+    display: none;
 }
 
 .notification.success {
-    background: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
-}
-
-.notification.success::before {
-    background: linear-gradient(90deg, #8B4513, #D2691E, #CD853F);
+    border-left: 4px solid #D2691E;
 }
 
 .notification.error {
-    background: linear-gradient(135deg, #A0522D 0%, #CD853F 100%);
-}
-
-.notification.error::before {
-    background: linear-gradient(90deg, #A0522D, #CD853F, #D2691E);
+    border-left: 4px solid #B22222;
 }
 
 .notification.warning {
-    background: linear-gradient(135deg, #DEB887 0%, #F4A460 100%);
-    color: #8B4513;
-}
-
-.notification.warning::before {
-    background: linear-gradient(90deg, #DEB887, #F4A460, #CD853F);
+    border-left: 4px solid #CD853F;
 }
 
 .notification.info {
-    background: linear-gradient(135deg, #F5DEB3 0%, #DEB887 100%);
+    border-left: 4px solid #8B4513;
+}
+
+/* Icon Colors */
+.notification.success svg {
+    color: #D2691E;
+}
+
+.notification.error svg {
+    color: #B22222;
+}
+
+.notification.warning svg {
+    color: #CD853F;
+}
+
+.notification.info svg {
     color: #8B4513;
 }
 
-.notification.info::before {
-    background: linear-gradient(90deg, #F5DEB3, #DEB887, #CD853F);
+/* Dark Mode Support via class */
+body.dark-mode .notification {
+    background: rgba(28, 30, 36, 0.95);
+    color: #F3F4F6;
+    border-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
 .notification.fade-out {
-    transform: translateX(100%);
-    opacity: 0;
+    transform: translateX(20px) !important;
+    opacity: 0 !important;
 }
 
-/* Animation for notification entry */
+/* Animation */
 @keyframes notificationSlideIn {
     from {
-        transform: translateX(100%) scale(0.9);
+        transform: translateX(100%);
         opacity: 0;
     }
+
     to {
-        transform: translateX(0) scale(1);
+        transform: translateX(0);
         opacity: 1;
     }
 }
 
 .notification {
-    animation: notificationSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transform: translateX(0) !important;
+    animation: notificationSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Hover effect for notifications */
+/* Hover effect */
 .notification:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 
-        0 12px 35px rgba(0,0,0,0.2),
-        0 6px 20px rgba(210, 105, 30, 0.4);
-}
-
-.notification.success:hover {
-    box-shadow: 
-        0 12px 35px rgba(0,0,0,0.2),
-        0 6px 20px rgba(139, 69, 19, 0.4);
-}
-
-.notification.error:hover {
-    box-shadow: 
-        0 12px 35px rgba(0,0,0,0.2),
-        0 6px 20px rgba(160, 82, 45, 0.4);
-}
-
-.notification.warning:hover {
-    box-shadow: 
-        0 12px 35px rgba(0,0,0,0.2),
-        0 6px 20px rgba(222, 184, 135, 0.4);
-}
-
-.notification.info:hover {
-    box-shadow: 
-        0 12px 35px rgba(0,0,0,0.2),
-        0 6px 20px rgba(245, 222, 179, 0.4);
+    transform: translateY(-2px) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
 /* Responsive Cart Popup */
@@ -458,48 +455,116 @@
         width: 100%;
         max-height: 95vh;
         border-radius: 16px;
-        margin: 12px; /* keep breathing room from viewport edges */
+        margin: 12px;
+        /* keep breathing room from viewport edges */
     }
-    
+
     .cart-actions {
         flex-direction: column;
         gap: 0.8rem;
-        align-items: stretch; /* full-width buttons */
+        align-items: stretch;
+        /* full-width buttons */
     }
-    .cart-btn { width: 100%; }
-    
+
+    .cart-btn {
+        width: 100%;
+    }
+
     .cart-item {
         flex-direction: column;
         text-align: center;
         gap: 0.6rem;
+        background: #f8f5f0;
+        border-radius: 12px;
+        border: 1px solid #e8dfd4;
+        margin-bottom: 0.75rem;
+        padding: 1.25rem;
     }
-    
+
     .cart-item-image {
         width: 90px;
         height: 90px;
     }
-    
+
     /* Center header title while keeping close button on the right */
-    .cart-popup-header { position: relative; justify-content: center; }
-    .cart-popup-header h3 { font-size: 1.1rem; text-align: center; margin: 0 auto; }
-    .cart-popup-header .close-cart-btn { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); }
+    .cart-popup-header {
+        position: relative;
+        justify-content: center;
+    }
+
+    .cart-popup-header h3 {
+        font-size: 1.1rem;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    .cart-popup-header .close-cart-btn {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
 
     /* Center totals row */
-    .cart-total { flex-direction: column; gap: 0.25rem; text-align: center; }
-    .cart-total span, .cart-total strong { width: 100%; }
+    .cart-total {
+        flex-direction: column;
+        gap: 0.25rem;
+        text-align: center;
+    }
+
+    .cart-total span,
+    .cart-total strong {
+        width: 100%;
+    }
 
     /* Footer alignment */
-    .cart-popup-footer { text-align: center; }
-    .cart-item-name { font-size: 1rem; }
-    .cart-item-price { font-size: 1rem; }
-    .quantity-btn { width: 30px; height: 30px; }
-    .cart-btn { font-size: 1rem; padding: 1rem; }
-} 
+    .cart-popup-footer {
+        text-align: center;
+    }
+
+    .cart-item-name {
+        font-size: 1rem;
+    }
+
+    .cart-item-price {
+        font-size: 1rem;
+    }
+
+    .quantity-btn {
+        width: 30px;
+        height: 30px;
+    }
+
+    .cart-btn {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+}
 
 @media (max-width: 480px) {
-    .cart-popup { border-radius: 12px; }
-    .cart-popup-header { padding: 1rem; }
-    .cart-items-container { padding: 0.8rem; max-height: 65vh; }
-    .cart-actions { gap: 0.6rem; }
-    .cart-btn { padding: 0.9rem; font-size: 0.95rem; }
+    .cart-popup {
+        border-radius: 12px;
+    }
+
+    .cart-popup-header {
+        padding: 1rem;
+    }
+
+    .cart-items-container {
+        padding: 0.8rem;
+        max-height: 65vh;
+    }
+
+    .cart-actions {
+        gap: 0.6rem;
+    }
+
+    .cart-btn {
+        padding: 0.9rem;
+        font-size: 0.95rem;
+    }
+
+    .cart-item {
+        padding: 1rem;
+    }
 }

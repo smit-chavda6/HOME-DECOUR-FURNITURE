@@ -5,6 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HOME DECOR FURNITURE</title>
+
+    <!-- GSAP for Premium Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <!-- Lenis Smooth Scroll CDN -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="CSS/cart-popup.css">
     <link rel="stylesheet" href="CSS/dark-mode.css">
@@ -37,18 +44,49 @@
         href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Dancing+Script:wght@400..700&display=swap"
+        rel="stylesheet">
 
     <link rel="stylesheet" href="CSS/responsive.css">
+
+    <!-- Preloader CSS -->
+    <link rel="stylesheet" href="CSS/preloader.css">
+
+    <!-- Smooth Animations CSS -->
+    <link rel="stylesheet" href="CSS/smooth-animations.css">
 </head>
 
 <body>
-    <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
+    <!-- Ultra-Premium Minimalist Preloader -->
+    <div class="preloader">
+        <!-- Split door panels for exit -->
+        <div class="preloader-left"></div>
+        <div class="preloader-right"></div>
+
+        <!-- Center content -->
+        <div class="preloader-content">
+            <h1 class="preloader-brand">
+                <span class="brand-part-1">HOME DECOR</span>
+                <span class="brand-part-2">FURNITURE</span>
+            </h1>
+            <p class="preloader-subtitle">CRAFTED LIVING</p>
+        </div>
+
+        <!-- Bottom elements -->
+        <div class="preloader-counter">000</div>
+        <div class="preloader-line">
+            <div class="preloader-line-fill"></div>
+        </div>
+    </div>
+
+    <script>(function () { try { var d = document; var t = localStorage.getItem('hdf-theme'); if (!t) { t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; } var st = d.createElement('style'); st.id = 'no-fouc'; st.textContent = '*{transition:none!important}'; d.head.appendChild(st); d.body.style.visibility = 'hidden'; if (t === 'dark') { d.body.classList.add('dark-mode'); } var accent = localStorage.getItem('hdf-accent') || 'accent-amber'; if (accent) d.body.classList.add(accent); var meta = d.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', t === 'dark' ? '#0f0f11' : '#8B4513'); d.body.style.visibility = ''; st.remove(); } catch (e) { } })();</script>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode" hidden>
         <svg id="themeIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M21.64 13a1 1 0 0 0-1.05-.14A8 8 0 1 1 11.14 3.41a1 1 0 0 0-.14-1.05 1 1 0 0 0-1.09-.33A10 10 0 1 0 22 14.09a1 1 0 0 0-.36-1.09z"/>
+            <path
+                d="M21.64 13a1 1 0 0 0-1.05-.14A8 8 0 1 1 11.14 3.41a1 1 0 0 0-.14-1.05 1 1 0 0 0-1.09-.33A10 10 0 1 0 22 14.09a1 1 0 0 0-.36-1.09z" />
         </svg>
     </button>
     <!-- Initial Loading Screen -->
@@ -60,27 +98,66 @@
             <div class="loader-logo">
                 <h1 class="logo-text">HOME DECOR FURNITURE</h1>
             </div>
-            
-            <!-- 3D Cube Section -->
+
+            <!-- Mobile Lightweight Spinner -->
+            <div class="mobile-spinner"></div>
+
+            <!-- 3D Cube Section (Desktop only) -->
             <div class="scene">
                 <div class="cube">
                     <div class="face front">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a1 1 0 0 1 1-1h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V9Z"/><path d="M3 13h18"/><path d="M9 13v6"/><path d="M15 13v6"/><path d="M6 8V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 9a1 1 0 0 1 1-1h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V9Z" />
+                            <path d="M3 13h18" />
+                            <path d="M9 13v6" />
+                            <path d="M15 13v6" />
+                            <path d="M6 8V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2" />
+                        </svg>
                     </div>
                     <div class="face back">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 0-9-9c0 2.492.99 4.733 2.615 6.385L12 21Z"/><path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M12 21v-3.5"/><path d="M12 3v1.5"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 21a9 9 0 1 0-9-9c0 2.492.99 4.733 2.615 6.385L12 21Z" />
+                            <path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                            <path d="M12 21v-3.5" />
+                            <path d="M12 3v1.5" />
+                        </svg>
                     </div>
                     <div class="face right">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18M4 9v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"/><path d="m10 13 2 2 2-2"/><path d="M12 3v10"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9h18M4 9v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9" />
+                            <path d="m10 13 2 2 2-2" />
+                            <path d="M12 3v10" />
+                        </svg>
                     </div>
                     <div class="face left">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20h6M7 4h10M7 4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V4Z"/><path d="M9 8v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V8"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M9 20h6M7 4h10M7 4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V4Z" />
+                            <path d="M9 8v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V8" />
+                        </svg>
                     </div>
                     <div class="face top">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="14" width="18" height="8" rx="2"/><path d="M6 14l1.5-10h9L18 14"/><path d="M7 22v-4"/><path d="M17 22v-4"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="14" width="18" height="8" rx="2" />
+                            <path d="M6 14l1.5-10h9L18 14" />
+                            <path d="M7 22v-4" />
+                            <path d="M17 22v-4" />
+                        </svg>
                     </div>
                     <div class="face bottom">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v4"/><path d="M20 10v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"/><path d="M4 10h16"/><path d="M12 16v6"/><path d="M10 22h4"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 10V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v4" />
+                            <path d="M20 10v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4" />
+                            <path d="M4 10h16" />
+                            <path d="M12 16v6" />
+                            <path d="M10 22h4" />
+                        </svg>
                     </div>
                 </div>
             </div>
@@ -91,10 +168,11 @@
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="navbar-brand">
-                <img src="image/Logo maker project.webp" alt="Home Decor Furniture Logo" class="navbar-logo" loading="lazy">
+                <img src="image/Logo maker project.webp" alt="Home Decor Furniture Logo" class="navbar-logo"
+                    loading="lazy">
                 <h1 class="navbar-name">HOME DECOR FURNITURE</h1>
-        </a>
-            
+            </a>
+
             <ul class="navbar-menu">
                 <li class="navbar-item">
                     <a href="index.html" class="navbar-link active">Home</a>
@@ -108,18 +186,24 @@
                 <li class="navbar-item">
                     <a href="contact.html" class="navbar-link">Contact Us</a>
                 </li>
-                <li class="navbar-item"><a href="login.html" class="navbar-link navbar-login-btn" id="navbar-login-btn" title="Login"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 8-4 8-4s8 0 8 4v1H4v-1z"/></svg></a></li>
+                <li class="navbar-item"><a href="login.html" class="navbar-link navbar-login-btn" id="navbar-login-btn"
+                        title="Login"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B4513"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="8" r="4" />
+                            <path d="M4 20c0-4 8-4 8-4s8 0 8 4v1H4v-1z" />
+                        </svg></a></li>
                 <li class="navbar-item">
                     <a href="#" class="cart-icon">
                         <svg viewBox="0 0 24 24">
-                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                            <path
+                                d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
                         </svg>
                         Cart
                         <span class="cart-count">0</span>
                     </a>
                 </li>
             </ul>
-            
+
             <div class="hamburger">
                 <div class="hamburger-line"></div>
                 <div class="hamburger-line"></div>
@@ -133,34 +217,34 @@
         <div class="slideshow-container">
             <div class="slide active">
                 <img src="image/becca-tapert-dO3qTKxwik0-unsplash.webp" alt="Luxury Living Room" loading="lazy">
-                <div class="slide-content">
+                <div class="slide-content scroll-animate-left">
                     <h1>Transform Your Space</h1>
                     <p>Discover elegant furniture that brings your vision to life</p>
                     <a href="gallery.html" class="cta-button">Explore Collection</a>
                 </div>
             </div>
-            
+
             <div class="slide">
                 <img src="image/christopher-jolly-GqbU78bdJFM-unsplash.webp" alt="Modern Dining" loading="lazy">
-                <div class="slide-content">
+                <div class="slide-content scroll-animate-left">
                     <h1>Quality Craftsmanship</h1>
                     <p>Handcrafted pieces designed for comfort and style</p>
                     <a href="about.html" class="cta-button">Learn More</a>
                 </div>
             </div>
-            
+
             <div class="slide">
                 <img src="image/kari-shea-AMyjxxLEHU4-unsplash.webp" alt="Cozy Bedroom" loading="lazy">
-                <div class="slide-content">
+                <div class="slide-content scroll-animate-left">
                     <h1>Create Your Sanctuary</h1>
                     <p>Design the bedroom of your dreams with our premium collection</p>
                     <a href="gallery.html" class="cta-button">Shop Now</a>
                 </div>
             </div>
-            
+
             <button class="slide-btn prev" onclick="changeSlide(-1)">❮</button>
             <button class="slide-btn next" onclick="changeSlide(1)">❯</button>
-            
+
             <div class="slide-dots">
                 <span class="dot active" onclick="currentSlide(1)"></span>
                 <span class="dot" onclick="currentSlide(2)"></span>
@@ -170,32 +254,35 @@
     </section>
 
     <!-- Welcome Section (Modern Split) -->
-<section class="modern-welcome-hero">
-  <div class="modern-welcome-hero-inner">
-    <div class="modern-welcome-img">
-      <img src="image/A logo for a home decor furniture shop (1).jpg" alt="Modern Living Room" loading="lazy">
-                        </div>
-    <div class="modern-welcome-text">
-      <h2 class="modern-welcome-title">Welcome to <span>Home Decor Furniture</span></h2>
-      <p class="modern-welcome-tagline">Design creates culture. Culture shapes values. Values determine the future.</p>
-      <p class="modern-welcome-desc" style="text-align:center;">Discover furniture that elevates your space and reflects your unique style. Experience the perfect blend of comfort, beauty, and craftsmanship—made for modern living.</p>
-      <a href="gallery.html" class="modern-welcome-btn">Get Inspired</a>
-                    </div>
-                </div>
-  <div class="modern-welcome-bg-shape"></div>
+    <section class="modern-welcome-hero scroll-animate">
+        <div class="modern-welcome-hero-inner">
+            <div class="modern-welcome-img scroll-animate-left">
+                <img src="image/A logo for a home decor furniture shop (1).jpg" alt="Modern Living Room" loading="lazy">
+            </div>
+            <div class="modern-welcome-text scroll-animate-right">
+                <h2 class="modern-welcome-title">Welcome to <span>Home Decor Furniture</span></h2>
+                <p class="modern-welcome-tagline">Design creates culture. Culture shapes values. Values determine the
+                    future.</p>
+                <p class="modern-welcome-desc" style="text-align:center;">Discover furniture that elevates your space
+                    and reflects your unique style. Experience the perfect blend of comfort, beauty, and
+                    craftsmanship—made for modern living.</p>
+                <a href="gallery.html" class="modern-welcome-btn">Get Inspired</a>
+            </div>
+        </div>
+        <div class="modern-welcome-bg-shape"></div>
     </section>
 
-<!-- Shop by Category (Modern) -->
-<section class="categories-section modern-categories-section">
+    <!-- Shop by Category (Modern) -->
+    <section class="categories-section modern-categories-section">
         <div class="container">
-            <h2>Shop by Category</h2>
+            <h2 class="scroll-animate-left">Shop by Category</h2>
             <div class="categories-grid">
                 <div class="category-card">
                     <img src="image/toa-heftiba-FV3GConVSss-unsplash.webp" alt="Living Room" loading="lazy">
                     <div class="category-content">
                         <h3>Living Room</h3>
                         <p>Comfortable sofas, elegant coffee tables, and stylish entertainment units</p>
-          <a href="gallery.html?category=living" class="category-btn">Shop Living Room</a>
+                        <a href="gallery.html?category=living" class="category-btn">Shop Living Room</a>
                     </div>
                 </div>
                 <div class="category-card">
@@ -203,7 +290,7 @@
                     <div class="category-content">
                         <h3>Dining Room</h3>
                         <p>Beautiful dining tables, chairs, and storage solutions for your meals</p>
-          <a href="gallery.html?category=dining" class="category-btn">Shop Dining Room</a>
+                        <a href="gallery.html?category=dining" class="category-btn">Shop Dining Room</a>
                     </div>
                 </div>
                 <div class="category-card">
@@ -211,7 +298,7 @@
                     <div class="category-content">
                         <h3>Bedroom</h3>
                         <p>Peaceful beds, nightstands, and wardrobes for your sanctuary</p>
-          <a href="gallery.html?category=bedroom" class="category-btn">Shop Bedroom</a>
+                        <a href="gallery.html?category=bedroom" class="category-btn">Shop Bedroom</a>
                     </div>
                 </div>
                 <div class="category-card">
@@ -219,11 +306,11 @@
                     <div class="category-content">
                         <h3>Office</h3>
                         <p>Professional desks, chairs, and storage for productive workspaces</p>
-          <a href="gallery.html?category=office" class="category-btn">Shop Office</a>
+                        <a href="gallery.html?category=office" class="category-btn">Shop Office</a>
                     </div>
                 </div>
                 <div class="category-card">
-                    <img src="image/1.png" alt="3D Models" loading="lazy">
+                    <img src="image/3dmodleimages/Modern Office Chair.png" alt="3D Models" loading="lazy">
                     <div class="category-content">
                         <h3>3D Models</h3>
                         <p>Explore interactive 3D furniture models for AR, VR, and virtual staging.</p>
@@ -233,107 +320,113 @@
             </div>
         </div>
     </section>
-    
-<!-- Why Choose Us (Modern Grid) -->
-<section class="modern-why-choose">
+
+    <!-- Why Choose Us (Modern Grid) -->
+    <section class="modern-why-choose">
         <div class="container">
-        <h2 class="modern-why-title">Why Choose <span>Home Decor Furniture?</span></h2>
-        <div class="modern-why-grid">
-            <div class="modern-why-card">
-                <div class="modern-why-icon icon-container">
-                    <!-- Premium Quality (already set) -->
-                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                      <circle cx="20" cy="20" r="18" stroke="#8B4513" stroke-width="3" fill="#fff8f3"/>
-                      <path class="accent-fill" d="M20 10l2.472 5.012 5.528.803-4 3.902.944 5.5L20 22.5l-4.944 2.617.944-5.5-4-3.902 5.528-.803L20 10z" fill="#ffe5c1" stroke="#8B4513" stroke-width="2"/>
+            <h2 class="modern-why-title scroll-animate-left">Why Choose <span>Home Decor Furniture?</span></h2>
+            <div class="modern-why-grid">
+                <div class="modern-why-card">
+                    <div class="modern-why-icon icon-container">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="8" r="7"></circle>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
                         </svg>
                     </div>
                     <h3>Premium Quality</h3>
-                <p>Finest materials and attention to detail for lasting beauty.</p>
+                    <p>Finest materials and attention to detail for lasting beauty.</p>
                 </div>
-            <div class="modern-why-card">
-                <div class="modern-why-icon icon-container">
-                    <!-- Expert Craftsmanship: simple house icon -->
-                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                      <circle cx="20" cy="20" r="18" stroke="#8B4513" stroke-width="3" fill="#fff8f3"/>
-                      <polygon points="20,12 28,18 28,28 12,28 12,18" fill="#ffe5c1" stroke="#8B4513" stroke-width="2"/>
-                      <rect x="17" y="22" width="6" height="6" fill="#8B4513" stroke="#8B4513" stroke-width="1.5"/>
-                      <polyline points="12,18 20,12 28,18" fill="none" stroke="#8B4513" stroke-width="2"/>
+                <div class="modern-why-card">
+                    <div class="modern-why-icon icon-container">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+                            </path>
                         </svg>
                     </div>
                     <h3>Expert Craftsmanship</h3>
-                <p>Skilled artisans create furniture that's beautiful and functional.</p>
+                    <p>Skilled artisans create furniture that's beautiful and functional.</p>
                 </div>
-            <div class="modern-why-card">
-                <div class="modern-why-icon icon-container">
-                    <!-- Sustainable Design: large, bold leaf icon -->
-                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                      <circle cx="20" cy="20" r="18" stroke="#8B4513" stroke-width="3" fill="#fff8f3"/>
-                      <path d="M28 30C28 18 14 10 14 26C14 32 24 34 28 30Z" fill="#ffe5c1" stroke="#8B4513" stroke-width="2.2"/>
-                      <path d="M20 32C20 26 18 18 14 26" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+                <div class="modern-why-card">
+                    <div class="modern-why-icon icon-container">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 19.6 3 22.2 1.8c-1.2 2.6-3.2 6.7-4.3 12.4A7 7 0 0 1 11 20Z">
+                            </path>
+                            <path d="m8 21 4-9"></path>
                         </svg>
                     </div>
                     <h3>Sustainable Design</h3>
-                <p>Eco-friendly practices, sustainable materials, responsible manufacturing.</p>
+                    <p>Eco-friendly practices, sustainable materials, responsible manufacturing.</p>
                 </div>
-            <div class="modern-why-card">
-                <div class="modern-why-icon icon-container">
-                    <!-- Customer Satisfaction (already set) -->
-                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                      <circle cx="20" cy="20" r="18" stroke="#8B4513" stroke-width="3" fill="#fff8f3"/>
-                      <circle cx="15" cy="18" r="2" fill="#8B4513"/>
-                      <circle cx="25" cy="18" r="2" fill="#8B4513"/>
-                      <path d="M15 25 Q20 30 25 25" stroke="#8B4513" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <div class="modern-why-card">
+                    <div class="modern-why-icon icon-container">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
                         </svg>
                     </div>
                     <h3>Customer Satisfaction</h3>
-                <p>Exceptional service and support throughout your journey.</p>
+                    <p>Exceptional service and support throughout your journey.</p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="modern-why-bg"></div>
+        <div class="modern-why-bg"></div>
     </section>
 
-<!-- Call to Action (Modern) -->
-<section class="modern-cta-section">
-  <div class="modern-cta-bg">
-    <img src="image/gray-sofa-brown-living-room-with-copy-space.webp" alt="Transform Your Space" loading="lazy">
-    <div class="modern-cta-overlay"></div>
-  </div>
-  <div class="modern-cta-content">
-                <h2>Ready to Transform Your Space?</h2>
-                <p>Start your journey to a more beautiful home today. Browse our collection and find the perfect pieces for your space.</p>
-    <div class="modern-cta-buttons">
-                    <a href="gallery.html" class="cta-button primary">Shop Collection</a>
-                    <a href="contact.html" class="cta-button secondary">Get in Touch</a>
+    <!-- Call to Action (Modern) -->
+    <section class="modern-cta-section">
+        <div class="modern-cta-bg">
+            <img src="image/gray-sofa-brown-living-room-with-copy-space.webp" alt="Transform Your Space" loading="lazy">
+            <div class="modern-cta-overlay"></div>
+        </div>
+        <div class="modern-cta-content">
+            <h2>Ready to Transform Your Space?</h2>
+            <p>Start your journey to a more beautiful home today. Browse our collection and find the perfect pieces for
+                your space.</p>
+            <div class="modern-cta-buttons">
+                <a href="gallery.html" class="cta-button primary">Shop Collection</a>
+                <a href="contact.html" class="cta-button secondary">Get in Touch</a>
             </div>
         </div>
     </section>
-    
+
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-section">
                 <h3>About Us</h3>
-                <p>We are passionate about creating beautiful spaces with high-quality furniture that combines style, comfort, and functionality. Your home should reflect your personality and lifestyle.</p>
+                <p>We are passionate about creating beautiful spaces with high-quality furniture that combines style,
+                    comfort, and functionality. Your home should reflect your personality and lifestyle.</p>
                 <div class="social-links">
                     <a href="#" class="social-link" title="X (Twitter)">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="48" height="48" fill="#D2691E">
-                          <path d="M76.39 28H92L65.5 57.22 96 92H71.8L53.6 70.2 32 92H16L44.3 61.42 14 28h25l16.8 19.8L76.39 28Zm-4.8 58h7.3L38 34h-8.1L71.59 86Z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="48" height="48"
+                            fill="#D2691E">
+                            <path
+                                d="M76.39 28H92L65.5 57.22 96 92H71.8L53.6 70.2 32 92H16L44.3 61.42 14 28h25l16.8 19.8L76.39 28Zm-4.8 58h7.3L38 34h-8.1L71.59 86Z" />
                         </svg>
                     </a>
-                    
+
                     <a href="#" class="social-link" title="Pinterest">
                         <svg viewBox="0 0 24 24">
-                            <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z"/>
+                            <path
+                                d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z" />
                         </svg>
                     </a>
                     <a href="#" class="social-link" title="Instagram">
                         <svg viewBox="0 0 24 24">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.975.974 1.246 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.974.975-2.242 1.246-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.308-.975-.974-1.246-2.242-1.308-3.608C2.175 15.647 2.163 15.267 2.163 12s.012-3.584.07-4.85c.062-1.366.334-2.633 1.308-3.608C4.516 2.567 5.784 2.296 7.15 2.234 8.416 2.176 8.796 2.163 12 2.163zm0-2.163C8.741 0 8.333.014 7.053.072 2.695.272.273 2.694.073 7.052.014 8.332 0 8.74 0 12c0 3.26.014 3.668.073 4.948.2 4.358 2.622 6.78 6.98 6.98C8.332 23.986 8.74 24 12 24s3.668-.014 4.948-.073c4.358-.2 6.78-2.622 6.98-6.98.059-1.28.073-1.688.073-4.948 0-3.26-.014-3.668-.073-4.948-.2-4.358-2.622-6.78-6.98-6.98C15.668.014 15.26 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a3.999 3.999 0 1 1 0-7.998 3.999 3.999 0 0 1 0 7.998zm6.406-11.845a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/>
+                            <path
+                                d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.975.974 1.246 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.974.975-2.242 1.246-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.308-.975-.974-1.246-2.242-1.308-3.608C2.175 15.647 2.163 15.267 2.163 12s.012-3.584.07-4.85c.062-1.366.334-2.633 1.308-3.608C4.516 2.567 5.784 2.296 7.15 2.234 8.416 2.176 8.796 2.163 12 2.163zm0-2.163C8.741 0 8.333.014 7.053.072 2.695.272.273 2.694.073 7.052.014 8.332 0 8.74 0 12c0 3.26.014 3.668.073 4.948.2 4.358 2.622 6.78 6.98 6.98C8.332 23.986 8.74 24 12 24s3.668-.014 4.948-.073c4.358-.2 6.78-2.622 6.98-6.98.059-1.28.073-1.688.073-4.948 0-3.26-.014-3.668-.073-4.948-.2-4.358-2.622-6.78-6.98-6.98C15.668.014 15.26 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a3.999 3.999 0 1 1 0-7.998 3.999 3.999 0 0 1 0 7.998zm6.406-11.845a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z" />
                         </svg>
                     </a>
                 </div>
             </div>
-            
+
             <div class="footer-section">
                 <h3>Quick Links</h3>
                 <ul class="footer-links">
@@ -345,44 +438,48 @@
                     <li><a href="faq.html">FAQ</a></li>
                 </ul>
             </div>
-            
+
             <div class="footer-section">
                 <h3>Contact Info</h3>
                 <div class="contact-info">
                     <div class="contact-item">
                         <svg viewBox="0 0 24 24">
-                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            <path
+                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                         </svg>
                         <span>Ahmedabad, Gujarat, India</span>
                     </div>
                     <div class="contact-item">
                         <svg viewBox="0 0 24 24">
-                            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                            <path
+                                d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
                         </svg>
                         <span>+91 9825000000</span>
                     </div>
                     <div class="contact-item">
                         <svg viewBox="0 0 24 24">
-                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            <path
+                                d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
                         </svg>
                         <span>support@homedecorfurniture.com</span>
                     </div>
                 </div>
             </div>
-            
+
             <div class="footer-section">
                 <h3>Newsletter</h3>
                 <div class="newsletter">
                     <p>Subscribe to get updates on new arrivals and special offers!</p>
                     <form class="newsletter-form">
                         <label for="newsletterEmail" class="sr-only">Email address</label>
-                        <input type="email" id="newsletterEmail" name="email" class="newsletter-input" placeholder="Enter your email" required autocomplete="email">
+                        <input type="email" id="newsletterEmail" name="email" class="newsletter-input"
+                            placeholder="Enter your email" required autocomplete="email">
                         <button type="submit" class="newsletter-btn">Subscribe</button>
                     </form>
                 </div>
             </div>
         </div>
-        
+
         <div class="footer-bottom">
             <div class="footer-bottom-content">
                 <p class="copyright">© 2025 <strong>HOME DECOR FURNITURE</strong>. All Rights Reserved.</p>
@@ -394,7 +491,7 @@
             </div>
         </div>
     </footer>
-    
+
     <!-- Cart Popup Modal -->
     <div id="cartPopupOverlay" class="cart-popup-overlay">
         <div class="cart-popup">
@@ -417,7 +514,7 @@
             </div>
         </div>
     </div>
-        
+
     <script src="js/app.js"></script>
     <script src="js/home.js"></script>
     <script src="js/gallery-data.js"></script>
@@ -429,10 +526,10 @@
 
     <!-- Simple Home Page Loader Script -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const loaderWrapper = document.getElementById('loader-wrapper');
             const loaderMessage = document.querySelector('.loader-message');
-            
+
             if (loaderWrapper && loaderMessage) {
                 const messages = [
                     "Crafting your perfect space...",
@@ -441,9 +538,9 @@
                     "Lighting up your inspiration...",
                     "Building your dream interior..."
                 ];
-                
+
                 let messageIndex = 0;
-                
+
                 // Change message every 2.5 seconds
                 const messageInterval = setInterval(() => {
                     messageIndex = (messageIndex + 1) % messages.length;
@@ -453,11 +550,11 @@
                         loaderMessage.style.opacity = '1';
                     }, 400);
                 }, 2500);
-                
+
                 // Hide loader when page is fully loaded
-                window.addEventListener('load', function() {
+                window.addEventListener('load', function () {
                     clearInterval(messageInterval);
-                    
+
                     // Add extra delay to show loader longer
                     setTimeout(() => {
                         loaderWrapper.classList.add('hidden');
@@ -466,7 +563,7 @@
                         }, 800);
                     }, 3000);
                 });
-                
+
                 // Fallback: hide after 10 seconds
                 setTimeout(() => {
                     if (loaderWrapper.style.display !== 'none') {
@@ -486,7 +583,8 @@
         <div class="confetti-container" id="confettiContainer"></div>
         <div class="success-card">
             <div class="success-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20,6 9,17 4,12"></polyline>
                 </svg>
             </div>
@@ -500,10 +598,18 @@
     </div>
 
 
-        </div>
     </div>
+    </div>
+
+    <!-- Preloader Script (must load early) -->
+    <script src="js/preloader.js"></script>
+
     <script src="js/mobile-menu.js"></script>
+
+    <!-- Smooth Scroll & Animations -->
+    <script src="js/smooth-scroll.js"></script>
 </body>
 
-    <script src="js/app.js"></script>
+<script src="js/app.js"></script>
+
 </html>

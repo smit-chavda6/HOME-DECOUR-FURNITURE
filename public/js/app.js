@@ -805,6 +805,70 @@ document.addEventListener('DOMContentLoaded', function() {
             document.head.appendChild(link);
         }
 
+        const FAVICON_PATHS = {
+            light: {
+                ico: 'image/favicon_light/favicon.ico',
+                icon16: 'image/favicon_light/favicon-16x16.png',
+                icon32: 'image/favicon_light/favicon-32x32.png',
+                apple: 'image/favicon_light/apple-touch-icon.png',
+                android192: 'image/favicon_light/android-chrome-192x192.png',
+                android512: 'image/favicon_light/android-chrome-512x512.png',
+                manifest: 'image/favicon_light/site.webmanifest'
+            },
+            dark: {
+                ico: 'image/favicon_dark/favicon.ico',
+                icon16: 'image/favicon_dark/favicon-16x16.png',
+                icon32: 'image/favicon_dark/favicon-32x32.png',
+                apple: 'image/favicon_dark/apple-touch-icon.png',
+                android192: 'image/favicon_dark/android-chrome-192x192.png',
+                android512: 'image/favicon_dark/android-chrome-512x512.png',
+                manifest: 'image/favicon_dark/site.webmanifest'
+            }
+        };
+
+        const LIGHT_LOGO = FAVICON_PATHS.light.apple;
+        const DARK_LOGO = FAVICON_PATHS.dark.apple;
+
+        function updateFavicons(themeMode){
+            const paths = FAVICON_PATHS[themeMode] || FAVICON_PATHS.light;
+            const selectors = [
+                'link[rel="icon"]',
+                'link[rel="shortcut icon"]',
+                'link[rel="apple-touch-icon"]',
+                'link[rel="manifest"]'
+            ];
+
+            selectors.forEach(selector => {
+                document.querySelectorAll(selector).forEach(el => el.remove());
+            });
+
+            const head = document.head;
+            const createLink = (rel, href, sizes, type) => {
+                const link = document.createElement('link');
+                link.rel = rel;
+                link.href = href;
+                if (sizes) link.sizes = sizes;
+                if (type) link.type = type;
+                head.appendChild(link);
+            };
+
+            createLink('icon', paths.ico, null, 'image/x-icon');
+            createLink('icon', paths.icon16, '16x16', 'image/png');
+            createLink('icon', paths.icon32, '32x32', 'image/png');
+            createLink('icon', paths.android192, '192x192', 'image/png');
+            createLink('icon', paths.android512, '512x512', 'image/png');
+            createLink('apple-touch-icon', paths.apple, '180x180', 'image/png');
+            createLink('manifest', paths.manifest);
+
+            let msTile = document.querySelector('meta[name="msapplication-TileImage"]');
+            if (!msTile) {
+                msTile = document.createElement('meta');
+                msTile.name = 'msapplication-TileImage';
+                head.appendChild(msTile);
+            }
+            msTile.setAttribute('content', paths.apple);
+        }
+
     function applyTheme(t){
             document.body.classList.toggle('dark-mode', t === 'dark');
             const btn = document.getElementById('themeToggle');
@@ -821,19 +885,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Swap navbar brand logo based on theme
             const logoEls = document.querySelectorAll('img.navbar-logo');
             logoEls.forEach(img => {
-                // Only swap known site logo assets to avoid changing product images accidentally
-                const isLightLogo = /Logo maker project\.(webp|png|jpg)$/i.test(img.getAttribute('src') || '');
-                const isDarkLogo = /dark logo\.(png|webp|jpg)$/i.test(img.getAttribute('src') || '');
-                if (t === 'dark') {
-                    if (!isDarkLogo) {
-                        img.setAttribute('src', 'image/dark logo.png');
-                    }
-                } else {
-                    if (!isLightLogo) {
-                        img.setAttribute('src', 'image/Logo maker project.webp');
-                    }
-                }
+                img.setAttribute('src', t === 'dark' ? DARK_LOGO : LIGHT_LOGO);
             });
+
+            updateFavicons(t);
         }
 
     function applyAccent(a){

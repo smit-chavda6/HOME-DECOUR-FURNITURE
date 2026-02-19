@@ -5,89 +5,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - HOME DECOR FURNITURE</title>
+
+    <!-- Lenis Smooth Scroll CDN -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="CSS/cart-popup.css">
     <link rel="stylesheet" href="CSS/dark-mode.css">
     <link rel="stylesheet" href="CSS/chatbot.css">
     <link rel="stylesheet" href="CSS/contact.css">
     <link rel="stylesheet" href="CSS/responsive.css">
-    <!-- Favicons - Enhanced for better compatibility -->
+
+    <!-- Smooth Animations CSS -->
+    <link rel="stylesheet" href="CSS/smooth-animations.css">
+    <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="image/Logo maker project.webp">
     <link rel="icon" type="image/png" sizes="32x32" href="image/Logo maker project.webp">
     <link rel="icon" type="image/png" sizes="48x48" href="image/Logo maker project.webp">
     <link rel="apple-touch-icon" sizes="180x180" href="image/Logo maker project.webp">
-    <link rel="apple-touch-icon" sizes="152x152" href="image/Logo maker project.webp">
-    <link rel="apple-touch-icon" sizes="144x144" href="image/Logo maker project.webp">
-    <link rel="apple-touch-icon" sizes="120x120" href="image/Logo maker project.webp">
-    <link rel="apple-touch-icon" sizes="114x114" href="image/Logo maker project.webp">
-    <link rel="apple-touch-icon" sizes="76x76" href="image/Logo maker project.webp">
-    <link rel="apple-touch-icon" sizes="72x72" href="image/Logo maker project.webp">
-    <link rel="apple-touch-icon" sizes="60x60" href="image/Logo maker project.webp">
-    <link rel="apple-touch-icon" sizes="57x57" href="image/Logo maker project.webp">
-    <link rel="shortcut icon" href="image/fevicon/favicon.ico">
-    <meta name="msapplication-TileColor" content="#8B4513">
-    <meta name="msapplication-TileImage" content="image/fevicon/favicon.ico">
-    <meta name="theme-color" content="#8B4513">
-    <link rel="manifest" href="manifest.json">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Amatic+SC:wght@400;700&family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
-
-    <meta name="description" content="Contact Home Decor Furniture - Get in touch for inquiries, support, or orders. Premium furniture for your home.">
-    <!-- Open Graph / Facebook -->
-    <meta property="og:title" content="Contact - HOME DECOR FURNITURE">
-    <meta property="og:description" content="Get in touch for inquiries, support, or orders. Premium furniture for your home.">
-    <meta property="og:image" content="image/Logo maker project.webp">
-    <meta property="og:url" content="https://yourdomain.com/contact.html">
-    <meta property="og:type" content="website">
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Contact - HOME DECOR FURNITURE">
-    <meta name="twitter:description" content="Get in touch for inquiries, support, or orders. Premium furniture for your home.">
-    <meta name="twitter:image" content="image/Logo maker project.webp">
-
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Jost:wght@300;400;500;600;700&family=Dancing+Script:wght@400..700&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
-    <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode" hidden>
-        <svg id="themeIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M21.64 13a1 1 0 0 0-1.05-.14A8 8 0 1 1 11.14 3.41a1 1 0 0 0-.14-1.05 1 1 0 0 0-1.09-.33A10 10 0 1 0 22 14.09a1 1 0 0 0-.36-1.09z"/>
-        </svg>
-    </button>
+    <script>(function () { try { var d = document; var t = localStorage.getItem('hdf-theme'); if (!t) { t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; } var st = d.createElement('style'); st.id = 'no-fouc'; st.textContent = '*{transition:none!important}'; d.head.appendChild(st); d.body.style.visibility = 'hidden'; if (t === 'dark') { d.body.classList.add('dark-mode'); } var accent = localStorage.getItem('hdf-accent') || 'accent-amber'; if (accent) d.body.classList.add(accent); var meta = d.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', t === 'dark' ? '#0f0f11' : '#8B4513'); d.body.style.visibility = ''; st.remove(); } catch (e) { } })();</script>
+
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="navbar-brand">
-                <img src="image/Logo maker project.webp" alt="Home Decor Furniture Logo" class="navbar-logo" loading="lazy">
+                <img src="image/Logo maker project.webp" alt="Home Decor Furniture Logo" class="navbar-logo"
+                    loading="lazy">
                 <h1 class="navbar-name">HOME DECOR FURNITURE</h1>
             </a>
-            
             <ul class="navbar-menu">
-                <li class="navbar-item">
-                    <a href="index.html" class="navbar-link">Home</a>
-                </li>
-                <li class="navbar-item">
-                    <a href="gallery.html" class="navbar-link">Gallery</a>
-                </li>
-                <li class="navbar-item">
-                    <a href="about.html" class="navbar-link">About Us</a>
-                </li>
-                <li class="navbar-item">
-                    <a href="contact.html" class="navbar-link active">Contact Us</a>
-                </li>
-                <li class="navbar-item"><a href="login.html" class="navbar-link navbar-login-btn" id="navbar-login-btn" title="Login"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 8-4 8-4s8 0 8 4v1H4v-1z"/></svg></a></li>
-                <li class="navbar-item">
-                    <a href="#" class="cart-icon">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
-                        </svg>
-                        Cart
-                        <span class="cart-count">0</span>
-                    </a>
-                </li>
+                <li class="navbar-item"><a href="index.html" class="navbar-link">Home</a></li>
+                <li class="navbar-item"><a href="gallery.html" class="navbar-link">Gallery</a></li>
+                <li class="navbar-item"><a href="about.html" class="navbar-link">About Us</a></li>
+                <li class="navbar-item"><a href="contact.html" class="navbar-link active">Contact Us</a></li>
+                <li class="navbar-item"><a href="login.html" class="navbar-link navbar-login-btn" id="navbar-login-btn"
+                        title="Login"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B4513"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="8" r="4" />
+                            <path d="M4 20c0-4 8-4 8-4s8 0 8 4v1H4v-1z" />
+                        </svg></a></li>
+                <li class="navbar-item"><a href="#" class="cart-icon"><svg viewBox="0 0 24 24">
+                            <path
+                                d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                        </svg>Cart <span class="cart-count">0</span></a></li>
             </ul>
-            
             <div class="hamburger">
                 <div class="hamburger-line"></div>
                 <div class="hamburger-line"></div>
@@ -96,281 +66,167 @@
         </div>
     </nav>
 
-    <!-- Minimal Hero Section -->
-    <section class="minimal-hero" style="padding-bottom: 70px;">
-        <div class="container">
-            <h1>Get in Touch</h1>
-            <p>We'd love to hear from you</p>
-        </div>
-    </section>
+    <!-- NEW SPLIT LAYOUT CONTAINER -->
+    <div class="split-contact-wrapper">
 
-    <!-- Main Contact Section -->
-    <section class="contact-main-section" >
-        <div class="container">
-            <div class="contact-grid">
-                <!-- Contact Form -->
-                <div class="contact-form-wrapper">
-                    <div class="contact-section-header">
-                        <h2 class="contact-section-title">Message Us</h2>
-                        <p class="contact-section-subtitle">Send us your inquiry and we'll get back to you shortly</p>
-                    </div>
-                    <form class="contact-form-minimal" id="contactForm">
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" id="name" name="name" placeholder="Your Name" required autocomplete="name">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" placeholder="your.email@example.com" required autocomplete="email">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="phone">Phone <span class="optional-label">(optional)</span></label>
-                            <input type="tel" id="phone" name="phone" placeholder="+91 98250 00000" autocomplete="tel">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="subject">Subject</label>
-                            <select id="subject" name="subject" required>
-                                <option value="" disabled selected>Select a subject</option>
-                                <option value="general">General Inquiry</option>
-                                <option value="order">Order Information</option>
-                                <option value="support">Customer Support</option>
-                                <option value="feedback">Feedback</option>
-                                <option value="custom">Custom Furniture</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="message">Message</label>
-                            <textarea id="message" name="message" rows="6" placeholder="How can we help you?" required></textarea>
-                        </div>
-                        
-                        <button type="submit" class="submit-btn">
-                            <span>Send Message</span>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+        <!-- LEFT PANEL: Visual & Info (Sticky) -->
+        <div class="contact-visual-side">
+            <div class="visual-content">
+                <div class="visual-header">
+                    <p class="tagline">Exclusive Support</p>
+                    <h1 class="main-heading">Get in<br>Touch.</h1>
+                    <p class="sub-heading">Crafting your perfect home starts with a conversation.</p>
+                </div>
+
+                <div class="visual-info-list">
+                    <div class="v-info-item">
+                        <div class="v-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                <circle cx="12" cy="10" r="3" />
                             </svg>
-                        </button>
-                    </form>
-                    
-                    <!-- Success Message -->
-                    <div id="formSuccess" class="form-success" hidden>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 6L9 17l-5-5"/>
-                        </svg>
-                        <h3>Message Sent!</h3>
-                        <p>Thank you for reaching out. We'll get back to you soon.</p>
-                    </div>
-                </div>
-                
-                <!-- Contact Info Sidebar -->
-                <div class="contact-info-sidebar">
-                    <div class="info-card">
-                        <div class="info-item">
-                            <div class="info-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                                    <circle cx="12" cy="10" r="3"/>
-                                </svg>
-                            </div>
-                            <div class="info-content">
-                                <h4>Location</h4>
-                                <p>Ahmedabad, Gujarat, India</p>
-                            </div>
                         </div>
-                        
-                        <div class="info-item">
-                            <div class="info-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                                </svg>
-                            </div>
-                            <div class="info-content">
-                                <h4>Phone</h4>
-                                <p><a href="tel:+919825000000">+91 9825000000</a></p>
-                            </div>
-                        </div>
-                        
-                        <div class="info-item">
-                            <div class="info-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                                    <polyline points="22,6 12,13 2,6"/>
-                                </svg>
-                            </div>
-                            <div class="info-content">
-                                <h4>Email</h4>
-                                <p><a href="mailto:support@homedecorfurniture.com">support@homedecorfurniture.com</a></p>
-                            </div>
+                        <div class="v-text">
+                            <span class="label">Visit Us</span>
+                            <span class="value">Ahmedabad, Gujarat, India</span>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Business Hours Section -->
-    <section class="business-hours-section">
-        <div class="container">
-            <div class="hours-header">
-                <h2>Business Hours</h2>
-                <p>Visit us during our convenient operating hours</p>
-            </div>
-            
-            <div class="hours-grid">
-                <div class="hours-card">
-                    <div class="hours-card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <polyline points="12,6 12,12 16,14"/>
-                        </svg>
+                    <div class="v-info-item">
+                        <div class="v-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                                <line x1="12" y1="18" x2="12.01" y2="18" />
+                            </svg>
+                        </div>
+                        <div class="v-text">
+                            <span class="label">Call Us</span>
+                            <a href="tel:+919825000000" class="value link">+91 98250 00000</a>
+                        </div>
                     </div>
-                    <div class="hours-card-content">
-                        <h3 class="hours-day">Monday - Friday</h3>
-                        <p class="hours-time">9:00 AM - 8:00 PM</p>
-                        <span class="hours-status open">Open</span>
-                    </div>
-                </div>
-                
-                <div class="hours-card">
-                    <div class="hours-card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <polyline points="12,6 12,12 16,14"/>
-                        </svg>
-                    </div>
-                    <div class="hours-card-content">
-                        <h3 class="hours-day">Saturday</h3>
-                        <p class="hours-time">10:00 AM - 6:00 PM</p>
-                        <span class="hours-status open">Open</span>
-                    </div>
-                </div>
-                
-                <div class="hours-card">
-                    <div class="hours-card-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <polyline points="12,6 12,12 16,14"/>
-                        </svg>
-                    </div>
-                    <div class="hours-card-content">
-                        <h3 class="hours-day">Sunday</h3>
-                        <p class="hours-time">11:00 AM - 5:00 PM</p>
-                        <span class="hours-status closed">Closed</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h3>About Us</h3>
-                <p>We are passionate about creating beautiful spaces with high-quality furniture that combines style, comfort, and functionality. Your home should reflect your personality and lifestyle.</p>
-                <div class="social-links">
-                    <a href="#" class="social-link" title="X (Twitter)">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="48" height="48" fill="#D2691E">
-                          <path d="M76.39 28H92L65.5 57.22 96 92H71.8L53.6 70.2 32 92H16L44.3 61.42 14 28h25l16.8 19.8L76.39 28Zm-4.8 58h7.3L38 34h-8.1L71.59 86Z"/>
-                        </svg>
-                    </a>
-                   
-                    <a href="#" class="social-link" title="Pinterest">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z"/>
-                        </svg>
-                    </a>
-                    <a href="#" class="social-link" title="Instagram">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.668-.069 4.948-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul class="footer-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="gallery.html">Gallery</a></li>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                    <li><a href="faq.html">FAQ</a></li>
-                    
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Contact Info</h3>
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                        </svg>
-                        <span>Ahmedabad, Gujarat, India</span>
-                    </div>
-                    <div class="contact-item">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
-                        </svg>
-                        <span>+91 9825000000</span>
-                    </div>
-                    <div class="contact-item">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                        </svg>
-                        <span>support@homedecorfurniture.com</span>
+                    <div class="v-info-item">
+                        <div class="v-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                                <polyline points="22,6 12,13 2,6" />
+                            </svg>
+                        </div>
+                        <div class="v-text">
+                            <span class="label">Email Us</span>
+                            <a href="mailto:support@homedecorfurniture.com"
+                                class="value link">support@homedecorfurniture.com</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Newsletter</h3>
-                <div class="newsletter">
-                    <p>Subscribe to get updates on new arrivals and special offers!</p>
-                    <form class="newsletter-form">
-                        <label for="newsletterEmail" class="sr-only">Email address</label>
-                        <input type="email" id="newsletterEmail" name="email" class="newsletter-input" placeholder="Enter your email" required autocomplete="email">
-                        <button type="submit" class="newsletter-btn">Subscribe</button>
-                    </form>
+
+                <div class="visual-socials">
+                    <a href="#" class="v-social-link">X</a>
+                    <a href="#" class="v-social-link">IG</a>
+                    <a href="#" class="v-social-link">PI</a>
                 </div>
             </div>
+            <!-- Background Decoration -->
+            <div class="visual-bg-pattern"></div>
         </div>
-        
-        <div class="footer-bottom">
-            <div class="footer-bottom-content">
-                <p class="copyright">© 2025 <strong>HOME DECOR FURNITURE</strong>. All Rights Reserved.</p>
-                <ul class="footer-bottom-links">
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
-                    <li><a href="#">Shipping Info</a></li>
-                </ul>
-            </div>
-        </div>
-    </footer>
-    
-    <!-- Cart Popup Modal -->
-    <div id="cartPopupOverlay" class="cart-popup-overlay">
-        <div class="cart-popup">
-            <div class="cart-popup-header">
-                <h3>🛒 Your Cart</h3>
-                <button id="closeCartBtn" class="close-cart-btn">&times;</button>
-            </div>
-            <div id="cartItemsContainer" class="cart-items-container">
-                <!-- Cart items will be dynamically loaded here -->
-            </div>
-            <div class="cart-popup-footer">
-                <div class="cart-total">
-                    <span>Total:</span>
-                    <span id="cartTotalPrice" class="cart-total-price">₹0</span>
-                </div>
-                <div class="cart-actions">
-                    <button id="continueShoppingBtn" class="cart-btn secondary">Continue Shopping</button>
-                    <button id="proceedToCheckoutBtn" class="cart-btn primary">Proceed to Checkout</button>
+
+        <!-- RIGHT PANEL: Form & Hours (Scrollable) -->
+        <div class="contact-form-side">
+            <div class="form-side-content">
+
+                <div class="form-scroll-container">
+                    <!-- Form Section -->
+                    <div class="premium-form-container">
+                        <h2 class="form-title">Send a Message</h2>
+
+                        <form id="contactForm" class="premium-form">
+                            <div class="pf-row">
+                                <div class="pf-group">
+                                    <input type="text" id="name" name="name" placeholder=" " required
+                                        autocomplete="name">
+                                    <label for="name">Your Name</label>
+                                    <span class="pf-line"></span>
+                                </div>
+                                <div class="pf-group">
+                                    <input type="email" id="email" name="email" placeholder=" " required
+                                        autocomplete="email">
+                                    <label for="email">Email Address</label>
+                                    <span class="pf-line"></span>
+                                </div>
+                            </div>
+
+                            <div class="pf-row">
+                                <div class="pf-group">
+                                    <input type="tel" id="phone" name="phone" placeholder=" " autocomplete="tel">
+                                    <label for="phone">Phone Number <span class="opt">(Optional)</span></label>
+                                    <span class="pf-line"></span>
+                                </div>
+                                <div class="pf-group">
+                                    <select id="subject" name="subject" required>
+                                        <option value="" disabled selected></option>
+                                        <option value="general">General Inquiry</option>
+                                        <option value="order">Order Status</option>
+                                        <option value="custom">Custom Design</option>
+                                        <option value="support">Support</option>
+                                    </select>
+                                    <label for="subject">Subject</label>
+                                    <span class="pf-line"></span>
+                                </div>
+                            </div>
+
+                            <div class="pf-group full-width">
+                                <textarea id="message" name="message" rows="1" placeholder=" " required></textarea>
+                                <label for="message">Tell us about your needs...</label>
+                                <span class="pf-line"></span>
+                            </div>
+
+                            <button type="submit" class="premium-submit-btn">
+                                <span class="btn-text">Send Message</span>
+                                <span class="btn-arrow">→</span>
+                            </button>
+                        </form>
+
+                        <!-- Success Message (Hidden by default) -->
+                        <div id="formSuccess" class="premium-success" hidden>
+                            <div class="success-icon-sc">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                            </div>
+                            <h3>Message Sent</h3>
+                            <p>We've received your inquiry and will be in touch shortly.</p>
+                        </div>
+                    </div>
+
+                    <!-- Business Hours Minimal Grid -->
+                    <div class="hours-minimal-section">
+                        <h3 class="hours-min-title">Operating Hours</h3>
+                        <div class="hours-min-grid">
+                            <div class="hm-card">
+                                <span class="hm-day">Mon - Fri</span>
+                                <span class="hm-time">9:00 AM - 8:00 PM</span>
+                                <span class="hm-status open">Open</span>
+                            </div>
+                            <div class="hm-card">
+                                <span class="hm-day">Saturday</span>
+                                <span class="hm-time">10:00 AM - 6:00 PM</span>
+                                <span class="hm-status open">Open</span>
+                            </div>
+                            <div class="hm-card">
+                                <span class="hm-day">Sunday</span>
+                                <span class="hm-time">11:00 AM - 5:00 PM</span>
+                                <span class="hm-status closed">Closed</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <footer class="simple-footer">
+                        <p>© 2025 HOME DECOR FURNITURE. All Rights Reserved.</p>
+                        <div class="sf-links">
+                            <a href="privacy.html">Privacy</a>
+                            <a href="terms.html">Terms</a>
+                        </div>
+                    </footer>
                 </div>
             </div>
         </div>
@@ -380,31 +236,62 @@
     <div id="loginRequiredModal" class="login-modal">
         <div class="modal-overlay"></div>
         <div class="modal-content">
-            <!-- Header: Icon + Title -->
-            <div class="modal-header">
-                <div class="modal-header-left">
-                    <div class="modal-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                        </svg>
-                    </div>
-                    <h3 class="modal-title">Login Required</h3>
-                </div>
+            <button class="modal-close" aria-label="Close">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round">
+                    <line x1="1" y1="1" x2="17" y2="17" />
+                    <line x1="17" y1="1" x2="1" y2="17" />
+                </svg>
+            </button>
+            <div class="modal-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    <circle cx="12" cy="16" r="1" />
+                </svg>
             </div>
-            <!-- Body: Description -->
-            <div class="modal-body">
-                <p class="modal-message">Please log in to send a message to our team.</p>
-            </div>
-            <!-- Footer: Buttons -->
-            <div class="modal-footer">
-                <button class="modal-cancel-btn">Cancel</button>
-                <button class="modal-ok-btn">Login</button>
+            <h3 class="modal-title">Sign in to continue</h3>
+            <p class="modal-desc">You need to be logged in to send us a message. Your form data will be saved.</p>
+            <div class="modal-actions">
+                <button class="modal-cancel-btn">Not now</button>
+                <button class="modal-ok-btn">
+                    Sign In
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
-        
+
+    <!-- Cart Popup Modal -->
+    <div id="cartPopupOverlay" class="cart-popup-overlay">
+        <div class="cart-popup">
+            <div class="cart-popup-header">
+                <h3>🛒 Your Cart</h3>
+                <button id="closeCartBtn" class="close-cart-btn">&times;</button>
+            </div>
+            <div id="cartItemsContainer" class="cart-items-container"></div>
+            <div class="cart-popup-footer">
+                <div class="cart-total"><span>Total:</span><span id="cartTotalPrice" class="cart-total-price">₹0</span>
+                </div>
+                <div class="cart-actions">
+                    <button id="continueShoppingBtn" class="cart-btn secondary">Continue Shopping</button>
+                    <button id="proceedToCheckoutBtn" class="cart-btn primary">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="js/app.js"></script>
     <script src="js/chatbot.js"></script>
     <script src="js/cart-popup.js"></script>
     <script src="js/contact.js"></script>
+    <script src="js/smooth-scroll.js"></script>
+</body>
+
+</html>

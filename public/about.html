@@ -4,7 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOME DECOR FURNITURE</title>
+    <title>About Us | HOME DECOR FURNITURE</title>
+
+    <!-- GSAP for preloader animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <!-- Lenis Smooth Scroll CDN -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
     <!-- Favicons - Enhanced for better compatibility -->
     <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="image/Logo maker project.webp">
@@ -28,17 +35,17 @@
     <link rel="stylesheet" href="CSS/navbar.css">
     <link rel="stylesheet" href="CSS/about.css">
     <link rel="stylesheet" href="CSS/cart-popup.css">
-    
-    <link rel="stylesheet" href="CSS/style-redesign.css">
-    
+
     <link rel="stylesheet" href="CSS/animations.css">
     <link rel="stylesheet" href="CSS/responsive.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gsta tic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
@@ -49,22 +56,49 @@
         href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Dancing+Script:wght@400..700&display=swap"
         rel="stylesheet">
 
+    <!-- Smooth Animations CSS -->
+    <link rel="stylesheet" href="CSS/smooth-animations.css">
+
 </head>
 
 <body>
-    <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
+    <!-- Ultra-Premium Minimalist Preloader -->
+    <div class="preloader">
+        <!-- Split door panels for exit -->
+        <div class="preloader-left"></div>
+        <div class="preloader-right"></div>
+
+        <!-- Center content -->
+        <div class="preloader-content">
+            <h1 class="preloader-brand">
+                <span class="brand-part-1">HOME DECOR</span>
+                <span class="brand-part-2">FURNITURE</span>
+            </h1>
+            <p class="preloader-subtitle">CRAFTED LIVING</p>
+        </div>
+
+        <!-- Bottom elements -->
+        <div class="preloader-counter">000</div>
+        <div class="preloader-line">
+            <div class="preloader-line-fill"></div>
+        </div>
+    </div>
+
+    <script>(function () { try { var d = document; var t = localStorage.getItem('hdf-theme'); if (!t) { t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; } var st = d.createElement('style'); st.id = 'no-fouc'; st.textContent = '*{transition:none!important}'; d.head.appendChild(st); d.body.style.visibility = 'hidden'; if (t === 'dark') { d.body.classList.add('dark-mode'); } var accent = localStorage.getItem('hdf-accent') || 'accent-amber'; if (accent) d.body.classList.add(accent); var meta = d.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', t === 'dark' ? '#0f0f11' : '#8B4513'); d.body.style.visibility = ''; st.remove(); } catch (e) { } })();</script>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode" hidden>
         <svg id="themeIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M21.64 13a1 1 0 0 0-1.05-.14A8 8 0 1 1 11.14 3.41a1 1 0 0 0-.14-1.05 1 1 0 0 0-1.09-.33A10 10 0 1 0 22 14.09a1 1 0 0 0-.36-1.09z"/>
+            <path
+                d="M21.64 13a1 1 0 0 0-1.05-.14A8 8 0 1 1 11.14 3.41a1 1 0 0 0-.14-1.05 1 1 0 0 0-1.09-.33A10 10 0 1 0 22 14.09a1 1 0 0 0-.36-1.09z" />
         </svg>
     </button>
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="navbar-brand">
-                <img src="image/Logo maker project.webp" alt="Home Decor Furniture Logo" class="navbar-logo" loading="lazy">
+                <img src="image/Logo maker project.webp" alt="Home Decor Furniture Logo" class="navbar-logo"
+                    loading="lazy">
                 <h1 class="navbar-name">HOME DECOR FURNITURE</h1>
-        </a>
-            
+            </a>
+
             <ul class="navbar-menu" id="primary-navigation">
                 <li class="navbar-item">
                     <a href="index.html" class="navbar-link">Home</a>
@@ -78,18 +112,24 @@
                 <li class="navbar-item">
                     <a href="contact.html" class="navbar-link">Contact Us</a>
                 </li>
-                <li class="navbar-item"><a href="login.html" class="navbar-link navbar-login-btn" id="navbar-login-btn" title="Login"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 8-4 8-4s8 0 8 4v1H4v-1z"/></svg></a></li>
+                <li class="navbar-item"><a href="login.html" class="navbar-link navbar-login-btn" id="navbar-login-btn"
+                        title="Login"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B4513"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="8" r="4" />
+                            <path d="M4 20c0-4 8-4 8-4s8 0 8 4v1H4v-1z" />
+                        </svg></a></li>
                 <li class="navbar-item">
                     <a href="#" class="cart-icon">
                         <svg viewBox="0 0 24 24">
-                            <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                            <path
+                                d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
                         </svg>
                         Cart
                         <span class="cart-count">0</span>
                     </a>
                 </li>
             </ul>
-            
+
             <div class="hamburger">
                 <div class="hamburger-line"></div>
                 <div class="hamburger-line"></div>
@@ -98,163 +138,367 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="about-hero">
-        <div class="hero-content animate-on-scroll fade-in">
-            <h1>Our Story</h1>
-            <p>Crafting homes with passion and purpose since 2014.</p>
+    <!-- Modern Hero Section -->
+    <section class="modern-about-hero">
+        <div class="hero-bg-wrapper">
+            <div class="hero-overlay"></div>
+            <!-- Changed hero image for better visibility -->
+            <img src="image/chic-modern-luxury-aesthetics-style-living-room-blue-tone.webp" alt="Modern Interior"
+                class="hero-bg-img">
         </div>
-    </section>
-
-    <!-- Who We Are Section -->
-        <section class="about-section">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text animate-on-scroll slide-in-left">
-                    <h2 class="section-title">Who We Are</h2>
-                    <p>At Home Decor Furniture, we believe furniture is more than just an object. It's a cornerstone of the home, a backdrop for memories, and a reflection of your story. We are dedicated to sourcing and crafting pieces that blend timeless design with sustainable quality.</p>
-                    <p>From a small family workshop to a trusted national brand, our commitment has never wavered: to help you create a home you love, one beautiful piece at a time.</p>
-                </div>
-                <div class="about-image animate-on-scroll slide-in-right">
-                    <img src="image/phillip-goldsberry-fZuleEfeA1Q-unsplash.webp" alt="Furniture Store Team" loading="lazy">
+        <div class="container hero-container">
+            <div class="hero-content-modern animate-on-scroll fade-in-up">
+                <span class="hero-subtitle">EST. 2014</span>
+                <h1>Crafting Stories,<br>Building Homes</h1>
+                <p>We believe that furniture is not just about filling a space, but about creating a sanctuary that
+                    reflects who you are.</p>
+                <div class="scroll-indicator">
+                    <span>Scroll to Discover</span>
+                    <div class="mouse"></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Company History Section -->
-    <section class="history-section">
+    <!-- Intro / Philosophy Section -->
+    <section class="intro-section section-padding">
         <div class="container">
-            <h2 class="section-title animate-on-scroll fade-in">Our Journey</h2>
-            <div class="timeline animate-on-scroll">
-                <div class="timeline-item animate-on-scroll slide-in-left">
-                    <div class="timeline-year">2014</div>
-                    <div class="timeline-content">
-                        <h3>The Beginning</h3>
-                        <p>Our journey began in a small workshop, fueled by a passion for woodworking and timeless design.</p>
-                    </div>
+            <div class="intro-grid">
+                <div class="intro-image-wrapper animate-on-scroll slide-in-left">
+                    <img src="image/phillip-goldsberry-fZuleEfeA1Q-unsplash.webp" alt="Our Team Philosophy"
+                        class="intro-img-main">
+                    <div class="intro-img-decoration"></div>
                 </div>
-                
-                <div class="timeline-item animate-on-scroll slide-in-right">
-                    <div class="timeline-year">2017</div>
-                    <div class="timeline-content">
-                        <h3>First Showroom</h3>
-                        <p>We opened our first physical store, connecting with our community and expanding our collection.</p>
-                    </div>
-                </div>
-                
-                <div class="timeline-item animate-on-scroll slide-in-left">
-                    <div class="timeline-year">2020</div>
-                    <div class="timeline-content">
-                        <h3>Digital Leap</h3>
-                        <p>Our online store launched, bringing Home Decor Furniture to homes across the country.</p>
-                    </div>
-                </div>
-                
-                <div class="timeline-item animate-on-scroll slide-in-right">
-                    <div class="timeline-year">2025</div>
-                    <div class="timeline-content">
-                        <h3>Sustainable Future</h3>
-                        <p>We solidified our commitment to sustainability, partnering with artisans and NGOs to ensure ethical craftsmanship.</p>
+                <div class="intro-content animate-on-scroll slide-in-right">
+                    <h2 class="section-heading">Design with <span class="accent-text">Purpose</span></h2>
+                    <p class="intro-lead">At Home Decor Furniture, we blend timeless craftsmanship with modern
+                        aesthetics to create pieces that stand the test of time.</p>
+                    <p>From a small family workshop to a trusted national brand, our commitment has never wavered: to
+                        help you create a home you love, one beautiful piece at a time. We source ethically, build
+                        passionately, and deliver with care.</p>
+
+                    <div class="intro-stats">
+                        <div class="intro-stat-item">
+                            <span class="stat-number" data-target="10">0+</span>
+                            <span class="stat-label">Years of Experience</span>
+                        </div>
+                        <div class="intro-stat-item">
+                            <span class="stat-number" data-target="2000">0+</span>
+                            <span class="stat-label">Happy Families</span>
+                        </div>
+                        <div class="intro-stat-item">
+                            <span class="stat-number" data-target="15">0+</span>
+                            <span class="stat-label">Design Awards</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        </section>
+    </section>
 
-    <section class="values-section">
+    <!-- Our Values Section (Cards) -->
+    <section class="values-section-modern section-padding bg-light">
         <div class="container">
-            <h2 class="section-title animate-on-scroll fade-in">Our Core Values</h2>
-            <div class="values-grid">
-                <div class="value-card animate-on-scroll zoom-in">
-                    <div class="value-icon">
-                        <svg class="value-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                            <path d="M9 12l2 2 4-4"/>
+            <div class="section-header text-center animate-on-scroll fade-in">
+                <h2 class="section-heading">Our Core Values</h2>
+                <p class="section-subheading">The principles that guide every piece we create.</p>
+            </div>
+
+            <div class="values-grid-modern">
+                <div class="value-card-modern animate-on-scroll zoom-in">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                         </svg>
                     </div>
                     <h3>Uncompromising Quality</h3>
-                    <p>Every piece is built to last, using superior materials and meticulous craftsmanship.</p>
+                    <p>Every piece is built to last, using superior materials and meticulous craftsmanship that you can
+                        feel.</p>
                 </div>
-                <div class="value-card animate-on-scroll zoom-in" style="transition-delay: 0.2s;">
-                    <div class="value-icon">
-                        <svg class="value-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                    </div>
-                    <h3>Customer Dedication</h3>
-                    <p>Your satisfaction is our foundation. We provide exceptional service from Browse to delivery.</p>
-                </div>
-                <div class="value-card animate-on-scroll zoom-in" style="transition-delay: 0.4s;">
-                    <div class="value-icon">
-                        <svg class="value-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"/>
-                            <polyline points="12,6 12,12 16,14"/>
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+
+                <div class="value-card-modern animate-on-scroll zoom-in" style="transition-delay: 0.2s;">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
                         </svg>
                     </div>
-                    <h3>Timeless Innovation</h3>
-                    <p>We honor classic design while embracing modern trends to keep our collection fresh and inspiring.</p>
+                    <h3>Customer Dedication</h3>
+                    <p>Your satisfaction is our foundation. We provide exceptional service from browsing to delivery.
+                    </p>
+                </div>
+
+                <div class="value-card-modern animate-on-scroll zoom-in" style="transition-delay: 0.4s;">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <circle cx="12" cy="12" r="6" />
+                            <circle cx="12" cy="12" r="2" />
+                        </svg>
+                    </div>
+                    <h3>Sustainable Innovation</h3>
+                    <p>We honor classic design while embracing modern trends and eco-friendly practices.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Sustainability Section -->
-    <section class="sustainability-section">
+    <!-- History Timeline (Redesigned) -->
+    <section class="history-section-modern section-padding">
         <div class="container">
-            <div class="sustainability-content animate-on-scroll fade-in">
-                <h2 class="section-title">A Greener Home</h2>
-                <p>We are committed to ethical sourcing and sustainable practices. By supporting local artisans and using responsibly harvested materials, we craft furniture that is not only beautiful but also kind to our planet.</p>
-                <div class="sustainability-stats">
-                                    <div class="stat animate-on-scroll zoom-in">
-                    <h3 class="achievement-number" data-target="100" data-suffix="%">0%</h3>
-                    <p>Sustainably Sourced</p>
+            <div class="section-header text-center animate-on-scroll fade-in">
+                <h2 class="section-heading">Our Journey</h2>
+                <div class="header-decoration">
+                    <span class="decoration-line"></span>
+                    <span class="decoration-dot"></span>
+                    <span class="decoration-line"></span>
                 </div>
-                <div class="stat animate-on-scroll zoom-in" style="transition-delay: 0.2s;">
-                    <h3 class="achievement-number" data-target="50">0+</h3>
-                    <p>Artisan Partners</p>
+            </div>
+
+            <div class="timeline-modern">
+                <div class="timeline-track"></div>
+
+                <div class="timeline-row animate-on-scroll slide-in-left">
+                    <div class="timeline-date">2014</div>
+                    <div class="timeline-content-wrapper">
+                        <div class="timeline-card">
+                            <h3>The Beginning</h3>
+                            <p>Our journey began in a small workshop, fueled by a passion for woodworking and timeless
+                                design.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="stat animate-on-scroll zoom-in" style="transition-delay: 0.4s;">
-                    <h3 class="achievement-number" data-target="10">0+</h3>
-                    <p>Years of Trust</p>
+
+                <div class="timeline-row row-reverse animate-on-scroll slide-in-right">
+                    <div class="timeline-date">2017</div>
+                    <div class="timeline-content-wrapper">
+                        <div class="timeline-card">
+                            <h3>First Showroom</h3>
+                            <p>We opened our first physical store, connecting with our community and expanding our
+                                collection.</p>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="timeline-row animate-on-scroll slide-in-left">
+                    <div class="timeline-date">2020</div>
+                    <div class="timeline-content-wrapper">
+                        <div class="timeline-card">
+                            <h3>Digital Leap</h3>
+                            <p>Our online store launched, bringing Home Decor Furniture to homes across the country.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-row row-reverse animate-on-scroll slide-in-right">
+                    <div class="timeline-date">2025</div>
+                    <div class="timeline-content-wrapper">
+                        <div class="timeline-card">
+                            <h3>Sustainable Future</h3>
+                            <p>We solidified our commitment to sustainability, partnering with artisans and NGOs to
+                                ensure ethical craftsmanship.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        </section>
+    </section>
 
+    <!-- Experience Section (New) -->
+    <section class="experience-section no-padding">
+        <div class="experience-wrapper">
+            <div class="experience-content animate-on-scroll fade-in">
+                <h2>Experience the Comfort</h2>
+                <p>Visit our showroom or explore our gallery to feel the difference.</p>
+                <a href="gallery.html" class="btn-primary-outline">View Gallery</a>
+            </div>
+            <div class="experience-image">
+                <img src="image/ryan-riggins-9v7UJS92HYc-unsplash.webp" alt="Experience Comfort">
+            </div>
+        </div>
+    </section>
 
-
-    <!-- Achievements Section -->
-    <section class="achievements-section">
+    <!-- Team Section (Redesigned) -->
+    <section class="team-section-modern section-padding bg-light">
         <div class="container">
-            <h2 class="section-title animate-on-scroll fade-in">By The Numbers</h2>
-            <div class="achievements-grid">
-                <div class="achievement-card animate-on-scroll slide-in-up">
-                    <div class="achievement-number">2000+</div>
-                    <h3>Happy Homes</h3>
-                    <p>Families who have trusted us to furnish their spaces.</p>
+            <div class="section-header text-center animate-on-scroll fade-in">
+                <h2 class="section-heading">Meet the Founders</h2>
+                <p class="section-subheading">The minds behind the craft.</p>
+            </div>
+
+            <div class="team-grid-modern">
+                <!-- Member 1 -->
+                <div class="team-card-modern animate-on-scroll zoom-in">
+                    <div class="member-avatar-wrapper">
+                        <svg class="avatar-anim avatar-founder" viewBox="0 0 200 200"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <radialGradient id="bg-founder" cx="50%" cy="40%" r="60%">
+                                    <stop offset="0%" stop-color="#2B2F36" stop-opacity="0.95" />
+                                    <stop offset="100%" stop-color="#1B1E24" stop-opacity="1" />
+                                </radialGradient>
+                                <linearGradient id="skin-founder" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#E9C7A6" />
+                                    <stop offset="100%" stop-color="#D7AF8A" />
+                                </linearGradient>
+                                <linearGradient id="suit-founder" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#2B2B2B" />
+                                    <stop offset="100%" stop-color="#1A1A1A" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="100" cy="100" r="92" fill="url(#bg-founder)" />
+                            <g class="avatar-group">
+                                <path d="M40 188C40 150 72 142 100 142C128 142 160 150 160 188"
+                                    fill="url(#suit-founder)" />
+                                <path d="M88 138L100 150L112 138" fill="#D4B483" opacity="0.8" />
+                                <ellipse cx="100" cy="96" rx="24" ry="30" fill="url(#skin-founder)" />
+                                <path d="M74 88C76 64 90 54 100 54C110 54 124 64 126 88C116 82 84 82 74 88Z"
+                                    fill="#161616" />
+                                <rect class="eye" x="89" y="95" width="6" height="2" rx="1" fill="#1A1A1A"
+                                    opacity="0.5" />
+                                <rect class="eye" x="105" y="95" width="6" height="2" rx="1" fill="#1A1A1A"
+                                    opacity="0.5" />
+                                <rect x="96" y="106" width="8" height="1.5" rx="0.75" fill="#7A5A4A" opacity="0.35" />
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="member-info">
+                        <h3>SMIT CHAVDA</h3>
+                        <span class="member-role">Founder & CEO</span>
+                        <p>With a deep-rooted passion for design, Smit leads the company's vision and product curation.
+                        </p>
+                    </div>
                 </div>
-                
-                <div class="achievement-card animate-on-scroll slide-in-up" style="transition-delay: 0.1s;">
-                    <div class="achievement-number">1000+</div>
-                    <h3>Curated Pieces</h3>
-                    <p>Unique designs carefully selected for our collection.</p>
+
+                <!-- Member 2 -->
+                <div class="team-card-modern animate-on-scroll zoom-in" style="transition-delay: 0.1s;">
+                    <div class="member-avatar-wrapper">
+                        <svg class="avatar-anim avatar-creative" viewBox="0 0 200 200"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <radialGradient id="bg-creative" cx="50%" cy="40%" r="60%">
+                                    <stop offset="0%" stop-color="#3A2B27" stop-opacity="0.95" />
+                                    <stop offset="100%" stop-color="#231A18" stop-opacity="1" />
+                                </radialGradient>
+                                <linearGradient id="skin-creative" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#EFCDB0" />
+                                    <stop offset="100%" stop-color="#DDB491" />
+                                </linearGradient>
+                                <linearGradient id="top-creative" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#A45C40" />
+                                    <stop offset="100%" stop-color="#7B4A36" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="100" cy="100" r="92" fill="url(#bg-creative)" />
+                            <g class="avatar-group">
+                                <path d="M42 188C42 152 74 144 100 144C126 144 158 152 158 188"
+                                    fill="url(#top-creative)" />
+                                <ellipse cx="100" cy="96" rx="24" ry="30" fill="url(#skin-creative)" />
+                                <path d="M72 90C74 60 94 52 116 56C130 60 132 78 126 92C114 86 88 86 72 90Z"
+                                    fill="#3B2A24" />
+                                <rect class="eye" x="89" y="96" width="6" height="2" rx="1" fill="#1A1A1A"
+                                    opacity="0.45" />
+                                <rect class="eye" x="105" y="96" width="6" height="2" rx="1" fill="#1A1A1A"
+                                    opacity="0.45" />
+                                <rect x="96" y="107" width="8" height="1.5" rx="0.75" fill="#7A5A4A" opacity="0.35" />
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="member-info">
+                        <h3>KRISH KUVRANI</h3>
+                        <span class="member-role">Creative Director</span>
+                        <p>Krish is the eye behind the brand, shaping our aesthetic and discovering new design trends.
+                        </p>
+                    </div>
                 </div>
-                
-                <div class="achievement-card animate-on-scroll slide-in-up" style="transition-delay: 0.2s;">
-                    <div class="achievement-number">15+</div>
-                    <h3>Design Awards</h3>
-                    <p>Recognized for excellence in furniture design and service.</p>
+
+                <!-- Member 3 -->
+                <div class="team-card-modern animate-on-scroll zoom-in" style="transition-delay: 0.2s;">
+                    <div class="member-avatar-wrapper">
+                        <svg class="avatar-anim avatar-ops" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <radialGradient id="bg-ops" cx="50%" cy="40%" r="60%">
+                                    <stop offset="0%" stop-color="#2A3240" stop-opacity="0.95" />
+                                    <stop offset="100%" stop-color="#1B212C" stop-opacity="1" />
+                                </radialGradient>
+                                <linearGradient id="skin-ops" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#E6C4A6" />
+                                    <stop offset="100%" stop-color="#D2A886" />
+                                </linearGradient>
+                                <linearGradient id="top-ops" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#3B4C5F" />
+                                    <stop offset="100%" stop-color="#2C3A4B" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="100" cy="100" r="92" fill="url(#bg-ops)" />
+                            <g class="avatar-group">
+                                <path d="M40 188C40 152 74 144 100 144C126 144 160 152 160 188" fill="url(#top-ops)" />
+                                <path d="M88 140L100 152L112 140" fill="#C9D2DE" opacity="0.8" />
+                                <ellipse cx="100" cy="96" rx="24" ry="30" fill="url(#skin-ops)" />
+                                <path d="M74 90C76 62 94 54 112 56C124 58 128 74 124 92C112 86 88 86 74 90Z"
+                                    fill="#222B35" />
+                                <rect class="eye" x="89" y="96" width="6" height="2" rx="1" fill="#1A1A1A"
+                                    opacity="0.45" />
+                                <rect class="eye" x="105" y="96" width="6" height="2" rx="1" fill="#1A1A1A"
+                                    opacity="0.45" />
+                                <rect x="96" y="107" width="8" height="1.5" rx="0.75" fill="#6C5C52" opacity="0.35" />
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="member-info">
+                        <h3>VAIRAG SHAH</h3>
+                        <span class="member-role">Operations Manager</span>
+                        <p>Vairag ensures every piece gets from our workshop to your home seamlessly and with care.</p>
+                    </div>
                 </div>
-                
-                <div class="achievement-card animate-on-scroll slide-in-up" style="transition-delay: 0.3s;">
-                    <div class="achievement-number">98%</div>
-                    <h3>Satisfaction Rate</h3>
-                    <p>A testament to our dedication to our customers.</p>
+
+                <!-- Member 4 -->
+                <div class="team-card-modern animate-on-scroll zoom-in" style="transition-delay: 0.3s;">
+                    <div class="member-avatar-wrapper">
+                        <svg class="avatar-anim avatar-dev" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <radialGradient id="bg-dev" cx="50%" cy="40%" r="60%">
+                                    <stop offset="0%" stop-color="#283038" stop-opacity="0.95" />
+                                    <stop offset="100%" stop-color="#1A1F25" stop-opacity="1" />
+                                </radialGradient>
+                                <linearGradient id="skin-dev" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#E7C6AE" />
+                                    <stop offset="100%" stop-color="#D3A988" />
+                                </linearGradient>
+                                <linearGradient id="top-dev" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#596B60" />
+                                    <stop offset="100%" stop-color="#44524B" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="100" cy="100" r="92" fill="url(#bg-dev)" />
+                            <g class="avatar-group">
+                                <path d="M42 188C42 152 74 144 100 144C126 144 158 152 158 188" fill="url(#top-dev)" />
+                                <ellipse cx="100" cy="96" rx="24" ry="30" fill="url(#skin-dev)" />
+                                <path d="M72 90C74 62 92 54 108 54C120 54 128 70 124 92C112 86 90 86 72 90Z"
+                                    fill="#2A3430" />
+                                <rect class="eye" x="89" y="96" width="6" height="2" rx="1" fill="#1A1A1A"
+                                    opacity="0.45" />
+                                <rect class="eye" x="105" y="96" width="6" height="2" rx="1" fill="#1A1A1A"
+                                    opacity="0.45" />
+                                <rect x="96" y="107" width="8" height="1.5" rx="0.75" fill="#6C5C52" opacity="0.35" />
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="member-info">
+                        <h3>KUSH RANPURA</h3>
+                        <span class="member-role">Web Developer</span>
+                        <p>Kush builds the digital home for our furniture, ensuring a smooth online experience for you.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-                </section>
+    </section>
 
     <!-- Testimonials Section -->
     <section class="testimonials-section">
@@ -263,7 +507,8 @@
             <div class="testimonials-grid">
                 <div class="testimonial-card animate-on-scroll slide-in-left">
                     <div class="testimonial-content">
-                        <p>"The quality exceeded my expectations. This furniture didn't just fill a room, it completed our home. Exceptional service from start to finish."</p>
+                        <p>"The quality exceeded my expectations. This furniture didn't just fill a room, it completed
+                            our home. Exceptional service from start to finish."</p>
                     </div>
                     <div class="testimonial-author">
                         <div class="author-avatar">SM</div>
@@ -273,10 +518,11 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="testimonial-card animate-on-scroll slide-in-up">
                     <div class="testimonial-content">
-                        <p>"I was looking for pieces with character and found them here. The craftsmanship is outstanding, and it's clear they care about every detail."</p>
+                        <p>"I was looking for pieces with character and found them here. The craftsmanship is
+                            outstanding, and it's clear they care about every detail."</p>
                     </div>
                     <div class="testimonial-author">
                         <div class="author-avatar">JD</div>
@@ -286,10 +532,11 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="testimonial-card animate-on-scroll slide-in-right">
                     <div class="testimonial-content">
-                        <p>"An amazing experience. The team helped me find the perfect sofa. It's the centerpiece of our living room, and we couldn't be happier!"</p>
+                        <p>"An amazing experience. The team helped me find the perfect sofa. It's the centerpiece of our
+                            living room, and we couldn't be happier!"</p>
                     </div>
                     <div class="testimonial-author">
                         <div class="author-avatar">EW</div>
@@ -301,77 +548,38 @@
                 </div>
             </div>
         </div>
-                </section>
-
-    <!-- Team Section -->
-    <section class="team-section">
-        <div class="container">
-            <h2 class="section-title animate-on-scroll fade-in">Meet the Founders</h2>
-            <div class="team-grid">
-                <div class="team-member animate-on-scroll zoom-in">
-                    <div class="member-avatar">
-                        <div class="avatar-placeholder">SC</div>
-                    </div>
-                    <h3>SMIT CHAVDA</h3>
-                    <p>Founder & CEO</p>
-                    <p class="member-description">With a deep-rooted passion for design, Smit leads the company's vision and product curation.</p>
-                </div>
-                
-                <div class="team-member animate-on-scroll zoom-in" style="transition-delay: 0.1s;">
-                    <div class="member-avatar">
-                        <div class="avatar-placeholder">KK</div>
-                    </div>
-                    <h3>KRISH KUVRANI</h3>
-                    <p>Creative Director</p>
-                    <p class="member-description">Krish is the eye behind the brand, shaping our aesthetic and discovering new design trends.</p>
-                </div>
-                
-                <div class="team-member animate-on-scroll zoom-in" style="transition-delay: 0.2s;">
-                    <div class="member-avatar">
-                        <div class="avatar-placeholder">VS</div>
-                    </div>
-                    <h3>VAIRAG SHAH</h3>
-                    <p>Operations Manager</p>
-                    <p class="member-description">Vairag ensures every piece gets from our workshop to your home seamlessly and with care.</p>
-                </div>
-
-                <div class="team-member animate-on-scroll zoom-in" style="transition-delay: 0.3s;">
-                    <div class="member-avatar">
-                        <div class="avatar-placeholder">KR</div>
-                    </div>
-                    <h3>KUSH RANPURA</h3>
-                    <p>Web Developer</p>
-                    <p class="member-description">Kush builds the digital home for our furniture, ensuring a smooth online experience for you.</p>
-                </div>
-            </div>
-        </div>
     </section>
 
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-section">
                 <h3>About Us</h3>
-                <p>We are passionate about creating beautiful spaces with high-quality furniture that combines style, comfort, and functionality. Your home should reflect your personality and lifestyle.</p>
+                <p>We are passionate about creating beautiful spaces with high-quality furniture that combines style,
+                    comfort, and functionality. Your home should reflect your personality and lifestyle.</p>
                 <div class="social-links">
                     <a href="#" class="social-link" title="X (Twitter)">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="48" height="48" fill="#D2691E">
-                          <path d="M76.39 28H92L65.5 57.22 96 92H71.8L53.6 70.2 32 92H16L44.3 61.42 14 28h25l16.8 19.8L76.39 28Zm-4.8 58h7.3L38 34h-8.1L71.59 86Z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="48" height="48"
+                            fill="#D2691E">
+                            <path
+                                d="M76.39 28H92L65.5 57.22 96 92H71.8L53.6 70.2 32 92H16L44.3 61.42 14 28h25l16.8 19.8L76.39 28Zm-4.8 58h7.3L38 34h-8.1L71.59 86Z" />
                         </svg>
                     </a>
-                   
+
                     <a href="#" class="social-link" title="Pinterest">
                         <svg viewBox="0 0 24 24">
-                            <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z"/>
+                            <path
+                                d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z" />
                         </svg>
                     </a>
                     <a href="#" class="social-link" title="Instagram">
                         <svg viewBox="0 0 24 24">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            <path
+                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                         </svg>
                     </a>
                 </div>
             </div>
-            
+
             <div class="footer-section">
                 <h3>Quick Links</h3>
                 <ul class="footer-links">
@@ -381,48 +589,50 @@
                     <li><a href="contact.html">Contact Us</a></li>
                     <li><a href="blog.html">Blog</a></li>
                     <li><a href="faq.html">FAQ</a></li>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
                 </ul>
             </div>
-            
+
             <div class="footer-section">
                 <h3>Contact Info</h3>
                 <div class="contact-info">
                     <div class="contact-item">
                         <svg viewBox="0 0 24 24">
-                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            <path
+                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                         </svg>
                         <span>Ahmedabad, Gujarat, India</span>
                     </div>
                     <div class="contact-item">
                         <svg viewBox="0 0 24 24">
-                            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                            <path
+                                d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
                         </svg>
                         <span>+91 9825000000</span>
                     </div>
                     <div class="contact-item">
                         <svg viewBox="0 0 24 24">
-                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            <path
+                                d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
                         </svg>
                         <span>support@homedecorfurniture.com</span>
                     </div>
                 </div>
             </div>
-            
+
             <div class="footer-section">
                 <h3>Newsletter</h3>
                 <div class="newsletter">
                     <p>Subscribe to get updates on new arrivals and special offers!</p>
                     <form class="newsletter-form">
                         <label for="newsletterEmail" class="sr-only">Email address</label>
-                        <input type="email" id="newsletterEmail" name="email" class="newsletter-input" placeholder="Enter your email" required autocomplete="email">
+                        <input type="email" id="newsletterEmail" name="email" class="newsletter-input"
+                            placeholder="Enter your email" required autocomplete="email">
                         <button type="submit" class="newsletter-btn">Subscribe</button>
                     </form>
                 </div>
             </div>
         </div>
-        
+
         <div class="footer-bottom">
             <div class="footer-bottom-content">
                 <p class="copyright">© 2025 <strong>HOME DECOR FURNITURE</strong>. All Rights Reserved.</p>
@@ -434,7 +644,7 @@
             </div>
         </div>
     </footer>
-    
+
     <!-- Cart Popup Modal -->
     <div id="cartPopupOverlay" class="cart-popup-overlay">
         <div class="cart-popup">
@@ -458,12 +668,18 @@
         </div>
     </div>
 
-<script src="js/app.js"></script>
-<script src="js/chatbot.js"></script>
-<script src="js/cart-popup.js"></script>
-<script src="js/animations.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/cart-popup.js"></script>
+    <script src="js/animations.js"></script>
     <script src="js/app.js"></script>
     <script src="js/mobile-menu.js"></script>
+
+    <!-- Preloader Script (must load early) -->
+    <script src="js/preloader.js"></script>
+
+    <!-- Smooth Scroll & Animations -->
+    <script src="js/smooth-scroll.js"></script>
 </body>
 
 </html>

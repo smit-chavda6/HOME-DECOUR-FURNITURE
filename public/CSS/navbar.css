@@ -6,9 +6,21 @@
     right: 0;
     background: #ffffff; /* Solid background to avoid transparency */
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     z-index: 1000;
     transition: all 0.3s ease;
     padding: 0 2rem;
+}
+
+.navbar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.08);
+    pointer-events: none;
 }
 
 .navbar-container {
@@ -326,6 +338,17 @@
 .navbar.scrolled {
     background: #ffffff; /* Solid when scrolled */
     box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Enforce consistent separator in light mode across all pages */
+body:not(.dark-mode) .navbar {
+    box-shadow: 0 3px 18px rgba(0, 0, 0, 0.12);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+}
+
+body:not(.dark-mode) .navbar::after {
+    background: rgba(0, 0, 0, 0.12);
 }
 
 /* Backdrop for mobile menu */

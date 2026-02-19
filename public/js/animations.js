@@ -22,53 +22,73 @@ document.addEventListener("DOMContentLoaded", () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const counter = entry.target;
-                const targetValue = parseInt(counter.dataset.target, 10);
-                let currentValue = 0;
-                const duration = 2000; // 2 seconds
-                const stepTime = Math.abs(Math.floor(duration / targetValue));
+                const targetText = counter.getAttribute('data-target') || '0';
+                const targetValue = parseInt(targetText, 10);
+                const suffix = counter.getAttribute('data-suffix') || '';
 
-                const timer = setInterval(() => {
-                    currentValue += 1;
-                    counter.textContent = `${currentValue}+`;
-                    if (currentValue === targetValue) {
-                        // Handle special case for percentage
-                        if (counter.dataset.suffix === '%') {
-                             counter.textContent = `${targetValue}%`;
-                        } else {
-                             counter.textContent = `${targetValue}+`;
-                        }
-                        clearInterval(timer);
+                // If target is 0 or invalid, just show it
+                if (!targetValue) {
+                    counter.textContent = targetText + suffix;
+                    observer.unobserve(counter);
+                    return;
+                }
+
+                let startTimestamp = null;
+                const duration = 2000; // 2 seconds animation
+
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+
+                    // Simple easing
+                    const easeOutQuad = 1 - Math.pow(1 - progress, 3);
+
+                    const currentValue = Math.floor(easeOutQuad * targetValue);
+
+                    // Format output
+                    if (suffix === '%') {
+                        counter.textContent = `${currentValue}%`;
+                    } else if (targetText.includes('+') || suffix === '+') {
+                        counter.textContent = `${currentValue}+`;
+                    } else {
+                        counter.textContent = currentValue;
                     }
-                }, stepTime < 1 ? 1 : stepTime); // Ensure interval is at least 1ms
 
-                observer.unobserve(counter); // Stop observing after animation starts
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    } else {
+                        // Ensure final value is exact
+                        if (suffix === '%') {
+                            counter.textContent = `${targetValue}%`;
+                        } else if (targetText.includes('+') || suffix === '+') {
+                            counter.textContent = `${targetValue}+`;
+                        } else {
+                            counter.textContent = targetValue;
+                        }
+                    }
+                };
+
+                window.requestAnimationFrame(step);
+                observer.unobserve(counter);
             }
         });
     }, {
-        threshold: 0.5 // Start when 50% is visible
+        threshold: 0.2 // Start when 20% is visible
     });
 
-    // Observe all counter elements
-    const counters = document.querySelectorAll('.animated-counter');
-    counters.forEach(counter => counterObserver.observe(counter));
-    
-    // Also apply to the original achievement numbers if you keep them
-    const achievementNumbers = document.querySelectorAll('.achievement-number');
-    achievementNumbers.forEach(number => {
-        // Set up counter for all achievement numbers
-        if (number.dataset.target) {
-            // If it already has data-target, observe it directly
-            counterObserver.observe(number);
-        } else {
-            // If it doesn't have data-target, set it up from text content
-            // Ensure we only extract numeric value and sanitize
-            const rawText = String(number.textContent || '').trim();
+    // Observe all counter elements including new .stat-number
+    const counters = document.querySelectorAll('.animated-counter, .achievement-number, .stat-number');
+    counters.forEach(counter => {
+        // If it doesn't have data-target but has text, try to parse it
+        if (!counter.hasAttribute('data-target')) {
+            const rawText = String(counter.textContent || '').trim();
             const value = parseInt(rawText.replace(/[^\d]/g, ''), 10) || 0;
-            number.dataset.target = value;
-            if(rawText.includes('%')) {
-                number.dataset.suffix = '%';
+            if (value > 0) {
+                counter.setAttribute('data-target', value);
+                if (rawText.includes('%')) counter.setAttribute('data-suffix', '%');
+                if (rawText.includes('+')) counter.setAttribute('data-suffix', '+');
             }
-            counterObserver.observe(number);
         }
+        counterObserver.observe(counter);
     });
 }); 

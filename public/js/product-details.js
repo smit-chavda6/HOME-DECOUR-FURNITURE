@@ -13,44 +13,44 @@ if (document.readyState === "loading") {
 
 async function initializeProductDetails() {
     console.log("Initializing product details...");
-    
+
     try {
         await waitForCartSystem();
-        
+
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get("id");
-        
+
         if (!productId) {
             showProductNotFound("No product ID provided");
             return;
         }
-        
+
         console.log("Product ID from URL:", productId);
-        
+
         const response = await fetch(`/api/products/${productId}`, {
             credentials: "include"
         });
-        
+
         if (!response.ok) {
             console.error("Product fetch failed with status:", response.status);
             showProductNotFound("Product not found");
             return;
         }
-        
+
         const data = await response.json();
         const product = data.product;
-        
+
         if (!product) {
             showProductNotFound("Product data is empty");
             return;
         }
-        
+
         console.log("Product loaded:", product);
         currentProduct = product;
-        
+
         displayProductDetails(product);
         initializeEventListeners();
-        
+
         if (typeof window.initializeReviews === "function") {
             try {
                 await window.initializeReviews(productId);
@@ -58,7 +58,7 @@ async function initializeProductDetails() {
                 console.warn("Reviews failed to load:", reviewError);
             }
         }
-        
+
     } catch (error) {
         console.error("Error initializing product details:", error);
         showProductNotFound("Error loading product: " + error.message);
@@ -71,7 +71,7 @@ function waitForCartSystem() {
             resolve();
             return;
         }
-        
+
         let attempts = 0;
         const checkInterval = setInterval(() => {
             attempts++;
@@ -90,20 +90,20 @@ function waitForCartSystem() {
 
 function displayProductDetails(product) {
     console.log("Displaying product details for:", product.name);
-    
+
     document.title = `${product.name} - HOME DECOR FURNITURE`;
-    
+
     const breadcrumb = document.getElementById("breadcrumb-product-name");
     if (breadcrumb) breadcrumb.textContent = product.name;
-    
+
     const nameEl = document.getElementById("product-name");
     if (nameEl) nameEl.textContent = product.name;
-    
+
     const priceEl = document.getElementById("product-price");
     if (priceEl) {
         priceEl.textContent = `₹${Number(product.price || 0).toLocaleString("en-IN")}`;
     }
-    
+
     const originalPriceEl = document.getElementById("original-price");
     if (originalPriceEl && product.original_price) {
         originalPriceEl.textContent = `₹${Number(product.original_price).toLocaleString("en-IN")}`;
@@ -111,7 +111,7 @@ function displayProductDetails(product) {
     } else if (originalPriceEl) {
         originalPriceEl.style.display = "none";
     }
-    
+
     const discountEl = document.getElementById("discount-badge");
     if (discountEl && product.discount) {
         discountEl.textContent = `-${product.discount}%`;
@@ -119,11 +119,14 @@ function displayProductDetails(product) {
     } else if (discountEl) {
         discountEl.style.display = "none";
     }
-    
+
     const mediaContainer = document.getElementById("media-container");
     if (mediaContainer) {
+        // Capture zoom button before clearing
+        const zoomBtn = document.getElementById("zoom-btn");
+
         mediaContainer.innerHTML = "";
-        
+
         if (product.is_3d && product.model_src) {
             const modelViewer = document.createElement("model-viewer");
             modelViewer.setAttribute("src", product.model_src);
@@ -135,7 +138,7 @@ function displayProductDetails(product) {
             modelViewer.style.height = "400px";
             modelViewer.style.borderRadius = "12px";
             mediaContainer.appendChild(modelViewer);
-            
+
             const viewInRoomBtn = document.getElementById("view-in-room-btn");
             if (viewInRoomBtn) viewInRoomBtn.style.display = "flex";
         } else if (product.image) {
@@ -144,7 +147,7 @@ function displayProductDetails(product) {
             img.alt = product.name;
             img.style.width = "100%";
             img.style.borderRadius = "12px";
-            img.onerror = function() {
+            img.onerror = function () {
                 this.src = "image/Logo maker project.webp";
             };
             mediaContainer.appendChild(img);
@@ -156,15 +159,20 @@ function displayProductDetails(product) {
             img.style.borderRadius = "12px";
             mediaContainer.appendChild(img);
         }
+
+        // Re-append zoom button if it existed
+        if (zoomBtn) {
+            mediaContainer.appendChild(zoomBtn);
+        }
     }
-    
+
     const descEl = document.getElementById("product-description");
     if (descEl) {
         if (product.description && product.description.trim()) {
             descEl.textContent = product.description;
         } else {
             descEl.innerHTML = `<p style="color:#999;font-style:italic;margin-bottom:15px;">No description available.</p><button class="btn primary btn-sm" id="generate-description-btn" style="padding:8px 16px;font-size:13px;">Generate AI Description</button>`;
-            
+
             setTimeout(() => {
                 const generateBtn = document.getElementById("generate-description-btn");
                 if (generateBtn) {
@@ -173,32 +181,32 @@ function displayProductDetails(product) {
             }, 100);
         }
     }
-    
+
     const materialEl = document.getElementById("product-material");
     if (materialEl) materialEl.textContent = product.material || "-";
-    
+
     const dimEl = document.getElementById("product-dimensions");
     if (dimEl) dimEl.textContent = product.dimensions || "-";
-    
+
     const weightEl = document.getElementById("product-weight");
     if (weightEl) weightEl.textContent = product.weight || "-";
-    
+
     const colorEl = document.getElementById("product-color");
     if (colorEl) colorEl.textContent = product.color || "-";
-    
+
     const warrantyEl = document.getElementById("product-warranty");
     if (warrantyEl) warrantyEl.textContent = product.warranty || "2 Years";
-    
+
     const ratingVal = product.rating || 0;
     const ratingCountVal = product.rating_count || 0;
-    
+
     // Update rating stars display with real data
     const starsContainer = document.querySelector(".product-rating .stars");
     if (starsContainer) {
         const fullStars = Math.floor(ratingVal);
         const hasHalfStar = ratingVal % 1 >= 0.5;
         starsContainer.innerHTML = "";
-        
+
         for (let i = 0; i < 5; i++) {
             const star = document.createElement("span");
             star.className = "star";
@@ -214,30 +222,96 @@ function displayProductDetails(product) {
             starsContainer.appendChild(star);
         }
     }
-    
+
     const ratingCountEl = document.querySelector(".rating-count");
     if (ratingCountEl) {
-        ratingCountEl.textContent = `(${ratingVal.toFixed(1)}/5)`;
+        ratingCountEl.textContent = ratingVal.toFixed(1);
     }
     const reviewCountEl = document.querySelector(".review-count");
     if (reviewCountEl) {
         reviewCountEl.textContent = `• ${ratingCountVal} reviews`;
     }
-    
+
+    // Show zoom button if we have an image
+    const zoomBtn = document.getElementById("zoom-btn");
+    if (mediaContainer.querySelector("img") && zoomBtn) {
+        zoomBtn.style.display = "flex";
+
+        // Also allow clicking the image itself to open modal
+        const img = mediaContainer.querySelector("img");
+        img.style.cursor = "zoom-in";
+        img.addEventListener("click", () => openImageModal(img.src));
+
+        zoomBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openImageModal(img.src);
+        });
+    }
+
     console.log("Product details displayed successfully");
+}
+
+function openImageModal(src) {
+    const modal = document.getElementById("image-modal");
+    const modalImg = document.getElementById("modal-image");
+
+    if (modal && modalImg) {
+        modalImg.src = src;
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden"; // Prevent background scrolling
+        // Blur all page content except the modal itself
+        document.body.classList.add("modal-open-blur");
+    }
+}
+
+function setupImageModal() {
+    const modal = document.getElementById("image-modal");
+    const closeBtn = document.getElementById("modal-close");
+    const overlay = document.getElementById("modal-overlay");
+    const modalContent = document.querySelector(".modal-content");
+
+    if (!modal) return;
+
+    function closeModal() {
+        modal.classList.remove("active");
+        document.body.style.overflow = "";
+        // Remove blur from page content
+        document.body.classList.remove("modal-open-blur");
+    }
+
+    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (overlay) overlay.addEventListener("click", closeModal);
+
+    // Close when clicking anywhere outside the image (on the blurred area)
+    modal.addEventListener("click", (e) => {
+        // Only close if the click target is the modal backdrop, not the image/content
+        if (!modalContent || !modalContent.contains(e.target)) {
+            closeModal();
+        }
+    });
+
+    // Close on Escape key
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal.classList.contains("active")) {
+            closeModal();
+        }
+    });
 }
 
 function initializeEventListeners() {
     // Initialize tab navigation
     initializeTabNavigation();
-    
+
+    // Initialize image modal
+    setupImageModal();
+
     const quantityInput = document.getElementById("quantity");
     const decreaseBtn = document.getElementById("decrease-btn");
     const increaseBtn = document.getElementById("increase-btn");
     const addToCartBtn = document.getElementById("add-to-cart-btn");
     const contactBtn = document.getElementById("contact-btn");
     const viewInRoomBtn = document.getElementById("view-in-room-btn");
-    
+
     if (decreaseBtn) {
         decreaseBtn.addEventListener("click", () => {
             if (quantityInput && parseInt(quantityInput.value) > 1) {
@@ -246,7 +320,7 @@ function initializeEventListeners() {
             }
         });
     }
-    
+
     if (increaseBtn) {
         increaseBtn.addEventListener("click", () => {
             if (quantityInput && parseInt(quantityInput.value) < 10) {
@@ -255,7 +329,7 @@ function initializeEventListeners() {
             }
         });
     }
-    
+
     if (quantityInput) {
         quantityInput.addEventListener("change", () => {
             let val = parseInt(quantityInput.value) || 1;
@@ -265,13 +339,13 @@ function initializeEventListeners() {
             productQuantity = val;
         });
     }
-    
+
     if (addToCartBtn) {
         addToCartBtn.addEventListener("click", () => {
             addToCart();
         });
     }
-    
+
     if (contactBtn) {
         contactBtn.addEventListener("click", () => {
             if (currentProduct) {
@@ -279,7 +353,7 @@ function initializeEventListeners() {
             }
         });
     }
-    
+
     if (viewInRoomBtn) {
         viewInRoomBtn.addEventListener("click", (e) => {
             e.preventDefault();
@@ -311,9 +385,9 @@ function addToCart() {
         alert("Product data not available");
         return;
     }
-    
+
     const quantity = productQuantity;
-    
+
     if (window.cartPopupSystem && typeof window.cartPopupSystem.addToCartFromProductDetails === "function") {
         try {
             window.cartPopupSystem.addToCartFromProductDetails(currentProduct, quantity);
@@ -327,7 +401,7 @@ function addToCart() {
             console.error("Error adding to cart:", error);
         }
     }
-    
+
     const cartItem = {
         id: currentProduct.id || currentProduct._id,
         name: currentProduct.name,
@@ -341,24 +415,24 @@ function addToCart() {
         is_3d: !!currentProduct.is_3d,
         model_src: currentProduct.model_src || null
     };
-    
+
     let cart = JSON.parse(localStorage.getItem("cart") || "[]");
     const existingItem = cart.find(item => item.id === cartItem.id);
-    
+
     if (existingItem) {
         existingItem.quantity += cartItem.quantity;
     } else {
         cart.push(cartItem);
     }
-    
+
     localStorage.setItem("cart", JSON.stringify(cart));
-    
+
     if (window.cartPopupSystem && typeof window.cartPopupSystem.updateCartCount === "function") {
         window.cartPopupSystem.updateCartCount();
     }
-    
+
     showNotification(`${currentProduct.name} added to cart!`);
-    
+
     const quantityInput = document.getElementById("quantity");
     if (quantityInput) {
         quantityInput.value = 1;
@@ -371,12 +445,12 @@ function showNotification(message) {
         window.cartPopupSystem.showNotification(message, "success");
         return;
     }
-    
+
     const notification = document.createElement("div");
     notification.style.cssText = "position:fixed;top:80px;right:20px;background:#D2691E;color:white;padding:15px 25px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:10000;font-weight:500;";
     notification.textContent = message;
     document.body.appendChild(notification);
-    
+
     setTimeout(() => {
         notification.remove();
     }, 3000);
@@ -385,18 +459,18 @@ function showNotification(message) {
 function initializeTabNavigation() {
     const tabButtons = document.querySelectorAll(".tab-btn");
     const tabPanes = document.querySelectorAll(".tab-pane");
-    
+
     tabButtons.forEach(button => {
         button.addEventListener("click", () => {
             const tabName = button.getAttribute("data-tab");
-            
+
             // Remove active class from all buttons and panes
             tabButtons.forEach(btn => btn.classList.remove("active"));
             tabPanes.forEach(pane => pane.classList.remove("active"));
-            
+
             // Add active class to clicked button
             button.classList.add("active");
-            
+
             // Show corresponding pane
             const activePane = document.getElementById(`${tabName}-tab`);
             if (activePane) {
@@ -415,7 +489,7 @@ function showProductNotFound(message) {
 
 // Show AR/3D experience in a modal on Product Details page
 function showProductARExperience(productTitle, modelSrc, productId) {
-    const esc = (s) => String(s||"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
+    const esc = (s) => String(s || "").replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' }[c]));
     const modal = document.createElement("div");
     modal.className = "product-ar-modal";
     modal.innerHTML = `
@@ -467,7 +541,7 @@ function showProductARExperience(productTitle, modelSrc, productId) {
     `;
     document.head.appendChild(styles);
 
-    const closeModal = () => { try { document.body.classList.remove('no-scroll'); } catch {} modal.remove(); };
+    const closeModal = () => { try { document.body.classList.remove('no-scroll'); } catch { } modal.remove(); };
     const closeBtn = modal.querySelector('.product-ar-close');
     const overlay = modal.querySelector('.product-ar-overlay');
     const startBtn = modal.querySelector('.product-ar-start-btn');
@@ -475,7 +549,7 @@ function showProductARExperience(productTitle, modelSrc, productId) {
 
     // Append first so we can query the model-viewer inside
     document.body.appendChild(modal);
-    try { document.body.classList.add('no-scroll'); } catch {}
+    try { document.body.classList.add('no-scroll'); } catch { }
 
     const modelViewer = modal.querySelector('model-viewer');
 
@@ -505,25 +579,25 @@ function showProductARExperience(productTitle, modelSrc, productId) {
 async function generateAIDescription(product) {
     const generateBtn = document.getElementById("generate-description-btn");
     const descEl = document.getElementById("product-description");
-    
+
     if (!generateBtn || !descEl) return;
-    
+
     generateBtn.disabled = true;
     generateBtn.textContent = "Generating...";
-    
+
     try {
         const templates = [
             `Discover the perfect blend of style and functionality with our ${product.name}. `,
             `Elevate your home decor with the exquisite ${product.name}. `,
             `Transform your living space with our premium ${product.name}. `
         ];
-        
+
         const features = [];
-        
+
         if (product.material) {
             features.push(`Crafted from high-quality ${product.material.toLowerCase()}, this piece combines durability with timeless appeal.`);
         }
-        
+
         if (product.category) {
             const categoryDescriptions = {
                 "living": "Perfect for your living room, adding both comfort and sophistication to your space.",
@@ -534,19 +608,19 @@ async function generateAIDescription(product) {
             };
             features.push(categoryDescriptions[product.category] || "A versatile addition to any room in your home.");
         }
-        
+
         if (product.brand) {
             features.push(`From the trusted ${product.brand} collection, known for exceptional craftsmanship.`);
         }
-        
+
         features.push("Whether you are furnishing a new space or updating your current decor, this piece offers the perfect balance of form and function.");
-        
+
         const randomTemplate = templates[Math.floor(Math.random() * templates.length)];
         const generatedDesc = randomTemplate + features.join(" ");
-        
+
         descEl.textContent = generatedDesc;
         currentProduct.description = generatedDesc;
-        
+
         if (window.cartPopupSystem && window.cartPopupSystem.showNotification) {
             window.cartPopupSystem.showNotification("Description generated successfully!", "success");
         }

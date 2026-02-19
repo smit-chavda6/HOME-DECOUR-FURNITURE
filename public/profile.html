@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profile - HOME DECOR FURNITURE</title>
+  
+  <!-- Lenis Smooth Scroll CDN -->
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  
   <link rel="stylesheet" href="CSS/style.css" />
     <link rel="stylesheet" href="CSS/dark-mode.css" />
   <link rel="stylesheet" href="CSS/profile.css" />
@@ -11,6 +15,9 @@
   <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Smooth Animations CSS -->
+  <link rel="stylesheet" href="CSS/smooth-animations.css">
 </head>
 <body>
   <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
@@ -305,5 +312,8 @@
   <script src="js/app.js"></script>
   <script src="js/profile.js"></script>
     <script src="js/mobile-menu.js"></script>
+    
+    <!-- Smooth Scroll & Animations -->
+    <script src="js/smooth-scroll.js"></script>
 </body>
 </html>

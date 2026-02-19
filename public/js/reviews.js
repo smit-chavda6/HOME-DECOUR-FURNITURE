@@ -26,6 +26,20 @@ class ReviewsSystem {
     async checkAuth() {
         try {
             const response = await fetch('/api/check-auth', { credentials: 'include' });
+            
+            if (!response.ok) {
+                console.warn('Auth check returned status:', response.status);
+                this.isAuthenticated = false;
+                return;
+            }
+
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                console.warn('Auth endpoint did not return JSON');
+                this.isAuthenticated = false;
+                return;
+            }
+
             const data = await response.json();
             this.isAuthenticated = data.authenticated || false;
             this.currentUser = data.user || null;
@@ -40,9 +54,15 @@ class ReviewsSystem {
             const response = await fetch(`/api/products/${this.productId}/reviews`, {
                 credentials: 'include'
             });
-            
+
             if (!response.ok) {
-                console.error('Failed to load reviews');
+                console.error('Failed to load reviews, status:', response.status);
+                return;
+            }
+
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                console.error('Reviews endpoint did not return JSON');
                 return;
             }
 
@@ -131,11 +151,11 @@ class ReviewsSystem {
     renderRatingBars() {
         const total = this.totalReviews;
         let html = '';
-        
+
         for (let i = 4; i >= 0; i--) { // 5 stars to 1 star
             const count = this.ratingDistribution[i];
             const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
-            
+
             html += `
                 <div class="rating-bar">
                     <span>${i + 1}★</span>
@@ -144,7 +164,7 @@ class ReviewsSystem {
                 </div>
             `;
         }
-        
+
         return html;
     }
 
@@ -163,7 +183,7 @@ class ReviewsSystem {
                     <div class="review-author">
                         <div class="author-avatar">${this.getInitials(review.username)}</div>
                         <div class="author-info">
-                            <div class="author-name">${this.escapeHtml(review.username)}${review.verified_purchase ? ' <span class="verified-badge">✓ Verified Purchase</span>' : ''}</div>
+                            <div class="author-name">${this.escapeHtml(review.username)}${review.verified_purchase ? ' <span class="verified-badge" title="Verified Purchase">✓</span>' : ''}</div>
                             <div class="review-date">${date}</div>
                         </div>
                     </div>
@@ -276,10 +296,10 @@ class ReviewsSystem {
             const rect = starBtn.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
             const width = rect.width;
-            
+
             // If clicked on left half, give half star
             const finalRating = clickX < width / 2 ? rating - 0.5 : rating;
-            
+
             this.setRating(finalRating);
         });
 
@@ -300,7 +320,7 @@ class ReviewsSystem {
     updateStarDisplay(rating) {
         const stars = document.querySelectorAll('.star-btn');
         const ratingValue = document.getElementById('rating-value');
-        
+
         stars.forEach((star, index) => {
             const starRating = index + 1;
             if (rating >= starRating) {
@@ -395,7 +415,7 @@ class ReviewsSystem {
 
 // Initialize reviews when product details are loaded
 if (typeof window.initializeReviews === 'undefined') {
-    window.initializeReviews = async function(productId) {
+    window.initializeReviews = async function (productId) {
         if (!productId) {
             console.warn('No product ID provided for reviews');
             return;
@@ -403,14 +423,14 @@ if (typeof window.initializeReviews === 'undefined') {
 
         const reviewsSystem = new ReviewsSystem(productId);
         await reviewsSystem.init();
-        
+
         // Make it available globally if needed
         window.currentReviewsSystem = reviewsSystem;
     };
 }
 
 // Global function to refresh product reviews after submission
-window.refreshProductReviews = async function(productId) {
+window.refreshProductReviews = async function (productId) {
     if (window.currentReviewsSystem && window.currentReviewsSystem.productId == productId) {
         await window.currentReviewsSystem.loadReviews();
         window.currentReviewsSystem.renderReviews();
@@ -419,24 +439,24 @@ window.refreshProductReviews = async function(productId) {
 };
 
 // Global function to update product card rating in gallery
-window.updateProductCardRating = function(productId) {
+window.updateProductCardRating = function (productId) {
     // Update gallery cards
     document.querySelectorAll(`.product-card[data-product-id="${productId}"]`).forEach(card => {
         const ratingElement = card.querySelector('.product-rating');
         if (ratingElement && window.currentReviewsSystem && window.currentReviewsSystem.productId == productId) {
             const rating = window.currentReviewsSystem.averageRating;
             const reviewCount = window.currentReviewsSystem.totalReviews;
-            
+
             // Render half-stars
             const fullStars = Math.floor(rating);
             const hasHalf = (rating - fullStars >= 0.5);
             const emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
-            
+
             let starsHtml = '';
             for (let i = 0; i < fullStars; i++) starsHtml += '★';
             if (hasHalf) starsHtml += '⯨';
             for (let i = 0; i < emptyStars; i++) starsHtml += '☆';
-            
+
             // Update rating element
             ratingElement.innerHTML = `<span class="stars">${starsHtml}</span><span class="rating-count">(${rating.toFixed(1)}) ${reviewCount} reviews</span>`;
         }

@@ -1,0 +1,427 @@
+/* ============================================================================
+   SMOOTH ANIMATIONS FOR SCROLL - Global Addition
+   Add this to your main CSS file or import it
+   ============================================================================ */
+
+/* Smooth Scroll Animations - Fade Up & Slide Effects */
+
+/* Fade-up animation on scroll */
+@keyframes fadeUpAnimation {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide-in from left animation */
+@keyframes slideInLeftAnimation {
+    from {
+        opacity: 0;
+        transform: translateX(-60px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Slide-in from right animation */
+@keyframes slideInRightAnimation {
+    from {
+        opacity: 0;
+        transform: translateX(60px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Zoom-in animation on scroll */
+@keyframes zoomInAnimation {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Stagger animation for multiple elements */
+@keyframes staggerAnimation {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================================
+   SCROLL-IN ANIMATION CLASSES - Apply to HTML elements
+   ============================================================================ */
+
+/* Default fade-up animation */
+.scroll-animate {
+    opacity: 0;
+    transform: translateY(40px);
+}
+
+.scroll-animate.is-visible {
+    animation: fadeUpAnimation 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Staggered animations for lists and grids */
+.scroll-animate.stagger {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.scroll-animate.stagger.is-visible {
+    animation: staggerAnimation 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Add delay for staggered list items */
+.scroll-animate.stagger:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.scroll-animate.stagger:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.scroll-animate.stagger:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.scroll-animate.stagger:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+.scroll-animate.stagger:nth-child(5) {
+    animation-delay: 0.4s;
+}
+
+.scroll-animate.stagger:nth-child(6) {
+    animation-delay: 0.5s;
+}
+
+/* Slide-in from left */
+.scroll-animate-left {
+    opacity: 0;
+    transform: translateX(-60px);
+}
+
+.scroll-animate-left.is-visible {
+    animation: slideInLeftAnimation 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Slide-in from right */
+.scroll-animate-right {
+    opacity: 0;
+    transform: translateX(60px);
+}
+
+.scroll-animate-right.is-visible {
+    animation: slideInRightAnimation 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Zoom-in animation */
+.scroll-animate-zoom {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.scroll-animate-zoom.is-visible {
+    animation: zoomInAnimation 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* ============================================================================
+   SMOOTH HOVER ANIMATIONS FOR INTERACTIVE ELEMENTS
+   ============================================================================ */
+
+/* Smooth button hover effect */
+.cta-button,
+.category-btn,
+.modern-welcome-btn,
+.navbar-link,
+a[class*="btn"] {
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.cta-button:hover,
+.category-btn:hover,
+.modern-welcome-btn:hover,
+.navbar-link:hover,
+a[class*="btn"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(139, 69, 19, 0.2);
+}
+
+.cta-button:active,
+.category-btn:active,
+.modern-welcome-btn:active,
+.navbar-link:active,
+a[class*="btn"]:active {
+    transform: translateY(-1px);
+}
+
+/* Smooth card hover effects */
+.category-card,
+.modern-why-card,
+.product-card,
+[class*="card"] {
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.category-card:hover,
+.modern-why-card:hover,
+.product-card:hover,
+[class*="card"]:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(139, 69, 19, 0.2),
+        0 10px 20px rgba(139, 69, 19, 0.1);
+}
+
+/* Smooth image hover effect (zoom on hover) */
+.category-card img,
+.product-card img,
+[class*="card"] img {
+    transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
+}
+
+.category-card:hover img,
+.product-card:hover img,
+[class*="card"]:hover img {
+    transform: scale(1.1) rotate(1deg);
+}
+
+/* Smooth navbar link underline animation */
+.navbar-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #8B4513;
+    transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.navbar-link:hover::after {
+    width: 100%;
+}
+
+/* Smooth icon rotation effect */
+.modern-why-icon,
+[class*="icon"] {
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.modern-why-card:hover .modern-why-icon,
+[class*="card"]:hover [class*="icon"] {
+    transform: scale(1.15) rotate(5deg);
+}
+
+/* ============================================================================
+   LENIS SMOOTH SCROLL SPECIFIC STYLING
+   ============================================================================ */
+
+/* Smooth scroll behavior for all browsers */
+html {
+    scroll-behavior: smooth;
+    /* Lenis will override this, but good fallback */
+}
+
+/* Optimize scrollbar appearance */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(139, 69, 19, 0.1);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(139, 69, 19, 0.5);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(139, 69, 19, 0.8);
+}
+
+/* Firefox scrollbar */
+* {
+    scrollbar-color: rgba(139, 69, 19, 0.5) rgba(139, 69, 19, 0.1);
+    scrollbar-width: thin;
+}
+
+/* ============================================================================
+   PERFORMANCE OPTIMIZATION - Use will-change sparingly
+   ============================================================================ */
+
+/* Only apply will-change to elements that will animate */
+.scroll-animate,
+.scroll-animate-left,
+.scroll-animate-right,
+.scroll-animate-zoom {
+    will-change: transform, opacity;
+}
+
+/* Remove will-change after animation completes */
+.scroll-animate.is-visible,
+.scroll-animate-left.is-visible,
+.scroll-animate-right.is-visible,
+.scroll-animate-zoom.is-visible {
+    will-change: auto;
+}
+
+/* ============================================================================
+   TABLET & MOBILE OPTIMIZATIONS
+   ============================================================================ */
+
+@media (max-width: 768px) {
+
+    /* Reduce animation duration on mobile for better UX */
+    .scroll-animate,
+    .scroll-animate-left,
+    .scroll-animate-right,
+    .scroll-animate-zoom {
+        animation-duration: 0.6s !important;
+    }
+
+    /* Reduce hover effects on mobile */
+    .category-card:hover,
+    .modern-why-card:hover,
+    .product-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .cta-button:hover,
+    .category-btn:hover,
+    .modern-welcome-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Disable image zoom on mobile for performance */
+    .category-card:hover img,
+    .product-card:hover img {
+        transform: scale(1.05);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    /* Respect user's motion preference */
+    .scroll-animate,
+    .scroll-animate-left,
+    .scroll-animate-right,
+    .scroll-animate-zoom,
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* ============================================================================
+   BACK TO TOP BUTTON
+   ============================================================================ */
+
+#backToTopBtn {
+    position: fixed;
+    bottom: 115px;
+    right: 30px;
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #8B4513, #A0522D);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 25px rgba(139, 69, 19, 0.4);
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(100px) scale(0.5);
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    -webkit-tap-highlight-color: transparent;
+}
+
+#backToTopBtn.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+#backToTopBtn:hover {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 0 12px 35px rgba(139, 69, 19, 0.5);
+    background: linear-gradient(135deg, #A0522D, #D2691E);
+}
+
+#backToTopBtn:active {
+    transform: translateY(-2px) scale(1.05);
+}
+
+/* Arrow icon */
+#backToTopBtn::before {
+    content: '↑';
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Dark mode support */
+body.dark-mode #backToTopBtn {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    color: var(--accentText);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode #backToTopBtn:hover {
+    background: linear-gradient(135deg, var(--accent2), var(--accent1));
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    #backToTopBtn {
+        width: 55px;
+        height: 55px;
+        bottom: 110px;
+        right: 20px;
+        font-size: 20px;
+    }
+
+    #backToTopBtn::before {
+        font-size: 24px;
+        line-height: 0;
+    }
+}

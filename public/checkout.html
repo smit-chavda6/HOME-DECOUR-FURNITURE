@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Checkout - HOME DECOR FURNITURE</title>
+  
+  <!-- Lenis Smooth Scroll CDN -->
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  
   <meta name="description" content="4-step secure checkout" />
   <meta name="theme-color" content="#8B4513" />
   <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico" />
@@ -12,6 +16,9 @@
   <link rel="stylesheet" href="CSS/animations.css" />
   <link rel="stylesheet" href="CSS/checkout.css" />
     <link rel="stylesheet" href="CSS/responsive.css">
+    
+    <!-- Smooth Animations CSS -->
+    <link rel="stylesheet" href="CSS/smooth-animations.css">
 </head>
 <body>
   <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
@@ -712,6 +719,49 @@
         const data = await res.json();
 
         if (data.success) {
+          // Send order data to n8n webhook for invoice generation
+          if (data.orderId) {
+            console.log('📧 Sending order to n8n webhook...');
+            try {
+              for (const item of checkoutData.cart) {
+                const webhookPayload = {
+                  orderId: data.orderId,
+                  customerName: checkoutData.shipping.fullName,
+                  customerEmail: checkoutData.shipping.email,
+                  productName: item.name,
+                  quantity: item.quantity,
+                  price: item.price,
+                  totalAmount: item.price * item.quantity,
+                  orderDate: new Date().toISOString(),
+                  shippingAddress: {
+                    phone: checkoutData.shipping.phone,
+                    country: checkoutData.shipping.country,
+                    address1: checkoutData.shipping.address1,
+                    address2: checkoutData.shipping.address2 || '',
+                    city: checkoutData.shipping.city,
+                    state: checkoutData.shipping.state,
+                    postal: checkoutData.shipping.postal
+                  },
+                  grandTotal: payload.amounts.total
+                };
+
+                // Fire and forget - don't block order completion
+                fetch('http://localhost:5678/webhook/fcc3c895-f089-4bb6-a23e-3621110f11f7', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(webhookPayload)
+                })
+                .then(response => {
+                  console.log('✅ n8n webhook response:', response.status);
+                  return response.text();
+                })
+                .catch(err => console.warn('❌ n8n webhook error:', err));
+              }
+            } catch (webhookErr) {
+              console.warn('Failed to send to n8n:', webhookErr);
+            }
+          }
+
           localStorage.removeItem('cart');
           document.getElementById('navigationButtons').style.display = 'none';
           document.getElementById('orderId').textContent = `Order ID: ${data.orderId}`;
@@ -760,14 +810,67 @@
       });
     }
 
+    // PREFILL USER DATA FROM ACCOUNT
+    async function prefillUserData() {
+      try {
+        const response = await fetch('/api/check-auth', {
+          credentials: 'include'
+        });
+        const data = await response.json();
+
+        if (data.authenticated && data.user) {
+          const user = data.user;
+          
+          // Prefill and lock personal info fields (name, email, phone)
+          const fullNameInput = document.querySelector('#shippingForm input[name="fullName"]');
+          const emailInput = document.querySelector('#shippingForm input[name="email"]');
+          const phoneInput = document.querySelector('#shippingForm input[name="phone"]');
+
+          if (fullNameInput && user.full_name) {
+            fullNameInput.value = user.full_name;
+            fullNameInput.setAttribute('readonly', 'true');
+            fullNameInput.style.backgroundColor = '#f8f9fa';
+          }
+
+          if (emailInput && user.email) {
+            emailInput.value = user.email;
+            emailInput.setAttribute('readonly', 'true');
+            emailInput.style.backgroundColor = '#f8f9fa';
+          }
+
+          if (phoneInput && user.phone) {
+            phoneInput.value = user.phone;
+            phoneInput.setAttribute('readonly', 'true');
+            phoneInput.style.backgroundColor = '#f8f9fa';
+          }
+
+          // Keep address fields editable - only restore from localStorage if empty
+          const addressFields = ['country', 'address1', 'address2', 'city', 'state', 'postal'];
+          addressFields.forEach(field => {
+            const input = document.querySelector(`#shippingForm input[name="${field}"]`);
+            if (input && !input.value) {
+              const saved = localStorage.getItem(`checkout_${field}`);
+              if (saved) input.value = saved;
+            }
+          });
+        }
+      } catch (err) {
+        console.log('Not logged in or error fetching user data:', err);
+      }
+    }
+
     // INIT
     document.addEventListener('DOMContentLoaded', () => {
       loadCart();
       updateUI();
       attachRealTimeValidation();
+      prefillUserData();
     });
   </script>
     <script src="js/mobile-menu.js"></script>
+    
+    <!-- Smooth Scroll & Animations -->
+    <script src="js/smooth-scroll.js"></script>
 </body>
   <script src="js/app.js"></script>
 </html>

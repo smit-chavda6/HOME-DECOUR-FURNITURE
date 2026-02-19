@@ -36,20 +36,33 @@
 		const cityEl = document.getElementById('city');
 		const postalEl = document.getElementById('postal');
 
-		// Load from local storage first (user can resume later)
+		// Auto-fill name, email, phone from user account (always override)
+		if (user) {
+			const name = user.full_name || user.name || [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || '';
+			if (fullNameEl && name) {
+				fullNameEl.value = name;
+				fullNameEl.setAttribute('readonly', 'true');
+				fullNameEl.style.backgroundColor = '#f8f9fa';
+			}
+			if (emailEl && user.email) {
+				emailEl.value = user.email;
+				emailEl.setAttribute('readonly', 'true');
+				emailEl.style.backgroundColor = '#f8f9fa';
+			}
+			if (phoneEl && user.phone) {
+				phoneEl.value = user.phone;
+				phoneEl.setAttribute('readonly', 'true');
+				phoneEl.style.backgroundColor = '#f8f9fa';
+			}
+		}
+
+		// Load address fields from localStorage (user can resume later)
 		try {
 			const saved = JSON.parse(localStorage.getItem('checkoutFormData') || '{}');
 			const assign = (el, key)=>{ if (el && saved && saved[key] && !String(el.value||'').trim()) el.value = saved[key]; };
-			assign(fullNameEl, 'fullName'); assign(emailEl, 'email'); assign(phoneEl, 'phone');
 			assign(countryEl, 'country'); assign(address1El, 'address1'); assign(address2El, 'address2');
 			assign(stateEl, 'state'); assign(cityEl, 'city'); assign(postalEl, 'postal');
 		} catch {}
-
-		if (!user) return;
-		const name = user.full_name || user.name || [user.first_name, user.last_name].filter(Boolean).join(' ') || user.username || '';
-		if (fullNameEl && !fullNameEl.value && name) fullNameEl.value = name;
-		if (emailEl && !emailEl.value && user.email) emailEl.value = user.email;
-		if (phoneEl && !phoneEl.value && user.phone) phoneEl.value = user.phone;
 	}
 
 	const fmtINR = (n) => `₹${(Number(n)||0).toLocaleString('en-IN')}`;
@@ -626,7 +639,7 @@
 						console.log('n8n webhook payload:', webhookPayload);
 						
 						// Fire and forget - don't block order completion
-						fetch('	https://smarty67.app.n8n.cloud/webhook/fcc3c895-f089-4bb6-a23e-3621110f11f7', {
+						fetch('http://localhost:5678/webhook/fcc3c895-f089-4bb6-a23e-3621110f11f7', {
 							method: 'POST',
 							headers: { 'Content-Type': 'application/json' },
 							body: JSON.stringify(webhookPayload)
