@@ -1,18 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin • Products</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin • Product Management</title>
   <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="image/Logo maker project.webp">
+  <meta name="theme-color" content="#8B4513">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="CSS/style.css" />
   <link rel="stylesheet" href="CSS/admin.css" />
-  <link rel="stylesheet" href="CSS/dark-mode.css" />
-    <link rel="stylesheet" href="CSS/responsive.css">
+  <link rel="stylesheet" href="CSS/admin-products.css">
+  <link rel="stylesheet" href="CSS/dark-mode.css">
+  <link rel="stylesheet" href="CSS/responsive.css">
   <script defer src="https://unpkg.com/feather-icons"></script>
 </head>
-<body>
-  <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
+
+<body class="ap-page admin-page">
+  <script>(function () { try { var d = document; var t = localStorage.getItem('hdf-theme'); if (!t) { t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; } var st = d.createElement('style'); st.id = 'no-fouc'; st.textContent = '*{transition:none!important}'; d.head.appendChild(st); d.body.style.visibility = 'hidden'; if (t === 'dark') { d.body.classList.add('dark-mode'); } var accent = localStorage.getItem('hdf-accent') || 'accent-amber'; if (accent) d.body.classList.add(accent); var meta = d.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', t === 'dark' ? '#0f0f11' : '#8B4513'); d.body.style.visibility = ''; st.remove(); } catch (e) { } })();</script>
+
   <div class="admin-layout">
     <aside class="admin-sidebar" aria-label="Admin navigation">
       <div class="admin-profile">
@@ -23,348 +32,438 @@
         </div>
       </div>
       <nav class="admin-nav">
-        <a class="nav-link" href="/admin.html"><span class="nav-icon"><i data-feather="grid"></i></span><span class="nav-label">Dashboard</span></a>
-        <a class="nav-link" href="/admin-users.html"><span class="nav-icon"><i data-feather="users"></i></span><span class="nav-label">Users</span></a>
-        <a class="nav-link" href="/admin-orders.html"><span class="nav-icon"><i data-feather="file-text"></i></span><span class="nav-label">Orders</span></a>
-        <a class="nav-link" href="/admin-messages.html"><span class="nav-icon"><i data-feather="mail"></i></span><span class="nav-label">Messages</span></a>
-        <a class="nav-link active" href="/admin-products.html"><span class="nav-icon"><i data-feather="shopping-bag"></i></span><span class="nav-label">Products</span></a>
-        <a class="nav-link" href="/admin-notifications.html"><span class="nav-icon"><i data-feather="bell"></i></span><span class="nav-label">Notifications</span></a>
+        <a class="nav-link" href="/admin.html">
+          <span class="nav-icon" aria-hidden="true"><i data-feather="grid"></i></span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a class="nav-link" href="/admin-users.html">
+          <span class="nav-icon" aria-hidden="true"><i data-feather="users"></i></span>
+          <span class="nav-label">Users</span>
+        </a>
+        <a class="nav-link" href="/admin-orders.html">
+          <span class="nav-icon" aria-hidden="true"><i data-feather="file-text"></i></span>
+          <span class="nav-label">Orders</span>
+        </a>
+        <a class="nav-link" href="/admin-messages.html">
+          <span class="nav-icon" aria-hidden="true"><i data-feather="mail"></i></span>
+          <span class="nav-label">Messages</span>
+        </a>
+        <a class="nav-link active" href="/admin-products.html">
+          <span class="nav-icon" aria-hidden="true"><i data-feather="shopping-bag"></i></span>
+          <span class="nav-label">Products</span>
+        </a>
+        <a class="nav-link" href="/admin-notifications.html">
+          <span class="nav-icon" aria-hidden="true"><i data-feather="bell"></i></span>
+          <span class="nav-label">Notifications</span>
+        </a>
       </nav>
     </aside>
+
     <div class="admin-main">
       <div class="admin-wrap">
+        <!-- Header -->
         <div class="admin-header">
-          <h1><span class="brand">Admin</span> — Products</h1>
+          <h1><span class="brand">HOME DECOR FURNITURE</span> — Products</h1>
+
           <div class="admin-actions">
-            <button class="btn" id="btn-refresh">Refresh</button>
-            <button class="btn" id="btn-logout">Logout</button>
-            <a class="btn primary" href="/">Go to site</a>
+            <a href="/" target="_blank" class="btn secondary"
+              style="margin-right:8px; display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
+              <i data-feather="external-link" style="width:16px;height:16px;"></i> Go to Site
+            </a>
+            <button class="btn primary" id="btnAddProduct">
+              <i data-feather="plus" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"></i>
+              Add Product
+            </button>
           </div>
         </div>
 
-        <div class="panel">
-          <h2>Products</h2>
-          <div class="content">
-            <div class="notice">Add new products to your catalog. You can also delete products here. Use the View link to open Product Details page.</div>
-            <div class="section-actions" style="margin-bottom:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-              <button class="btn primary" type="button" id="btn-open-add">Add New Product</button>
-              <button class="btn" type="button" id="btn-prod-refresh">Refresh Products</button>
+        <!-- Stats -->
+        <div class="ap-stats cards" id="apStats">
+          <div class="ap-stat-card card">
+            <div class="ap-stat-icon total">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" style="width:24px;height:24px;">
+                <path
+                  d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                </path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
             </div>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Category</th>
-                    <th>Brand</th>
-                    <th>Material</th>
-                    <th>3D</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="prod-body"></tbody>
-              </table>
+            <div class="ap-stat-info">
+              <h3 id="statTotal" class="metric">0</h3>
+              <p>Total Products</p>
+            </div>
+          </div>
+          <div class="ap-stat-card card">
+            <div class="ap-stat-icon active">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" style="width:24px;height:24px;">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <div class="ap-stat-info">
+              <h3 id="statActive" class="metric">0</h3>
+              <p>Active</p>
+            </div>
+          </div>
+          <div class="ap-stat-card card">
+            <div class="ap-stat-icon featured">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" style="width:24px;height:24px;">
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                </polygon>
+              </svg>
+            </div>
+            <div class="ap-stat-info">
+              <h3 id="statFeatured" class="metric">0</h3>
+              <p>Featured</p>
+            </div>
+          </div>
+          <div class="ap-stat-card card">
+            <div class="ap-stat-icon three-d">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" style="width:24px;height:24px;">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                <path d="M2 17l10 5 10-5"></path>
+                <path d="M2 12l10 5 10-5"></path>
+              </svg>
+            </div>
+            <div class="ap-stat-info">
+              <h3 id="stat3D">0</h3>
+              <p>3D Models</p>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Product Modal -->
-  <div id="prod-modal" class="modal-overlay hidden">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="prod-modal-title" tabindex="-1">
-      <div class="modal-header">
-        <h3 id="prod-modal-title">Add Product</h3>
-        <button class="modal-close" id="prod-modal-close" aria-label="Close">×</button>
-      </div>
-      <div class="modal-body">
-        <form id="prod-form" style="display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));">
-          <input type="hidden" id="p-id" value="" />
-          <div>
-            <label>Name *</label>
-            <input id="p-name" required placeholder="e.g., Elegant Sofa" />
+
+        <!-- Toolbar -->
+        <div class="ap-toolbar">
+          <div class="ap-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input type="text" id="searchInput" placeholder="Search products...">
           </div>
-          <div>
-            <label>Price (₹) *</label>
-            <input id="p-price" type="number" min="0" step="1" required />
+          <select class="ap-filter-select" id="filterCategory">
+            <option value="">All Categories</option>
+            <option value="sofa">Sofa</option>
+            <option value="chair">Chair</option>
+            <option value="table">Table</option>
+            <option value="bed">Bed</option>
+            <option value="decor">Decor</option>
+            <option value="storage">Storage</option>
+            <option value="lighting">Lighting</option>
+            <option value="outdoor">Outdoor</option>
+            <option value="office">Office</option>
+          </select>
+          <select class="ap-filter-select" id="sortSelect">
+            <option value="created_at-desc">Newest First</option>
+            <option value="created_at-asc">Oldest First</option>
+            <option value="price-asc">Price: Low→High</option>
+            <option value="price-desc">Price: High→Low</option>
+            <option value="name-asc">Name: A→Z</option>
+            <option value="name-desc">Name: Z→A</option>
+          </select>
+          <button class="ap-btn danger sm" id="btnResetAll" title="Delete all products">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+            </svg>
+            Reset All
+          </button>
+        </div>
+
+        <!-- Product Table -->
+        <div class="ap-table-card">
+          <div class="ap-table-header">
+            <h2>Products <span id="productCount" style="color:var(--ap-text-muted);font-weight:400"></span></h2>
           </div>
-          <div>
-            <label>Product Image (optional)</label>
-            <input id="p-image-file" type="file" accept="image/*" />
-            <input id="p-image" placeholder="Or paste image URL" style="margin-top:6px" />
-            <div id="p-image-preview-wrap" style="display:none;align-items:center;gap:8px;margin-top:6px">
-              <img id="p-image-preview" alt="Preview" style="max-width:120px;border-radius:10px;border:1px solid #e5e7eb;box-shadow:0 6px 20px rgba(17,17,17,.12)" />
-              <button type="button" class="btn" id="p-image-clear">Remove</button>
+          <div class="ap-table-wrap">
+            <table class="ap-table" id="productTable">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th data-sort="name">Name</th>
+                  <th data-sort="sku">SKU</th>
+                  <th>Category</th>
+                  <th data-sort="price">Price</th>
+                  <th data-sort="stock">Stock</th>
+                  <th>Flags</th>
+                  <th>3D</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="productBody">
+                <!-- Dynamic rows -->
+              </tbody>
+            </table>
+          </div>
+          <!-- Empty State -->
+          <div class="ap-empty" id="emptyState" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path
+                d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+            </svg>
+            <h3>No Products Found</h3>
+            <p>Start by adding your first product.</p>
+            <button class="ap-btn primary" id="btnAddFirst">Add Product</button>
+          </div>
+          <!-- Loading -->
+          <div class="ap-loading" id="loadingState">
+            <div class="ap-spinner"></div>
+          </div>
+          <!-- Pagination -->
+          <div class="ap-pagination" id="paginationBar">
+            <span id="paginationInfo">Showing 0 of 0</span>
+            <div class="ap-pagination-btns" id="paginationBtns"></div>
+          </div>
+        </div>
+      </div> <!-- .admin-wrap -->
+    </div> <!-- .admin-main -->
+  </div> <!-- .admin-layout -->
+
+  <!-- Add/Edit Product Modal -->
+  <div class="ap-modal-overlay" id="productModal">
+    <div class="ap-modal">
+      <div class="ap-modal-header">
+        <h2 id="modalTitle">Add New Product</h2>
+        <button class="ap-modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="ap-modal-body">
+        <!-- Tabs -->
+        <div class="ap-tabs">
+          <button class="ap-tab active" data-tab="basic">Basic Info</button>
+          <button class="ap-tab" data-tab="images">Images</button>
+          <button class="ap-tab" data-tab="model3d">3D Model</button>
+          <button class="ap-tab" data-tab="seo">SEO</button>
+        </div>
+
+        <form id="productForm" autocomplete="off">
+          <input type="hidden" id="editId" value="">
+
+          <!-- Tab 1: Basic Info -->
+          <div class="ap-tab-panel active" data-panel="basic">
+            <div class="ap-form-grid">
+              <div class="ap-form-group">
+                <label>Product Name <span class="required">*</span></label>
+                <input type="text" id="fName" required placeholder="e.g., Modern Oak Dining Table">
+              </div>
+              <div class="ap-form-group">
+                <label>Category <span class="required">*</span></label>
+                <select id="fCategory" required>
+                  <option value="">Select Category</option>
+                  <option value="sofa">Sofa</option>
+                  <option value="chair">Chair</option>
+                  <option value="table">Table</option>
+                  <option value="bed">Bed</option>
+                  <option value="decor">Decor</option>
+                  <option value="storage">Storage</option>
+                  <option value="lighting">Lighting</option>
+                  <option value="outdoor">Outdoor</option>
+                  <option value="office">Office</option>
+                </select>
+              </div>
+              <div class="ap-form-group">
+                <label>Brand</label>
+                <input type="text" id="fBrand" placeholder="e.g., NovaHome">
+              </div>
+              <div class="ap-form-group">
+                <label>Material</label>
+                <input type="text" id="fMaterial" placeholder="e.g., Solid Oak Wood">
+              </div>
+              <div class="ap-form-group">
+                <label>Price (₹) <span class="required">*</span></label>
+                <input type="number" id="fPrice" required min="0" step="1" placeholder="e.g., 25000">
+              </div>
+              <div class="ap-form-group">
+                <label>Original Price (₹)</label>
+                <input type="number" id="fOriginalPrice" min="0" step="1" placeholder="e.g., 30000">
+              </div>
+              <div class="ap-form-group">
+                <label>Discount (%)</label>
+                <input type="number" id="fDiscount" min="0" max="90" step="1" placeholder="e.g., 17">
+              </div>
+              <div class="ap-form-group">
+                <label>Stock Quantity</label>
+                <input type="number" id="fStock" min="0" step="1" value="0">
+              </div>
+              <div class="ap-form-group">
+                <label>Badge</label>
+                <input type="text" id="fBadge" placeholder="e.g., New, Sale, Hot">
+              </div>
+              <div class="ap-form-group">
+                <label>Color Variants</label>
+                <input type="text" id="fColors" placeholder="e.g., Oak, Walnut, White">
+                <span class="ap-form-hint">Comma-separated values</span>
+              </div>
+              <div class="ap-form-group">
+                <label>Weight (kg)</label>
+                <input type="number" id="fWeight" min="0" step="0.1" placeholder="e.g., 25.5">
+              </div>
+              <div class="ap-form-group">
+                <label>Dimensions (L × W × H cm)</label>
+                <div style="display:flex;gap:6px;">
+                  <input type="number" id="fDimL" min="0" step="0.1" placeholder="L" style="flex:1">
+                  <input type="number" id="fDimW" min="0" step="0.1" placeholder="W" style="flex:1">
+                  <input type="number" id="fDimH" min="0" step="0.1" placeholder="H" style="flex:1">
+                </div>
+              </div>
+              <div class="ap-form-group full">
+                <label>Short Description</label>
+                <textarea id="fShortDesc" rows="2" placeholder="Brief product tagline (displayed on cards)"></textarea>
+              </div>
+              <div class="ap-form-group full">
+                <label>Full Description</label>
+                <textarea id="fDescription" rows="4" placeholder="Detailed product description"></textarea>
+              </div>
+              <div class="ap-form-group full">
+                <label>Product Flags</label>
+                <div class="ap-toggle-row">
+                  <label class="ap-toggle"><input type="checkbox" id="fFeatured"> Featured</label>
+                  <label class="ap-toggle"><input type="checkbox" id="fTrending"> Trending</label>
+                  <label class="ap-toggle"><input type="checkbox" id="fNewArrival"> New Arrival</label>
+                  <label class="ap-toggle"><input type="checkbox" id="fActive" checked> Active</label>
+                </div>
+              </div>
             </div>
-            <small class="muted" id="p-image-status"></small>
           </div>
-          <div>
-            <label>Category (optional)</label>
-            <select id="p-category">
-              <option value="">—</option>
-              <option value="living">Living Room</option>
-              <option value="dining">Dining Room</option>
-              <option value="bedroom">Bedroom</option>
-              <option value="office">Office</option>
-              <option value="3d">3D Models</option>
-            </select>
+
+          <!-- Tab 2: Images -->
+          <div class="ap-tab-panel" data-panel="images">
+            <div class="ap-form-grid">
+              <div class="ap-form-group full">
+                <label>Thumbnail Image</label>
+                <div class="ap-dropzone" id="thumbDropzone">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </svg>
+                  <p>Drag & drop thumbnail or <strong>click to browse</strong></p>
+                  <small>JPG, PNG, WebP — Max 5MB</small>
+                </div>
+                <input type="file" id="thumbInput" accept="image/*" hidden>
+                <div class="ap-thumb-preview" id="thumbPreview" style="display:none;">
+                  <img id="thumbImg" src="" alt="Thumbnail">
+                  <button type="button" class="ap-btn sm danger" id="thumbRemove">Remove</button>
+                </div>
+                <input type="hidden" id="fThumbnail" value="">
+              </div>
+
+              <div class="ap-form-group full">
+                <label>Gallery Images</label>
+                <div class="ap-dropzone" id="galleryDropzone">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p>Drag & drop gallery images or <strong>click to browse</strong></p>
+                  <small>Up to 10 images — JPG, PNG, WebP — Max 5MB each</small>
+                </div>
+                <input type="file" id="galleryInput" accept="image/*" multiple hidden>
+                <div class="ap-gallery-preview" id="galleryPreview"></div>
+              </div>
+            </div>
           </div>
-          <div>
-            <label>Brand (optional)</label>
-            <input id="p-brand" list="brands-list" placeholder="e.g., UrbanWood" />
-            <datalist id="brands-list"></datalist>
+
+          <!-- Tab 3: 3D Model -->
+          <div class="ap-tab-panel" data-panel="model3d">
+            <div class="ap-form-grid">
+              <div class="ap-form-group full">
+                <label>3D Model File (.glb or .gltf)</label>
+                <div class="ap-dropzone" id="modelDropzone">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path
+                      d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                    <line x1="12" y1="22.08" x2="12" y2="12" />
+                  </svg>
+                  <p>Drag & drop 3D model or <strong>click to browse</strong></p>
+                  <small>.glb or .gltf — Max 50MB</small>
+                </div>
+                <input type="file" id="modelInput" accept=".glb,.gltf" hidden>
+                <div id="modelStatus" style="margin-top:10px;display:none;">
+                  <span class="ap-badge has-3d" id="modelFileName"></span>
+                  <button type="button" class="ap-btn sm danger" id="modelRemove"
+                    style="margin-left:8px;">Remove</button>
+                </div>
+                <input type="hidden" id="fModelUrl" value="">
+                <input type="hidden" id="fModelFormat" value="">
+              </div>
+              <div class="ap-form-group full">
+                <label class="ap-toggle" style="font-size:0.9rem;">
+                  <input type="checkbox" id="fModelEnabled"> Enable 3D Viewer on Product Page
+                </label>
+              </div>
+            </div>
           </div>
-          <div>
-            <label>Material (optional)</label>
-            <input id="p-material" list="materials-list" placeholder="e.g., Leather" />
-            <datalist id="materials-list"></datalist>
-          </div>
-          <div style="grid-column:1/-1;">
-            <label>Description (optional)</label>
-            <textarea id="p-desc" placeholder="Short description" style="width:100%;min-height:70px"></textarea>
-          </div>
-          <div>
-            <label>Original Price (optional)</label>
-            <input id="p-original" type="number" min="0" step="1" />
-          </div>
-          <div>
-            <label>Discount (%) (optional)</label>
-            <input id="p-discount" type="number" min="0" max="90" step="1" />
-          </div>
-          <div>
-            <label>Badge (optional)</label>
-            <input id="p-badge" placeholder="e.g., New, Sale, Hot" />
-          </div>
-          <div>
-            <label>Is 3D Model?</label>
-            <select id="p-is3d">
-              <option value="0">No</option>
-              <option value="1">Yes</option>
-            </select>
-          </div>
-          <div id="p-model-row" style="display:none;grid-column:1/-1;">
-            <label>3D Model Path (required if 3D)</label>
-            <input id="p-model" placeholder="3d models/your_model.glb" />
-          </div>
-          <div style="grid-column:1/-1;display:flex;gap:8px;align-items:center;justify-content:flex-end;">
-            <button class="btn" type="button" id="btn-prod-cancel" style="display:none;">Cancel Edit</button>
-            <button class="btn primary" type="submit" id="btn-prod-submit">Add Product</button>
+
+          <!-- Tab 4: SEO -->
+          <div class="ap-tab-panel" data-panel="seo">
+            <div class="ap-form-grid">
+              <div class="ap-form-group full">
+                <label>Meta Title</label>
+                <input type="text" id="fSeoTitle" placeholder="SEO-friendly page title">
+                <span class="ap-form-hint">Leave empty to use product name</span>
+              </div>
+              <div class="ap-form-group full">
+                <label>Meta Description</label>
+                <textarea id="fSeoDesc" rows="3"
+                  placeholder="Short description for search engines (150-160 chars)"></textarea>
+              </div>
+              <div class="ap-form-group full">
+                <label>Meta Keywords</label>
+                <input type="text" id="fSeoKeywords" placeholder="e.g., furniture, dining table, oak, modern">
+                <span class="ap-form-hint">Comma-separated keywords</span>
+              </div>
+              <div class="ap-form-group full">
+                <label>URL Slug</label>
+                <input type="text" id="fSlug" placeholder="auto-generated-from-name">
+                <span class="ap-form-hint">Leave empty to auto-generate</span>
+              </div>
+            </div>
           </div>
         </form>
       </div>
+      <div class="ap-modal-footer">
+        <button class="ap-btn" id="btnCancel">Cancel</button>
+        <button class="ap-btn primary" id="btnSave">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+          Save Product
+        </button>
+      </div>
     </div>
   </div>
 
-  <script>
-  const fmtDate = (d) => new Date(d).toLocaleString();
-  (function highlight(){
-    const path = location.pathname.replace(/\\+/g,'/');
-    document.querySelectorAll('.admin-sidebar .nav-link').forEach(a => {
-      const href = a.getAttribute('href');
-      const matches = (href === '/' ? path === '/' : path.endsWith(href));
-      a.classList.toggle('active', matches);
-    });
-    try { if (window.feather) feather.replace(); } catch {}
-  })();
-  // Modal helpers
-  const modal = document.getElementById('prod-modal');
-  const modalTitle = document.getElementById('prod-modal-title');
-  const modalClose = document.getElementById('prod-modal-close');
-  const modalDialog = modal ? modal.querySelector('.modal') : null;
-  let lastActiveEl = null;
-  function getFocusable(root){
-    return root.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
-  }
-  function focusTrap(e){
-    if (!modal || modal.classList.contains('hidden')) return;
-    if (e.key !== 'Tab') return;
-    const nodes = modalDialog ? Array.from(getFocusable(modalDialog)) : [];
-    if (!nodes.length) return;
-    const first = nodes[0];
-    const last = nodes[nodes.length - 1];
-    const active = document.activeElement;
-    if (e.shiftKey){
-      if (active === first || !modalDialog.contains(active)) { e.preventDefault(); last.focus(); }
-    } else {
-      if (active === last) { e.preventDefault(); first.focus(); }
-    }
-  }
-  function showModal(title){
-    if (modalTitle) modalTitle.textContent = title||'Add Product';
-    lastActiveEl = document.activeElement;
-    modal.classList.remove('hidden');
-    document.body.style.overflow='hidden';
-    setTimeout(()=>{
-      const nameInput = document.getElementById('p-name');
-      if (nameInput) { nameInput.focus(); nameInput.select && nameInput.select(); }
-      else if (modalDialog) modalDialog.focus();
-    }, 0);
-    document.addEventListener('keydown', focusTrap);
-  }
-  function hideModal(){
-    modal.classList.add('hidden');
-    document.body.style.overflow='';
-    document.removeEventListener('keydown', focusTrap);
-    if (lastActiveEl && typeof lastActiveEl.focus === 'function') { setTimeout(()=> lastActiveEl.focus(), 0); }
-  }
-  if (modalClose) modalClose.addEventListener('click', hideModal);
-  modal.addEventListener('click', (e)=>{ if (e.target === modal) hideModal(); });
-  document.addEventListener('keydown', (e)=>{ if (e.key==='Escape' && !modal.classList.contains('hidden')) hideModal(); });
-  async function api(path, opts={}){
-    const res = await fetch(path, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
-    const data = await res.json().catch(()=>({}));
-    if (!res.ok) throw new Error(data.error || 'Request failed');
-    return data;
-  }
-  async function ensureAdmin(){
-    const auth = await api('/api/check-auth');
-    if (!auth.authenticated || auth.user.role !== 'admin') {
-      try { await api('/api/admin/check'); } catch(e) {}
-      location.href = '/login.html';
-      return false;
-    }
-    try { document.getElementById('admin-user-name').textContent = auth.user?.full_name || auth.user?.username || 'Admin'; } catch{}
-    return true;
-  }
-  const fmtINR = (n)=> '₹'+(Number(n)||0).toLocaleString('en-IN');
-  function productRow(p, rowIndex){
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td data-label="ID">${rowIndex}</td>
-      <td data-label="Name">${p.name}</td>
-      <td data-label="Price">₹${Number(p.price||0).toLocaleString('en-IN')}</td>
-      <td data-label="Category" class="muted">${p.category||''}</td>
-      <td data-label="Brand" class="muted">${p.brand||''}</td>
-      <td data-label="Material" class="muted">${p.material||''}</td>
-      <td data-label="3D">${p.is_3d ? 'Yes' : 'No'}</td>
-      <td data-label="Actions">
-        <div class="row-actions">
-          <a class="btn" href="product-details.html?id=${p._id || p.id}" target="_blank">View</a>
-          <button class="btn js-edit">Edit</button>
-          <button class="btn js-del">Delete</button>
-        </div>
-      </td>`;
-    tr.querySelector('.js-edit').addEventListener('click', ()=>{ startEditProduct(p); });
-    tr.querySelector('.js-del').addEventListener('click', async ()=>{
-      if (!confirm('Delete this product?')) return;
-      try { await api(`/api/admin/products/${p._id || p.id}`, { method:'DELETE' }); await loadProducts(); } catch(e){ alert(e.message); }
-    });
-    return tr;
-  }
-  async function loadProducts(){
-    const tbody = document.getElementById('prod-body');
-    if (!tbody) return;
-    try {
-      const data = await api('/api/products');
-      tbody.innerHTML = '';
-      const list = (data.products||[]);
-      list.forEach((p, index)=> tbody.appendChild(productRow(p, index + 1)) );
-      // Populate datalists
-      try {
-        const brandSet = new Set(), materialSet = new Set();
-        list.forEach(p=>{ if(p.brand) brandSet.add(String(p.brand).trim()); if(p.material) materialSet.add(String(p.material).trim()); });
-        const brandsDl = document.getElementById('brands-list');
-        const materialsDl = document.getElementById('materials-list');
-        if (brandsDl) brandsDl.innerHTML = Array.from(brandSet).sort((a,b)=>a.localeCompare(b)).map(v=>`<option value="${String(v).replace(/"/g, '&quot;')}"></option>`).join('');
-        if (materialsDl) materialsDl.innerHTML = Array.from(materialSet).sort((a,b)=>a.localeCompare(b)).map(v=>`<option value="${String(v).replace(/"/g, '&quot;')}"></option>`).join('');
-      } catch(e){ console.warn('List fill failed', e); }
-    } catch(e){ console.warn('Failed to load products', e); }
-  }
-  // Form handlers
-  const byId = (id)=>document.getElementById(id);
-  const is3dSel = byId('p-is3d');
-  const modelRow = byId('p-model-row');
-  const hiddenId = byId('p-id');
-  const btnSubmit = byId('btn-prod-submit');
-  const btnCancel = byId('btn-prod-cancel');
-  const fileInput = byId('p-image-file');
-  const imageUrlInput = byId('p-image');
-  const previewWrap = byId('p-image-preview-wrap');
-  const previewImg = byId('p-image-preview');
-  const clearBtn = byId('p-image-clear');
-  const statusEl = byId('p-image-status');
-  if (is3dSel) {
-    const onToggle = ()=>{ const req = is3dSel.value === '1'; modelRow.style.display = req ? '' : 'none'; var m=byId('p-model'); if (m) m.required = req; };
-    is3dSel.addEventListener('change', onToggle);
-    onToggle();
-  }
-  function resetFormToCreate(){ hiddenId.value = ''; btnSubmit.textContent = 'Add Product'; if (btnCancel) btnCancel.style.display = 'none'; }
-  function startEditProduct(p){
-    hiddenId.value = p.id;
-    byId('p-name').value = p.name || '';
-    byId('p-price').value = p.price ?? '';
-    byId('p-image').value = p.image || '';
-    if (p.image) { try { previewImg.src = p.image; previewWrap.style.display = ''; } catch(e) { previewWrap.style.display='none'; } } else { previewWrap.style.display = 'none'; }
-    byId('p-category').value = p.category || '';
-    byId('p-brand').value = p.brand || '';
-    byId('p-material').value = p.material || '';
-    byId('p-desc').value = p.description || '';
-    byId('p-original').value = (p.original_price ?? '') || '';
-    byId('p-discount').value = (p.discount ?? '') || '';
-    byId('p-badge').value = p.badge || '';
-    byId('p-model').value = p.model_src || '';
-    is3dSel.value = (p.is_3d ? '1' : '0');
-    modelRow.style.display = is3dSel.value === '1' ? '' : 'none';
-    btnSubmit.textContent = 'Save Changes';
-    if (btnCancel) btnCancel.style.display = '';
-    if (modalTitle) modalTitle.textContent = 'Edit Product';
-    showModal('Edit Product');
-  }
-  async function uploadImage(file){
-    if (!file) return; statusEl.textContent = 'Uploading image…'; btnSubmit && (btnSubmit.disabled = true);
-    try{
-      const fd = new FormData(); fd.append('image', file);
-      const res = await fetch('/api/admin/upload-image', { method:'POST', body: fd, credentials:'include' });
-      const data = await res.json().catch(()=>({}));
-      if (!res.ok || !data.success) throw new Error(data.error || 'Upload failed');
-      const url = data.url; imageUrlInput.value = url; previewImg.src = url; previewWrap.style.display = ''; statusEl.textContent = 'Image uploaded';
-    }catch(e){ alert(e.message || 'Upload failed'); statusEl.textContent = e.message || 'Upload failed'; previewWrap.style.display = 'none'; }
-    finally { btnSubmit && (btnSubmit.disabled = false); }
-  }
-  if (fileInput) fileInput.addEventListener('change', ()=>{ const f = fileInput.files && fileInput.files[0]; if (f) uploadImage(f); });
-  if (imageUrlInput) imageUrlInput.addEventListener('change', ()=>{ const v = imageUrlInput.value.trim(); if (v) { try { previewImg.src = v; previewWrap.style.display=''; } catch(e){ previewWrap.style.display='none'; } } else { previewWrap.style.display='none'; } });
-  if (clearBtn) clearBtn.addEventListener('click', ()=>{ if (fileInput) fileInput.value = ''; imageUrlInput.value = ''; previewWrap.style.display = 'none'; statusEl.textContent = ''; });
-  const form = byId('prod-form');
-  if (form) form.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const norm = (s) => (s || '').trim().replace(/\\/g,'/');
-    const payload = {
-      name: byId('p-name').value.trim(),
-      price: parseInt(byId('p-price').value,10)||0,
-      image: norm(byId('p-image').value),
-      description: byId('p-desc').value.trim(),
-      category: byId('p-category').value,
-      brand: byId('p-brand').value.trim(),
-      material: byId('p-material').value.trim(),
-      original_price: byId('p-original').value ? parseInt(byId('p-original').value,10) : null,
-      discount: byId('p-discount').value ? parseInt(byId('p-discount').value,10) : null,
-      badge: byId('p-badge').value.trim(),
-      model_src: norm(byId('p-model').value),
-      is_3d: byId('p-is3d').value === '1'
-    };
-    if (payload.is_3d && !payload.model_src) { alert('3D Model Path is required when Is 3D Model is Yes.'); return; }
-    try {
-      const editingId = hiddenId.value;
-      if (editingId) { await api(`/api/admin/products/${editingId}`, { method:'PUT', body: JSON.stringify(payload) }); alert('Product updated'); }
-      else { await api('/api/admin/products', { method:'POST', body: JSON.stringify(payload) }); alert('Product added'); }
-      form.reset(); if (is3dSel) is3dSel.value = '0'; if (modelRow) modelRow.style.display = 'none'; resetFormToCreate(); await loadProducts();
-      hideModal();
-    } catch(e){ alert(e.message); }
-  });
-  const btnProdRefresh = byId('btn-prod-refresh'); if (btnProdRefresh) btnProdRefresh.addEventListener('click', loadProducts);
-  const btnOpenAdd = document.getElementById('btn-open-add');
-  if (btnOpenAdd) btnOpenAdd.addEventListener('click', ()=>{ resetFormToCreate(); if (form) form.reset(); if (is3dSel) is3dSel.value='0'; if (modelRow) modelRow.style.display='none'; hidePreview(); showModal('Add Product'); });
-  function hidePreview(){ try{ const w=document.getElementById('p-image-preview-wrap'); if (w) w.style.display='none'; const s=document.getElementById('p-image-status'); if (s) s.textContent=''; const f=document.getElementById('p-image-file'); if (f) f.value=''; const u=document.getElementById('p-image'); if (u) u.value=''; }catch{} }
-  if (btnCancel) btnCancel.addEventListener('click', ()=>{ form.reset(); if (is3dSel) is3dSel.value = '0'; if (modelRow) modelRow.style.display = 'none'; if (previewWrap) previewWrap.style.display = 'none'; if (statusEl) statusEl.textContent = ''; resetFormToCreate(); });
-  async function refresh(){ await loadProducts(); }
-  document.getElementById('btn-refresh').addEventListener('click', refresh);
-  document.getElementById('btn-logout').addEventListener('click', async ()=>{ try { await api('/api/logout', { method:'POST' }); } catch(e) {} location.href = '/login.html'; });
-  (async ()=>{ if(await ensureAdmin()) await refresh(); })();
-  </script>
+  <!-- Confirm Dialog -->
+  <div class="ap-confirm-overlay" id="confirmOverlay">
+    <div class="ap-confirm-dialog">
+      <h3 id="confirmTitle">Are you sure?</h3>
+      <p id="confirmMessage">This action cannot be undone.</p>
+      <div class="ap-confirm-actions">
+        <button class="ap-btn" id="confirmCancel">Cancel</button>
+        <button class="ap-btn danger" id="confirmOk">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="ap-toast" id="apToast"></div>
+
+  <script src="js/admin-products.js"></script>
   <script src="js/app.js"></script>
-    <script src="js/mobile-menu.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (typeof feather !== "undefined") {
+        feather.replace();
+      }
+    });
+  </script>
 </body>
+
 </html>

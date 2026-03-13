@@ -5,10 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HOME DECOR FURNITURE</title>
-    
+
     <!-- Lenis Smooth Scroll CDN -->
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
-    
+
     <!-- Favicons - Enhanced for better compatibility -->
     <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="image/Logo maker project.webp">
@@ -53,7 +53,7 @@
 </head>
 
 <body class="gallery-page">
-    
+
     <script>(function () { try { var d = document; var t = localStorage.getItem('hdf-theme'); if (!t) { t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; } var st = d.createElement('style'); st.id = 'no-fouc'; st.textContent = '*{transition:none!important}'; d.head.appendChild(st); d.body.style.visibility = 'hidden'; if (t === 'dark') { d.body.classList.add('dark-mode'); } var accent = localStorage.getItem('hdf-accent') || 'accent-amber'; if (accent) d.body.classList.add(accent); var meta = d.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', t === 'dark' ? '#0f0f11' : '#8B4513'); d.body.style.visibility = ''; st.remove(); } catch (e) { } })();</script>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode" hidden>
         <svg id="themeIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -164,14 +164,24 @@
         <div class="gallery-filters" role="tablist" aria-label="Filter products by category">
             <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true"
                 aria-label="Show all items">All Items</button>
-            <button class="filter-btn" data-filter="living" id="filter-living" role="tab" aria-selected="false"
-                aria-label="Show living room items">Living Room</button>
-            <button class="filter-btn" data-filter="dining" id="filter-dining" role="tab" aria-selected="false"
-                aria-label="Show dining room items">Dining Room</button>
-            <button class="filter-btn" data-filter="bedroom" id="filter-bedroom" role="tab" aria-selected="false"
-                aria-label="Show bedroom items">Bedroom</button>
+            <button class="filter-btn" data-filter="sofa" id="filter-sofa" role="tab" aria-selected="false"
+                aria-label="Show sofas">Sofas</button>
+            <button class="filter-btn" data-filter="chair" id="filter-chair" role="tab" aria-selected="false"
+                aria-label="Show chairs">Chairs</button>
+            <button class="filter-btn" data-filter="table" id="filter-table" role="tab" aria-selected="false"
+                aria-label="Show tables">Tables</button>
+            <button class="filter-btn" data-filter="bed" id="filter-bed" role="tab" aria-selected="false"
+                aria-label="Show beds">Beds</button>
+            <button class="filter-btn" data-filter="decor" id="filter-decor" role="tab" aria-selected="false"
+                aria-label="Show decor">Decor</button>
+            <button class="filter-btn" data-filter="storage" id="filter-storage" role="tab" aria-selected="false"
+                aria-label="Show storage">Storage</button>
+            <button class="filter-btn" data-filter="lighting" id="filter-lighting" role="tab" aria-selected="false"
+                aria-label="Show lighting">Lighting</button>
+            <button class="filter-btn" data-filter="outdoor" id="filter-outdoor" role="tab" aria-selected="false"
+                aria-label="Show outdoor">Outdoor</button>
             <button class="filter-btn" data-filter="office" id="filter-office" role="tab" aria-selected="false"
-                aria-label="Show office items">Office</button>
+                aria-label="Show office">Office</button>
             <button class="filter-btn" data-filter="3d" id="filter-3d" role="tab" aria-selected="false"
                 aria-label="Show 3D models">3D Models</button>
         </div>
@@ -301,7 +311,13 @@
     <div id="cartPopupOverlay" class="cart-popup-overlay">
         <div class="cart-popup">
             <div class="cart-popup-header">
-                <h3>🛒 Your Cart</h3>
+                <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round"
+                        style="margin-right: 8px; vertical-align: middle;">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg> Your Cart</h3>
                 <button id="closeCartBtn" class="close-cart-btn">&times;</button>
             </div>
             <div id="cartItemsContainer" class="cart-items-container">
@@ -343,7 +359,7 @@
     </script>
     <script src="js/app.js"></script>
     <script src="js/mobile-menu.js"></script>
-    
+
     <!-- Smooth Scroll & Animations -->
     <script src="js/smooth-scroll.js"></script>
 </body>

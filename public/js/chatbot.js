@@ -1,496 +1,397 @@
-// Advanced Chatbot with Database Integration
+// ============================================================
+// DecorBot - AI Shopping Assistant for Home Decor Furniture
+// Connects to live product database via /api/chat
+// ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     const CONFIG = {
         apiChat: '/api/chat',
-        apiProducts: '/api/products',
-        catalogCacheTTL: 5 * 60 * 1000, // 5 min
-        chatHistoryKey: 'homeDecorChatHistory',
-        maxHistoryItems: 50,
-        suggestionsLimit: 3,
-        navigationButtonsLimit: 2
+        chatHistoryKey: 'decorbot-history',
+        maxHistory: 40,
+        maxConversationContext: 6,
+        typingDelay: 400
     };
 
-    let catalogCache = { products: [], fetchedAt: 0 };
+    const STORE = {
+        name: 'Home Decor Furniture',
+        phone: '+91 9825000000',
+        email: 'support@homedecorfurniture.com',
+        hours: 'Mon-Fri  9 AM - 6 PM IST'
+    };
+
     let chatHistory = [];
 
-    const websiteInfo = {
-        company: 'Home Decor Furniture',
-        contact: {
-            phone: '+91 9825000000',
-            email: 'support@homedecorfurniture.com',
-            address: 'Ahmedabad, Gujarat, India',
-            hours: 'Monday-Friday: 9 AM - 6 PM IST'
-        },
-        policies: {
-            shipping: 'Free delivery on orders over ₹50,000. Standard delivery: 5-7 business days.',
-            returns: '30-day return policy for items in original condition.',
-            payment: 'Credit cards, UPI, net banking, and EMI options available.',
-            warranty: '3-5 year warranty on all furniture depending on product.'
-        }
-    };
-
-    // ========== Product Catalog Management ==========
-    async function fetchProductsFromApi() {
-        try {
-            const res = await fetch(CONFIG.apiProducts, { credentials: 'include' });
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const data = await res.json();
-            return (data.products || []).map(p => ({
-                id: p.id,
-                name: p.name || `Product ${p.id}`,
-                category: (p.category || '').toLowerCase(),
-                brand: (p.brand || '').toLowerCase(),
-                material: (p.material || '').toLowerCase(),
-                price: Number(p.price || 0),
-                priceText: `₹${Number(p.price || 0).toLocaleString('en-IN')}`,
-                description: p.description || '',
-                is3d: !!p.is_3d,
-                image: p.image || 'image/Logo maker project.webp',
-                url: `product-details.html?id=${encodeURIComponent(p.id)}`
-            }));
-        } catch (e) {
-            console.error('API fetch error:', e);
-            return [];
-        }
-    }
-
-    async function ensureCatalogLoaded(force = false) {
-        const now = Date.now();
-        if (!force && catalogCache.products.length && (now - catalogCache.fetchedAt) < CONFIG.catalogCacheTTL) {
-            return catalogCache.products;
-        }
-        const products = await fetchProductsFromApi();
-        catalogCache = { products, fetchedAt: Date.now() };
-        return products;
-    }
-
-    // ========== Search & Matching Logic ==========
-    function tokenize(str) {
-        return (str || '').toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
-    }
-
-    function calculateMatchScore(product, query) {
-        const queryLower = (query || '').toLowerCase();
-        const queryTokens = tokenize(queryLower);
-        const productFields = [product.name, product.category, product.brand, product.material, product.description].join(' ').toLowerCase();
-        const productTokens = tokenize(productFields);
-
-        let score = 0;
-        queryTokens.forEach(token => {
-            if (productTokens.includes(token)) score += 3;
-            if (product.name.toLowerCase().includes(token)) score += 2;
-            if (product.category.includes(token)) score += 1;
-        });
-
-        // Boost for exact category matches and keywords
-        const categoryKeywords = {
-            'living': ['sofa', 'couch', 'armchair', 'coffee table', 'tv stand', 'settee', 'seating', 'lounger', 'recliner'],
-            'dining': ['dining table', 'dining chair', 'dinner', 'eat', 'kitchen table', 'dining set'],
-            'bedroom': ['bed', 'mattress', 'nightstand', 'wardrobe', 'dresser', 'bedframe'],
-            'office': ['desk', 'office chair', 'work', 'study', 'workspace', 'computer desk'],
-            '3d': ['3d', 'ar', 'augmented', 'model', 'virtual']
-        };
-
-        Object.entries(categoryKeywords).forEach(([cat, keywords]) => {
-            if (product.category.includes(cat)) {
-                keywords.forEach(kw => {
-                    if (queryLower.includes(kw)) score += 5; // Increased boost for category keyword match
-                });
-            }
-        });
-
-        // Direct product type matches (highest priority)
-        if (queryLower.includes('sofa') && product.name.toLowerCase().includes('sofa')) score += 10;
-        if (queryLower.includes('table') && product.name.toLowerCase().includes('table')) score += 10;
-        if (queryLower.includes('chair') && product.name.toLowerCase().includes('chair')) score += 10;
-        if (queryLower.includes('bed') && product.name.toLowerCase().includes('bed')) score += 10;
-
-        if (queryLower.includes('3d') && product.is3d) score += 3;
-        return score;
-    }
-
-    function extractBudgetRange(query) {
-        const lower = (query || '').toLowerCase();
-        const matches = Array.from(lower.matchAll(/(\d+(?:\.\d+)?)(\s*(k|kilo|l|lac|lakh))?/gi));
-        if (!matches.length) return null;
-
-        const values = matches.map(m => {
-            const val = parseFloat(m[1]);
-            const unit = (m[3] || '').toLowerCase();
-            if (unit.startsWith('k')) return val * 1000;
-            if (unit.startsWith('l')) return val * 100000;
-            return val;
-        }).filter(v => Number.isFinite(v));
-
-        if (!values.length) return null;
-        const max = Math.max(...values);
-        const min = Math.min(...values);
-
-        if (/under|below|less|upto/.test(lower)) return { min: 0, max };
-        if (/over|above|more/.test(lower)) return { min: max, max: Infinity };
-        return { min: Math.max(0, min * 0.7), max: max * 1.3 };
-    }
-
-    async function searchProducts(query, limit = CONFIG.suggestionsLimit) {
-        const products = await ensureCatalogLoaded();
-        if (!products.length) return [];
-
-        const budget = extractBudgetRange(query);
-        let candidates = products;
-        if (budget) {
-            candidates = candidates.filter(p => p.price >= budget.min && p.price <= budget.max);
-        }
-
-        const scored = candidates.map(p => ({
-            product: p,
-            score: calculateMatchScore(p, query)
-        })).sort((a, b) => b.score - a.score || a.product.price - b.product.price);
-
-        return scored.slice(0, limit).map(s => s.product);
-    }
-
-    function formatProductList(products, header = 'Quick picks:') {
-        if (!products || !products.length) return '';
-        const list = products.slice(0, CONFIG.suggestionsLimit)
-            .map(p => `• ${p.name} — ${p.priceText}${p.is3d ? ' (3D/AR)' : ''}`)
-            .join('\n');
-        return `\n\n${header}\n${list}`;
-    }
-
-    // ========== Question Classification & Responses ==========
-    function classifyQuestion(query) {
-        const lower = (query || '').toLowerCase();
-        const categories = {
-            product: /product|furniture|sofa|chair|table|bed|couch|desk|cabinet|shelf|wardrobe|storage|lounger/,
-            category: /living|dining|bedroom|office|3d|kitchen|storage/,
-            price: /price|cost|₹|rupee|budget|expensive|cheap|afford/,
-            shipping: /shipping|delivery|transport|how long|when arrive|free deliver/,
-            returns: /return|refund|exchange|wrong|broken|damaged|issue/,
-            payment: /payment|pay|card|upi|cash|emi|installment|online/,
-            contact: /contact|phone|email|call|reach|support|help/,
-            features: /3d|ar|augmented|model|view in room|virtual/,
-            brand: /brand|material|quality|wood|leather|fabric|steel/,
-            availability: /available|stock|out of stock|when available|pre-order/
-        };
-
-        for (const [category, pattern] of Object.entries(categories)) {
-            if (pattern.test(lower)) return category;
-        }
-        return 'general';
-    }
-
-    async function generateResponse(query, productContext = '') {
-        try {
-            const response = await fetch(CONFIG.apiChat, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: query, context: productContext })
-            });
-
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const data = await response.json();
-            if (data?.reply) return data.reply;
-            throw new Error('Invalid response');
-        } catch (error) {
-            console.error('Chat API error:', error);
-            return generateContextualResponse(query);
-        }
-    }
-
-    async function generateContextualResponse(query) {
-        const category = classifyQuestion(query);
-        const lower = (query || '').toLowerCase();
-
-        // For product queries, search products first
-        if (category === 'product' || category === 'category' || category === 'price') {
-            const products = await searchProducts(query, CONFIG.suggestionsLimit);
-            if (products.length > 0) {
-                return `Based on your requirements, here are my top recommendations:`;
-            } else {
-                return `I couldn't find exact matches for "${query}". Try different keywords or browse our gallery. Our prices range from ₹5,000 to ₹80,000+.`;
-            }
-        }
-
-        switch (category) {
-            case 'shipping':
-                return websiteInfo.policies.shipping + ' Contact us for exact delivery dates.';
-
-            case 'returns':
-                return websiteInfo.policies.returns;
-
-            case 'payment':
-                return websiteInfo.policies.payment;
-
-            case 'contact':
-                return `📞 ${websiteInfo.contact.phone}\n📧 ${websiteInfo.contact.email}\n${websiteInfo.contact.hours}`;
-
-            case 'features':
-                return 'We offer 3D/AR models for interactive visualization. Browse our 3D collection to see furniture in your space!';
-
-            case 'brand':
-                return 'All our furniture features premium materials—solid wood, quality upholstery, and sustainable construction.';
-
-            case 'availability':
-                return 'Most items are in stock. For pre-order or availability, contact us.';
-
-            default:
-                return "Tell me your room, budget, or style preference and I'll help you find the perfect furniture.";
-        }
-    }
-
-    // ========== Navigation Buttons ==========
-    function generateNavigationButtons(query) {
-        const lower = (query || '').toLowerCase();
-        const buttons = [];
-
-        if (lower.match(/product|furniture|sofa|chair|table|bed|browse|shop|see|view/)) {
-            buttons.push({ text: '🛋️ Browse Gallery', url: 'gallery.html' });
-        }
-        if (lower.match(/living room|living|sofa|couch|settee/)) {
-            buttons.push({ text: '🛋️ Living Room', url: 'gallery.html?category=living' });
-        }
-        if (lower.match(/dining|dinner|table/)) {
-            buttons.push({ text: '🍽️ Dining Room', url: 'gallery.html?category=dining' });
-        }
-        if (lower.match(/bedroom|bed|sleep|mattress/)) {
-            buttons.push({ text: '🛏️ Bedroom', url: 'gallery.html?category=bedroom' });
-        }
-        if (lower.match(/office|desk|work|study|chair/)) {
-            buttons.push({ text: '💼 Office', url: 'gallery.html?category=office' });
-        }
-        if (lower.match(/3d|ar|model|virtual|augmented/)) {
-            buttons.push({ text: '🎮 3D Models', url: 'gallery.html?category=3d' });
-        }
-        if (lower.match(/shipping|delivery|cost|price|₹/)) {
-            buttons.push({ text: '📦 Shipping Info', url: 'faq.html' });
-        }
-        if (lower.match(/return|refund|warranty|guarantee/)) {
-            buttons.push({ text: '📋 Policies', url: 'faq.html' });
-        }
-        if (lower.match(/payment|pay|card|upi/)) {
-            buttons.push({ text: '💳 Payment', url: 'faq.html' });
-        }
-        if (lower.match(/contact|phone|email|call|support|help/)) {
-            buttons.push({ text: '📞 Contact Us', url: 'contact.html' });
-        }
-
-        if (buttons.length === 0) {
-            buttons.push({ text: '🏠 Home', url: 'index.html' });
-            buttons.push({ text: '🛋️ Gallery', url: 'gallery.html' });
-        }
-
-        const unique = buttons.filter((btn, idx, self) =>
-            idx === self.findIndex(b => b.text === btn.text)
-        );
-        return unique.slice(0, CONFIG.navigationButtonsLimit);
-    }
-
-    // ========== UI Creation & Management ==========
+    // ======================== UI CREATION ========================
     function createChatbotUI() {
         if (document.querySelector('.chatbot-container')) return;
-
         const html = `
-            <div class="chatbot-container">
-                <button class="chat-toggle" id="chatToggle" title="Chat with us">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                </button>
-                <div class="chat-window" id="chatWindow">
-                    <div class="chat-header">
-                        <h3>Home Decor Support</h3>
-                        <button class="close-chat" id="closeChat" title="Close">×</button>
+        <div class="chatbot-container">
+            <button class="chat-toggle" id="chatToggle" title="Chat with DecorBot">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+            </button>
+            <div class="chat-window" id="chatWindow">
+                <div class="bot-notification" id="botNotification"></div>
+                <div class="chat-header">
+                    <div class="chat-header-info">
+                        <div class="chat-header-avatar">&#127968;</div>
+                        <div>
+                            <h3>DecorBot</h3>
+                            <span class="chat-header-status">Online - AI Assistant</span>
+                        </div>
                     </div>
-                    <div class="chat-messages" id="chatMessages"></div>
-                    <div class="chat-input-area">
-                        <input type="text" id="chatInput" class="chat-input" placeholder="Ask about furniture, shipping, prices...">
-                        <button id="sendButton" class="send-button" title="Send">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.542 60.542 0 0 0 18.443-8.852.75.75 0 0 0 0-1.288A60.542 60.542 0 0 0 3.478 2.405Z" />
-                            </svg>
+                    <div class="chat-header-actions">
+                        <button class="chat-clear-btn" id="chatClearBtn" title="Clear chat">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
                         </button>
+                        <button class="close-chat" id="closeChat" title="Close">&times;</button>
                     </div>
                 </div>
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-suggestions" id="chatSuggestions"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="Ask about furniture, prices, orders..." autocomplete="off">
+                    <button id="sendButton" class="send-button" title="Send">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.542 60.542 0 0 0 18.443-8.852.75.75 0 0 0 0-1.288A60.542 60.542 0 0 0 3.478 2.405Z"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
-        `;
+        </div>`;
         document.body.insertAdjacentHTML('beforeend', html);
     }
 
-    function addWelcomeMessage() {
-        if (chatMessages.children.length === 0) {
-            const welcome = document.createElement('div');
-            welcome.classList.add('message', 'bot-message');
-            welcome.innerHTML = `
-                <div>Welcome! 👋 I'm here to help you find the perfect furniture. Ask about products, prices, shipping, or browse our collection.</div>
-                <div class="chat-navigation-buttons">
-                    <button class="chat-nav-btn" onclick="window.location.href='gallery.html'">🛋️ Browse Gallery</button>
-                    <button class="chat-nav-btn" onclick="window.location.href='contact.html'">📞 Contact</button>
-                </div>
-            `;
-            chatMessages.appendChild(welcome);
-        }
+    // ======================== FORMATTING ========================
+    function formatBotText(raw) {
+        let text = raw
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+        text = text.replace(/\n/g, '<br>');
+        return text;
     }
 
-    function renderMessage(text, sender, buttons = [], timestamp = null) {
+    // ======================== PRODUCT CARDS ========================
+    function renderProductCards(products) {
+        if (!products || !products.length) return '';
+        const cards = products.slice(0, 5).map(p => {
+            const priceStr = '\u20B9' + (p.price || 0).toLocaleString('en-IN');
+            const originalStr = p.original_price && p.discount ? '<span class="card-original-price">\u20B9' + p.original_price.toLocaleString('en-IN') + '</span>' : '';
+            const discountBadge = p.discount ? '<span class="card-discount">-' + p.discount + '%</span>' : '';
+            const stockLabel = p.stock > 10 ? 'In Stock' : p.stock > 0 ? 'Only ' + p.stock + ' left' : 'Out of Stock';
+            const stockClass = p.stock > 10 ? 'in-stock' : p.stock > 0 ? 'low-stock' : 'out-of-stock';
+            const stockIcon = p.stock > 10 ? '' : p.stock > 0 ? '\u26A1 ' : '\u274C ';
+            const ratingVal = parseFloat(p.rating || 0).toFixed(1);
+            const imgSrc = p.image || 'image/Logo maker project.webp';
+            const threeDTag = p.is_3d ? '<span class="card-3d-badge">\uD83C\uDFAE 3D</span>' : '';
+
+            return '<div class="chat-product-card" onclick="window.open(\'product-details.html?id=' + encodeURIComponent(p.id) + '\',\'_blank\')">' 
+                + '<div class="card-image">' + threeDTag + '<img src="' + imgSrc + '" alt="' + (p.name || '') + '" loading="lazy" onerror="this.src=\'image/Logo maker project.webp\'"></div>'
+                + '<div class="card-body">'
+                + '<div class="card-name">' + (p.name || '') + '</div>'
+                + '<div class="card-price-row"><span class="card-price">' + priceStr + '</span> ' + originalStr + ' ' + discountBadge + '</div>'
+                + '<div class="card-meta"><span class="card-rating">\u2B50 ' + ratingVal + '</span><span class="card-stock ' + stockClass + '">' + stockIcon + stockLabel + '</span></div>'
+                + (p.short_description ? '<div class="card-desc">' + p.short_description.slice(0, 100) + '</div>' : '')
+                + '</div>'
+                + '</div>';
+        }).join('');
+        return '<div class="chat-product-cards">' + cards + '</div>';
+    }
+
+    // ======================== ORDER CARD ========================
+    function renderOrderCard(order) {
+        if (!order) return '';
+        const statusColors = {
+            placed: '#3b82f6', confirmed: '#8b5cf6', processing: '#f59e0b',
+            shipped: '#06b6d4', delivered: '#10b981', cancelled: '#ef4444'
+        };
+        const color = statusColors[order.status] || '#6b7280';
+        const items = order.items ? order.items.map(i => '<div class="order-item">' + i.name + ' x ' + i.quantity + '</div>').join('') : '';
+        return '<div class="chat-order-card">'
+            + '<div class="order-header"><span class="order-id">\uD83D\uDCE6 Order #' + order.id.slice(-8).toUpperCase() + '</span>'
+            + '<span class="order-status" style="background:' + color + '">' + order.status.toUpperCase() + '</span></div>'
+            + '<div class="order-details">'
+            + '<div class="order-total">\uD83D\uDCB0 Total: \u20B9' + (order.total || 0).toLocaleString('en-IN') + '</div>'
+            + '<div class="order-date">\uD83D\uDCC5 ' + new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) + '</div>'
+            + (items ? '<div class="order-items-list">' + items + '</div>' : '')
+            + '</div></div>';
+    }
+
+    // ======================== SUGGESTIONS ========================
+    function showSuggestions(suggestions) {
+        const container = document.getElementById('chatSuggestions');
+        if (!container) return;
+        if (!suggestions || !suggestions.length) { container.innerHTML = ''; return; }
+        container.innerHTML = suggestions.map(s =>
+            '<button class="suggestion-chip" data-msg="' + s.replace(/"/g, '&quot;') + '">' + s + '</button>'
+        ).join('');
+        container.querySelectorAll('.suggestion-chip').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                chatInput.value = btn.dataset.msg;
+                container.innerHTML = '';
+                sendMessage();
+            });
+        });
+    }
+
+    function getContextualSuggestions(userMsg, hasProducts) {
+        const lower = (userMsg || '').toLowerCase();
+        if (!chatHistory.length || chatHistory.length <= 1) {
+            return ['Show me sofas', 'Best under \u20B930,000', 'Track my order', 'Shipping policy'];
+        }
+        if (hasProducts) return ['Show more options', 'Something cheaper', 'Compare these', 'Any discounts?'];
+        if (/shipping|delivery/.test(lower)) return ['Return policy', 'Payment options', 'Track order'];
+        if (/return|refund/.test(lower)) return ['Shipping info', 'Contact support'];
+        if (/sofa|chair|table|bed/.test(lower)) return ['Under \u20B920,000', 'Premium options', 'What materials?'];
+        return ['Browse products', 'Best sellers', 'Contact support', 'FAQ'];
+    }
+
+    // ======================== MESSAGES ========================
+    function renderMessage(text, sender, extras) {
+        extras = extras || {};
         const msg = document.createElement('div');
         msg.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
 
-        const textDiv = document.createElement('div');
-        textDiv.textContent = text;
-        msg.appendChild(textDiv);
-
-        const time = document.createElement('div');
-        time.classList.add('message-timestamp');
-        time.textContent = (timestamp ? new Date(timestamp) : new Date())
-            .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        msg.appendChild(time);
-
-        if (buttons && buttons.length) {
-            const btnContainer = document.createElement('div');
-            btnContainer.classList.add('chat-navigation-buttons');
-            buttons.forEach(btn => {
-                const button = document.createElement('button');
-                button.textContent = btn.text;
-                button.classList.add('chat-nav-btn');
-                button.addEventListener('click', () => window.location.href = btn.url);
-                btnContainer.appendChild(button);
-            });
-            msg.appendChild(btnContainer);
+        if (sender === 'bot') {
+            var avatar = document.createElement('div');
+            avatar.className = 'bot-avatar';
+            avatar.innerHTML = '&#127968;';
+            msg.appendChild(avatar);
         }
 
+        var bubble = document.createElement('div');
+        bubble.className = 'message-bubble';
+
+        var textDiv = document.createElement('div');
+        textDiv.className = 'message-text';
+        if (sender === 'bot') {
+            textDiv.innerHTML = formatBotText(text);
+        } else {
+            textDiv.textContent = text;
+        }
+        bubble.appendChild(textDiv);
+
+        if (extras.products && extras.products.length && extras.products[0].price) {
+            var cardsDiv = document.createElement('div');
+            cardsDiv.innerHTML = renderProductCards(extras.products);
+            bubble.appendChild(cardsDiv);
+        }
+
+        if (extras.order) {
+            var orderDiv = document.createElement('div');
+            orderDiv.innerHTML = renderOrderCard(extras.order);
+            bubble.appendChild(orderDiv);
+        }
+
+        var time = document.createElement('div');
+        time.className = 'message-timestamp';
+        time.textContent = (extras.timestamp ? new Date(extras.timestamp) : new Date())
+            .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        bubble.appendChild(time);
+
+        if (extras.buttons && extras.buttons.length) {
+            var btnWrap = document.createElement('div');
+            btnWrap.className = 'chat-navigation-buttons';
+            extras.buttons.forEach(function (b) {
+                var btn = document.createElement('button');
+                btn.textContent = b.text;
+                btn.className = 'chat-nav-btn';
+                btn.addEventListener('click', function () { window.open(b.url, '_blank'); });
+                btnWrap.appendChild(btn);
+            });
+            bubble.appendChild(btnWrap);
+        }
+
+        msg.appendChild(bubble);
         chatMessages.appendChild(msg);
         chatMessages.scrollTop = chatMessages.scrollHeight;
+        return msg;
     }
 
-    function loadChatHistory() {
-        try {
-            const saved = localStorage.getItem(CONFIG.chatHistoryKey);
-            return saved ? JSON.parse(saved) : [];
-        } catch {
-            return [];
-        }
-    }
-
-    function saveChatHistory() {
-        try {
-            const trimmed = chatHistory.slice(-CONFIG.maxHistoryItems);
-            localStorage.setItem(CONFIG.chatHistoryKey, JSON.stringify(trimmed));
-        } catch (e) {
-            console.error('Save history error:', e);
-        }
-    }
-
-    function addMessage(text, sender, buttons = []) {
-        renderMessage(text, sender, buttons);
-        chatHistory.push({
-            type: sender,
-            text,
-            buttons,
-            timestamp: new Date().toISOString()
+    function addWelcomeMessage() {
+        var welcome = 'Hello! \uD83D\uDC4B Welcome to **Home Decor Furniture**!\n\nI\'m **DecorBot**, your AI shopping assistant. I can help you:\n\n\uD83D\uDECD\uFE0F Find & compare products\n\uD83D\uDCB0 Search by budget\n\uD83D\uDCE6 Track your orders\n\u2753 Answer any questions\n\nWhat are you looking for today?';
+        renderMessage(welcome, 'bot', {
+            buttons: [
+                { text: '\uD83D\uDECB\uFE0F Browse Gallery', url: 'gallery.html' },
+                { text: '\uD83D\uDCDE Contact Us', url: 'contact.html' }
+            ]
         });
-        saveChatHistory();
+        showSuggestions(['Show me sofas', 'Best under \u20B930,000', 'Track my order', 'Shipping policy']);
     }
 
-    function showLoading(show) {
-        const loader = document.getElementById('chatLoader');
+    // ======================== TYPING INDICATOR ========================
+    function showTyping(show) {
+        var loader = document.getElementById('chatTypingIndicator');
         if (show) {
             if (!loader) {
-                const div = document.createElement('div');
-                div.id = 'chatLoader';
-                div.classList.add('message', 'bot-message', 'loading-dots');
-                div.innerHTML = '<div></div><div></div><div></div>';
-                chatMessages.appendChild(div);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                loader = document.createElement('div');
+                loader.id = 'chatTypingIndicator';
+                loader.classList.add('message', 'bot-message', 'typing-indicator');
+                loader.innerHTML = '<div class="bot-avatar">&#127968;</div><div class="message-bubble typing-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+                chatMessages.appendChild(loader);
             }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         } else if (loader) {
             loader.remove();
         }
     }
 
+    // ======================== NAV BUTTONS ========================
+    function generateNavButtons(query) {
+        var lower = (query || '').toLowerCase();
+        var btns = [];
+        if (/product|furniture|browse|shop|gallery|show|view|dikha/.test(lower)) btns.push({ text: '\uD83D\uDECB\uFE0F Gallery', url: 'gallery.html' });
+        if (/living|sofa|couch/.test(lower)) btns.push({ text: '\uD83D\uDECB\uFE0F Living Room', url: 'gallery.html?category=living' });
+        if (/dining|dinner/.test(lower)) btns.push({ text: '\uD83C\uDF7D\uFE0F Dining', url: 'gallery.html?category=dining' });
+        if (/bedroom|bed/.test(lower)) btns.push({ text: '\uD83D\uDECF\uFE0F Bedroom', url: 'gallery.html?category=bedroom' });
+        if (/office|desk/.test(lower)) btns.push({ text: '\uD83D\uDCBC Office', url: 'gallery.html?category=office' });
+        if (/contact|phone|email|support/.test(lower)) btns.push({ text: '\uD83D\uDCDE Contact', url: 'contact.html' });
+        if (/faq|policy|return|ship/.test(lower)) btns.push({ text: '\uD83D\uDCCB FAQ', url: 'faq.html' });
+        return btns.slice(0, 3);
+    }
+
+    // ======================== HISTORY ========================
+    function loadHistory() {
+        try { return JSON.parse(localStorage.getItem(CONFIG.chatHistoryKey) || '[]'); }
+        catch (e) { return []; }
+    }
+    function saveHistory() {
+        try { localStorage.setItem(CONFIG.chatHistoryKey, JSON.stringify(chatHistory.slice(-CONFIG.maxHistory))); }
+        catch (e) { console.error('History save error:', e); }
+    }
+    function clearHistory() {
+        chatHistory = [];
+        localStorage.removeItem(CONFIG.chatHistoryKey);
+        chatMessages.innerHTML = '';
+        addWelcomeMessage();
+        showNotification('Chat history cleared');
+    }
+
+    function showNotification(msg) {
+        var notif = document.getElementById('botNotification');
+        if (!notif) return;
+        notif.textContent = msg;
+        notif.classList.add('show');
+        setTimeout(function () {
+            notif.classList.remove('show');
+        }, 3000);
+    }
+
+    // ======================== SEND MESSAGE ========================
     async function sendMessage() {
-        const text = chatInput.value.trim();
+        var text = chatInput.value.trim();
         if (!text) return;
 
-        addMessage(text, 'user');
+        var sugContainer = document.getElementById('chatSuggestions');
+        if (sugContainer) sugContainer.innerHTML = '';
+
+        renderMessage(text, 'user');
+        chatHistory.push({ role: 'user', text: text, timestamp: new Date().toISOString() });
+        saveHistory();
         chatInput.value = '';
-        showLoading(true);
+        chatInput.focus();
+
+        showTyping(true);
 
         try {
-            // Get product suggestions
-            const products = await searchProducts(text, CONFIG.suggestionsLimit);
-            const productContext = formatProductList(products);
+            var recentHistory = chatHistory
+                .filter(function (h) { return h.role === 'user' || h.role === 'bot'; })
+                .slice(-CONFIG.maxConversationContext)
+                .map(function (h) { return { role: h.role, text: h.text }; });
 
-            // Get AI response
-            const botReply = await generateResponse(text, productContext);
-            showLoading(false);
+            var response = await fetch(CONFIG.apiChat, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ message: text, history: recentHistory })
+            });
 
-            // Combine response with suggestions
-            const navButtons = generateNavigationButtons(text);
-            const productButtons = products.map(p => ({ text: `View ${p.name}`, url: p.url })).slice(0, 2);
-            const allButtons = [...navButtons, ...productButtons].filter((b, i, self) =>
-                i === self.findIndex(x => x.text === b.text)
-            );
+            showTyping(false);
 
-            const fullReply = botReply + (products.length ? formatProductList(products) : '');
-            addMessage(fullReply, 'bot', allButtons);
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            var data = await response.json();
+
+            var reply = data.reply || "I'm having trouble right now. Please try again!";
+            var products = data.products || [];
+            var order = data.order || null;
+            var navButtons = generateNavButtons(text);
+
+            renderMessage(reply, 'bot', {
+                products: products,
+                order: order,
+                buttons: navButtons
+            });
+
+            chatHistory.push({
+                role: 'bot',
+                text: reply,
+                products: products.length ? products.map(function (p) { return p.name; }) : undefined,
+                timestamp: new Date().toISOString()
+            });
+            saveHistory();
+
+            var suggestions = getContextualSuggestions(text, products.length > 0);
+            showSuggestions(suggestions);
+
         } catch (error) {
-            console.error('Send message error:', error);
-            showLoading(false);
-            const errorMsg = `Sorry, I'm having trouble. Please contact us at ${websiteInfo.contact.phone}.`;
-            addMessage(errorMsg, 'bot', [
-                { text: '📞 Contact Us', url: 'contact.html' },
-                { text: '🏠 Home', url: 'index.html' }
-            ]);
+            showTyping(false);
+            console.error('Chat error:', error);
+            renderMessage(
+                'Sorry, I\'m having trouble connecting right now. Please try again or contact us at ' + STORE.phone + ' \uD83D\uDCDE',
+                'bot',
+                { buttons: [{ text: '\uD83D\uDCDE Contact Us', url: 'contact.html' }] }
+            );
         }
     }
 
-    // ========== Event Listeners ==========
+    // ======================== INIT ========================
     createChatbotUI();
 
-    const chatToggle = document.getElementById('chatToggle');
-    const chatWindow = document.getElementById('chatWindow');
-    const closeChat = document.getElementById('closeChat');
-    const chatMessages = document.getElementById('chatMessages');
-    const chatInput = document.getElementById('chatInput');
-    const sendButton = document.getElementById('sendButton');
+    var chatToggle = document.getElementById('chatToggle');
+    var chatWindow = document.getElementById('chatWindow');
+    var closeChat = document.getElementById('closeChat');
+    var chatClearBtn = document.getElementById('chatClearBtn');
+    var chatMessages = document.getElementById('chatMessages');
+    var chatInput = document.getElementById('chatInput');
+    var sendButton = document.getElementById('sendButton');
 
     if (!chatToggle || !chatWindow || !chatMessages || !chatInput || !sendButton) {
-        console.error('Chatbot elements missing');
+        console.error('DecorBot: Missing UI elements');
         return;
     }
 
-    // Load and restore history
-    chatHistory = loadChatHistory();
+    chatHistory = loadHistory();
     if (chatHistory.length) {
-        chatHistory.forEach(item => {
-            renderMessage(item.text, item.type, item.buttons, item.timestamp);
+        chatHistory.forEach(function (item) {
+            renderMessage(item.text, item.role, { timestamp: item.timestamp });
         });
         chatMessages.scrollTop = chatMessages.scrollHeight;
     } else {
         addWelcomeMessage();
     }
 
-    // Event handlers
-    chatToggle.addEventListener('click', () => {
-        chatWindow.classList.add('active');
-        setTimeout(() => chatInput.focus(), 100);
+    chatToggle.addEventListener('click', function () {
+        chatWindow.classList.toggle('active');
+        if (chatWindow.classList.contains('active')) {
+            setTimeout(function () { chatInput.focus(); }, 200);
+        }
     });
-
-    closeChat.addEventListener('click', () => {
-        chatWindow.classList.remove('active');
+    closeChat.addEventListener('click', function () { chatWindow.classList.remove('active'); });
+    chatClearBtn.addEventListener('click', function () {
+        clearHistory();
     });
-
-    document.addEventListener('click', (e) => {
-        if (!chatWindow.contains(e.target) && !chatToggle.contains(e.target)) {
+    sendButton.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+    document.addEventListener('click', function (e) {
+        if (chatWindow.classList.contains('active') && !chatWindow.contains(e.target) && !chatToggle.contains(e.target)) {
             chatWindow.classList.remove('active');
         }
     });
-
-    sendButton.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
-    });
-
-    // Pre-load catalog on idle
-    setTimeout(() => ensureCatalogLoaded(), 2000);
 });

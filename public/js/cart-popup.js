@@ -323,6 +323,9 @@ class CartPopupSystem {
         // Update cart count
         this.updateCartCount();
 
+        // Show success notification
+        this.showNotification(`${product.name} added to cart!`, 'success');
+
         console.log('Current cart:', this.cart);
     }
 
@@ -335,69 +338,25 @@ class CartPopupSystem {
 
     // Get 3D model image for cart items
     get3DModelImage(productCard) {
-        // Get the model-viewer element to check the 3D model source
+        // Priority 1: explicitly set custom thumbnail
+        const dataImage = productCard.getAttribute('data-image');
+        if (dataImage && !dataImage.includes('data:image/svg')) return dataImage;
+
+        // Priority 2: from model viewer's poster attribute
         const modelViewer = productCard.querySelector('model-viewer');
-        if (!modelViewer) {
-            return this.create3DIcon(); // Fallback to 3D icon
+        if (modelViewer) {
+            const poster = modelViewer.getAttribute('poster');
+            if (poster) return poster;
         }
 
-        // Get the 3D model source file name
-        const modelSrc = modelViewer.getAttribute('src');
-        const productName = productCard.querySelector('.product-title')?.textContent.toLowerCase() || '';
-
-        // Map 3D models to their corresponding images
-        const modelImageMap = {
-            // Existing
-            'no_43.glb': 'image/1.png',
-            'sofa_chair.glb': 'image/4.png',
-            'low_poly_modern_sofa_free_model.glb': 'image/2.png',
-            'old_sofa_free.glb': 'image/3.png',
-            'free_leather_sofa_stool.glb': 'image/5.png',
-            'white_chair.glb': 'image/6.png',
-            'simple_modern_chair_free_model.glb': 'image/7.png',
-            'table_mr_ft.glb': 'image/8.png',
-            // New mappings based on generic matching requirement "product name = image name"
-            // Assuming pattern where new models might be named similarly to their images or following a sequence
-            'gaming_chair_1.glb': 'image/gaming_chair_1.png', // Example placeholder, will rely on accurate name matching below
-        };
-
-        // Extract the filename from the model source
-        const fileName = modelSrc.split('/').pop();
-
-        // Check if we have a mapping for this models
-        if (fileName && modelImageMap[fileName]) {
-            return modelImageMap[fileName];
+        // Priority 3: standard image tag fallback
+        const standardImg = productCard.querySelector('.product-image img');
+        if (standardImg) {
+            const src = standardImg.getAttribute('src');
+            if (src && !src.includes('Logo maker project.webp')) return src;
         }
 
-        // Feature: Try to match image name to model name directly (e.g., 'chair.glb' -> 'image/chair.png')
-        if (fileName) {
-            // Remove extension and replace underscores/spaces if needed
-            const baseName = fileName.replace(/\.(glb|gltf)$/i, '');
-            // We can return a constructed path. If it doesn't exist, the UI onError handler should catch it.
-            // Using a likely path format based on user description
-            return `image/${baseName}.png`;
-        }
-
-        // Generic Fallback: try to match by product name if filename doesn't match
-        if (productName.includes('modern sofa') || productName.includes('sofa')) {
-            return 'image/1.png';
-        } else if (productName.includes('sofa chair')) {
-            return 'image/4.png';
-        } else if (productName.includes('low poly')) {
-            return 'image/2.png';
-        } else if (productName.includes('old sofa')) {
-            return 'image/3.png';
-        } else if (productName.includes('stool')) {
-            return 'image/5.png';
-        } else if (productName.includes('white chair')) {
-            return 'image/6.png';
-        } else if (productName.includes('modern chair')) {
-            return 'image/7.png';
-        } else if (productName.includes('table')) {
-            return 'image/8.png';
-        }
-
-        // Final fallback to 3D icon
+        // Final fallback to 3D icon if nothing else works
         return this.create3DIcon();
     }
 

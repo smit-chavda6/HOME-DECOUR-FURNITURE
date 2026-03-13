@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,12 +9,13 @@
   <link rel="stylesheet" href="CSS/style.css" />
   <link rel="stylesheet" href="CSS/admin.css" />
   <link rel="stylesheet" href="CSS/dark-mode.css" />
-    <link rel="stylesheet" href="CSS/responsive.css">
+  <link rel="stylesheet" href="CSS/responsive.css">
   <script defer src="https://unpkg.com/feather-icons"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
-  <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
+  <script>(function () { try { var d = document; var t = localStorage.getItem('hdf-theme'); if (!t) { t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; } var st = d.createElement('style'); st.id = 'no-fouc'; st.textContent = '*{transition:none!important}'; d.head.appendChild(st); d.body.style.visibility = 'hidden'; if (t === 'dark') { d.body.classList.add('dark-mode'); } var accent = localStorage.getItem('hdf-accent') || 'accent-amber'; if (accent) d.body.classList.add(accent); var meta = d.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', t === 'dark' ? '#0f0f11' : '#8B4513'); d.body.style.visibility = ''; st.remove(); } catch (e) { } })();</script>
   <div class="admin-layout">
     <aside class="admin-sidebar" aria-label="Admin navigation">
       <div class="admin-profile">
@@ -48,246 +50,254 @@
           <span class="nav-icon" aria-hidden="true"><i data-feather="bell"></i></span>
           <span class="nav-label">Notifications</span>
         </a>
-        
+
       </nav>
     </aside>
     <div class="admin-main">
-    <div class="admin-wrap">
-    <div class="admin-header">
-  <h1><span class="brand">HOME DECOR FURNITURE</span> — Admin Dashboard</h1>
-      <div class="admin-actions">
-        <button class="btn" id="btn-refresh">Refresh</button>
-        <button class="btn" id="btn-logout">Logout</button>
-        <a class="btn primary" href="/">Go to site</a>
-      </div>
-    </div>
-
-  <div class="cards" id="dashboard">
-      <div class="card">
-        <h3>Orders</h3>
-        <div class="metric" id="m-orders">–</div>
-      </div>
-      <div class="card">
-        <h3>Revenue</h3>
-        <div class="metric" id="m-revenue">–</div>
-      </div>
-      <div class="card">
-        <h3>Messages</h3>
-        <div class="metric" id="m-messages">–</div>
-      </div>
-      <div class="card">
-        <h3>Total Users</h3>
-        <div class="metric" id="m-total">–</div>
-      </div>
-      <div class="card">
-        <h3>Admins</h3>
-        <div class="metric" id="m-admins">–</div>
-      </div>
-      <div class="card">
-        <h3>Standard Users</h3>
-        <div class="metric" id="m-users">–</div>
-      </div>
-      <div class="card">
-        <h3>Notifications</h3>
-        <div class="metric" id="m-notifs">–</div>
-      </div>
-    </div>
-
-    <div class="panel" id="charts-panel">
-      <h2>Insights</h2>
-      <div class="content">
-        <div class="charts-grid">
-          <div class="chart-card">
-            <h3>Orders by Status (last 30)</h3>
-            <canvas id="ordersByStatus" height="140"></canvas>
-          </div>
-          <div class="chart-card">
-            <h3>Orders per Day (last 14)</h3>
-            <canvas id="ordersPerDay" height="140"></canvas>
-          </div>
-          <div class="chart-card">
-            <h3>Revenue per Day (last 14)</h3>
-            <canvas id="revenuePerDay" height="140"></canvas>
-          </div>
-          <div class="chart-card">
-            <h3>Top Products (by qty)</h3>
-            <canvas id="topProducts" height="140"></canvas>
+      <div class="admin-wrap">
+        <div class="admin-header">
+          <h1><span class="brand">HOME DECOR FURNITURE</span> — Admin Dashboard</h1>
+          <div class="admin-actions">
+            <button class="btn" id="btn-refresh">Refresh</button>
+            <button class="btn" id="btn-logout">Logout</button>
+            <a class="btn primary" href="/">Go to site</a>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Other sections moved to their own pages: admin-users.html, admin-orders.html, admin-messages.html, admin-products.html -->
-    </div>
+        <div class="cards" id="dashboard">
+          <div class="card">
+            <h3>Orders</h3>
+            <div class="metric" id="m-orders">–</div>
+          </div>
+          <div class="card">
+            <h3>Revenue</h3>
+            <div class="metric" id="m-revenue">–</div>
+          </div>
+          <div class="card">
+            <h3>Messages</h3>
+            <div class="metric" id="m-messages">–</div>
+          </div>
+          <div class="card">
+            <h3>Total Users</h3>
+            <div class="metric" id="m-total">–</div>
+          </div>
+          <div class="card">
+            <h3>Admins</h3>
+            <div class="metric" id="m-admins">–</div>
+          </div>
+          <div class="card">
+            <h3>Standard Users</h3>
+            <div class="metric" id="m-users">–</div>
+          </div>
+          <div class="card">
+            <h3>Notifications</h3>
+            <div class="metric" id="m-notifs">–</div>
+          </div>
+        </div>
+
+        <div class="panel" id="charts-panel">
+          <h2>Insights</h2>
+          <div class="content">
+            <div class="charts-grid">
+              <div class="chart-card">
+                <h3>Orders by Status (last 30)</h3>
+                <canvas id="ordersByStatus" height="140"></canvas>
+              </div>
+              <div class="chart-card">
+                <h3>Orders per Day (last 14)</h3>
+                <canvas id="ordersPerDay" height="140"></canvas>
+              </div>
+              <div class="chart-card">
+                <h3>Revenue per Day (last 14)</h3>
+                <canvas id="revenuePerDay" height="140"></canvas>
+              </div>
+              <div class="chart-card">
+                <h3>Top Products (by qty)</h3>
+                <canvas id="topProducts" height="140"></canvas>
+              </div>
+              <div class="chart-card">
+                <h3>Users Joined (last 14 days)</h3>
+                <canvas id="usersPerDay" height="140"></canvas>
+              </div>
+              <div class="chart-card">
+                <h3>Messages Received (last 14 days)</h3>
+                <canvas id="messagesPerDay" height="140"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Other sections moved to their own pages: admin-users.html, admin-orders.html, admin-messages.html, admin-products.html -->
+      </div>
     </div>
   </div>
 
   <script>
-  // Sidebar nav: active link by pathname
-  (function(){
-    const path = location.pathname.replace(/\/+/g,'/');
-    document.querySelectorAll('.admin-sidebar .nav-link').forEach(a => {
-      const href = a.getAttribute('href');
-      const matches = (href === '/' ? path === '/' : path.endsWith(href));
-      a.classList.toggle('active', matches);
-    });
-    try { if (window.feather && typeof window.feather.replace === 'function') feather.replace(); } catch(e) {}
-  })();
-  const fmtDate = (d) => new Date(d).toLocaleString();
-  async function api(path, opts={}){
-    const res = await fetch(path, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
-    const ctype = (res.headers.get('content-type') || '').toLowerCase();
-    const isJson = ctype.includes('application/json');
-    try {
-      if (!isJson) {
-        const text = await res.text();
-        // Common cause: page opened on different port than the API server so HTML is returned
-        const hint = text.trim().startsWith('<!DOCTYPE') ? 'It looks like an HTML page was returned. Make sure you open the site on the same port your server prints in the terminal (e.g., http://localhost:3001/admin.html).' : '';
-        throw new Error(`Expected JSON from ${path} but got ${ctype || 'unknown content-type'}. ${hint}`.trim());
+    // Sidebar nav: active link by pathname
+    (function () {
+      const path = location.pathname.replace(/\/+/g, '/');
+      document.querySelectorAll('.admin-sidebar .nav-link').forEach(a => {
+        const href = a.getAttribute('href');
+        const matches = (href === '/' ? path === '/' : path.endsWith(href));
+        a.classList.toggle('active', matches);
+      });
+      try { if (window.feather && typeof window.feather.replace === 'function') feather.replace(); } catch (e) { }
+    })();
+    const fmtDate = (d) => new Date(d).toLocaleString();
+    async function api(path, opts = {}) {
+      const res = await fetch(path, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
+      const ctype = (res.headers.get('content-type') || '').toLowerCase();
+      const isJson = ctype.includes('application/json');
+      try {
+        if (!isJson) {
+          const text = await res.text();
+          // Common cause: page opened on different port than the API server so HTML is returned
+          const hint = text.trim().startsWith('<!DOCTYPE') ? 'It looks like an HTML page was returned. Make sure you open the site on the same port your server prints in the terminal (e.g., http://localhost:3001/admin.html).' : '';
+          throw new Error(`Expected JSON from ${path} but got ${ctype || 'unknown content-type'}. ${hint}`.trim());
+        }
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Request failed');
+        return data;
+      } catch (e) {
+        // Re-throw with a cleaner message to avoid confusing "Unexpected token '<'" errors
+        throw new Error(e.message || 'Request failed');
       }
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Request failed');
-      return data;
-    } catch (e) {
-      // Re-throw with a cleaner message to avoid confusing "Unexpected token '<'" errors
-      throw new Error(e.message || 'Request failed');
     }
-  }
-  async function ensureAdmin(){
-    const auth = await api('/api/check-auth');
-    if (!auth.authenticated || auth.user.role !== 'admin') {
-      // try backend guard for better message
-      try { await api('/api/admin/check'); } catch(e) {}
-      location.href = '/login.html';
-      return false;
+    async function ensureAdmin() {
+      const auth = await api('/api/check-auth');
+      if (!auth.authenticated || auth.user.role !== 'admin') {
+        // try backend guard for better message
+        try { await api('/api/admin/check'); } catch (e) { }
+        location.href = '/login.html';
+        return false;
+      }
+      try {
+        const name = (auth.user?.full_name || auth.user?.username || 'Admin');
+        const nameEl = document.getElementById('admin-user-name');
+        if (nameEl) nameEl.textContent = name;
+      } catch { }
+      return true;
     }
-    try {
-      const name = (auth.user?.full_name || auth.user?.username || 'Admin');
-      const nameEl = document.getElementById('admin-user-name');
-      if (nameEl) nameEl.textContent = name;
-    } catch {}
-    return true;
-  }
-  async function loadStats(){
-    const data = await api('/api/admin/stats');
-    document.getElementById('m-total').textContent = data.stats.totalUsers;
-    document.getElementById('m-admins').textContent = data.stats.admins;
-    document.getElementById('m-users').textContent = data.stats.standardUsers;
-    if (typeof data.stats.messages !== 'undefined') {
-      document.getElementById('m-messages').textContent = data.stats.messages;
+    async function loadStats() {
+      const data = await api('/api/admin/stats');
+      document.getElementById('m-total').textContent = data.stats.totalUsers;
+      document.getElementById('m-admins').textContent = data.stats.admins;
+      document.getElementById('m-users').textContent = data.stats.standardUsers;
+      if (typeof data.stats.messages !== 'undefined') {
+        document.getElementById('m-messages').textContent = data.stats.messages;
+      }
+      if (typeof data.stats.orders !== 'undefined') {
+        document.getElementById('m-orders').textContent = data.stats.orders;
+      }
+      if (typeof data.stats.notifications !== 'undefined') {
+        const el = document.getElementById('m-notifs'); if (el) el.textContent = data.stats.notifications;
+      }
+      try {
+        await maybeFetchForCharts();
+        const orders = window.__orders || [];
+        const totalRevenue = orders.reduce((sum, o) => sum + (parseInt(o.total || 0, 10) || 0), 0);
+        const revEl = document.getElementById('m-revenue'); if (revEl) revEl.textContent = fmtINR(totalRevenue);
+        await renderCharts();
+      } catch (e) { console.warn('Charts failed:', e.message); }
     }
-    if (typeof data.stats.orders !== 'undefined') {
-      document.getElementById('m-orders').textContent = data.stats.orders;
-    }
-    if (typeof data.stats.notifications !== 'undefined') {
-      const el = document.getElementById('m-notifs'); if (el) el.textContent = data.stats.notifications;
-    }
-    try {
-      await maybeFetchForCharts();
-      const orders = window.__orders || [];
-      const totalRevenue = orders.reduce((sum,o)=> sum + (parseInt(o.total||0,10)||0), 0);
-      const revEl = document.getElementById('m-revenue'); if (revEl) revEl.textContent = fmtINR(totalRevenue);
-      await renderCharts();
-    } catch(e) { console.warn('Charts failed:', e.message); }
-  }
-  const fmtINR = (n)=> '₹'+(Number(n)||0).toLocaleString('en-IN');
-  function orderRow(o){
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
+    const fmtINR = (n) => '₹' + (Number(n) || 0).toLocaleString('en-IN');
+    function orderRow(o) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
       <td data-label="ID">${o.id}</td>
-      <td data-label="Customer">${(o.full_name||'') + (o.city?`, ${o.city}`:'')}</td>
-      <td data-label="Email" class="muted">${o.email||''}</td>
-      <td data-label="Payment" class="muted">${o.payment_method?.toUpperCase()||''}</td>
+      <td data-label="Customer">${(o.full_name || '') + (o.city ? `, ${o.city}` : '')}</td>
+      <td data-label="Email" class="muted">${o.email || ''}</td>
+      <td data-label="Payment" class="muted">${o.payment_method?.toUpperCase() || ''}</td>
       <td data-label="Total"><strong>${fmtINR(o.total)}</strong></td>
-      <td data-label="Status">${o.status||'placed'}</td>
+      <td data-label="Status">${o.status || 'placed'}</td>
       <td data-label="Created" class="muted">${fmtDate(o.created_at)}</td>
       <td data-label="Actions"><div class="row-actions"><button class="btn js-items">View Items</button></div></td>`;
-    tr.querySelector('.js-items').addEventListener('click', async ()=>{
-      try{
-        const data = await api(`/api/admin/orders/${o.id}/items`);
-        const items = data.items || [];
-        const lines = items.map(it=>`• ${it.name} × ${it.quantity} — ${fmtINR(it.price*it.quantity)}`).join('\n');
-        alert(lines || 'No items.');
-      }catch(e){ alert(e.message); }
-    });
-    return tr;
-  }
-  // Orders table moved to admin-orders.html
-  function row(user, currentId){
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
+      tr.querySelector('.js-items').addEventListener('click', async () => {
+        try {
+          const data = await api(`/api/admin/orders/${o.id}/items`);
+          const items = data.items || [];
+          const lines = items.map(it => `• ${it.name} × ${it.quantity} — ${fmtINR(it.price * it.quantity)}`).join('\n');
+          alert(lines || 'No items.');
+        } catch (e) { alert(e.message); }
+      });
+      return tr;
+    }
+    // Orders table moved to admin-orders.html
+    function row(user, currentId) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
       <td data-label="ID">${user.id}</td>
       <td data-label="Username">${user.username}</td>
       <td data-label="Email" class="muted">${user.email}</td>
       <td data-label="Name">${user.full_name || ''}</td>
-      <td data-label="Role"><span class="role ${user.role==='admin'?'admin':''}">${user.role}</span></td>
+      <td data-label="Role"><span class="role ${user.role === 'admin' ? 'admin' : ''}">${user.role}</span></td>
       <td data-label="Created" class="muted">${fmtDate(user.created_at)}</td>
       <td data-label="Actions">
         <div class="row-actions">
-          <button class="btn js-promote" ${user.id===currentId?'disabled':''}>${user.role==='admin'?'Make User':'Make Admin'}</button>
-          <button class="btn js-delete" ${user.id===currentId?'disabled':''}>Delete</button>
+          <button class="btn js-promote" ${user.id === currentId ? 'disabled' : ''}>${user.role === 'admin' ? 'Make User' : 'Make Admin'}</button>
+          <button class="btn js-delete" ${user.id === currentId ? 'disabled' : ''}>Delete</button>
         </div>
       </td>`;
-    tr.querySelector('.js-promote').addEventListener('click', async ()=>{
-      const newRole = user.role === 'admin' ? 'user' : 'admin';
-      try{
-        await api(`/api/admin/users/${user.id}/role`, { method:'PUT', body: JSON.stringify({ role: newRole }) });
-        await refresh();
-      }catch(e){ alert(e.message); }
-    });
-    tr.querySelector('.js-delete').addEventListener('click', async ()=>{
-      if(!confirm('Delete this user?')) return;
-      try{
-        await api(`/api/admin/users/${user.id}`, { method:'DELETE' });
-        await refresh();
-      }catch(e){ alert(e.message); }
-    });
-    return tr;
-  }
-  // Users table moved to admin-users.html
-  function msgRow(m){
-    const tr = document.createElement('tr');
-    const preview = (m.message || '').slice(0, 80).replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    tr.innerHTML = `
+      tr.querySelector('.js-promote').addEventListener('click', async () => {
+        const newRole = user.role === 'admin' ? 'user' : 'admin';
+        try {
+          await api(`/api/admin/users/${user.id}/role`, { method: 'PUT', body: JSON.stringify({ role: newRole }) });
+          await refresh();
+        } catch (e) { alert(e.message); }
+      });
+      tr.querySelector('.js-delete').addEventListener('click', async () => {
+        if (!confirm('Delete this user?')) return;
+        try {
+          await api(`/api/admin/users/${user.id}`, { method: 'DELETE' });
+          await refresh();
+        } catch (e) { alert(e.message); }
+      });
+      return tr;
+    }
+    // Users table moved to admin-users.html
+    function msgRow(m) {
+      const tr = document.createElement('tr');
+      const preview = (m.message || '').slice(0, 80).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      tr.innerHTML = `
       <td data-label="ID">${m.id}</td>
       <td data-label="Name">${m.name}</td>
       <td data-label="Email" class="muted">${m.email}</td>
       <td data-label="Phone">${m.phone || ''}</td>
       <td data-label="Subject">${m.subject}</td>
-      <td data-label="Message" title="${(m.message||'').replace(/"/g,'&quot;')}">${preview}${m.message && m.message.length>80?'…':''}</td>
+      <td data-label="Message" title="${(m.message || '').replace(/"/g, '&quot;')}">${preview}${m.message && m.message.length > 80 ? '…' : ''}</td>
       <td data-label="Received" class="muted">${fmtDate(m.created_at)}</td>
       <td data-label="Actions"><div class="row-actions"><button class="btn js-del">Delete</button></div></td>`;
-    tr.querySelector('.js-del').addEventListener('click', async ()=>{
-      if(!confirm('Delete this message?')) return;
-      try{ await api(`/api/admin/messages/${m.id}`, { method:'DELETE' }); await refresh(); }catch(e){ alert(e.message); }
+      tr.querySelector('.js-del').addEventListener('click', async () => {
+        if (!confirm('Delete this message?')) return;
+        try { await api(`/api/admin/messages/${m.id}`, { method: 'DELETE' }); await refresh(); } catch (e) { alert(e.message); }
+      });
+      return tr;
+    }
+    // Messages table moved to admin-messages.html
+    async function refresh() {
+      await loadStats();
+    }
+    document.getElementById('btn-refresh').addEventListener('click', refresh);
+    document.getElementById('btn-logout').addEventListener('click', async () => {
+      try { await api('/api/logout', { method: 'POST' }); } catch (e) { }
+      location.href = '/login.html';
     });
-    return tr;
-  }
-  // Messages table moved to admin-messages.html
-  async function refresh(){
-    await loadStats();
-  }
-  document.getElementById('btn-refresh').addEventListener('click', refresh);
-  document.getElementById('btn-logout').addEventListener('click', async ()=>{
-    try { await api('/api/logout', { method:'POST' }); } catch(e) {}
-    location.href = '/login.html';
-  });
-  (async ()=>{ if(await ensureAdmin()) await refresh(); })();
+    (async () => { if (await ensureAdmin()) await refresh(); })();
 
-  // ===== Dashboard only on this page =====
-  const qsel = (s)=>document.querySelector(s);
-  const byId = (id)=>document.getElementById(id);
-  const productsTbody = null;
+    // ===== Dashboard only on this page =====
+    const qsel = (s) => document.querySelector(s);
+    const byId = (id) => document.getElementById(id);
+    const productsTbody = null;
 
-  function productRow(p){
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
+    function productRow(p) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
       <td data-label="ID">${p.id}</td>
       <td data-label="Name">${p.name}</td>
-      <td data-label="Price">₹${Number(p.price||0).toLocaleString('en-IN')}</td>
-      <td data-label="Category" class="muted">${p.category||''}</td>
-      <td data-label="Brand" class="muted">${p.brand||''}</td>
-      <td data-label="Material" class="muted">${p.material||''}</td>
+      <td data-label="Price">₹${Number(p.price || 0).toLocaleString('en-IN')}</td>
+      <td data-label="Category" class="muted">${p.category || ''}</td>
+      <td data-label="Brand" class="muted">${p.brand || ''}</td>
+      <td data-label="Material" class="muted">${p.material || ''}</td>
       <td data-label="3D">${p.is_3d ? 'Yes' : 'No'}</td>
       <td data-label="Actions">
         <div class="row-actions">
@@ -296,323 +306,361 @@
           <button class="btn js-del">Delete</button>
         </div>
       </td>`;
-    tr.querySelector('.js-edit').addEventListener('click', ()=>{
-      startEditProduct(p);
-    });
-    tr.querySelector('.js-del').addEventListener('click', async ()=>{
-      if (!confirm('Delete this product?')) return;
-      try {
-        await api(`/api/admin/products/${p.id}`, { method:'DELETE' });
-        await loadProducts();
-      } catch(e){ alert(e.message); }
-    });
-    return tr;
-  }
+      tr.querySelector('.js-edit').addEventListener('click', () => {
+        startEditProduct(p);
+      });
+      tr.querySelector('.js-del').addEventListener('click', async () => {
+        if (!confirm('Delete this product?')) return;
+        try {
+          await api(`/api/admin/products/${p.id}`, { method: 'DELETE' });
+          await loadProducts();
+        } catch (e) { alert(e.message); }
+      });
+      return tr;
+    }
 
-  async function loadProducts(){
-    if (!productsTbody) return;
-    try {
-      const data = await api('/api/products');
-      productsTbody.innerHTML = '';
-      const list = (data.products||[]);
-      list.forEach(p=> productsTbody.appendChild(productRow(p)) );
-
-      // Populate Brand/Material datalists for ease of selection
+    async function loadProducts() {
+      if (!productsTbody) return;
       try {
-        const brandSet = new Set();
-        const materialSet = new Set();
-        list.forEach(p => {
-          if (p.brand && String(p.brand).trim()) brandSet.add(String(p.brand).trim());
-          if (p.material && String(p.material).trim()) materialSet.add(String(p.material).trim());
-        });
-        const brandsDl = document.getElementById('brands-list');
-        const materialsDl = document.getElementById('materials-list');
-        if (brandsDl) {
-          brandsDl.innerHTML = Array.from(brandSet)
-            .sort((a,b)=>a.localeCompare(b))
-            .map(b=>`<option value="${String(b).replace(/"/g, '&quot;')}"></option>`)
-            .join('');
-        }
-        if (materialsDl) {
-          materialsDl.innerHTML = Array.from(materialSet)
-            .sort((a,b)=>a.localeCompare(b))
-            .map(m=>`<option value="${String(m).replace(/"/g, '&quot;')}"></option>`)
-            .join('');
+        const data = await api('/api/products');
+        productsTbody.innerHTML = '';
+        const list = (data.products || []);
+        list.forEach(p => productsTbody.appendChild(productRow(p)));
+
+        // Populate Brand/Material datalists for ease of selection
+        try {
+          const brandSet = new Set();
+          const materialSet = new Set();
+          list.forEach(p => {
+            if (p.brand && String(p.brand).trim()) brandSet.add(String(p.brand).trim());
+            if (p.material && String(p.material).trim()) materialSet.add(String(p.material).trim());
+          });
+          const brandsDl = document.getElementById('brands-list');
+          const materialsDl = document.getElementById('materials-list');
+          if (brandsDl) {
+            brandsDl.innerHTML = Array.from(brandSet)
+              .sort((a, b) => a.localeCompare(b))
+              .map(b => `<option value="${String(b).replace(/"/g, '&quot;')}"></option>`)
+              .join('');
+          }
+          if (materialsDl) {
+            materialsDl.innerHTML = Array.from(materialSet)
+              .sort((a, b) => a.localeCompare(b))
+              .map(m => `<option value="${String(m).replace(/"/g, '&quot;')}"></option>`)
+              .join('');
+          }
+        } catch (e) {
+          console.warn('Failed to populate brand/material lists', e);
         }
       } catch (e) {
-        console.warn('Failed to populate brand/material lists', e);
+        console.warn('Failed to load products', e);
       }
-    } catch(e){
-      console.warn('Failed to load products', e);
     }
-  }
 
-  // Form handlers
-  const form = byId('prod-form');
-  const is3dSel = byId('p-is3d');
-  const modelRow = byId('p-model-row');
-  const hiddenId = byId('p-id');
-  const btnSubmit = byId('btn-prod-submit');
-  const btnCancel = byId('btn-prod-cancel');
-  // Image upload elements
-  const fileInput = byId('p-image-file');
-  const imageUrlInput = byId('p-image');
-  const previewWrap = byId('p-image-preview-wrap');
-  const previewImg = byId('p-image-preview');
-  const clearBtn = byId('p-image-clear');
-  const statusEl = byId('p-image-status');
-  if (is3dSel) {
-    const onToggle = ()=>{ const req = is3dSel.value === '1'; modelRow.style.display = req ? '' : 'none'; var m=byId('p-model'); if (m) m.required = req; };
-    is3dSel.addEventListener('change', onToggle);
-    onToggle();
-  }
-
-  function resetFormToCreate(){
-    if (!btnSubmit || !hiddenId) return;
-    hiddenId.value = '';
-    btnSubmit.textContent = 'Add Product';
-    if (btnCancel) btnCancel.style.display = 'none';
-  }
-
-  function startEditProduct(p){
-    if (!p) return;
-    hiddenId.value = p.id;
-    byId('p-name').value = p.name || '';
-    byId('p-price').value = p.price ?? '';
-    byId('p-image').value = p.image || '';
-    // Update preview if image exists
-    if (p.image) {
-      try { previewImg.src = p.image; previewWrap.style.display = ''; } catch(e) { previewWrap.style.display='none'; }
-    } else { previewWrap.style.display = 'none'; }
-    byId('p-category').value = p.category || '';
-    byId('p-brand').value = p.brand || '';
-    byId('p-material').value = p.material || '';
-    byId('p-desc').value = p.description || '';
-    byId('p-original').value = (p.original_price ?? '') || '';
-    byId('p-discount').value = (p.discount ?? '') || '';
-    byId('p-badge').value = p.badge || '';
-    byId('p-model').value = p.model_src || '';
-    is3dSel.value = (p.is_3d ? '1' : '0');
-    modelRow.style.display = is3dSel.value === '1' ? '' : 'none';
-    btnSubmit.textContent = 'Save Changes';
-    if (btnCancel) btnCancel.style.display = '';
-    // Scroll to form for convenience
-    document.getElementById('prod-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  async function uploadImage(file){
-    if (!file) return;
-    statusEl.textContent = 'Uploading image…';
-    btnSubmit && (btnSubmit.disabled = true);
-    try{
-      const fd = new FormData();
-      fd.append('image', file);
-      const res = await fetch('/api/admin/upload-image', { method:'POST', body: fd, credentials:'include' });
-      const data = await res.json().catch(()=>({}));
-      if (!res.ok || !data.success) throw new Error(data.error || 'Upload failed');
-      const url = data.url;
-      imageUrlInput.value = url;
-      previewImg.src = url;
-      previewWrap.style.display = '';
-      statusEl.textContent = 'Image uploaded';
-    }catch(e){
-      alert(e.message || 'Upload failed');
-      statusEl.textContent = e.message || 'Upload failed';
-      previewWrap.style.display = 'none';
-    } finally {
-      btnSubmit && (btnSubmit.disabled = false);
+    // Form handlers
+    const form = byId('prod-form');
+    const is3dSel = byId('p-is3d');
+    const modelRow = byId('p-model-row');
+    const hiddenId = byId('p-id');
+    const btnSubmit = byId('btn-prod-submit');
+    const btnCancel = byId('btn-prod-cancel');
+    // Image upload elements
+    const fileInput = byId('p-image-file');
+    const imageUrlInput = byId('p-image');
+    const previewWrap = byId('p-image-preview-wrap');
+    const previewImg = byId('p-image-preview');
+    const clearBtn = byId('p-image-clear');
+    const statusEl = byId('p-image-status');
+    if (is3dSel) {
+      const onToggle = () => { const req = is3dSel.value === '1'; modelRow.style.display = req ? '' : 'none'; var m = byId('p-model'); if (m) m.required = req; };
+      is3dSel.addEventListener('change', onToggle);
+      onToggle();
     }
-  }
 
-  if (fileInput) {
-    fileInput.addEventListener('change', () => {
-      const f = fileInput.files && fileInput.files[0];
-      if (f) uploadImage(f);
-    });
-  }
-  if (imageUrlInput) {
-    imageUrlInput.addEventListener('change', ()=>{
-      const v = imageUrlInput.value.trim();
-      if (v) { try { previewImg.src = v; previewWrap.style.display=''; } catch(e){ previewWrap.style.display='none'; } }
-      else { previewWrap.style.display='none'; }
-    });
-  }
-  if (clearBtn) {
-    clearBtn.addEventListener('click', ()=>{
-      if (fileInput) fileInput.value = '';
-      imageUrlInput.value = '';
-      previewWrap.style.display = 'none';
-      statusEl.textContent = '';
-    });
-  }
+    function resetFormToCreate() {
+      if (!btnSubmit || !hiddenId) return;
+      hiddenId.value = '';
+      btnSubmit.textContent = 'Add Product';
+      if (btnCancel) btnCancel.style.display = 'none';
+    }
 
-  if (form) {
-    form.addEventListener('submit', async (e)=>{
-      e.preventDefault();
-      // Normalize paths to forward slashes for the web
-      const norm = (s) => (s || '').trim().replace(/\\/g,'/');
-      const payload = {
-        name: byId('p-name').value.trim(),
-        price: parseInt(byId('p-price').value,10)||0,
-        image: norm(byId('p-image').value),
-        description: byId('p-desc').value.trim(),
-        category: byId('p-category').value,
-        brand: byId('p-brand').value.trim(),
-        material: byId('p-material').value.trim(),
-        original_price: byId('p-original').value ? parseInt(byId('p-original').value,10) : null,
-        discount: byId('p-discount').value ? parseInt(byId('p-discount').value,10) : null,
-        badge: byId('p-badge').value.trim(),
-        model_src: norm(byId('p-model').value),
-        is_3d: byId('p-is3d').value === '1'
-      };
-      if (payload.is_3d && !payload.model_src) {
-        alert('3D Model Path is required when Is 3D Model is Yes.');
-        return;
-      }
+    function startEditProduct(p) {
+      if (!p) return;
+      hiddenId.value = p.id;
+      byId('p-name').value = p.name || '';
+      byId('p-price').value = p.price ?? '';
+      byId('p-image').value = p.image || '';
+      // Update preview if image exists
+      if (p.image) {
+        try { previewImg.src = p.image; previewWrap.style.display = ''; } catch (e) { previewWrap.style.display = 'none'; }
+      } else { previewWrap.style.display = 'none'; }
+      byId('p-category').value = p.category || '';
+      byId('p-brand').value = p.brand || '';
+      byId('p-material').value = p.material || '';
+      byId('p-desc').value = p.description || '';
+      byId('p-original').value = (p.original_price ?? '') || '';
+      byId('p-discount').value = (p.discount ?? '') || '';
+      byId('p-badge').value = p.badge || '';
+      byId('p-model').value = p.model_src || '';
+      is3dSel.value = (p.is_3d ? '1' : '0');
+      modelRow.style.display = is3dSel.value === '1' ? '' : 'none';
+      btnSubmit.textContent = 'Save Changes';
+      if (btnCancel) btnCancel.style.display = '';
+      // Scroll to form for convenience
+      document.getElementById('prod-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    async function uploadImage(file) {
+      if (!file) return;
+      statusEl.textContent = 'Uploading image…';
+      btnSubmit && (btnSubmit.disabled = true);
       try {
-        const editingId = hiddenId.value;
-        if (editingId) {
-          await api(`/api/admin/products/${editingId}`, { method:'PUT', body: JSON.stringify(payload) });
-          alert('Product updated');
-        } else {
-          await api('/api/admin/products', { method:'POST', body: JSON.stringify(payload) });
-          alert('Product added');
+        const fd = new FormData();
+        fd.append('image', file);
+        const res = await fetch('/api/admin/upload-image', { method: 'POST', body: fd, credentials: 'include' });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.success) throw new Error(data.error || 'Upload failed');
+        const url = data.url;
+        imageUrlInput.value = url;
+        previewImg.src = url;
+        previewWrap.style.display = '';
+        statusEl.textContent = 'Image uploaded';
+      } catch (e) {
+        alert(e.message || 'Upload failed');
+        statusEl.textContent = e.message || 'Upload failed';
+        previewWrap.style.display = 'none';
+      } finally {
+        btnSubmit && (btnSubmit.disabled = false);
+      }
+    }
+
+    if (fileInput) {
+      fileInput.addEventListener('change', () => {
+        const f = fileInput.files && fileInput.files[0];
+        if (f) uploadImage(f);
+      });
+    }
+    if (imageUrlInput) {
+      imageUrlInput.addEventListener('change', () => {
+        const v = imageUrlInput.value.trim();
+        if (v) { try { previewImg.src = v; previewWrap.style.display = ''; } catch (e) { previewWrap.style.display = 'none'; } }
+        else { previewWrap.style.display = 'none'; }
+      });
+    }
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        if (fileInput) fileInput.value = '';
+        imageUrlInput.value = '';
+        previewWrap.style.display = 'none';
+        statusEl.textContent = '';
+      });
+    }
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        // Normalize paths to forward slashes for the web
+        const norm = (s) => (s || '').trim().replace(/\\/g, '/');
+        const payload = {
+          name: byId('p-name').value.trim(),
+          price: parseInt(byId('p-price').value, 10) || 0,
+          image: norm(byId('p-image').value),
+          description: byId('p-desc').value.trim(),
+          category: byId('p-category').value,
+          brand: byId('p-brand').value.trim(),
+          material: byId('p-material').value.trim(),
+          original_price: byId('p-original').value ? parseInt(byId('p-original').value, 10) : null,
+          discount: byId('p-discount').value ? parseInt(byId('p-discount').value, 10) : null,
+          badge: byId('p-badge').value.trim(),
+          model_src: norm(byId('p-model').value),
+          is_3d: byId('p-is3d').value === '1'
+        };
+        if (payload.is_3d && !payload.model_src) {
+          alert('3D Model Path is required when Is 3D Model is Yes.');
+          return;
         }
-        // Clear fields
-        form.reset();
-        if (is3dSel) is3dSel.value = '0';
-        if (modelRow) modelRow.style.display = 'none';
-        resetFormToCreate();
-        await loadProducts();
-      } catch(e){ alert(e.message); }
-    });
-  }
-
-  const btnProdRefresh = byId('btn-prod-refresh');
-  if (btnProdRefresh) btnProdRefresh.addEventListener('click', loadProducts);
-  if (btnCancel) btnCancel.addEventListener('click', () => {
-    form.reset();
-    if (is3dSel) is3dSel.value = '0';
-    if (modelRow) modelRow.style.display = 'none';
-  if (previewWrap) previewWrap.style.display = 'none';
-  if (statusEl) statusEl.textContent = '';
-    resetFormToCreate();
-  });
-  
-  // ---------- Charts ----------
-  async function waitForChart(maxMs=3000){
-    const start = Date.now();
-    while (!window.Chart && Date.now()-start < maxMs) {
-      await new Promise(r=>setTimeout(r,50));
+        try {
+          const editingId = hiddenId.value;
+          if (editingId) {
+            await api(`/api/admin/products/${editingId}`, { method: 'PUT', body: JSON.stringify(payload) });
+            alert('Product updated');
+          } else {
+            await api('/api/admin/products', { method: 'POST', body: JSON.stringify(payload) });
+            alert('Product added');
+          }
+          // Clear fields
+          form.reset();
+          if (is3dSel) is3dSel.value = '0';
+          if (modelRow) modelRow.style.display = 'none';
+          resetFormToCreate();
+          await loadProducts();
+        } catch (e) { alert(e.message); }
+      });
     }
-    if (!window.Chart) throw new Error('Chart.js not loaded');
-  }
-  async function fetchJSON(url){
-    const res = await fetch(url, { credentials: 'include' });
-    if (!res.ok) throw new Error('Failed ' + url);
-    return res.json();
-  }
-  async function maybeFetchForCharts(){
-    const data = await fetchJSON('/api/admin/orders');
-    window.__orders = data.orders || [];
-    const top = await deriveTopProducts(window.__orders);
-    window.__topProducts = top;
-  }
-  async function renderCharts(){
-    await waitForChart();
-    if (!window.__orders) await maybeFetchForCharts();
-    const orders = window.__orders || [];
 
-    // Orders by Status (last 30)
-    const last30 = orders.slice(0, 30);
-    const statusCounts = last30.reduce((acc,o)=>{acc[o.status||'placed']=(acc[o.status||'placed']||0)+1;return acc;},{});
-    paintDoughnut('ordersByStatus', Object.keys(statusCounts), Object.values(statusCounts));
+    const btnProdRefresh = byId('btn-prod-refresh');
+    if (btnProdRefresh) btnProdRefresh.addEventListener('click', loadProducts);
+    if (btnCancel) btnCancel.addEventListener('click', () => {
+      form.reset();
+      if (is3dSel) is3dSel.value = '0';
+      if (modelRow) modelRow.style.display = 'none';
+      if (previewWrap) previewWrap.style.display = 'none';
+      if (statusEl) statusEl.textContent = '';
+      resetFormToCreate();
+    });
 
-    // Orders per Day (last 14)
-    const byDay = {};
-    const now = new Date();
-    for(let i=13;i>=0;i--){
-      const d = new Date(now);
-      d.setDate(now.getDate()-i);
-      const key = d.toISOString().slice(0,10);
-      byDay[key] = 0;
+    // ---------- Charts ----------
+    async function waitForChart(maxMs = 3000) {
+      const start = Date.now();
+      while (!window.Chart && Date.now() - start < maxMs) {
+        await new Promise(r => setTimeout(r, 50));
+      }
+      if (!window.Chart) throw new Error('Chart.js not loaded');
     }
-    orders.forEach(o=>{
-      const key = (o.created_at||'').slice(0,10);
-      if (key in byDay) byDay[key]++;
-    });
-    paintLine('ordersPerDay', Object.keys(byDay), Object.values(byDay), 'Orders', '#c08457');
-
-    // Revenue per Day (last 14)
-    const byDayRev = {};
-    const now2 = new Date();
-    for(let i=13;i>=0;i--){
-      const d = new Date(now2);
-      d.setDate(now2.getDate()-i);
-      const key = d.toISOString().slice(0,10);
-      byDayRev[key] = 0;
+    async function fetchJSON(url) {
+      const res = await fetch(url, { credentials: 'include' });
+      if (!res.ok) throw new Error('Failed ' + url);
+      return res.json();
     }
-    orders.forEach(o=>{
-      const key = (o.created_at||'').slice(0,10);
-      if (key in byDayRev) byDayRev[key] += (parseInt(o.total||0,10)||0);
-    });
-    paintLine('revenuePerDay', Object.keys(byDayRev), Object.values(byDayRev), 'Revenue', '#16a34a');
+    async function maybeFetchForCharts() {
+      try {
+        const data = await fetchJSON('/api/admin/orders');
+        window.__orders = data.orders || [];
+        const top = await deriveTopProducts(window.__orders);
+        window.__topProducts = top;
 
-    // Top Products (qty)
-    const top = window.__topProducts || { labels: [], data: [] };
-    paintBar('topProducts', top.labels, top.data);
-  }
-  const __chartRefs = window.__chartRefs || (window.__chartRefs = {});
-  function paintDoughnut(id, labels, data){
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (__chartRefs[id]) { try { __chartRefs[id].destroy(); } catch {} }
-    const ctx = el.getContext('2d');
-    __chartRefs[id] = new Chart(ctx, {
-      type: 'doughnut',
-      data: { labels, datasets: [{ data, backgroundColor: ['#60a5fa','#34d399','#fbbf24','#f87171','#a78bfa'] }] },
-      options: { plugins: { legend: { position: 'bottom' } }, maintainAspectRatio: false, animation: false }
-    });
-  }
-  function paintLine(id, labels, data, seriesLabel='Series', color='#c08457'){
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (__chartRefs[id]) { try { __chartRefs[id].destroy(); } catch {} }
-    const ctx = el.getContext('2d');
-    __chartRefs[id] = new Chart(ctx, {
-      type: 'line',
-      data: { labels, datasets: [{ label: seriesLabel, data, fill:false, borderColor: color, tension:0.3 }] },
-      options: { scales: { y: { beginAtZero:true } }, maintainAspectRatio: false, animation: false }
-    });
-  }
-  function paintBar(id, labels, data){
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (__chartRefs[id]) { try { __chartRefs[id].destroy(); } catch {} }
-    const ctx = el.getContext('2d');
-    __chartRefs[id] = new Chart(ctx, {
-      type: 'bar',
-      data: { labels, datasets: [{ label:'Qty', data, backgroundColor:'#d4a373' }] },
-      options: { scales: { y: { beginAtZero:true } }, maintainAspectRatio: false, animation: false }
-    });
-  }
-  async function deriveTopProducts(orders){
-    const first = (orders||[]).slice(0,10);
-    const counts = {};
-    for (const o of first){
-      try{
-        const data = await fetchJSON(`/api/admin/orders/${o.id}/items`);
-        (data.items||[]).forEach(it=>{
-          const key = it.name || String(it.product_id||'');
-          counts[key] = (counts[key]||0) + (it.quantity||0);
-        });
-      }catch{}
+        const uData = await fetchJSON('/api/admin/users').catch(() => ({}));
+        window.__users = uData.users || [];
+
+        const mData = await fetchJSON('/api/admin/messages').catch(() => ({}));
+        window.__messages = mData.messages || [];
+      } catch (e) { }
     }
-    const pairs = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5);
-    return { labels: pairs.map(p=>p[0]), data: pairs.map(p=>p[1]) };
-  }
+    async function renderCharts() {
+      await waitForChart();
+      if (!window.__orders) await maybeFetchForCharts();
+      const orders = window.__orders || [];
+
+      // Orders by Status (last 30)
+      const last30 = orders.slice(0, 30);
+      const statusCounts = last30.reduce((acc, o) => { acc[o.status || 'placed'] = (acc[o.status || 'placed'] || 0) + 1; return acc; }, {});
+      paintDoughnut('ordersByStatus', Object.keys(statusCounts), Object.values(statusCounts));
+
+      // Orders per Day (last 14)
+      const byDay = {};
+      const now = new Date();
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date(now);
+        d.setDate(now.getDate() - i);
+        const key = d.toISOString().slice(0, 10);
+        byDay[key] = 0;
+      }
+      orders.forEach(o => {
+        const key = (o.created_at || '').slice(0, 10);
+        if (key in byDay) byDay[key]++;
+      });
+      paintLine('ordersPerDay', Object.keys(byDay), Object.values(byDay), 'Orders', '#c08457');
+
+      // Revenue per Day (last 14)
+      const byDayRev = {};
+      const now2 = new Date();
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date(now2);
+        d.setDate(now2.getDate() - i);
+        const key = d.toISOString().slice(0, 10);
+        byDayRev[key] = 0;
+      }
+      orders.forEach(o => {
+        const key = (o.created_at || '').slice(0, 10);
+        if (key in byDayRev) byDayRev[key] += (parseInt(o.total || 0, 10) || 0);
+      });
+      paintLine('revenuePerDay', Object.keys(byDayRev), Object.values(byDayRev), 'Revenue', '#16a34a');
+
+      // Users Per Day
+      const users = window.__users || [];
+      const byDayUsers = {};
+      const now3 = new Date();
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date(now3);
+        d.setDate(now3.getDate() - i);
+        byDayUsers[d.toISOString().slice(0, 10)] = 0;
+      }
+      users.forEach(u => {
+        const key = (u.created_at || '').slice(0, 10);
+        if (key in byDayUsers) byDayUsers[key]++;
+      });
+      paintLine('usersPerDay', Object.keys(byDayUsers), Object.values(byDayUsers), 'New Users', '#3b82f6');
+
+      // Messages Per Day
+      const msgs = window.__messages || [];
+      const byDayMsgs = {};
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date(now3);
+        d.setDate(now3.getDate() - i);
+        byDayMsgs[d.toISOString().slice(0, 10)] = 0;
+      }
+      msgs.forEach(m => {
+        const key = (m.created_at || '').slice(0, 10);
+        if (key in byDayMsgs) byDayMsgs[key]++;
+      });
+      paintBar('messagesPerDay', Object.keys(byDayMsgs), Object.values(byDayMsgs), 'Messages', '#a855f7');
+
+      // Top Products (qty)
+      const top = window.__topProducts || { labels: [], data: [] };
+      paintBar('topProducts', top.labels, top.data);
+    }
+    const __chartRefs = window.__chartRefs || (window.__chartRefs = {});
+    function paintDoughnut(id, labels, data) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (__chartRefs[id]) { try { __chartRefs[id].destroy(); } catch { } }
+      const ctx = el.getContext('2d');
+      __chartRefs[id] = new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels, datasets: [{ data, backgroundColor: ['#60a5fa', '#34d399', '#fbbf24', '#f87171', '#a78bfa'] }] },
+        options: { plugins: { legend: { position: 'bottom' } }, maintainAspectRatio: false, animation: false }
+      });
+    }
+    function paintLine(id, labels, data, seriesLabel = 'Series', color = '#c08457') {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (__chartRefs[id]) { try { __chartRefs[id].destroy(); } catch { } }
+      const ctx = el.getContext('2d');
+      __chartRefs[id] = new Chart(ctx, {
+        type: 'line',
+        data: { labels, datasets: [{ label: seriesLabel, data, fill: false, borderColor: color, tension: 0.3 }] },
+        options: { scales: { y: { beginAtZero: true } }, maintainAspectRatio: false, animation: false }
+      });
+    }
+    function paintBar(id, labels, data, seriesLabel = 'Qty', color = '#d4a373') {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (__chartRefs[id]) { try { __chartRefs[id].destroy(); } catch { } }
+      const ctx = el.getContext('2d');
+      __chartRefs[id] = new Chart(ctx, {
+        type: 'bar',
+        data: { labels, datasets: [{ label: seriesLabel, data, backgroundColor: color }] },
+        options: { scales: { y: { Math: { precision: 0 }, beginAtZero: true } }, maintainAspectRatio: false, animation: false }
+      });
+    }
+    async function deriveTopProducts(orders) {
+      const first = (orders || []).slice(0, 10);
+      const counts = {};
+      for (const o of first) {
+        try {
+          const data = await fetchJSON(`/api/admin/orders/${o.id}/items`);
+          (data.items || []).forEach(it => {
+            const key = it.name || String(it.product_id || '');
+            counts[key] = (counts[key] || 0) + (it.quantity || 0);
+          });
+        } catch { }
+      }
+      const pairs = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+      return { labels: pairs.map(p => p[0]), data: pairs.map(p => p[1]) };
+    }
   </script>
-    <script src="js/mobile-menu.js"></script>
+  <script src="js/mobile-menu.js"></script>
 </body>
 <script src="js/app.js"></script>
+
 </html>

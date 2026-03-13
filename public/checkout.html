@@ -11,6 +11,8 @@
   <meta name="description" content="4-step secure checkout" />
   <meta name="theme-color" content="#8B4513" />
   <link rel="icon" type="image/x-icon" href="image/fevicon/favicon.ico" />
+  <!-- Ethers.js for Web3 wallet integration -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.1/dist/ethers.umd.min.js"></script>
   <link rel="stylesheet" href="CSS/style.css" />
   <link rel="stylesheet" href="CSS/dark-mode.css" />
   <link rel="stylesheet" href="CSS/animations.css" />
@@ -121,12 +123,12 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Full Name *</label>
-              <input type="text" class="form-input" name="fullName" placeholder="John Doe" required />
+              <input type="text" class="form-input" id="fullName" name="fullName" placeholder="John Doe" autocomplete="name" required />
               <div class="form-error"></div>
             </div>
             <div class="form-group">
               <label class="form-label">Email *</label>
-              <input type="email" class="form-input" name="email" placeholder="john@example.com" required />
+              <input type="email" class="form-input" id="email" name="email" placeholder="john@example.com" autocomplete="email" required />
               <div class="form-error"></div>
             </div>
           </div>
@@ -134,12 +136,12 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Phone *</label>
-              <input type="tel" class="form-input" name="phone" placeholder="+91 98765 43210" required />
+              <input type="tel" class="form-input" id="phone" name="phone" placeholder="+91 98765 43210" autocomplete="tel" required />
               <div class="form-error"></div>
             </div>
             <div class="form-group">
               <label class="form-label">Country *</label>
-              <input type="text" class="form-input" name="country" value="India" required />
+              <input type="text" class="form-input" id="country" name="country" value="India" autocomplete="country-name" required />
               <div class="form-error"></div>
             </div>
           </div>
@@ -147,7 +149,7 @@
           <div class="form-row full">
             <div class="form-group">
               <label class="form-label">Address Line 1 *</label>
-              <input type="text" class="form-input" name="address1" placeholder="House no., street" required />
+              <input type="text" class="form-input" id="address1" name="address1" placeholder="House no., street" autocomplete="address-line1" required />
               <div class="form-error"></div>
             </div>
           </div>
@@ -155,19 +157,19 @@
           <div class="form-row full">
             <div class="form-group">
               <label class="form-label">Address Line 2 (Optional)</label>
-              <input type="text" class="form-input" name="address2" placeholder="Landmark, area" />
+              <input type="text" class="form-input" id="address2" name="address2" placeholder="Landmark, area" autocomplete="address-line2" />
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">City *</label>
-              <input type="text" class="form-input" name="city" placeholder="Mumbai" required />
+              <input type="text" class="form-input" id="city" name="city" placeholder="Mumbai" autocomplete="address-level2" required />
               <div class="form-error"></div>
             </div>
             <div class="form-group">
               <label class="form-label">State *</label>
-              <input type="text" class="form-input" name="state" placeholder="Maharashtra" required />
+              <input type="text" class="form-input" id="state" name="state" placeholder="Maharashtra" autocomplete="address-level1" required />
               <div class="form-error"></div>
             </div>
           </div>
@@ -175,7 +177,7 @@
           <div class="form-row full">
             <div class="form-group">
               <label class="form-label">PIN Code *</label>
-              <input type="text" class="form-input" name="postal" placeholder="400001" pattern="[0-9]{6}" required />
+              <input type="text" class="form-input" id="postal" name="postal" placeholder="400001" pattern="[0-9]{6}" autocomplete="postal-code" required />
               <div class="form-error"></div>
             </div>
           </div>
@@ -297,6 +299,14 @@
               <div class="option-desc">Pay when you receive your order</div>
             </div>
           </label>
+
+          <label class="option-item crypto-option">
+            <input type="radio" class="option-input" name="paymentMethod" value="crypto" onchange="selectPayment('crypto')" />
+            <div class="option-content">
+              <div class="option-title">🪙 Pay with Crypto</div>
+              <div class="option-desc">MetaMask • Rainbow • WalletConnect • ETH / MATIC / BNB</div>
+            </div>
+          </label>
         </div>
 
         <!-- UPI FORM -->
@@ -344,6 +354,147 @@
           </div>
         </form>
 
+        <!-- CRYPTO PAYMENT SECTION -->
+        <div id="cryptoPayment" style="display: none;">
+          <div class="crypto-payment-container">
+            <div class="crypto-header">
+              <div class="crypto-icon-row">
+                <span class="crypto-icon">🦊</span>
+                <span class="crypto-icon">🌈</span>
+                <span class="crypto-icon">💎</span>
+              </div>
+              <h3 class="crypto-title">Pay with Cryptocurrency</h3>
+              <p class="crypto-subtitle">Connect your Web3 wallet to pay securely on-chain</p>
+            </div>
+
+            <!-- Wallet Not Connected State -->
+            <div id="cryptoConnectState">
+              <button type="button" class="crypto-connect-btn" id="connectWalletBtn" onclick="openWalletModal()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/><circle cx="18" cy="15" r="1.5"/></svg>
+                Connect Wallet
+              </button>
+              <p class="crypto-hint">You'll be prompted to connect MetaMask, Rainbow, or another Web3 wallet</p>
+            </div>
+
+            <!-- Wallet Connected State -->
+            <div id="cryptoConnectedState" style="display: none;">
+              <div class="crypto-wallet-info">
+                <div class="crypto-wallet-badge">
+                  <span class="crypto-wallet-dot"></span>
+                  <span class="crypto-wallet-label">Connected</span>
+                </div>
+                <div class="crypto-wallet-address" id="walletAddress">0x0000...0000</div>
+                <div class="crypto-wallet-network" id="walletNetwork">Ethereum Mainnet</div>
+                <button type="button" class="crypto-disconnect-btn" onclick="disconnectWallet()">Disconnect</button>
+              </div>
+
+              <!-- Network Info & Sepolia Switch -->
+              <div class="crypto-network-bar" id="cryptoNetworkBar">
+                <div class="crypto-network-info">
+                  <span class="crypto-network-dot" id="networkDot"></span>
+                  <span id="networkLabel">Ethereum Mainnet</span>
+                </div>
+                <button type="button" class="crypto-switch-network-btn" id="switchSepoliaBtn" onclick="switchToSepolia()" title="Switch to Sepolia for testing">
+                  🧪 Switch to Sepolia
+                </button>
+                <button type="button" class="crypto-switch-network-btn" id="switchMainnetBtn" style="display:none;background:#4caf50;" onclick="switchToMainnet()" title="Switch back to Ethereum Mainnet">
+                  🔗 Switch to Mainnet
+                </button>
+              </div>
+
+              <!-- Token Selection -->
+              <div class="crypto-token-select">
+                <label class="form-label">Select Token to Pay With</label>
+                <select class="form-select crypto-token-dropdown" id="cryptoTokenSelect" onchange="onTokenChange()">
+                  <optgroup label="── Native Tokens ──" id="nativeTokenGroup">
+                    <option value="ethereum" data-type="native">ETH (Ethereum)</option>
+                    <option value="matic-network" data-type="native">MATIC (Polygon)</option>
+                    <option value="binancecoin" data-type="native">BNB (BNB Chain)</option>
+                  </optgroup>
+                  <optgroup label="── Stablecoins (ERC-20) ──" id="stablecoinGroup">
+                    <option value="usd-coin" data-type="erc20">USDC (USD Coin)</option>
+                    <option value="tether" data-type="erc20">USDT (Tether)</option>
+                    <option value="dai" data-type="erc20">DAI (MakerDAO)</option>
+                  </optgroup>
+                  <optgroup label="── Popular Tokens ──" id="popularTokenGroup">
+                    <option value="chainlink" data-type="erc20">LINK (Chainlink)</option>
+                    <option value="uniswap" data-type="erc20">UNI (Uniswap)</option>
+                    <option value="aave" data-type="erc20">AAVE (Aave)</option>
+                    <option value="shiba-inu" data-type="erc20">SHIB (Shiba Inu)</option>
+                    <option value="wrapped-bitcoin" data-type="erc20">WBTC (Wrapped Bitcoin)</option>
+                    <option value="pepe" data-type="erc20">PEPE (Pepe)</option>
+                  </optgroup>
+                  <optgroup label="── Other ──">
+                    <option value="bitcoin" data-type="view-only">BTC (Bitcoin - view price only)</option>
+                    <option value="solana" data-type="view-only">SOL (Solana - view price only)</option>
+                    <option value="custom" data-type="custom">🔧 Custom Token (paste address)</option>
+                  </optgroup>
+                </select>
+              </div>
+
+              <!-- Custom Token Address Input -->
+              <div class="crypto-custom-token" id="customTokenSection" style="display: none;">
+                <div class="form-group">
+                  <label class="form-label">Token Contract Address</label>
+                  <input type="text" class="form-input" id="customTokenAddress" placeholder="0x... (ERC-20 contract address)" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Token Symbol</label>
+                  <input type="text" class="form-input" id="customTokenSymbol" placeholder="e.g. DOGE, ARB" maxlength="10" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">CoinGecko Token ID (for price)</label>
+                  <input type="text" class="form-input" id="customTokenCoinGeckoId" placeholder="e.g. dogecoin, arbitrum" />
+                  <small style="color:#999;">Find it at coingecko.com → API ID</small>
+                </div>
+                <button type="button" class="crypto-connect-btn" style="margin-top:8px;font-size:13px;padding:10px 16px;" onclick="loadCustomToken()">Load Custom Token</button>
+              </div>
+
+              <!-- Sepolia Test Mode Banner -->
+              <div class="crypto-testnet-banner" id="sepoliaTestBanner" style="display:none;">
+                <span>🧪</span>
+                <div>
+                  <strong>Sepolia Testnet Mode</strong>
+                  <p style="margin:2px 0 0;font-size:11px;color:#e65100;">Using testnet ETH. No real funds will be charged. <a href="https://sepoliafaucet.com" target="_blank" rel="noopener" style="color:#1565c0;">Get free Sepolia ETH →</a></p>
+                </div>
+              </div>
+
+              <!-- Price Conversion Display -->
+              <div class="crypto-price-box">
+                <div class="crypto-price-row">
+                  <span class="crypto-price-label">Order Total (INR)</span>
+                  <span class="crypto-price-value" id="cryptoINRTotal">₹0</span>
+                </div>
+                <div class="crypto-price-divider">
+                  <span class="crypto-arrow">⬇</span>
+                  <span class="crypto-rate-info" id="cryptoRateInfo">Fetching live rate...</span>
+                </div>
+                <div class="crypto-price-row crypto-price-converted">
+                  <span class="crypto-price-label">You Pay (Crypto)</span>
+                  <span class="crypto-price-value crypto-amount" id="cryptoAmount">-- ETH</span>
+                </div>
+                <div class="crypto-price-note">
+                  <span id="cryptoRateTimestamp">Rate updates every 30s</span>
+                  <button type="button" class="crypto-refresh-btn" onclick="updateCryptoPrice()" title="Refresh rate">🔄</button>
+                </div>
+              </div>
+
+              <!-- Wallet Balance -->
+              <div class="crypto-balance-row">
+                <span>Your Wallet Balance:</span>
+                <span id="walletBalance">-- ETH</span>
+              </div>
+
+              <!-- Pay Button -->
+              <button type="button" class="crypto-pay-btn" id="cryptoPayBtn" onclick="payWithCrypto()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+                Pay with Crypto
+              </button>
+              <p class="crypto-pay-note">Transaction will be sent to the merchant's wallet. Please confirm in your wallet.</p>
+            </div>
+          </div>
+        </div>
+
         <!-- COD INFO -->
         <div id="codPayment" style="display: none; background: #f0f8ff; padding: 20px; border-radius: 6px; border-left: 4px solid #2196F3;">
           <p style="font-size: 13px; color: #333; line-height: 1.6; margin: 0;">
@@ -371,6 +522,47 @@
       <div class="button-group" id="navigationButtons">
         <button class="btn btn-secondary" id="backBtn" onclick="previousStep()" style="display: none;">← Back</button>
         <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WALLET CONNECT MODAL -->
+  <div class="wallet-modal-overlay" id="walletModalOverlay" onclick="closeWalletModal(event)">
+    <div class="wallet-modal" onclick="event.stopPropagation()">
+      <div class="wallet-modal-header">
+        <h3>Connect Your Wallet</h3>
+        <button type="button" class="wallet-modal-close" onclick="closeWalletModal()">&times;</button>
+      </div>
+      <p class="wallet-modal-subtitle">Select a wallet provider to connect and pay with cryptocurrency</p>
+      <p class="wallet-modal-note" style="font-size:11px;color:#888;margin:-8px 0 12px;text-align:center;">You will be asked to confirm the connection in your wallet</p>
+      <div class="wallet-modal-options">
+        <button type="button" class="wallet-option-btn" id="walletOptMetamask" onclick="connectWallet('metamask')">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" class="wallet-option-icon" onerror="this.outerHTML='<span class=wallet-option-emoji>🦊</span>'" />
+          <div class="wallet-option-info">
+            <span class="wallet-option-name">MetaMask</span>
+            <span class="wallet-option-desc">Popular browser extension wallet</span>
+          </div>
+          <span class="wallet-option-arrow">→</span>
+        </button>
+        <button type="button" class="wallet-option-btn" id="walletOptRainbow" onclick="connectWallet('rainbow')">
+          <span class="wallet-option-emoji">🌈</span>
+          <div class="wallet-option-info">
+            <span class="wallet-option-name">Rainbow Wallet</span>
+            <span class="wallet-option-desc">Mobile-first Ethereum wallet</span>
+          </div>
+          <span class="wallet-option-arrow">→</span>
+        </button>
+        <button type="button" class="wallet-option-btn" id="walletOptOther" onclick="connectWallet('injected')">
+          <span class="wallet-option-emoji">💎</span>
+          <div class="wallet-option-info">
+            <span class="wallet-option-name">Other Wallet</span>
+            <span class="wallet-option-desc">Any injected Web3 wallet (Trust, Coinbase, etc.)</span>
+          </div>
+          <span class="wallet-option-arrow">→</span>
+        </button>
+      </div>
+      <div class="wallet-modal-footer">
+        <p>Don't have a wallet? <a href="https://metamask.io/download/" target="_blank" rel="noopener">Install MetaMask →</a></p>
       </div>
     </div>
   </div>
@@ -529,11 +721,17 @@
     // SELECT PAYMENT
     function selectPayment(method) {
       document.querySelectorAll('form[id$="Payment"]').forEach(form => form.style.display = 'none');
+      document.getElementById('cryptoPayment').style.display = 'none';
+      document.getElementById('codPayment').style.display = 'none';
 
       if (method === 'upi') document.getElementById('upiPayment').style.display = 'block';
       else if (method === 'card') document.getElementById('cardPayment').style.display = 'block';
       else if (method === 'netbanking') document.getElementById('netBankingPayment').style.display = 'block';
       else if (method === 'cod') document.getElementById('codPayment').style.display = 'block';
+      else if (method === 'crypto') {
+        document.getElementById('cryptoPayment').style.display = 'block';
+        updateCryptoPrice();
+      }
 
       checkoutData.payment.method = method;
       // Example other charge: COD handling fee ₹49; otherwise ₹0
@@ -693,7 +891,15 @@
           payment: {
             method: checkoutData.payment.method,
             upiId: document.querySelector('#upiPayment input')?.value,
-            cardLast4: document.querySelector('#cardPayment input[maxlength="19"]')?.value?.slice(-4)
+            cardLast4: document.querySelector('#cardPayment input[maxlength="19"]')?.value?.slice(-4),
+            // Crypto payment data (populated when method === 'crypto')
+            txHash: checkoutData.payment.txHash || null,
+            txExplorer: checkoutData.payment.txExplorer || null,
+            walletAddress: checkoutData.payment.walletAddress || null,
+            cryptoAmount: checkoutData.payment.cryptoAmount || null,
+            cryptoToken: checkoutData.payment.cryptoToken || null,
+            tokenType: checkoutData.payment.tokenType || null,
+            isTestnet: checkoutData.payment.isTestnet || false
           },
           amounts: {
             subtotal: checkoutData.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
@@ -866,6 +1072,869 @@
       attachRealTimeValidation();
       prefillUserData();
     });
+
+    // ===========================
+    // CRYPTO WALLET PAYMENT LOGIC
+    // ===========================
+    const MERCHANT_WALLET = '0xC3845b84Ec513c8A318383e7885743F248A07481';
+
+    // Standard ERC-20 ABI for transfer & balanceOf
+    const ERC20_ABI = [
+      'function transfer(address to, uint256 amount) returns (bool)',
+      'function balanceOf(address owner) view returns (uint256)',
+      'function decimals() view returns (uint8)',
+      'function symbol() view returns (string)',
+      'function name() view returns (string)'
+    ];
+
+    // Crypto state
+    let cryptoState = {
+      connected: false,
+      provider: null,
+      signer: null,
+      address: null,
+      chainId: null,
+      selectedToken: 'ethereum',
+      tokenType: 'native',    // 'native', 'erc20', 'custom', 'view-only'
+      cryptoPrice: 0,          // price of 1 token in INR
+      cryptoAmount: 0,         // amount of token to pay
+      tokenDecimals: 18,       // ERC-20 decimals
+      tokenContract: null,     // contract address for ERC-20
+      customSymbol: '',
+      customCoinGeckoId: '',
+      priceInterval: null
+    };
+
+    // Network configs
+    const CHAIN_MAP = {
+      1:        { name: 'Ethereum Mainnet', symbol: 'ETH', token: 'ethereum', testnet: false, explorer: 'https://etherscan.io/tx/' },
+      137:      { name: 'Polygon Mainnet', symbol: 'MATIC', token: 'matic-network', testnet: false, explorer: 'https://polygonscan.com/tx/' },
+      56:       { name: 'BNB Smart Chain', symbol: 'BNB', token: 'binancecoin', testnet: false, explorer: 'https://bscscan.com/tx/' },
+      11155111: { name: 'Sepolia Testnet', symbol: 'SepoliaETH', token: 'ethereum', testnet: true, explorer: 'https://sepolia.etherscan.io/tx/' },
+      80002:    { name: 'Amoy Testnet (Polygon)', symbol: 'MATIC', token: 'matic-network', testnet: true, explorer: 'https://amoy.polygonscan.com/tx/' },
+      97:       { name: 'BSC Testnet', symbol: 'tBNB', token: 'binancecoin', testnet: true, explorer: 'https://testnet.bscscan.com/tx/' },
+      42161:    { name: 'Arbitrum One', symbol: 'ETH', token: 'ethereum', testnet: false, explorer: 'https://arbiscan.io/tx/' },
+      10:       { name: 'Optimism', symbol: 'ETH', token: 'ethereum', testnet: false, explorer: 'https://optimistic.etherscan.io/tx/' },
+      43114:    { name: 'Avalanche C-Chain', symbol: 'AVAX', token: 'avalanche-2', testnet: false, explorer: 'https://snowtrace.io/tx/' },
+      8453:     { name: 'Base', symbol: 'ETH', token: 'ethereum', testnet: false, explorer: 'https://basescan.org/tx/' }
+    };
+
+    // Known ERC-20 contract addresses per chain (chainId → tokenId → contractAddress)
+    const ERC20_CONTRACTS = {
+      1: { // Ethereum Mainnet
+        'usd-coin':        '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        'tether':          '0xdAC17F958D2ee523a2206206994597C13D831ec7',
+        'dai':             '0x6B175474E89094C44Da98b954EedeCD73E313D8B',
+        'chainlink':       '0x514910771AF9Ca656af840dff83E8264EcF986CA',
+        'uniswap':         '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984',
+        'aave':            '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9',
+        'shiba-inu':       '0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE',
+        'wrapped-bitcoin': '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+        'pepe':            '0x6982508145454Ce325dDbE47a25d4ec3d2311933'
+      },
+      137: { // Polygon
+        'usd-coin':  '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+        'tether':    '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
+        'dai':       '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+        'chainlink': '0x53E0bca35eC356BD5ddDeFebBD71A2f9D658B1E0',
+        'uniswap':   '0xb33EaAd8d922B1083446DC23f610c2567fB5180f',
+        'aave':      '0xD6DF932A45C0f255f85145f286eA0b292B21C90B'
+      },
+      56: { // BSC
+        'usd-coin': '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+        'tether':   '0x55d398326f99059fF775485246999027B3197955',
+        'dai':      '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3'
+      },
+      11155111: { // Sepolia Testnet - use common test tokens
+        'usd-coin': '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
+        'dai':      '0x68194a729C2450ad26072b3D33ADaCbcef39D574'
+      }
+    };
+
+    // Open wallet connect modal
+    function openWalletModal() {
+      const overlay = document.getElementById('walletModalOverlay');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close wallet connect modal
+    function closeWalletModal(e) {
+      if (e && e.target !== e.currentTarget) return;
+      const overlay = document.getElementById('walletModalOverlay');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Switch to Sepolia testnet
+    async function switchToSepolia() {
+      const walletProv = cryptoState.walletProvider || window.ethereum;
+      if (!walletProv) {
+        showToast('No wallet detected', 'error');
+        return;
+      }
+      try {
+        await walletProv.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0xaa36a7' }] // 11155111 in hex
+        });
+      } catch (switchError) {
+        // Chain not added yet - add it
+        if (switchError.code === 4902) {
+          try {
+            await walletProv.request({
+              method: 'wallet_addEthereumChain',
+              params: [{
+                chainId: '0xaa36a7',
+                chainName: 'Sepolia Testnet',
+                nativeCurrency: { name: 'SepoliaETH', symbol: 'SepoliaETH', decimals: 18 },
+                rpcUrls: ['https://sepolia.infura.io/v3/'],
+                blockExplorerUrls: ['https://sepolia.etherscan.io']
+              }]
+            });
+          } catch (addError) {
+            showToast('Could not add Sepolia network: ' + addError.message, 'error');
+          }
+        } else {
+          showToast('Could not switch to Sepolia: ' + switchError.message, 'error');
+        }
+      }
+    }
+
+    // Switch to a mainnet network
+    async function switchToMainnet(chainIdHex) {
+      const walletProv = cryptoState.walletProvider || window.ethereum;
+      if (!walletProv) {
+        showToast('No wallet detected', 'error');
+        return;
+      }
+      // Default to Ethereum Mainnet (0x1) if no chainId specified
+      const targetChainHex = chainIdHex || '0x1';
+      const networkNames = {
+        '0x1': 'Ethereum Mainnet',
+        '0x89': 'Polygon Mainnet',
+        '0x38': 'BNB Smart Chain',
+        '0xa4b1': 'Arbitrum One',
+        '0xa': 'Optimism',
+        '0xa86a': 'Avalanche C-Chain',
+        '0x2105': 'Base'
+      };
+      const networkName = networkNames[targetChainHex] || 'Mainnet';
+      try {
+        await walletProv.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: targetChainHex }]
+        });
+        showToast(`Switching to ${networkName}...`, 'info');
+      } catch (switchError) {
+        if (switchError.code === 4902) {
+          // Chain not added - add common mainnets
+          const chainConfigs = {
+            '0x89': {
+              chainId: '0x89', chainName: 'Polygon Mainnet',
+              nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
+              rpcUrls: ['https://polygon-rpc.com/'],
+              blockExplorerUrls: ['https://polygonscan.com']
+            },
+            '0x38': {
+              chainId: '0x38', chainName: 'BNB Smart Chain',
+              nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+              rpcUrls: ['https://bsc-dataseed.binance.org/'],
+              blockExplorerUrls: ['https://bscscan.com']
+            },
+            '0xa86a': {
+              chainId: '0xa86a', chainName: 'Avalanche C-Chain',
+              nativeCurrency: { name: 'AVAX', symbol: 'AVAX', decimals: 18 },
+              rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'],
+              blockExplorerUrls: ['https://snowtrace.io']
+            }
+          };
+          const config = chainConfigs[targetChainHex];
+          if (config) {
+            try {
+              await walletProv.request({ method: 'wallet_addEthereumChain', params: [config] });
+            } catch (addError) {
+              showToast('Could not add network: ' + addError.message, 'error');
+            }
+          } else {
+            showToast(`${networkName} should already be in your wallet. Please switch manually.`, 'error');
+          }
+        } else {
+          showToast('Could not switch network: ' + switchError.message, 'error');
+        }
+      }
+    }
+
+    // Update network-related UI after connection
+    function updateNetworkUI() {
+      const chainInfo = CHAIN_MAP[cryptoState.chainId] || { name: `Chain ${cryptoState.chainId}`, symbol: 'ETH', token: 'ethereum', testnet: false };
+      const isTestnet = chainInfo.testnet;
+
+      // Update network label
+      document.getElementById('walletNetwork').textContent = chainInfo.name;
+      document.getElementById('networkLabel').textContent = chainInfo.name;
+
+      // Testnet dot color
+      const dot = document.getElementById('networkDot');
+      dot.style.background = isTestnet ? '#ff9800' : '#4caf50';
+
+      // Show/hide Sepolia banner
+      const banner = document.getElementById('sepoliaTestBanner');
+      banner.style.display = isTestnet ? 'flex' : 'none';
+
+      // Show/hide switch-to-sepolia button (hide if already on a testnet)
+      const switchBtn = document.getElementById('switchSepoliaBtn');
+      switchBtn.style.display = isTestnet ? 'none' : 'inline-flex';
+
+      // Show/hide switch-to-mainnet button (show only on testnet)
+      const mainnetBtn = document.getElementById('switchMainnetBtn');
+      if (mainnetBtn) {
+        mainnetBtn.style.display = isTestnet ? 'inline-flex' : 'none';
+      }
+
+      // Filter token dropdown based on current chain
+      filterTokensByChain();
+    }
+
+    // Filter token dropdown to show only available tokens on current chain
+    function filterTokensByChain() {
+      const chainId = cryptoState.chainId;
+      const chainInfo = CHAIN_MAP[chainId] || {};
+      const contractsForChain = ERC20_CONTRACTS[chainId] || {};
+
+      // For ERC-20 options, disable if no contract on this chain
+      const select = document.getElementById('cryptoTokenSelect');
+      Array.from(select.options).forEach(opt => {
+        const type = opt.getAttribute('data-type');
+        const tokenId = opt.value;
+        if (type === 'erc20') {
+          const hasContract = !!contractsForChain[tokenId];
+          opt.disabled = !hasContract;
+          if (!hasContract) opt.textContent = opt.textContent.replace(/ ❌$/, '') + ' ❌';
+          else opt.textContent = opt.textContent.replace(/ ❌$/, '');
+        }
+      });
+
+      // Auto-select native token for this chain
+      select.value = chainInfo.token || 'ethereum';
+      onTokenChange();
+    }
+
+    // Handle token dropdown change
+    function onTokenChange() {
+      const select = document.getElementById('cryptoTokenSelect');
+      const selectedOpt = select.options[select.selectedIndex];
+      const tokenType = selectedOpt ? selectedOpt.getAttribute('data-type') : 'native';
+      const tokenId = select.value;
+
+      cryptoState.selectedToken = tokenId;
+      cryptoState.tokenType = tokenType;
+
+      // Show/hide custom token input
+      const customSection = document.getElementById('customTokenSection');
+      customSection.style.display = tokenId === 'custom' ? 'block' : 'none';
+
+      // Resolve ERC-20 contract address
+      if (tokenType === 'erc20') {
+        const contracts = ERC20_CONTRACTS[cryptoState.chainId] || {};
+        cryptoState.tokenContract = contracts[tokenId] || null;
+      } else {
+        cryptoState.tokenContract = null;
+      }
+
+      // Disable pay button for view-only tokens
+      const payBtn = document.getElementById('cryptoPayBtn');
+      if (tokenType === 'view-only') {
+        payBtn.disabled = true;
+        payBtn.innerHTML = '🚫 Cannot pay with this token on EVM';
+      } else if (tokenType === 'custom' && !cryptoState.tokenContract) {
+        payBtn.disabled = true;
+        payBtn.innerHTML = 'Load custom token first';
+      } else {
+        payBtn.disabled = false;
+        payBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg> Pay with Crypto';
+      }
+
+      updateCryptoPrice();
+      if (cryptoState.connected) updateTokenBalance();
+    }
+
+    // Load custom ERC-20 token
+    async function loadCustomToken() {
+      const addr = document.getElementById('customTokenAddress').value.trim();
+      const sym = document.getElementById('customTokenSymbol').value.trim();
+      const geckoId = document.getElementById('customTokenCoinGeckoId').value.trim();
+
+      if (!addr || !ethers.isAddress(addr)) {
+        showToast('Please enter a valid ERC-20 contract address', 'error');
+        return;
+      }
+
+      try {
+        const contract = new ethers.Contract(addr, ERC20_ABI, cryptoState.provider);
+        const decimals = await contract.decimals();
+        let symbol = sym;
+        if (!symbol) {
+          try { symbol = await contract.symbol(); } catch { symbol = 'TOKEN'; }
+        }
+
+        cryptoState.tokenContract = addr;
+        cryptoState.tokenDecimals = Number(decimals);
+        cryptoState.customSymbol = symbol;
+        cryptoState.customCoinGeckoId = geckoId || '';
+        cryptoState.tokenType = 'custom';
+
+        showToast(`Loaded ${symbol} (${decimals} decimals)`, 'success');
+
+        // Enable pay
+        const payBtn = document.getElementById('cryptoPayBtn');
+        payBtn.disabled = false;
+        payBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg> Pay with ${symbol}`;
+
+        await updateCryptoPrice();
+        await updateTokenBalance();
+      } catch (err) {
+        showToast('Failed to load token: ' + err.message, 'error');
+      }
+    }
+
+    // Update balance for ERC-20 tokens
+    async function updateTokenBalance() {
+      if (!cryptoState.provider || !cryptoState.address) return;
+      const balEl = document.getElementById('walletBalance');
+
+      if (cryptoState.tokenType === 'native' || !cryptoState.tokenContract) {
+        // Native token balance
+        await updateWalletBalance();
+        return;
+      }
+
+      try {
+        const contract = new ethers.Contract(cryptoState.tokenContract, ERC20_ABI, cryptoState.provider);
+        const balance = await contract.balanceOf(cryptoState.address);
+        const decimals = cryptoState.tokenDecimals || 18;
+        const formatted = ethers.formatUnits(balance, decimals);
+        const sym = cryptoState.customSymbol || getTokenSymbol(cryptoState.selectedToken);
+        balEl.textContent = `${parseFloat(formatted).toFixed(6)} ${sym}`;
+      } catch {
+        balEl.textContent = 'Error fetching token balance';
+      }
+    }
+
+    // Find the correct wallet provider based on requested type
+    function findWalletProvider(type) {
+      // EIP-6963: modern multi-wallet detection
+      // Browsers with multiple wallets expose them via window.ethereum.providers
+      const providers = window.ethereum?.providers || [];
+
+      if (type === 'metamask') {
+        // Look for MetaMask specifically
+        const mmProvider = providers.find(p => p.isMetaMask && !p.isRainbow && !p.isCoinbaseWallet);
+        if (mmProvider) return mmProvider;
+        // Fallback: window.ethereum itself if it's MetaMask
+        if (window.ethereum?.isMetaMask) return window.ethereum;
+        return null;
+      }
+
+      if (type === 'rainbow') {
+        const rbProvider = providers.find(p => p.isRainbow);
+        if (rbProvider) return rbProvider;
+        if (window.ethereum?.isRainbow) return window.ethereum;
+        return null;
+      }
+
+      if (type === 'injected') {
+        // For "Other Wallet", try to find a non-MetaMask, non-Rainbow provider
+        const otherProvider = providers.find(p => !p.isMetaMask && !p.isRainbow);
+        if (otherProvider) return otherProvider;
+        // Fallback to window.ethereum
+        return window.ethereum || null;
+      }
+
+      return window.ethereum || null;
+    }
+
+    // Connect wallet
+    async function connectWallet(type) {
+      closeWalletModal();
+
+      if (typeof window.ethereum === 'undefined') {
+        const walletLinks = {
+          metamask: 'https://metamask.io/download/',
+          rainbow: 'https://rainbow.me/download',
+          injected: 'https://metamask.io/download/'
+        };
+        showToast('No Web3 wallet detected! Please install a wallet extension.', 'error');
+        window.open(walletLinks[type] || walletLinks.metamask, '_blank');
+        return;
+      }
+
+      // Find the right provider for the selected wallet type
+      const selectedProvider = findWalletProvider(type);
+
+      if (!selectedProvider) {
+        // The specific wallet is not installed
+        if (type === 'rainbow') {
+          showToast('Rainbow Wallet not detected. Please install the Rainbow browser extension or use MetaMask.', 'error');
+          window.open('https://rainbow.me/download', '_blank');
+          return;
+        } else if (type === 'metamask') {
+          showToast('MetaMask not detected. Please install the MetaMask extension.', 'error');
+          window.open('https://metamask.io/download/', '_blank');
+          return;
+        } else {
+          showToast('No compatible wallet found. Please install a Web3 wallet.', 'error');
+          return;
+        }
+      }
+
+      try {
+        const connectBtn = document.getElementById('connectWalletBtn');
+        connectBtn.textContent = 'Connecting...';
+        connectBtn.disabled = true;
+
+        // Force permission popup by revoking and re-requesting permissions
+        // This ensures the user always sees a confirmation dialog
+        try {
+          await selectedProvider.request({
+            method: 'wallet_requestPermissions',
+            params: [{ eth_accounts: {} }]
+          });
+        } catch (permErr) {
+          // User rejected the permission request
+          if (permErr.code === 4001) {
+            throw new Error('Connection request was rejected. Please approve the connection in your wallet.');
+          }
+          // Some wallets don't support wallet_requestPermissions, fall through to eth_requestAccounts
+          console.warn('wallet_requestPermissions not supported, using eth_requestAccounts');
+        }
+
+        // Request account access
+        const accounts = await selectedProvider.request({ method: 'eth_requestAccounts' });
+
+        if (!accounts || accounts.length === 0) {
+          throw new Error('No accounts found. Please unlock your wallet.');
+        }
+
+        // Use ethers.js v6 with the specific selected provider
+        const provider = new ethers.BrowserProvider(selectedProvider);
+        const signer = await provider.getSigner();
+        const address = await signer.getAddress();
+        const network = await provider.getNetwork();
+        const chainId = Number(network.chainId);
+
+        cryptoState.connected = true;
+        cryptoState.provider = provider;
+        cryptoState.signer = signer;
+        cryptoState.address = address;
+        cryptoState.chainId = chainId;
+        cryptoState.walletProvider = selectedProvider; // Store raw provider for chain events
+
+        // Update UI
+        const shortAddr = address.slice(0, 6) + '...' + address.slice(-4);
+        document.getElementById('walletAddress').textContent = shortAddr;
+
+        const walletNames = { metamask: 'MetaMask', rainbow: 'Rainbow', injected: 'Wallet' };
+        const walletName = walletNames[type] || 'Wallet';
+
+        const chainInfo = CHAIN_MAP[chainId] || { name: `Chain ${chainId}`, symbol: 'ETH', token: 'ethereum', testnet: false };
+        document.getElementById('walletNetwork').textContent = chainInfo.name;
+
+        // Update token dropdown based on connected chain
+        cryptoState.selectedToken = chainInfo.token;
+
+        // Show connected state, hide connect button
+        document.getElementById('cryptoConnectState').style.display = 'none';
+        document.getElementById('cryptoConnectedState').style.display = 'block';
+
+        // Update network-aware UI (filters tokens, shows testnet banner, etc.)
+        updateNetworkUI();
+
+        // Fetch balance
+        await updateWalletBalance();
+
+        // Fetch real-time price
+        await updateCryptoPrice();
+
+        // Auto-refresh price every 30 seconds
+        if (cryptoState.priceInterval) clearInterval(cryptoState.priceInterval);
+        cryptoState.priceInterval = setInterval(updateCryptoPrice, 30000);
+
+        // Listen for account/chain changes on the correct provider
+        selectedProvider.on('accountsChanged', handleAccountsChanged);
+        selectedProvider.on('chainChanged', handleChainChanged);
+
+        showToast(`${walletName} connected successfully!`, 'success');
+
+      } catch (err) {
+        console.error('Wallet connection error:', err);
+        showToast(err.message || 'Failed to connect wallet', 'error');
+        const connectBtn = document.getElementById('connectWalletBtn');
+        connectBtn.textContent = 'Connect Wallet';
+        connectBtn.disabled = false;
+      }
+    }
+
+    // Disconnect wallet
+    function disconnectWallet() {
+      // Revoke permissions so next connect will ask for confirmation again
+      if (cryptoState.walletProvider) {
+        try {
+          cryptoState.walletProvider.removeListener('accountsChanged', handleAccountsChanged);
+          cryptoState.walletProvider.removeListener('chainChanged', handleChainChanged);
+          // Revoke permission so user must re-approve next time
+          cryptoState.walletProvider.request({
+            method: 'wallet_revokePermissions',
+            params: [{ eth_accounts: {} }]
+          }).catch(() => { /* Not all wallets support this */ });
+        } catch (e) { /* ignore */ }
+      }
+
+      cryptoState.connected = false;
+      cryptoState.provider = null;
+      cryptoState.signer = null;
+      cryptoState.address = null;
+      cryptoState.chainId = null;
+      cryptoState.walletProvider = null;
+      if (cryptoState.priceInterval) {
+        clearInterval(cryptoState.priceInterval);
+        cryptoState.priceInterval = null;
+      }
+
+      document.getElementById('cryptoConnectState').style.display = 'block';
+      document.getElementById('cryptoConnectedState').style.display = 'none';
+
+      const connectBtn = document.getElementById('connectWalletBtn');
+      connectBtn.textContent = 'Connect Wallet';
+      connectBtn.disabled = false;
+
+      showToast('Wallet disconnected', 'info');
+    }
+
+    // Handle account changes
+    async function handleAccountsChanged(accounts) {
+      if (accounts.length === 0) {
+        disconnectWallet();
+      } else {
+        cryptoState.address = accounts[0];
+        const shortAddr = accounts[0].slice(0, 6) + '...' + accounts[0].slice(-4);
+        document.getElementById('walletAddress').textContent = shortAddr;
+        cryptoState.signer = await cryptoState.provider.getSigner();
+        await updateWalletBalance();
+      }
+    }
+
+    // Handle chain changes
+    async function handleChainChanged(_chainId) {
+      // Re-initialize crypto state on chain change instead of reloading
+      try {
+        const walletProv = cryptoState.walletProvider || window.ethereum;
+        const provider = new ethers.BrowserProvider(walletProv);
+        const signer = await provider.getSigner();
+        const network = await provider.getNetwork();
+        const chainId = Number(network.chainId);
+
+        cryptoState.provider = provider;
+        cryptoState.signer = signer;
+        cryptoState.chainId = chainId;
+
+        const chainInfo = CHAIN_MAP[chainId] || { name: `Chain ${chainId}`, symbol: 'ETH', token: 'ethereum', testnet: false };
+        document.getElementById('walletNetwork').textContent = chainInfo.name;
+
+        // Reset token selection to the native token of the new chain
+        cryptoState.selectedToken = chainInfo.token;
+        cryptoState.tokenType = 'native';
+        cryptoState.tokenContract = null;
+
+        // Update all network-aware UI
+        updateNetworkUI();
+
+        // Refresh balance and price for new chain
+        await updateWalletBalance();
+        await updateCryptoPrice();
+
+        showToast(`Switched to ${chainInfo.name}`, 'success');
+      } catch (err) {
+        console.error('Error handling chain change:', err);
+        // Fallback: reload page if re-init fails
+        window.location.reload();
+      }
+    }
+
+    // Update wallet balance
+    async function updateWalletBalance() {
+      if (!cryptoState.provider || !cryptoState.address) return;
+      try {
+        const balance = await cryptoState.provider.getBalance(cryptoState.address);
+        const formatted = ethers.formatEther(balance);
+        const chainInfo = CHAIN_MAP[cryptoState.chainId] || { symbol: 'ETH' };
+        document.getElementById('walletBalance').textContent = `${parseFloat(formatted).toFixed(6)} ${chainInfo.symbol}`;
+      } catch (err) {
+        document.getElementById('walletBalance').textContent = 'Error fetching balance';
+      }
+    }
+
+    // Token symbol lookup (extended)
+    function getTokenSymbol(tokenId) {
+      const TOKEN_SYMBOLS = {
+        'ethereum': 'ETH', 'matic-network': 'MATIC', 'binancecoin': 'BNB',
+        'bitcoin': 'BTC', 'usd-coin': 'USDC', 'tether': 'USDT', 'dai': 'DAI',
+        'chainlink': 'LINK', 'uniswap': 'UNI', 'aave': 'AAVE',
+        'shiba-inu': 'SHIB', 'wrapped-bitcoin': 'WBTC', 'pepe': 'PEPE',
+        'solana': 'SOL', 'avalanche-2': 'AVAX'
+      };
+      if (cryptoState.customSymbol && (tokenId === 'custom')) return cryptoState.customSymbol;
+      return TOKEN_SYMBOLS[tokenId] || tokenId.toUpperCase();
+    }
+
+    // Fallback prices (INR) for common tokens - used when CoinGecko API fails
+    const FALLBACK_PRICES_INR = {
+      'ethereum': 215000,
+      'matic-network': 65,
+      'binancecoin': 52000,
+      'bitcoin': 8500000,
+      'usd-coin': 84,
+      'tether': 84,
+      'dai': 84,
+      'chainlink': 1250,
+      'uniswap': 750,
+      'aave': 17500,
+      'shiba-inu': 0.0012,
+      'wrapped-bitcoin': 8500000,
+      'pepe': 0.0008,
+      'solana': 11500,
+      'avalanche-2': 2800
+    };
+
+    // Fetch real-time crypto price from CoinGecko API with retry and fallback
+    async function updateCryptoPrice() {
+      const tokenSelect = document.getElementById('cryptoTokenSelect');
+      let tokenId = tokenSelect ? tokenSelect.value : 'ethereum';
+      cryptoState.selectedToken = tokenId;
+
+      // For custom token, use the user-supplied CoinGecko ID
+      let geckoId = tokenId;
+      if (tokenId === 'custom') {
+        geckoId = cryptoState.customCoinGeckoId || '';
+        if (!geckoId) {
+          document.getElementById('cryptoRateInfo').textContent = 'No CoinGecko ID. Enter price manually or set one.';
+          document.getElementById('cryptoAmount').textContent = 'Price unknown';
+          return;
+        }
+      }
+
+      const subtotal = checkoutData.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const gst = Math.round(subtotal * checkoutData.gstRate);
+      const other = checkoutData.otherCharge || 0;
+      const totalINR = subtotal + checkoutData.shippingCost + gst + other;
+
+      const chainInfo = CHAIN_MAP[cryptoState.chainId] || {};
+      const isTestnet = chainInfo.testnet;
+
+      document.getElementById('cryptoINRTotal').textContent = `₹${totalINR.toLocaleString()}`;
+      document.getElementById('cryptoRateInfo').textContent = 'Fetching live rate...';
+      document.getElementById('cryptoAmount').textContent = '...';
+
+      // Helper to display price once obtained
+      function displayPrice(priceINR, source) {
+        cryptoState.cryptoPrice = priceINR;
+        const cryptoAmount = totalINR / priceINR;
+        cryptoState.cryptoAmount = cryptoAmount;
+        const symbol = getTokenSymbol(tokenId);
+        const testTag = isTestnet ? ' (testnet)' : '';
+        const sourceTag = source === 'fallback' ? ' (approx)' : '';
+        document.getElementById('cryptoAmount').textContent = `${cryptoAmount.toFixed(8)} ${symbol}${testTag}`;
+        document.getElementById('cryptoRateInfo').textContent = `1 ${symbol} = ₹${priceINR.toLocaleString()}${testTag}${sourceTag}`;
+        document.getElementById('cryptoRateTimestamp').textContent = `Rate updated: ${new Date().toLocaleTimeString()}`;
+      }
+
+      // Try fetching from CoinGecko with retry
+      let fetched = false;
+      const endpoints = [
+        `https://api.coingecko.com/api/v3/simple/price?ids=${geckoId}&vs_currencies=inr`,
+        `https://api.coingecko.com/api/v3/simple/price?ids=${geckoId}&vs_currencies=inr&x_cg_demo_key=`
+      ];
+
+      for (const url of endpoints) {
+        if (fetched) break;
+        try {
+          const res = await fetch(url);
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (data[geckoId] && data[geckoId].inr) {
+            displayPrice(data[geckoId].inr, 'live');
+            fetched = true;
+          }
+        } catch (e) {
+          // Try next endpoint
+        }
+      }
+
+      // If all API attempts failed, try fallback cached prices
+      if (!fetched) {
+        const fallback = FALLBACK_PRICES_INR[geckoId];
+        if (fallback) {
+          console.warn(`CoinGecko API unavailable, using fallback price for ${geckoId}`);
+          displayPrice(fallback, 'fallback');
+          document.getElementById('cryptoRateInfo').textContent += ' ⚠️ Approximate rate (API unavailable)';
+        } else {
+          console.error('Crypto price fetch error: No live or fallback price for', geckoId);
+          document.getElementById('cryptoRateInfo').textContent = 'Rate unavailable. Click 🔄 to retry.';
+          document.getElementById('cryptoAmount').textContent = 'Rate unavailable';
+        }
+      }
+    }
+
+    // Pay with crypto - send transaction (native OR ERC-20)
+    async function payWithCrypto() {
+      if (!cryptoState.connected || !cryptoState.signer) {
+        showToast('Please connect your wallet first', 'error');
+        return;
+      }
+
+      if (cryptoState.tokenType === 'view-only') {
+        showToast('This token cannot be sent on EVM. Choose an EVM-compatible token.', 'error');
+        return;
+      }
+
+      if (!cryptoState.cryptoAmount || cryptoState.cryptoAmount <= 0) {
+        showToast('Price conversion not ready. Please wait or refresh.', 'error');
+        return;
+      }
+
+      const payBtn = document.getElementById('cryptoPayBtn');
+      payBtn.disabled = true;
+      payBtn.innerHTML = '<span class="crypto-spinner"></span> Checking balance...';
+
+      const chainInfo = CHAIN_MAP[cryptoState.chainId] || {};
+      const isTestnet = chainInfo.testnet;
+      const explorerBase = chainInfo.explorer || 'https://etherscan.io/tx/';
+
+      try {
+        let tx;
+
+        if (cryptoState.tokenType === 'erc20' || (cryptoState.tokenType === 'custom' && cryptoState.tokenContract)) {
+          // ---- ERC-20 Token Transfer ----
+          const contractAddr = cryptoState.tokenContract;
+          if (!contractAddr) {
+            showToast('No contract address for this token on the current network.', 'error');
+            payBtn.disabled = false;
+            payBtn.innerHTML = 'Pay with Crypto';
+            return;
+          }
+
+          const contract = new ethers.Contract(contractAddr, ERC20_ABI, cryptoState.signer);
+          const decimals = cryptoState.tokenDecimals || 18;
+
+          // For tokens with non-18 decimals (like USDC = 6)
+          let tokenDecimals = decimals;
+          try { tokenDecimals = Number(await contract.decimals()); } catch {}
+          cryptoState.tokenDecimals = tokenDecimals;
+
+          const amountRaw = ethers.parseUnits(cryptoState.cryptoAmount.toFixed(tokenDecimals), tokenDecimals);
+
+          // ---- PRE-FLIGHT BALANCE CHECK for ERC-20 ----
+          try {
+            const tokenBalance = await contract.balanceOf(cryptoState.address);
+            if (tokenBalance < amountRaw) {
+              const symbol = getTokenSymbol(cryptoState.selectedToken);
+              const balFormatted = parseFloat(ethers.formatUnits(tokenBalance, tokenDecimals)).toFixed(6);
+              const requiredFormatted = cryptoState.cryptoAmount.toFixed(6);
+              showToast(`Insufficient ${symbol} balance. You have ${balFormatted} ${symbol} but need ${requiredFormatted} ${symbol}.`, 'error');
+              payBtn.disabled = false;
+              payBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg> Pay with Crypto';
+              return;
+            }
+          } catch (balErr) {
+            console.warn('Could not pre-check token balance:', balErr);
+            // Continue anyway - the transaction will fail naturally if insufficient
+          }
+
+          payBtn.innerHTML = '<span class="crypto-spinner"></span> Sending Transaction...';
+          showToast('Approve the token transfer in your wallet...', 'info');
+          tx = await contract.transfer(MERCHANT_WALLET, amountRaw);
+
+        } else {
+          // ---- Native Token Transfer (ETH, MATIC, BNB, etc.) ----
+          const amountInEther = cryptoState.cryptoAmount.toFixed(18);
+          const amountWei = ethers.parseEther(amountInEther);
+
+          // ---- PRE-FLIGHT BALANCE CHECK for native token ----
+          try {
+            const nativeBalance = await cryptoState.provider.getBalance(cryptoState.address);
+            // Need extra for gas (~0.005 ETH buffer)
+            const gasBuffer = ethers.parseEther('0.005');
+            if (nativeBalance < (amountWei + gasBuffer)) {
+              const symbol = chainInfo.symbol || 'ETH';
+              const balFormatted = parseFloat(ethers.formatEther(nativeBalance)).toFixed(6);
+              const requiredFormatted = cryptoState.cryptoAmount.toFixed(6);
+              showToast(`Insufficient ${symbol} balance. You have ${balFormatted} ${symbol} but need ~${requiredFormatted} ${symbol} (+ gas fees).`, 'error');
+              payBtn.disabled = false;
+              payBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg> Pay with Crypto';
+              return;
+            }
+          } catch (balErr) {
+            console.warn('Could not pre-check native balance:', balErr);
+          }
+
+          payBtn.innerHTML = '<span class="crypto-spinner"></span> Sending Transaction...';
+
+          tx = await cryptoState.signer.sendTransaction({
+            to: MERCHANT_WALLET,
+            value: amountWei
+          });
+        }
+
+        const symbol = getTokenSymbol(cryptoState.selectedToken);
+        showToast(`${symbol} transaction submitted! Waiting for confirmation...`, 'info');
+        payBtn.innerHTML = '<span class="crypto-spinner"></span> Confirming on-chain...';
+
+        // Wait for confirmation (1 block)
+        const receipt = await tx.wait(1);
+
+        if (receipt.status === 1) {
+          // Transaction confirmed - store tx hash in payment data
+          checkoutData.payment.method = 'crypto';
+          checkoutData.payment.txHash = tx.hash;
+          checkoutData.payment.txExplorer = explorerBase + tx.hash;
+          checkoutData.payment.walletAddress = cryptoState.address;
+          checkoutData.payment.cryptoAmount = cryptoState.cryptoAmount;
+          checkoutData.payment.cryptoToken = cryptoState.selectedToken;
+          checkoutData.payment.tokenType = cryptoState.tokenType;
+          checkoutData.payment.isTestnet = isTestnet;
+
+          const testLabel = isTestnet ? ' (Testnet - no real funds)' : '';
+          showToast(`Payment confirmed on blockchain!${testLabel} Placing order...`, 'success');
+
+          // Log explorer link
+          console.log(`✅ Tx confirmed: ${explorerBase}${tx.hash}`);
+
+          // Auto-place the order
+          await placeOrder();
+        } else {
+          throw new Error('Transaction failed on-chain');
+        }
+      } catch (err) {
+        console.error('Crypto payment error:', err);
+
+        let userMsg = 'Transaction failed. ';
+        if (err.code === 'ACTION_REJECTED' || err.code === 4001) {
+          userMsg = 'Transaction was rejected in your wallet.';
+        } else if (err.message && err.message.includes('insufficient funds')) {
+          userMsg = 'Insufficient funds in your wallet.';
+        } else if (err.message && err.message.includes('insufficient allowance')) {
+          userMsg = 'Insufficient token allowance. Please approve first.';
+        } else if (err.message && err.message.includes('transfer amount exceeds balance')) {
+          userMsg = 'Token balance too low for this payment.';
+        } else {
+          userMsg += err.message || 'Please try again.';
+        }
+
+        showToast(userMsg, 'error');
+        payBtn.disabled = false;
+        payBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg> Pay with Crypto';
+      }
+    }
   </script>
     <script src="js/mobile-menu.js"></script>
     

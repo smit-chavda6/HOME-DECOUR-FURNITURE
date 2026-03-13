@@ -324,156 +324,164 @@
   }
 }
 
-/* Modern Welcome Hero - Redesigned (Minimalist Luxury) */
+/* Modern Welcome Hero - Redesigned to match "Excellence in Every Detail" */
 .modern-welcome-hero {
   position: relative;
-  background: linear-gradient(135deg, #fffaf0 0%, #fff5e6 100%);
+  background: #ffffff;
   overflow: hidden;
-  padding: 5rem 0;
+  padding: 8rem 0;
   margin-bottom: 0;
-
 }
 
 .modern-welcome-hero-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
-  gap: 5rem;
+  gap: 8rem;
   position: relative;
   z-index: 2;
 }
 
-.modern-welcome-img {
+.modern-welcome-images {
   flex: 1;
+  position: relative;
   max-width: 50%;
+}
+
+.primary-img {
+  width: 85%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
   display: block;
 }
 
-.modern-welcome-img img {
-  width: 100%;
-  border-radius: 20px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-  aspect-ratio: 4/3;
-  object-fit: cover;
-  transition: transform 0.5s ease;
+.secondary-img-wrapper {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 55%;
+  background: #ffffff;
+  padding: 12px;
+  transform: translate(15%, 15%);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
 }
 
-.modern-welcome-img:hover img {
-  transform: scale(1.02);
+.secondary-img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  display: block;
 }
 
 .modern-welcome-text {
   flex: 1;
   padding: 0;
-  background: transparent;
-  box-shadow: none;
   text-align: left;
-  border-radius: 0;
+}
+
+.modern-welcome-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+
+.label-dot {
+  width: 32px;
+  height: 18px;
+  border-radius: 20px;
+  background: #e8e8e8;
+  position: relative;
+  border: 1px solid #ddd;
+}
+
+.label-dot::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 1px;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.label-text {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #666;
+  text-transform: uppercase;
 }
 
 .modern-welcome-title {
   font-family: 'Jost', sans-serif;
   font-size: 3.5rem;
-  font-weight: 800;
-  color: #1a1a1a;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-  letter-spacing: -1px;
-}
-
-.modern-welcome-title span {
-  color: #D2691E;
-  background: none;
-  border-radius: 0;
-  padding: 0;
-  display: inline-block;
-}
-
-.modern-welcome-tagline {
-  font-family: serif;
-  font-style: italic;
-  font-size: 1.4rem;
-  color: #666;
-  margin-bottom: 1.5rem;
-  font-weight: 400;
-  letter-spacing: 0.5px;
+  font-weight: 700;
+  color: #2c1810;
+  line-height: 1.15;
+  margin-bottom: 2rem;
+  letter-spacing: 0.2px;
 }
 
 .modern-welcome-desc {
-  font-size: 1.1rem;
-  color: #555;
-  line-height: 1.7;
-  margin-bottom: 2.5rem;
-  max-width: 540px;
-  text-align: left !important;
-  /* Force left align override inline style */
+  font-family: 'Jost', sans-serif;
+  font-size: 1.05rem;
+  color: #777;
+  line-height: 1.8;
+  margin-bottom: 3rem;
+  max-width: 480px;
 }
 
 .modern-welcome-btn {
   display: inline-block;
-  padding: 1.1rem 2.5rem;
-  background: #1a1a1a;
+  padding: 1rem 2.2rem;
+  background: #D2691E;
   color: #ffffff;
+  font-family: 'Jost', sans-serif;
   font-weight: 600;
   border-radius: 50px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid #1a1a1a;
+  letter-spacing: 0.5px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
   text-decoration: none;
+  border: none;
 }
 
 .modern-welcome-btn:hover {
-  background: transparent;
-  color: #1a1a1a;
-  transform: translateY(-3px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-}
-
-.modern-welcome-bg-shape {
-  display: none;
-}
-
-.modern-welcome-title,
-.modern-welcome-tagline,
-.modern-welcome-desc {
-  color: inherit;
+  background: #2c1810;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(44, 24, 16, 0.15);
 }
 
 @media (max-width: 968px) {
   .modern-welcome-hero {
-    padding: 3rem 0;
+    padding: 4rem 0 8rem 0;
   }
 
   .modern-welcome-hero-inner {
-    flex-direction: column-reverse;
-    gap: 3rem;
-    padding: 0 1.5rem;
+    flex-direction: column;
+    gap: 6rem;
   }
 
-  .modern-welcome-img,
+  .modern-welcome-images,
   .modern-welcome-text {
     max-width: 100%;
-    text-align: center;
+    width: 100%;
   }
 
-  .modern-welcome-text {
-    padding: 0;
-    margin: 0;
+  .modern-welcome-images {
+    width: 85%;
   }
 
-  .modern-welcome-desc {
-    margin: 0 auto 2rem auto;
-    text-align: center !important;
-  }
-
-  .modern-welcome-title {
-    font-size: 2.5rem;
+  .secondary-img-wrapper {
+    transform: translate(15%, 25%);
   }
 }
 
@@ -737,124 +745,142 @@
   letter-spacing: -0.5px;
 }
 
-.modern-categories-section .categories-grid {
+/* Bento Categories Grid */
+.bento-categories-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 260px);
   gap: 1.5rem;
-  max-width: 95%;
-  /* Increased from 1500px to near full-width */
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1rem;
-  justify-items: stretch;
-  /* Allow cards to stretch fully */
-  justify-content: center;
+  padding: 0 1.5rem;
 }
 
-.category-card {
-  background: #fafaf8;
-  border-radius: 16px;
+.bento-card {
+  background-color: var(--bento-bg, #f5f5f5);
+  border-radius: 20px;
+  padding: 2rem;
+  position: relative;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-  border: 1px solid rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 100%;
-}
-
-.category-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-}
-
-.category-card img {
-  width: 100%;
-  aspect-ratio: 4/3;
-  object-fit: cover;
-  transition: transform 0.6s ease;
-  margin: 0;
-  border-radius: 0;
-  box-shadow: none;
-}
-
-.category-card:hover img {
-  transform: scale(1.08);
-  filter: brightness(1.05);
-}
-
-.category-content {
-  padding: 1.5rem 1rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.category-content h3 {
-  font-family: 'Jost', sans-serif;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #2c1810;
-  margin-bottom: 0.5rem;
-}
-
-.category-content p {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 1.2rem;
-  line-height: 1.5;
-  display: block;
-  overflow: visible;
-  opacity: 1;
-}
-
-.category-btn {
-  display: inline-block;
-  background: transparent;
-  color: #D2691E;
-  font-weight: 600;
   text-decoration: none;
-  border: 1px solid #D2691E;
-  padding: 0.6rem 1.2rem;
-  border-radius: 50px;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-  width: auto;
-  min-width: 120px;
-  max-width: none;
-  align-self: center;
+  color: inherit;
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease;
+}
+
+.bento-card-wide {
+  grid-column: span 2;
+}
+
+.bento-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+.bento-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.bento-subtitle {
+  font-size: 0.85rem;
+  text-transform: uppercase;
   letter-spacing: 0.5px;
-  white-space: nowrap;
+  color: #666;
+  margin-bottom: 0.3rem;
+  font-weight: 500;
 }
 
-.category-btn:hover {
+.bento-title {
+  font-family: 'Jost', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #2c1810;
+  margin: 0 0 1rem 0;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.bento-btn {
+  display: inline-flex;
+  align-items: center;
+  background: #2c1810;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.bento-card:hover .bento-btn {
   background: #D2691E;
-  color: white;
-  transform: translateY(-2px);
-  border-color: #D2691E;
+  transform: scale(1.02);
 }
 
-@media (max-width: 1200px) {
-  .modern-categories-section .categories-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-  }
+.bento-graphics {
+  position: absolute;
+  bottom: -15%;
+  right: -10%;
+  width: 65%;
+  height: auto;
+  z-index: 1;
+  transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-@media (max-width: 768px) {
-  .modern-categories-section .categories-grid {
+.bento-card-wide .bento-graphics {
+  width: 50%;
+  bottom: -10%;
+  right: 5%;
+}
+
+.bento-card:hover .bento-graphics {
+  transform: scale(1.08) rotate(-2deg);
+}
+
+.bento-graphics svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.12));
+}
+
+@media (max-width: 992px) {
+  .bento-categories-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.2rem;
-    padding: 0 1rem;
+    grid-auto-rows: 240px;
+    grid-template-rows: auto;
+  }
+
+  .bento-card-wide {
+    grid-column: span 2;
   }
 }
 
-@media (max-width: 480px) {
-  .modern-categories-section .categories-grid {
+@media (max-width: 600px) {
+  .bento-categories-grid {
     grid-template-columns: 1fr;
-    max-width: 320px;
+    grid-auto-rows: 220px;
+  }
+
+  .bento-card-wide {
+    grid-column: span 1;
+  }
+
+  .bento-graphics {
+    bottom: -5%;
+    right: -5%;
+    width: 55%;
+  }
+
+  .bento-card-wide .bento-graphics {
+    width: 60%;
+    bottom: -5%;
+    right: 0%;
   }
 }
 

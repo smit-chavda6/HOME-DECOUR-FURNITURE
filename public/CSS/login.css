@@ -182,6 +182,47 @@
     color: #999;
 }
 
+/* Password Toggle */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    padding-right: 50px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    border-radius: 6px;
+    transition: color 0.25s, background 0.25s;
+}
+
+.password-toggle:hover {
+    color: var(--primary-color);
+    background: rgba(139, 69, 19, 0.08);
+}
+
+.password-toggle svg {
+    width: 20px;
+    height: 20px;
+}
+
+.password-toggle.active {
+    color: var(--accent-color);
+}
+
 /* Demo Credentials */
 .demo-credentials {
     background: rgba(139, 69, 19, 0.05);
@@ -373,6 +414,19 @@ body.dark-mode .form-group input:focus {
     border-color: var(--accent-color);
     box-shadow: 0 0 0 4px rgba(210, 105, 30, 0.25);
     color: #fff;
+}
+
+body.dark-mode .password-toggle {
+    color: #888;
+}
+
+body.dark-mode .password-toggle:hover {
+    color: var(--accent-color);
+    background: rgba(210, 105, 30, 0.1);
+}
+
+body.dark-mode .password-toggle.active {
+    color: var(--accent-color);
 }
 
 body.dark-mode .demo-credentials {

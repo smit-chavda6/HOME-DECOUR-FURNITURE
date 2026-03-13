@@ -305,4 +305,17 @@
         opacity: 1;
         transform: translateY(0);
     }
-} 
+}
+
+/* Footer Tagline / Subname */
+.footer-tagline {
+    font-size: 0.8rem;
+    font-style: italic;
+    color: #D2691E;
+    letter-spacing: 0.05em;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(210, 105, 30, 0.2);
+    font-weight: 500;
+    opacity: 0.85;
+}

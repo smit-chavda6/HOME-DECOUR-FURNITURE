@@ -7,7 +7,9 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "migrate": "node migrate.js",
-    "seed": "node seed-test-data.js"
+    "seed": "node seed-test-data.js",
+    "seed:products": "node seed-products-from-images.js",
+    "seed:reviews": "node seed-fake-reviews.js"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

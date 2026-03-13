@@ -988,9 +988,20 @@ document.addEventListener('DOMContentLoaded', function () {
     async function fetchAndAppendProducts() {
         if (!galleryContainer) return;
         const hadNoCards = galleryContainer.querySelectorAll('.product-card').length === 0;
+        const skeletonStart = Date.now();
         if (hadNoCards) {
             renderSkeletonCards(8);
         }
+
+        // Staggered reveal helper — fades cards in one by one
+        function revealCardsStaggered(cards) {
+            cards.forEach((card, i) => {
+                setTimeout(() => {
+                    card.classList.add('card-revealed');
+                }, i * 80); // 80ms gap between each card
+            });
+        }
+
         try {
             const res = await fetch('/api/products', { credentials: 'include' });
             if (!res.ok) return;
@@ -999,21 +1010,78 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!products.length) return;
             const created = [];
             products.forEach(p => {
+                // Normalize new + legacy fields
+                const imgSrc = p.thumbnail || p.image || 'image/Logo maker project.webp';
+                const is3D = !!(p.model_3d?.enabled || p.is_3d);
+                const modelSrc = p.model_3d?.file_url || p.model_src || '';
+
                 const existing = galleryContainer.querySelector(`.product-card[data-product-id="${p.id}"]`);
                 const priceHtml = `<span class="current-price">₹${Number(p.price || 0).toLocaleString('en-IN')}</span>`;
                 const originalHtml = p.original_price ? `<span class=\"original-price\">₹${Number(p.original_price).toLocaleString('en-IN')}</span>` : '';
                 const discountHtml = p.discount ? `<span class=\"discount\">-${p.discount}%</span>` : '';
                 const badgeHtml = p.badge ? `<div class=\"product-badge\">${p.badge}</div>` : '';
-                const mediaHtml = p.is_3d && p.model_src ? `
-                    <model-viewer src="${p.model_src}" poster="${p.image || 'image/Logo maker project.webp'}" shadow-intensity="1" alt="${p.name}" camera-controls auto-rotate disable-zoom ar ar-modes="scene-viewer quick-look webxr"></model-viewer>
-                ` : `
-                    <img src="${p.image || 'image/Logo maker project.webp'}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='image/Logo maker project.webp';">
-                `;
+
+                // ── Build unique slide items (dedup thumbnail vs gallery) ──
+                const normalizeUrl = (u) => {
+                    if (!u) return '';
+                    return u.replace(/\\/g, '/').replace(/^\/+/, '').replace(/\?.*$/, '').toLowerCase().trim();
+                };
+                const addedUrls = new Set();
+                const slideItems = [];
+
+                const tryAdd = (url) => {
+                    const key = normalizeUrl(url);
+                    if (!key || addedUrls.has(key)) return false;
+                    addedUrls.add(key);
+                    return true;
+                };
+
+                // For 3D products: model-viewer is always slide 1, poster counts as "used"
+                if (is3D && modelSrc) {
+                    slideItems.push(`<div class="slide-item" style="flex:0 0 100%;scroll-snap-align:start;width:100%;height:100%;position:relative;"><model-viewer src="${modelSrc}" poster="${imgSrc}" shadow-intensity="1" alt="${p.name}" camera-controls auto-rotate disable-zoom ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:100%;touch-action:pan-y;"></model-viewer></div>`);
+                    // poster already shows the thumbnail, so mark it used
+                    tryAdd(imgSrc);
+                }
+
+                // Non-3D or extra thumbnail (skipped if already used as poster above)
+                if (imgSrc && tryAdd(imgSrc)) {
+                    slideItems.push(`<div class="slide-item" style="flex:0 0 100%;scroll-snap-align:start;width:100%;height:100%;position:relative;"><img src="${imgSrc}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.src='image/Logo maker project.webp';"></div>`);
+                }
+
+                // Gallery images (deduplicated against thumbnail + poster)
+                if (Array.isArray(p.gallery) && p.gallery.length > 0) {
+                    p.gallery.forEach(gImg => {
+                        if (gImg && tryAdd(gImg)) {
+                            slideItems.push(`<div class="slide-item" style="flex:0 0 100%;scroll-snap-align:start;width:100%;height:100%;position:relative;"><img src="${gImg}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.src='image/Logo maker project.webp';"></div>`);
+                        }
+                    });
+                }
+
+                let mediaHtml = '';
+                if (slideItems.length > 1) {
+                    mediaHtml = `
+                        <div class="product-slider-wrapper" style="position:relative;width:100%;height:100%;overflow:hidden;touch-action:pan-y;">
+                            <div class="product-slider-container" data-slide-count="${slideItems.length}" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;width:100%;height:100%;touch-action:pan-y;">
+                                ${slideItems.join('')}
+                            </div>
+                            <button class="slider-nav prev" aria-label="Previous" style="position:absolute;left:4px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.85);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;font-weight:bold;color:#333;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.4);z-index:3;opacity:0;transition:opacity .2s;">&#10094;</button>
+                            <button class="slider-nav next" aria-label="Next" style="position:absolute;right:4px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.85);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;font-weight:bold;color:#333;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.4);z-index:3;opacity:0;transition:opacity .2s;">&#10095;</button>
+                            <div class="slider-dots" style="position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:5px;z-index:4;">
+                                ${slideItems.map((_, i) => `<button class="slider-dot" data-index="${i}" aria-label="Go to slide ${i + 1}" style="width:8px;height:8px;padding:0;border:none;border-radius:50%;background:${i === 0 ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.45)'};box-shadow:0 1px 2px rgba(0,0,0,0.3);cursor:pointer;transition:background .3s, transform .2s;"></button>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                } else if (slideItems.length === 1) {
+                    // Single slide — no slider UI needed (handles both 3D-only and normal single-image)
+                    mediaHtml = slideItems[0];
+                } else {
+                    mediaHtml = `<div style="width:100%;height:100%;"><img src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='image/Logo maker project.webp';"></div>`;
+                }
                 if (existing) {
-                    existing.setAttribute('data-is-3d', p.is_3d ? '1' : '0');
-                    existing.setAttribute('data-model-src', p.model_src || '');
+                    existing.setAttribute('data-is-3d', is3D ? '1' : '0');
+                    existing.setAttribute('data-model-src', modelSrc);
                     existing.setAttribute('data-price', String(Number(p.price || 0)));
-                    if (p.image) existing.setAttribute('data-image', p.image); else existing.removeAttribute('data-image');
+                    if (imgSrc) existing.setAttribute('data-image', imgSrc); else existing.removeAttribute('data-image');
                     // Update existing static card with latest DB data
                     existing.setAttribute('data-category', p.category || '');
                     // Priority / order
@@ -1044,13 +1112,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     // Create a new card if it doesn't exist in static markup
                     const card = document.createElement('div');
-                    card.className = 'product-card' + (p.is_3d ? ' product-card-3d' : '');
+                    card.className = 'product-card' + (is3D ? ' product-card-3d' : '');
                     card.setAttribute('data-category', p.category || '');
                     card.setAttribute('data-product-id', p.id);
-                    card.setAttribute('data-is-3d', p.is_3d ? '1' : '0');
-                    card.setAttribute('data-model-src', p.model_src || '');
+                    card.setAttribute('data-is-3d', is3D ? '1' : '0');
+                    card.setAttribute('data-model-src', modelSrc);
                     card.setAttribute('data-price', String(Number(p.price || 0)));
-                    if (p.image) card.setAttribute('data-image', p.image);
+                    if (imgSrc) card.setAttribute('data-image', imgSrc);
                     if (p.brand) card.setAttribute('data-brand', p.brand);
                     if (p.material) card.setAttribute('data-material', p.material);
                     const priorityCardVal = (p.priority !== undefined ? p.priority : (p.order !== undefined ? p.order : undefined));
@@ -1059,7 +1127,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div class="product-image">
                             ${mediaHtml}
                             <div class="badge-container">
-                                ${p.is_3d && p.model_src ? `<div class="product-badge product-3d-badge">3D</div>` : ''}
+                                ${is3D && modelSrc ? `<div class="product-badge product-3d-badge">View in 3D</div>` : ''}
                                 ${badgeHtml ? badgeHtml.replace('product-badge', 'product-badge new') : ''}
                             </div>
                             <div class="product-actions">
@@ -1068,8 +1136,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                                     </svg>
                                 </button>
-                                ${p.is_3d ? `
-                                <button class="action-btn view-in-room-btn" data-product-id="${p.id}" data-model-src="${p.model_src}" title="View in Room">
+                                ${is3D ? `
+                                <button class="action-btn view-in-room-btn" data-product-id="${p.id}" data-model-src="${modelSrc}" title="View in Room">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
                                         <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
@@ -1108,8 +1176,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
             if (created.length) {
-                // Update references and bindings
+                // Enforce a minimum skeleton display of 800ms so user sees loading effect
+                const elapsed = Date.now() - skeletonStart;
+                const remainingWait = Math.max(0, 800 - elapsed);
+
+                await new Promise(resolve => setTimeout(resolve, remainingWait));
+
+                // Remove skeletons
                 clearSkeletonCards();
+
                 galleryItems = Array.from(document.querySelectorAll('.product-card')).filter((card) => !card.classList.contains('skeleton-card'));
                 observeItems(created);
                 bindHover(created);
@@ -1117,14 +1192,105 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Bind only the newly created cards to avoid double-binding existing buttons
                 bindCardButtons(created);
                 bindCardNavigation(created);
+
+                // Staggered reveal animation
+                revealCardsStaggered(created);
+
+                // Initialize internal sliders
+                function initSliders(cards) {
+                    cards.forEach(card => {
+                        const wrappers = card.querySelectorAll('.product-slider-wrapper:not([data-slider-init])');
+                        wrappers.forEach(wrapper => {
+                            wrapper.dataset.sliderInit = 'true';
+                            const scroller = wrapper.querySelector('.product-slider-container');
+                            const dots = wrapper.querySelectorAll('.slider-dot');
+                            const prevBtn = wrapper.querySelector('.slider-nav.prev');
+                            const nextBtn = wrapper.querySelector('.slider-nav.next');
+                            const slideCount = parseInt(scroller?.dataset.slideCount || dots.length, 10);
+                            if (!scroller || slideCount <= 1) return;
+
+                            let currentIndex = 0;
+                            let autoPlayTimer = null;
+
+                            const updateDots = (idx) => {
+                                dots.forEach((d, i) => {
+                                    d.style.background = i === idx ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.45)';
+                                    d.style.transform = i === idx ? 'scale(1.3)' : 'scale(1)';
+                                });
+                            };
+
+                            const goToSlide = (idx) => {
+                                currentIndex = ((idx % slideCount) + slideCount) % slideCount; // wraps around
+                                const w = scroller.clientWidth;
+                                scroller.scrollTo({ left: w * currentIndex, behavior: 'smooth' });
+                                updateDots(currentIndex);
+                            };
+
+                            // Prev / Next buttons
+                            if (prevBtn) prevBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); goToSlide(currentIndex - 1); resetAuto(); });
+                            if (nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); goToSlide(currentIndex + 1); resetAuto(); });
+
+                            // Clickable dots
+                            dots.forEach(dot => {
+                                dot.addEventListener('click', (e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    const idx = parseInt(dot.dataset.index, 10);
+                                    if (!isNaN(idx)) { goToSlide(idx); resetAuto(); }
+                                });
+                            });
+
+                            // Sync dots on manual scroll / swipe
+                            scroller.addEventListener('scroll', () => {
+                                const w = scroller.clientWidth;
+                                if (w > 0) {
+                                    const idx = Math.round(scroller.scrollLeft / w);
+                                    if (idx !== currentIndex && idx >= 0 && idx < slideCount) {
+                                        currentIndex = idx;
+                                        updateDots(currentIndex);
+                                    }
+                                }
+                            }, { passive: true });
+
+                            // Auto-play at a comfortable 6-second interval
+                            const startAuto = () => {
+                                stopAuto();
+                                autoPlayTimer = setInterval(() => goToSlide(currentIndex + 1), 6000);
+                            };
+                            const stopAuto = () => { if (autoPlayTimer) { clearInterval(autoPlayTimer); autoPlayTimer = null; } };
+                            const resetAuto = () => { stopAuto(); startAuto(); };
+
+                            // Pause on hover, resume on leave
+                            wrapper.addEventListener('mouseenter', stopAuto);
+                            wrapper.addEventListener('mouseleave', startAuto);
+
+                            // If slider has a 3D model, delay auto-play so model loads first
+                            const has3DSlide = !!scroller.querySelector('model-viewer');
+                            if (has3DSlide) {
+                                setTimeout(startAuto, 4000);
+                            } else {
+                                startAuto();
+                            }
+                        });
+                    });
+                }
+                initSliders(created);
+
                 updatePriceRange();
                 applyFilters();
                 syncWishlistButtons();
+
+                // Also reveal any existing cards that were updated (not newly created)
+                const allRealCards = galleryContainer.querySelectorAll('.product-card:not(.skeleton-card):not(.card-revealed)');
+                revealCardsStaggered(Array.from(allRealCards));
             }
         } catch (e) {
             console.warn('Failed to fetch products', e);
         } finally {
             clearSkeletonCards();
+            // Reveal any cards that may not have been marked yet
+            const unrevealed = galleryContainer?.querySelectorAll('.product-card:not(.skeleton-card):not(.card-revealed)');
+            if (unrevealed) revealCardsStaggered(Array.from(unrevealed));
         }
     }
 

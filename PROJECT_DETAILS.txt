@@ -1,0 +1,191 @@
+================================================================================
+                    TCS ACADEMIC PROJECT DETAILS
+================================================================================
+
+PROJECT TITLE:
+Home Decor Furniture E-Commerce Platform with AI-Powered Chatbot
+
+================================================================================
+
+DURATION:
+Start Date: [Start Month/Year - To be filled]
+End Date: [Current Month/Year - To be filled]
+Total Duration: [X Months]
+
+================================================================================
+
+ROLE & MENTOR:
+Developer Name: [Your Name - To be filled]
+Role: Full-Stack Developer
+Mentor Name: [Mentor Name - To be filled]
+Institution: [College/University - To be filled]
+
+================================================================================
+
+PROJECT DESCRIPTION:
+A complete full-stack e-commerce web application built for home decor furniture 
+shopping. The platform features user authentication, product management, shopping 
+cart functionality, order processing, and an AI-powered chatbot for customer 
+support. Users can browse furniture across multiple categories, add items to cart, 
+checkout, and receive AI-assisted customer service. Administrators can manage 
+products, users, orders, and system settings through a dedicated admin dashboard.
+
+================================================================================
+
+KEY FEATURES:
+1. User Registration & Login - Secure authentication with password hashing
+2. Product Catalog - Browse furniture by category (Living, Dining, Bedroom, Office, 3D)
+3. Shopping Cart - Add/remove items, persistent storage
+4. Checkout & Orders - Complete order processing with order tracking
+5. AI Chatbot - Google Gemini-powered intelligent customer support
+6. Admin Dashboard - Manage products, users, orders, messages
+7. Product Reviews - Rating and review system for products
+8. Dark Mode - Theme switching with localStorage persistence
+9. Responsive Design - Works on desktop, tablet, and mobile devices
+10. Gallery - Interactive product gallery with 3D models
+11. Blog & FAQ - Informational content for customers
+12. User Profiles - Customer profile management and order history
+
+================================================================================
+
+TECHNOLOGIES USED:
+
+FRONTEND:
+- HTML5 (Page Structure & Semantic Markup)
+- CSS3 (Styling, Animations, Responsive Design)
+- JavaScript ES6+ (Client-side Interactivity)
+- Custom Responsive CSS Framework
+- Dark Mode CSS Support
+
+BACKEND:
+- Node.js (JavaScript Runtime)
+- Express.js (Web Framework) - Version 4.18.2
+- MongoDB (NoSQL Database)
+- Mongoose (Database ODM) - Version 7.7.0
+- BCryptJS (Password Encryption) - Version 2.4.3
+- Express-Session (Session Management)
+- Multer (File Upload Handling)
+- CORS (Cross-Origin Resource Sharing)
+- Express-Rate-Limit (API Protection)
+
+EXTERNAL SERVICES:
+- Google Gemini 2.0 Flash API (AI Chatbot)
+- Vercel (Deployment & Hosting)
+- Vercel Analytics (Usage Tracking)
+
+DEVELOPMENT TOOLS:
+- Nodemon (Development Server Auto-Reload)
+- Git (Version Control)
+- VS Code (Code Editor)
+
+================================================================================
+
+PROJECT STATUS:
+Current Status: COMPLETED / IN DEVELOPMENT
+
+Development Phases Completed:
+✓ Project Setup & Infrastructure
+✓ Frontend Development
+✓ Authentication System
+✓ Product Management System
+✓ Shopping Cart & Checkout
+✓ AI Chatbot Integration
+✓ Admin Dashboard
+✓ Additional Features (Blog, FAQ, Gallery)
+✓ Testing & Optimization
+✓ Deployment to Vercel
+
+Completion Rate: [X%]
+
+================================================================================
+
+KEY FEATURES IN DETAIL:
+
+AUTHENTICATION:
+- Secure user registration with validation
+- Login with session management
+- Password hashing using BCryptJS (10 rounds)
+- CSRF protection
+- Rate limiting on auth endpoints
+
+PRODUCT MANAGEMENT:
+- Add, edit, delete products (admin)
+- Categorize products (5 categories)
+- Upload product images
+- Stock/inventory tracking
+- Product search and filtering
+
+SHOPPING FEATURES:
+- Dynamic shopping cart
+- Cart persistence across sessions
+- Multi-step checkout process
+- Location-based delivery
+- Order history and tracking
+
+CHATBOT FEATURES:
+- AI-powered customer support
+- Natural language understanding
+- 24/7 availability
+- Product recommendations
+- Order status assistance
+
+ADMIN FEATURES:
+- User management
+- Product management
+- Order tracking
+- Message/notification system
+- System settings
+- Analytics dashboard
+
+================================================================================
+
+DATABASE STRUCTURE:
+
+Collections:
+- Users: Stores user accounts, authentication, profile information
+- Products: Stores furniture items with details, images, pricing
+- Orders: Stores customer orders with items and status
+- Messages: Stores customer messages and support tickets
+- Reviews: Stores product reviews and ratings
+- Sessions: Manages user sessions
+
+================================================================================
+
+PROJECT HIGHLIGHTS:
+
+✓ Full-stack implementation with modern architecture
+✓ Secure authentication with encryption
+✓ AI integration for customer support
+✓ Responsive design for all devices
+✓ Serverless deployment on Vercel
+✓ Real-time inventory management
+✓ Professional admin interface
+✓ SEO-friendly structure
+✓ Performance optimized
+✓ Security-focused implementation
+
+================================================================================
+
+DEPLOYMENT:
+Platform: Vercel (Serverless)
+Database: MongoDB Cloud
+Frontend Hosting: Vercel CDN
+Backend: Node.js Serverless Functions
+Analytics: Vercel Analytics Enabled
+
+================================================================================
+
+FUTURE ENHANCEMENTS:
+- Payment gateway integration (Stripe/Razorpay)
+- Advanced product recommendations (ML)
+- Augmented Reality (AR) furniture preview
+- Progressive Web App (PWA) capabilities
+- Voice search functionality
+- Real-time notifications
+- Social media integration
+
+================================================================================
+
+Last Updated: February 9, 2026
+
+================================================================================

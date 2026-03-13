@@ -121,48 +121,87 @@ function displayProductDetails(product) {
     }
 
     const mediaContainer = document.getElementById("media-container");
+    const thumbnailsContainer = document.getElementById("image-thumbnails");
+
     if (mediaContainer) {
-        // Capture zoom button before clearing
-        const zoomBtn = document.getElementById("zoom-btn");
-
         mediaContainer.innerHTML = "";
+        if (thumbnailsContainer) thumbnailsContainer.innerHTML = "";
 
-        if (product.is_3d && product.model_src) {
-            const modelViewer = document.createElement("model-viewer");
-            modelViewer.setAttribute("src", product.model_src);
-            modelViewer.setAttribute("alt", product.name);
-            modelViewer.setAttribute("camera-controls", "");
-            modelViewer.setAttribute("auto-rotate", "");
-            modelViewer.setAttribute("ar", "");
-            modelViewer.style.width = "100%";
-            modelViewer.style.height = "400px";
-            modelViewer.style.borderRadius = "12px";
-            mediaContainer.appendChild(modelViewer);
+        const is3D = !!(product.model_3d?.enabled || product.is_3d);
+        const modelSrc = product.model_3d?.file_url || product.model_src || '';
+        const imgSrc = product.thumbnail || product.image || '';
 
+        let allMedia = [];
+
+        if (is3D && modelSrc) {
+            allMedia.push({ type: '3d', src: modelSrc, poster: imgSrc || "image/Logo maker project.webp" });
             const viewInRoomBtn = document.getElementById("view-in-room-btn");
             if (viewInRoomBtn) viewInRoomBtn.style.display = "flex";
-        } else if (product.image) {
-            const img = document.createElement("img");
-            img.src = product.image;
-            img.alt = product.name;
-            img.style.width = "100%";
-            img.style.borderRadius = "12px";
-            img.onerror = function () {
-                this.src = "image/Logo maker project.webp";
-            };
-            mediaContainer.appendChild(img);
-        } else {
-            const img = document.createElement("img");
-            img.src = "image/Logo maker project.webp";
-            img.alt = "Product image";
-            img.style.width = "100%";
-            img.style.borderRadius = "12px";
-            mediaContainer.appendChild(img);
         }
 
-        // Re-append zoom button if it existed
-        if (zoomBtn) {
-            mediaContainer.appendChild(zoomBtn);
+        let imgList = [];
+        if (Array.isArray(product.images) && product.images.length > 0) {
+            imgList = product.images;
+        } else if (imgSrc) {
+            imgList = [imgSrc];
+        } else if (!is3D) {
+            imgList = ["image/Logo maker project.webp"];
+        }
+
+        imgList.forEach(url => allMedia.push({ type: 'image', src: url }));
+
+        const renderMainMedia = (media, thumbEl) => {
+            if (thumbnailsContainer) {
+                thumbnailsContainer.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                if (thumbEl) thumbEl.classList.add('active');
+            }
+
+            mediaContainer.innerHTML = "";
+
+            if (media.type === '3d') {
+                const modelViewer = document.createElement("model-viewer");
+                modelViewer.setAttribute("src", media.src);
+                modelViewer.setAttribute("alt", product.name);
+                modelViewer.setAttribute("camera-controls", "");
+                modelViewer.setAttribute("auto-rotate", "");
+                modelViewer.setAttribute("ar", "");
+                if (media.poster) modelViewer.setAttribute("poster", media.poster);
+                modelViewer.style.width = "100%";
+                modelViewer.style.height = "100%";
+                modelViewer.style.borderRadius = "12px";
+                mediaContainer.appendChild(modelViewer);
+            } else {
+                const img = document.createElement("img");
+                img.src = media.src;
+                img.alt = product.name;
+                img.style.width = "100%";
+                img.style.height = "100%";
+                img.style.objectFit = "cover";
+                img.style.borderRadius = "12px";
+                img.style.cursor = "zoom-in";
+                img.onerror = function () { this.src = "image/Logo maker project.webp"; };
+                img.addEventListener("click", () => openImageModal(img.src));
+                mediaContainer.appendChild(img);
+            }
+        };
+
+        if (allMedia.length > 0) {
+            renderMainMedia(allMedia[0], null);
+
+            // Re-select active after initialization
+            if (thumbnailsContainer && allMedia.length > 1) {
+                thumbnailsContainer.style.display = "flex";
+                allMedia.forEach((media, index) => {
+                    const thumb = document.createElement("img");
+                    thumb.src = media.poster || media.src;
+                    thumb.classList.add("thumbnail");
+                    if (index === 0) thumb.classList.add("active");
+                    thumb.onclick = () => renderMainMedia(media, thumb);
+                    thumbnailsContainer.appendChild(thumb);
+                });
+            } else if (thumbnailsContainer) {
+                thumbnailsContainer.style.display = "none";
+            }
         }
     }
 
@@ -185,14 +224,27 @@ function displayProductDetails(product) {
     const materialEl = document.getElementById("product-material");
     if (materialEl) materialEl.textContent = product.material || "-";
 
+    // Resolve dimensions from object or string
     const dimEl = document.getElementById("product-dimensions");
-    if (dimEl) dimEl.textContent = product.dimensions || "-";
+    if (dimEl) {
+        if (product.dimensions && typeof product.dimensions === 'object') {
+            const d = product.dimensions;
+            const hasVal = d.length || d.width || d.height;
+            dimEl.textContent = hasVal ? `${d.length || 0} × ${d.width || 0} × ${d.height || 0} ${d.unit || 'cm'}` : '-';
+        } else {
+            dimEl.textContent = product.dimensions || "-";
+        }
+    }
 
     const weightEl = document.getElementById("product-weight");
-    if (weightEl) weightEl.textContent = product.weight || "-";
+    if (weightEl) weightEl.textContent = product.weight ? `${product.weight} kg` : "-";
 
+    // Color variants (array or string)
     const colorEl = document.getElementById("product-color");
-    if (colorEl) colorEl.textContent = product.color || "-";
+    if (colorEl) {
+        const colors = Array.isArray(product.color_variants) ? product.color_variants.join(', ') : (product.color || '-');
+        colorEl.textContent = colors || "-";
+    }
 
     const warrantyEl = document.getElementById("product-warranty");
     if (warrantyEl) warrantyEl.textContent = product.warranty || "2 Years";
@@ -232,21 +284,7 @@ function displayProductDetails(product) {
         reviewCountEl.textContent = `• ${ratingCountVal} reviews`;
     }
 
-    // Show zoom button if we have an image
-    const zoomBtn = document.getElementById("zoom-btn");
-    if (mediaContainer.querySelector("img") && zoomBtn) {
-        zoomBtn.style.display = "flex";
-
-        // Also allow clicking the image itself to open modal
-        const img = mediaContainer.querySelector("img");
-        img.style.cursor = "zoom-in";
-        img.addEventListener("click", () => openImageModal(img.src));
-
-        zoomBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            openImageModal(img.src);
-        });
-    }
+    /* Removed legacy zoom button logic */
 
     console.log("Product details displayed successfully");
 }
@@ -346,6 +384,13 @@ function initializeEventListeners() {
         });
     }
 
+    const buyNowBtn = document.getElementById("buy-now-btn");
+    if (buyNowBtn) {
+        buyNowBtn.addEventListener("click", () => {
+            buyNow();
+        });
+    }
+
     if (contactBtn) {
         contactBtn.addEventListener("click", () => {
             if (currentProduct) {
@@ -378,6 +423,58 @@ function initializeEventListeners() {
             showProductARExperience(currentProduct.name || "Product", String(currentProduct.model_src).replace(/\s/g, "%20"), currentProduct.id || currentProduct._id);
         });
     }
+}
+
+async function buyNow() {
+    if (!currentProduct) {
+        alert("Product data not available");
+        return;
+    }
+
+    // Check if user is logged in before allowing Buy Now
+    try {
+        const res = await fetch('/api/check-auth', { credentials: 'include' });
+        const data = await res.json().catch(() => ({ authenticated: false }));
+        if (!data?.authenticated) {
+            // Show login required notification
+            if (window.cartPopupSystem && typeof window.cartPopupSystem.showNotification === 'function') {
+                window.cartPopupSystem.showNotification('Please login to buy this product', 'warning');
+            }
+            setTimeout(() => {
+                const redirect = encodeURIComponent('product-details.html?id=' + (currentProduct.id || currentProduct._id));
+                window.location.href = 'login.html?redirect=' + redirect;
+            }, 1200);
+            return;
+        }
+    } catch {
+        const redirect = encodeURIComponent('product-details.html?id=' + (currentProduct.id || currentProduct._id));
+        window.location.href = 'login.html?redirect=' + redirect;
+        return;
+    }
+
+    const quantity = productQuantity;
+    const cartItem = {
+        id: currentProduct.id || currentProduct._id,
+        name: currentProduct.name,
+        price: currentProduct.price,
+        image: (currentProduct.image && String(currentProduct.image).trim())
+            ? currentProduct.image
+            : "image/Logo maker project.webp",
+        quantity: quantity,
+        is_3d: !!currentProduct.is_3d,
+        model_src: currentProduct.model_src || null
+    };
+
+    // Save only this product to cart for direct checkout
+    localStorage.setItem("cart", JSON.stringify([cartItem]));
+
+    // Update cart count in UI
+    if (window.cartPopupSystem && typeof window.cartPopupSystem.updateCartCount === "function") {
+        window.cartPopupSystem.updateCartCount();
+    }
+
+    // Redirect directly to checkout
+    window.location.href = "checkout.html";
 }
 
 function addToCart() {
@@ -457,27 +554,7 @@ function showNotification(message) {
 }
 
 function initializeTabNavigation() {
-    const tabButtons = document.querySelectorAll(".tab-btn");
-    const tabPanes = document.querySelectorAll(".tab-pane");
-
-    tabButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            const tabName = button.getAttribute("data-tab");
-
-            // Remove active class from all buttons and panes
-            tabButtons.forEach(btn => btn.classList.remove("active"));
-            tabPanes.forEach(pane => pane.classList.remove("active"));
-
-            // Add active class to clicked button
-            button.classList.add("active");
-
-            // Show corresponding pane
-            const activePane = document.getElementById(`${tabName}-tab`);
-            if (activePane) {
-                activePane.classList.add("active");
-            }
-        });
-    });
+    // Replaced by native HTML <details> accordion tags.
 }
 
 function showProductNotFound(message) {

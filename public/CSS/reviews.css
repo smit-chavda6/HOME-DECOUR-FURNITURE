@@ -41,8 +41,9 @@ body.dark-mode {
     animation: fadeInUp 0.6s ease-out;
 }
 
-.tab-pane#reviews-tab > h3 {
-    display: none; /* Hide duplicate title, using section headers instead */
+.tab-pane#reviews-tab>h3 {
+    display: none;
+    /* Hide duplicate title, using section headers instead */
 }
 
 @keyframes fadeInUp {
@@ -50,6 +51,7 @@ body.dark-mode {
         opacity: 0;
         transform: translateY(16px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -190,24 +192,39 @@ body.dark-mode {
     animation: fadeInRight 0.6s ease-out backwards;
 }
 
-.rating-bar:nth-child(1) { animation-delay: 0.2s; }
-.rating-bar:nth-child(2) { animation-delay: 0.25s; }
-.rating-bar:nth-child(3) { animation-delay: 0.3s; }
-.rating-bar:nth-child(4) { animation-delay: 0.35s; }
-.rating-bar:nth-child(5) { animation-delay: 0.4s; }
+.rating-bar:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.rating-bar:nth-child(2) {
+    animation-delay: 0.25s;
+}
+
+.rating-bar:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.rating-bar:nth-child(4) {
+    animation-delay: 0.35s;
+}
+
+.rating-bar:nth-child(5) {
+    animation-delay: 0.4s;
+}
 
 @keyframes fadeInRight {
     from {
         opacity: 0;
         transform: translateX(-12px);
     }
+
     to {
         opacity: 1;
         transform: translateX(0);
     }
 }
 
-.rating-bar > span:first-child {
+.rating-bar>span:first-child {
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--review-text-secondary);
@@ -215,7 +232,7 @@ body.dark-mode {
     white-space: nowrap;
 }
 
-.rating-bar > .bar {
+.rating-bar>.bar {
     height: 8px;
     background: var(--review-border);
     border-radius: 4px;
@@ -223,7 +240,7 @@ body.dark-mode {
     position: relative;
 }
 
-.rating-bar > .bar > .bar-fill {
+.rating-bar>.bar>.bar-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--review-accent) 0%, var(--review-accent-light) 100%);
     border-radius: 4px;
@@ -232,7 +249,7 @@ body.dark-mode {
     position: relative;
 }
 
-.rating-bar > .bar > .bar-fill::after {
+.rating-bar>.bar>.bar-fill::after {
     content: '';
     position: absolute;
     right: 0;
@@ -242,7 +259,7 @@ body.dark-mode {
     background: rgba(255, 255, 255, 0.4);
 }
 
-.rating-bar > span:last-child {
+.rating-bar>span:last-child {
     font-size: 0.85rem;
     font-weight: 600;
     color: var(--review-text-secondary);
@@ -254,7 +271,7 @@ body.dark-mode {
     animation: fadeInUp 0.6s ease-out 0.15s backwards;
 }
 
-.reviews-list > h4 {
+.reviews-list>h4 {
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--review-text-primary);
@@ -275,11 +292,25 @@ body.dark-mode {
     animation: fadeInUp 0.6s ease-out backwards;
 }
 
-.review-item:nth-child(1) { animation-delay: 0.2s; }
-.review-item:nth-child(2) { animation-delay: 0.25s; }
-.review-item:nth-child(3) { animation-delay: 0.3s; }
-.review-item:nth-child(4) { animation-delay: 0.35s; }
-.review-item:nth-child(n+5) { animation-delay: 0.4s; }
+.review-item:nth-child(1) {
+    animation-delay: 0.2s;
+}
+
+.review-item:nth-child(2) {
+    animation-delay: 0.25s;
+}
+
+.review-item:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.review-item:nth-child(4) {
+    animation-delay: 0.35s;
+}
+
+.review-item:nth-child(n+5) {
+    animation-delay: 0.4s;
+}
 
 .review-item:hover {
     border-color: var(--review-border-strong);
@@ -389,6 +420,11 @@ body.dark-mode {
     color: var(--review-border-strong);
 }
 
+.review-rating .star::before,
+.rating-stars .star::before {
+    display: none !important;
+}
+
 .rating-value {
     font-size: 0.85rem;
     font-weight: 600;
@@ -450,7 +486,7 @@ body.dark-mode .review-item:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-body.dark-mode .rating-bar > .bar > .bar-fill {
+body.dark-mode .rating-bar>.bar>.bar-fill {
     box-shadow: 0 0 12px rgba(212, 163, 115, 0.3);
 }
 
@@ -499,8 +535,8 @@ body.dark-mode .review-rating .star.empty {
         gap: 0.6rem;
     }
 
-    .rating-bar > span:first-child,
-    .rating-bar > span:last-child {
+    .rating-bar>span:first-child,
+    .rating-bar>span:last-child {
         font-size: 0.8rem;
     }
 
@@ -565,7 +601,7 @@ body.dark-mode .review-rating .star.empty {
         gap: 0.5rem;
     }
 
-    .rating-bar > .bar {
+    .rating-bar>.bar {
         height: 6px;
     }
 
@@ -611,6 +647,7 @@ body.dark-mode .review-rating .star.empty {
 
 /* ── Accessibility & Performance ────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
+
     .reviews-summary,
     .review-item,
     .rating-bar,

@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | HOME DECOR FURNITURE</title>
 
-    <!-- GSAP for preloader animations -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 
     <!-- Lenis Smooth Scroll CDN -->
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
@@ -62,27 +60,6 @@
 </head>
 
 <body>
-    <!-- Ultra-Premium Minimalist Preloader -->
-    <div class="preloader">
-        <!-- Split door panels for exit -->
-        <div class="preloader-left"></div>
-        <div class="preloader-right"></div>
-
-        <!-- Center content -->
-        <div class="preloader-content">
-            <h1 class="preloader-brand">
-                <span class="brand-part-1">HOME DECOR</span>
-                <span class="brand-part-2">FURNITURE</span>
-            </h1>
-            <p class="preloader-subtitle">CRAFTED LIVING</p>
-        </div>
-
-        <!-- Bottom elements -->
-        <div class="preloader-counter">000</div>
-        <div class="preloader-line">
-            <div class="preloader-line-fill"></div>
-        </div>
-    </div>
 
     <script>(function () { try { var d = document; var t = localStorage.getItem('hdf-theme'); if (!t) { t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; } var st = d.createElement('style'); st.id = 'no-fouc'; st.textContent = '*{transition:none!important}'; d.head.appendChild(st); d.body.style.visibility = 'hidden'; if (t === 'dark') { d.body.classList.add('dark-mode'); } var accent = localStorage.getItem('hdf-accent') || 'accent-amber'; if (accent) d.body.classList.add(accent); var meta = d.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', t === 'dark' ? '#0f0f11' : '#8B4513'); d.body.style.visibility = ''; st.remove(); } catch (e) { } })();</script>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode" hidden>
@@ -143,12 +120,12 @@
         <div class="hero-bg-wrapper">
             <div class="hero-overlay"></div>
             <!-- Changed hero image for better visibility -->
-            <img src="image/chic-modern-luxury-aesthetics-style-living-room-blue-tone.webp" alt="Modern Interior"
+            <img src="image/product/Azure Luxe™ Velvet 3-Seater Sofa.webp" alt="Modern Interior"
                 class="hero-bg-img">
         </div>
         <div class="container hero-container">
             <div class="hero-content-modern animate-on-scroll fade-in-up">
-                <span class="hero-subtitle">EST. 2014</span>
+                <span class="hero-subtitle">EST. 2014 · HomeSphere 2.0 AR</span>
                 <h1>Crafting Stories,<br>Building Homes</h1>
                 <p>We believe that furniture is not just about filling a space, but about creating a sanctuary that
                     reflects who you are.</p>
@@ -165,7 +142,7 @@
         <div class="container">
             <div class="intro-grid">
                 <div class="intro-image-wrapper animate-on-scroll slide-in-left">
-                    <img src="image/phillip-goldsberry-fZuleEfeA1Q-unsplash.webp" alt="Our Team Philosophy"
+                    <img src="image/product/EmeraldEase™ Velvet 3-Seater Sofa.webp" alt="Our Team Philosophy"
                         class="intro-img-main">
                     <div class="intro-img-decoration"></div>
                 </div>
@@ -318,7 +295,7 @@
                 <a href="gallery.html" class="btn-primary-outline">View Gallery</a>
             </div>
             <div class="experience-image">
-                <img src="image/ryan-riggins-9v7UJS92HYc-unsplash.webp" alt="Experience Comfort">
+                <img src="image/product/WalnutCraft™ Solid Wood Dining Chair.webp" alt="Experience Comfort">
             </div>
         </div>
     </section>
@@ -556,6 +533,7 @@
                 <h3>About Us</h3>
                 <p>We are passionate about creating beautiful spaces with high-quality furniture that combines style,
                     comfort, and functionality. Your home should reflect your personality and lifestyle.</p>
+                <p class="footer-tagline">HomeSphere 2.0 AR: The Future of Furniture is Here.</p>
                 <div class="social-links">
                     <a href="#" class="social-link" title="X (Twitter)">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="48" height="48"
@@ -649,7 +627,7 @@
     <div id="cartPopupOverlay" class="cart-popup-overlay">
         <div class="cart-popup">
             <div class="cart-popup-header">
-                <h3>🛒 Your Cart</h3>
+                <h3><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> Your Cart</h3>
                 <button id="closeCartBtn" class="close-cart-btn">&times;</button>
             </div>
             <div id="cartItemsContainer" class="cart-items-container">
@@ -675,8 +653,7 @@
     <script src="js/app.js"></script>
     <script src="js/mobile-menu.js"></script>
 
-    <!-- Preloader Script (must load early) -->
-    <script src="js/preloader.js"></script>
+
 
     <!-- Smooth Scroll & Animations -->
     <script src="js/smooth-scroll.js"></script>

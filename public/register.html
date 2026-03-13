@@ -91,6 +91,7 @@
     <section class="register-section">
         <form class="register-form" id="registerForm">
             <h2>Create Your Account</h2>
+            <p class="form-tagline">HomeSphere 2.0 AR: The Future of Furniture is Here.</p>
 
             <div id="alertContainer"></div>
 
@@ -108,12 +109,36 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="password">Password *</label>
-                    <input type="password" id="password" name="password" required autocomplete="new-password">
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" required autocomplete="new-password">
+                        <button type="button" class="password-toggle" id="togglePassword" aria-label="Show password">
+                            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <svg class="eye-off-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="confirmPassword">Confirm Password *</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required
-                        autocomplete="new-password">
+                    <div class="password-wrapper">
+                        <input type="password" id="confirmPassword" name="confirmPassword" required
+                            autocomplete="new-password">
+                        <button type="button" class="password-toggle" id="toggleConfirmPassword" aria-label="Show password">
+                            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <svg class="eye-off-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -249,133 +274,7 @@
     </footer>
 
     <script src="js/app.js"></script>
-    <script>
-        // Registration functionality
-        document.addEventListener('DOMContentLoaded', function () {
-            const registerForm = document.getElementById('registerForm');
-            const registerBtn = document.getElementById('registerBtn');
-            const registerBtnText = document.getElementById('registerBtnText');
-            const registerBtnLoader = document.getElementById('registerBtnLoader');
-            const alertContainer = document.getElementById('alertContainer');
-
-            registerForm.addEventListener('submit', async function (e) {
-                e.preventDefault();
-
-                const username = document.getElementById('username').value.trim();
-                const email = document.getElementById('email').value.trim();
-                const password = document.getElementById('password').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-                const fullName = document.getElementById('fullName').value.trim();
-                const phone = document.getElementById('phone').value.trim();
-                const address = document.getElementById('address').value.trim();
-
-                // Validation
-                if (!username || !email || !password || !confirmPassword || !fullName) {
-                    showAlert('Please fill in all required fields', 'error');
-                    return;
-                }
-
-                if (password.length < 6) {
-                    showAlert('Password must be at least 6 characters long', 'error');
-                    return;
-                }
-
-                if (password !== confirmPassword) {
-                    showAlert('Passwords do not match', 'error');
-                    return;
-                }
-
-                if (!isValidEmail(email)) {
-                    showAlert('Please enter a valid email address', 'error');
-                    return;
-                }
-
-                // Show loading state
-                setLoadingState(true);
-
-                try {
-                    const response = await fetch('/api/register', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify({
-                            username,
-                            email,
-                            password,
-                            full_name: fullName,
-                            phone,
-                            address
-                        })
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok && data.success) {
-                        showAlert('Registration successful! Redirecting to login...', 'success');
-
-                        // Redirect to login page after 2 seconds
-                        setTimeout(() => {
-                            window.location.href = 'login.html';
-                        }, 2000);
-                    } else {
-                        showAlert(data.error || 'Registration failed. Please try again.', 'error');
-                    }
-                } catch (error) {
-                    console.error('Registration error:', error);
-                    showAlert('Connection error. Please make sure the server is running.', 'error');
-                } finally {
-                    setLoadingState(false);
-                }
-            });
-
-            function setLoadingState(loading) {
-                if (loading) {
-                    registerBtn.disabled = true;
-                    registerBtnText.style.display = 'none';
-                    registerBtnLoader.style.display = 'inline-block';
-                } else {
-                    registerBtn.disabled = false;
-                    registerBtnText.style.display = 'inline';
-                    registerBtnLoader.style.display = 'none';
-                }
-            }
-
-            function showAlert(message, type) {
-                alertContainer.innerHTML = `
-                    <div class="alert alert-${type}">
-                        ${message}
-                    </div>
-                `;
-
-                // Auto-hide after 5 seconds
-                setTimeout(() => {
-                    alertContainer.innerHTML = '';
-                }, 5000);
-            }
-
-            function isValidEmail(email) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(email);
-            }
-
-            // Real-time password confirmation validation
-            const passwordInput = document.getElementById('password');
-            const confirmPasswordInput = document.getElementById('confirmPassword');
-
-            confirmPasswordInput.addEventListener('input', function () {
-                const password = passwordInput.value;
-                const confirmPassword = this.value;
-
-                if (confirmPassword && password !== confirmPassword) {
-                    this.style.borderColor = '#dc3545';
-                } else {
-                    this.style.borderColor = '#e0e0e0';
-                }
-            });
-        });
-    </script>
+    <script src="js/register.js"></script>
     <script src="js/chatbot.js"></script>
     <script src="js/mobile-menu.js"></script>
 

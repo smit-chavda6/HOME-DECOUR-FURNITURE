@@ -13,6 +13,38 @@
     --g-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
 }
 
+/* ── Product Card Slider ── */
+.product-slider-container::-webkit-scrollbar {
+    display: none;
+}
+
+.product-slider-container {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.product-slider-wrapper {
+    touch-action: pan-y;
+}
+
+.product-slider-wrapper model-viewer {
+    touch-action: pan-y;
+}
+
+.product-slider-wrapper:hover .slider-nav {
+    opacity: 1 !important;
+}
+
+.slider-nav:hover {
+    background: #fff !important;
+    transform: translateY(-50%) scale(1.1) !important;
+}
+
+.slider-dot:hover {
+    transform: scale(1.5) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+}
+
 /* Page Layout */
 .gallery-page .g2 {
     background-color: var(--g-bg);
@@ -456,29 +488,59 @@
     background: var(--g-accent);
 }
 
-/* Skeleton Loading */
+/* ── Skeleton Loading ── */
 .skeleton-card {
     pointer-events: none;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: var(--g-radius, 12px);
 }
 
 .skeleton-block {
-    background: #E5E7EB;
-    border-radius: 4px;
-    animation: pulse 1.5s infinite;
+    background: linear-gradient(90deg, #e8e8e8 25%, #f5f5f5 37%, #e8e8e8 63%);
+    background-size: 400% 100%;
+    border-radius: 6px;
+    animation: skeletonShimmer 1.6s ease infinite;
 }
 
-@keyframes pulse {
-    0% {
-        opacity: 1;
-    }
+body.dark-mode .skeleton-card {
+    border-color: rgba(255, 255, 255, 0.06);
+}
 
-    50% {
-        opacity: 0.6;
+body.dark-mode .skeleton-block {
+    background: linear-gradient(90deg, #1e1e22 25%, #2a2a30 37%, #1e1e22 63%);
+    background-size: 400% 100%;
+}
+
+.skeleton-card .product-image.skeleton-media {
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+    border-radius: var(--g-radius, 12px) var(--g-radius, 12px) 0 0;
+}
+
+@keyframes skeletonShimmer {
+    0% {
+        background-position: 100% 50%;
     }
 
     100% {
-        opacity: 1;
+        background-position: 0% 50%;
     }
+}
+
+/* ── Staggered Card Reveal ── */
+.product-card:not(.skeleton-card) {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+    transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+        transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.product-card:not(.skeleton-card).card-revealed {
+    opacity: 1;
+    transform: translateY(0) scale(1);
 }
 
 /* Wishlist Section */

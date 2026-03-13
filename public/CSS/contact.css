@@ -45,12 +45,12 @@ body {
     line-height: 1.5;
 }
 
-/* Hide standard navbar on desktop for this layout if needed, 
-   but user likely wants it consistent. We'll ensure the split layout 
-   starts nicely below it. */
+/* Ensure navbar stays fixed at top on contact page */
 .navbar {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 1000;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);

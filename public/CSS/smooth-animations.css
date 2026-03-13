@@ -183,16 +183,14 @@ a[class*="btn"]:active {
 /* Smooth card hover effects */
 .category-card,
 .modern-why-card,
-.product-card,
-[class*="card"] {
+.product-card {
     transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
         box-shadow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .category-card:hover,
 .modern-why-card:hover,
-.product-card:hover,
-[class*="card"]:hover {
+.product-card:hover {
     transform: translateY(-12px) scale(1.02);
     box-shadow: 0 25px 50px rgba(139, 69, 19, 0.2),
         0 10px 20px rgba(139, 69, 19, 0.1);
@@ -200,15 +198,13 @@ a[class*="btn"]:active {
 
 /* Smooth image hover effect (zoom on hover) */
 .category-card img,
-.product-card img,
-[class*="card"] img {
+.product-card img {
     transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
     will-change: transform;
 }
 
 .category-card:hover img,
-.product-card:hover img,
-[class*="card"]:hover img {
+.product-card:hover img {
     transform: scale(1.1) rotate(1deg);
 }
 
@@ -234,8 +230,7 @@ a[class*="btn"]:active {
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.modern-why-card:hover .modern-why-icon,
-[class*="card"]:hover [class*="icon"] {
+.modern-why-card:hover .modern-why-icon {
     transform: scale(1.15) rotate(5deg);
 }
 
@@ -375,6 +370,14 @@ html {
     opacity: 1;
     visibility: visible;
     transform: translateY(0) scale(1);
+}
+
+/* Hide when chatbot is active */
+body:has(.chat-window.active) #backToTopBtn {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateY(100px) scale(0.5) !important;
+    pointer-events: none !important;
 }
 
 #backToTopBtn:hover {

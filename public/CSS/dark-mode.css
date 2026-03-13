@@ -423,100 +423,37 @@ body.dark-mode .categories-section {
   background: transparent !important;
 }
 
-body.dark-mode .category-card {
-  background: var(--dm-surface) !important;
+body.dark-mode .bento-card {
+  background-color: color-mix(in srgb, var(--bento-bg) 15%, var(--dm-surface)) !important;
   border: 1px solid var(--dm-border) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
 }
 
-body.dark-mode .category-content h3 {
+body.dark-mode .bento-title {
   color: var(--dm-text) !important;
 }
 
-body.dark-mode .category-content p {
-  color: #c8d0df !important;
+body.dark-mode .bento-subtitle {
+  color: var(--dm-muted) !important;
 }
 
-body.dark-mode .category-btn {
+body.dark-mode .bento-btn {
+  background: var(--dm-panel) !important;
+  color: var(--accent1) !important;
+  border: 1px solid var(--dm-border) !important;
+}
+
+body.dark-mode .bento-card:hover .bento-btn {
   background: linear-gradient(135deg, var(--accent1), var(--accent2)) !important;
   color: var(--accentText) !important;
-  border: none !important;
+  border-color: transparent !important;
 }
 
-/* Chatbot Dark Mode - Minimalist Design */
-body.dark-mode .chatbot-container {
-  --chat-bg: #1a1d23;
-  --chat-surface: #121419;
-  /* Message area background */
-  --chat-text-main: #eaeef5;
-  --chat-text-sub: #9aa2b1;
-  --chat-border: #2c3038;
-  --chat-shadow-lg: 0 20px 40px -5px rgba(0, 0, 0, 0.6);
+body.dark-mode .bento-graphics svg {
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.6)) brightness(0.9);
 }
 
-body.dark-mode .chat-window {
-  background: var(--chat-bg);
-  border-color: var(--chat-border);
-}
-
-body.dark-mode .chat-header {
-  background: var(--chat-bg);
-  border-bottom-color: var(--chat-border);
-}
-
-body.dark-mode .chat-messages {
-  background-color: var(--chat-surface);
-}
-
-/* Bot message bubbles - dark grey in dark mode */
-body.dark-mode .bot-message div:first-child:not(.message-timestamp):not(.chat-navigation-buttons) {
-  background: #2a2f39;
-  color: var(--chat-text-main);
-  border-color: var(--chat-border);
-  box-shadow: none;
-}
-
-/* Input area */
-body.dark-mode .chat-input-area {
-  background: var(--chat-bg);
-  border-top-color: var(--chat-border);
-}
-
-body.dark-mode .chat-input {
-  background: var(--chat-surface);
-  color: var(--chat-text-main);
-  border-color: var(--chat-border);
-}
-
-body.dark-mode .chat-input:focus {
-  background: var(--chat-bg);
-  border-color: var(--accent1);
-}
-
-/* Navigation chips */
-body.dark-mode .chat-nav-btn {
-  border-color: var(--accent1);
-  color: var(--accent1);
-}
-
-body.dark-mode .chat-nav-btn:hover {
-  background: var(--accent1);
-  color: var(--accentText);
-}
-
-/* Loading dots */
-body.dark-mode .loading-dots {
-  background: #2a2f39;
-}
-
-body.dark-mode .close-chat {
-  color: var(--chat-text-sub);
-}
-
-body.dark-mode .close-chat:hover {
-  background: var(--chat-surface);
-  color: var(--chat-text-main);
-}
+/* Chat styling handled in chatbot.css natively */
 
 /* Home: why choose */
 body.dark-mode .why-choose-section {
@@ -1368,6 +1305,10 @@ body.dark-mode .product-rating .stars .star.filled {
 }
 
 body.dark-mode .product-rating .stars .star.half {
+  color: #3a3f4a !important;
+}
+
+body.dark-mode .product-rating .stars .star.half::before {
   color: #f3cd7a !important;
 }
 
@@ -1615,10 +1556,14 @@ body.dark-mode .product-rating .star.filled {
 }
 
 body.dark-mode .product-rating .star.half {
-  background: linear-gradient(90deg, var(--accent1) 50%, #666 50%) !important;
-  background-clip: text !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
+  color: #3a3f4a !important;
+  -webkit-text-fill-color: initial !important;
+  background: none !important;
+}
+
+body.dark-mode .product-rating .star.half::before {
+  color: var(--accent1) !important;
+  -webkit-text-fill-color: initial !important;
 }
 
 body.dark-mode .rating-count {
@@ -1986,7 +1931,6 @@ body.dark-mode .modern-feature-card,
 body.dark-mode .profile-card,
 body.dark-mode .admin-wrap .card,
 body.dark-mode .gallery-controls,
-body.dark-mode .chat-window,
 body.dark-mode .cart-popup {
   background: var(--dm-surface) !important;
   color: var(--dm-text) !important;
@@ -2259,116 +2203,7 @@ body.dark-mode .container {
   color: inherit;
 }
 
-/* Chatbot bubbles */
-body.dark-mode .bot-message div:first-child {
-  background: #1b1e25;
-  color: var(--dm-text);
-}
 
-/* Ensure user messages look clean and readable in dark mode */
-body.dark-mode .user-message {
-  background: linear-gradient(135deg, var(--accent1), var(--accent2)) !important;
-  color: var(--accentText) !important;
-  border: none !important;
-}
-
-body.dark-mode .user-message div:first-child {
-  background: transparent !important;
-  color: inherit !important;
-}
-
-/* Chatbot container/window/buttons */
-body.dark-mode .chatbot-container {
-  z-index: 9998;
-}
-
-body.dark-mode .chat-window {
-  background: var(--dm-surface) !important;
-  border: 1px solid var(--dm-border) !important;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4) !important;
-}
-
-body.dark-mode .chat-header {
-  background: var(--dm-panel) !important;
-  border-bottom: 1px solid var(--dm-border) !important;
-  color: var(--dm-text) !important;
-}
-
-body.dark-mode .chat-input {
-  background: var(--dm-panel) !important;
-  color: var(--dm-text) !important;
-  border: 1px solid var(--dm-border) !important;
-}
-
-body.dark-mode .send-button {
-  background: linear-gradient(135deg, var(--accent1), var(--accent2)) !important;
-  color: var(--accentText) !important;
-  border: none !important;
-}
-
-body.dark-mode .chat-nav-btn {
-  background: #24262c !important;
-  color: var(--dm-text) !important;
-  border: 1px solid #2e313a !important;
-}
-
-body.dark-mode .chat-toggle {
-  background: linear-gradient(135deg, var(--accent1), var(--accent2)) !important;
-  color: var(--accentText) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
-}
-
-/* Chatbot: remaining sections */
-body.dark-mode .chat-messages {
-  background: var(--dm-panel) !important;
-}
-
-body.dark-mode .bot-message {
-  background: var(--dm-panel) !important;
-  color: var(--dm-text) !important;
-  border: 1px solid var(--dm-border) !important;
-}
-
-body.dark-mode .message-timestamp {
-  color: var(--dm-muted) !important;
-}
-
-/* User message timestamp: higher contrast and spacing on accent bubble */
-body.dark-mode .user-message {
-  padding: 12px 16px 16px 16px !important;
-}
-
-body.dark-mode .user-message .message-timestamp {
-  color: var(--accentText) !important;
-  opacity: 0.9 !important;
-  display: block !important;
-  margin-top: 6px !important;
-  font-size: 11px !important;
-  text-align: right !important;
-}
-
-body.dark-mode .chat-input-area {
-  background: var(--dm-panel) !important;
-  border-top: 1px solid var(--dm-border) !important;
-}
-
-/* Chatbot: loading widgets */
-body.dark-mode .loading-dots,
-body.dark-mode .loading-typing,
-body.dark-mode .loading-spinner,
-body.dark-mode .loading-wave,
-body.dark-mode .loading-progress,
-body.dark-mode .loading-pulse-ring {
-  background: rgba(18, 20, 25, 0.92) !important;
-  border: 1px solid var(--dm-border) !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25) !important;
-}
-
-body.dark-mode .loading-typing::after,
-body.dark-mode .loading-spinner::after,
-body.dark-mode .loading-progress::before {
-  color: var(--accent2) !important;
-}
 
 /* Navbar: login button */
 body.dark-mode .navbar-login-btn {
@@ -2451,10 +2286,18 @@ body.dark-mode .close-cart-btn:hover {
   background: var(--dm-panel) !important;
 }
 
+body.dark-mode .cart-item-quantity {
+  background: var(--dm-panel) !important;
+}
+
 body.dark-mode .quantity-btn {
-  background: #24262c;
+  background: transparent;
   color: var(--dm-text);
-  border-color: #2e313a;
+}
+
+body.dark-mode .quantity-btn:hover {
+  background: var(--dm-border);
+  color: var(--dm-text);
 }
 
 /* Cart item readability & clear cart button */
@@ -3303,14 +3146,12 @@ body.dark-mode .modern-why-title {
   text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
-body.dark-mode .category-card,
 body.dark-mode .modern-why-card {
   background: #18191c !important;
   border: 1px solid #2d3038 !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
 }
 
-body.dark-mode .category-card:hover,
 body.dark-mode .modern-why-card:hover {
   background: #202229 !important;
   border-color: #d4a373 !important;
@@ -3318,12 +3159,10 @@ body.dark-mode .modern-why-card:hover {
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6) !important;
 }
 
-body.dark-mode .category-content h3,
 body.dark-mode .modern-why-card h3 {
   color: #f0f0f0 !important;
 }
 
-body.dark-mode .category-content p,
 body.dark-mode .modern-why-card p {
   color: #b0b0b0 !important;
 }
@@ -3349,37 +3188,56 @@ body.dark-mode .modern-why-icon svg {
 
 /* Dark Mode - Welcome Hero Redesign */
 body.dark-mode .modern-welcome-hero {
-  background: #080808 !important;
+  background: var(--dm-bg) !important;
+  border: none !important;
 }
 
 body.dark-mode .modern-welcome-title {
-  color: #ffffff !important;
+  color: var(--dm-text) !important;
 }
 
-body.dark-mode .modern-welcome-tagline {
-  color: #cccccc !important;
+body.dark-mode .modern-welcome-title span {
+  color: var(--dm-text) !important;
+}
+
+body.dark-mode .label-text {
+  color: var(--dm-muted) !important;
 }
 
 body.dark-mode .modern-welcome-desc {
-  color: #a0a0a0 !important;
+  color: var(--dm-muted) !important;
 }
 
 body.dark-mode .modern-welcome-btn {
-  background: #d4a373 !important;
-  border-color: #d4a373 !important;
-  color: #111 !important;
+  background: var(--accent1) !important;
+  border-color: var(--accent1) !important;
+  color: var(--accentText) !important;
 }
 
 body.dark-mode .modern-welcome-btn:hover {
   background: transparent !important;
-  color: #d4a373 !important;
+  color: var(--accent1) !important;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5) !important;
 }
 
-body.dark-mode .modern-welcome-img img {
+body.dark-mode .primary-img {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* Fix Welcome Hero Transparency/Border Issue */
+body.dark-mode .secondary-img-wrapper {
+  background: var(--dm-surface) !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .label-dot {
+  background: var(--dm-panel) !important;
+  border-color: var(--dm-border) !important;
+}
+
+body.dark-mode .label-dot::before {
+  background: var(--accent1) !important;
+}
+
 body.dark-mode .modern-welcome-text,
 body.dark-mode .modern-welcome-hero-inner {
   background: transparent !important;
@@ -3387,7 +3245,132 @@ body.dark-mode .modern-welcome-hero-inner {
   box-shadow: none !important;
 }
 
-body.dark-mode .modern-welcome-hero {
-  background: #080808 !important;
+/* Final cart popup dark-mode overrides (keep at end for priority) */
+body.dark-mode .cart-popup-overlay {
+  background: rgba(0, 0, 0, 0.72) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+}
+
+body.dark-mode .cart-popup {
+  background: var(--dm-surface) !important;
+  color: var(--dm-text) !important;
+  border: 1px solid var(--dm-border) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55) !important;
+}
+
+body.dark-mode .cart-popup-header,
+body.dark-mode .cart-popup-footer {
+  background: var(--dm-panel) !important;
+  border-color: var(--dm-border) !important;
+}
+
+body.dark-mode .cart-popup-header h3,
+body.dark-mode .cart-total,
+body.dark-mode .cart-total-price,
+body.dark-mode .cart-item-name,
+body.dark-mode .quantity-display {
+  color: var(--dm-text) !important;
+}
+
+body.dark-mode .close-cart-btn {
+  background: var(--dm-surface) !important;
+  color: var(--dm-text) !important;
+  border: 1px solid var(--dm-border) !important;
+}
+
+body.dark-mode .close-cart-btn:hover {
+  background: var(--dm-panel) !important;
+  border-color: var(--accent2) !important;
+}
+
+body.dark-mode .cart-item {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid var(--dm-border) !important;
+  border-radius: 14px !important;
+  padding: 0.85rem !important;
+  margin-bottom: 0.7rem !important;
+}
+
+body.dark-mode .cart-item:last-child {
+  margin-bottom: 0 !important;
+}
+
+body.dark-mode .cart-item-image {
+  background: var(--dm-panel) !important;
+  border: 1px solid var(--dm-border) !important;
+  box-shadow: none !important;
+}
+
+body.dark-mode .cart-item-variant,
+body.dark-mode .cart-item-price,
+body.dark-mode .empty-cart-message {
+  color: var(--dm-muted) !important;
+}
+
+body.dark-mode .cart-item-quantity {
+  background: var(--dm-panel) !important;
+  border: 1px solid var(--dm-border) !important;
+}
+
+body.dark-mode .quantity-btn {
+  background: transparent !important;
+  color: var(--dm-text) !important;
+}
+
+body.dark-mode .quantity-btn:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-mode .remove-item-btn {
+  background: transparent !important;
+  color: var(--dm-muted) !important;
+}
+
+body.dark-mode .remove-item-btn:hover {
+  background: rgba(231, 76, 60, 0.16) !important;
+  color: #ff9a90 !important;
+}
+
+body.dark-mode .clear-cart-btn,
+body.dark-mode .cart-btn.secondary {
+  background: var(--dm-surface) !important;
+  color: var(--dm-text) !important;
+  border: 1px solid var(--dm-border) !important;
+}
+
+body.dark-mode .clear-cart-btn:hover,
+body.dark-mode .cart-btn.secondary:hover {
+  border-color: var(--accent2) !important;
+  color: var(--accent2) !important;
+  background: var(--dm-panel) !important;
+}
+
+body.dark-mode .cart-btn.primary {
+  background: linear-gradient(135deg, var(--accent1), var(--accent2)) !important;
+  color: var(--accentText) !important;
   border: none !important;
+}
+
+body.dark-mode .cart-btn.primary:hover {
+  filter: brightness(1.04) !important;
+}
+
+body.dark-mode .cart-btn.disabled,
+body.dark-mode .cart-btn.disabled:hover {
+  background: #3a3f48 !important;
+  color: #9ea6b6 !important;
+  border: 1px solid #4a505b !important;
+  opacity: 0.75 !important;
+}
+
+body.dark-mode .notification {
+  background: rgba(20, 24, 32, 0.96) !important;
+  color: var(--dm-text) !important;
+  border: 1px solid var(--dm-border) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+body.dark-mode .notification-message {
+  color: var(--dm-text) !important;
 }

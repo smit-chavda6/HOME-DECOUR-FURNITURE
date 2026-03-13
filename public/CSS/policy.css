@@ -1,0 +1,126 @@
+/* Policy Pages (Terms, Privacy) Styles */
+
+/* Hero Section */
+.policy-hero {
+    color: #fff;
+    padding: 80px 0 40px;
+    text-align: center;
+    position: relative;
+    /* Context for pseudo-elements if needed */
+}
+
+/* Terms Specific Hero Background */
+.policy-hero--terms {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+/* Privacy Specific Hero Background */
+.policy-hero--privacy {
+    background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+}
+
+.policy-hero h1 {
+    font-family: 'Jost', sans-serif;
+    font-size: 2.6rem;
+    margin: 0;
+    font-weight: 700;
+}
+
+.policy-hero p {
+    opacity: 0.9;
+    margin-top: 8px;
+    font-size: 1.1rem;
+}
+
+/* Policy Content Container */
+.policy-content {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 16px;
+    position: relative;
+    z-index: 10;
+}
+
+/* Policy Card */
+.policy-card {
+    background: var(--bg, #fff);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    padding: 28px;
+    line-height: 1.75;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.policy-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.policy-card h2 {
+    color: #8B4513;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    font-family: 'Jost', sans-serif;
+    font-weight: 600;
+}
+
+.policy-card h2:first-child,
+.policy-card h2:first-of-type {
+    margin-top: 0;
+}
+
+.policy-card ul {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.policy-card li {
+    margin-bottom: 0.5rem;
+}
+
+.policy-card p {
+    margin-bottom: 1rem;
+}
+
+.policy-effective-date {
+    margin-top: 24px;
+    color: #666;
+    font-size: 0.9rem;
+    border-top: 1px solid #eee;
+    padding-top: 16px;
+}
+
+/* Dark Mode Overrides */
+body.dark-mode .policy-card {
+    background: #1a1a1a;
+    color: #e0e0e0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .policy-card h2 {
+    color: #CD853F;
+}
+
+body.dark-mode .policy-effective-date {
+    color: #aaa;
+    border-top-color: #333;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .policy-hero {
+        padding: 60px 0 30px;
+    }
+
+    .policy-hero h1 {
+        font-size: 2rem;
+    }
+
+    .policy-content {
+        margin: 20px auto;
+    }
+
+    .policy-card {
+        padding: 20px;
+    }
+}

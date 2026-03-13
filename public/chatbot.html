@@ -3,252 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Decor Support Chatbot</title>
+    <title>DecorBot - AI Shopping Assistant | Home Decor Furniture</title>
+    <meta name="description" content="Chat with DecorBot, your AI shopping assistant for Home Decor Furniture. Get product recommendations, track orders, and more.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="CSS/chatbot.css">
-        body.dark-mode .loading-dots div {
-            background-color: #f0b35f; /* warmer accent for visibility on dark */
+    <link rel="stylesheet" href="CSS/responsive.css">
+    <style>
+        /* Standalone chatbot page styles */
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f5f5f0;
+            font-family: 'Inter', 'Jost', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        body.dark-mode {
+            background: #0f0f11;
         }
 
-        /* Subtle dark scrollbars within chat */
+        .chatbot-page-wrapper {
+            text-align: center;
+            max-width: 500px;
+            padding: 2rem;
+        }
+        .chatbot-page-wrapper h1 {
+            font-size: 2rem;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        body.dark-mode .chatbot-page-wrapper h1 { color: #e5e5e5; }
+        .chatbot-page-wrapper p {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        body.dark-mode .chatbot-page-wrapper p { color: #9ca3af; }
+        .chatbot-page-wrapper .back-link {
+            display: inline-block;
+            color: #8B4513;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 24px;
+            border: 2px solid #8B4513;
+            border-radius: 30px;
+            transition: all 0.3s;
+        }
+        .chatbot-page-wrapper .back-link:hover {
+            background: #8B4513;
+            color: white;
+        }
+
+        /* On this page, auto-open the chatbot */
+        .chat-window { opacity: 1 !important; transform: none !important; pointer-events: all !important; }
+
+        /* Dark mode loading dots override */
+        body.dark-mode .loading-dots div,
+        body.dark-mode .typing-dots span {
+            background-color: #f0b35f;
+        }
         body.dark-mode .chat-messages::-webkit-scrollbar { width: 10px; }
         body.dark-mode .chat-messages::-webkit-scrollbar-track { background: #0c0d10; }
         body.dark-mode .chat-messages::-webkit-scrollbar-thumb { background-color: #2a2f36; border-radius: 6px; border: 2px solid #0c0d10; }
         body.dark-mode .chat-messages { scrollbar-color: #2a2f36 #0c0d10; }
     </style>
-    <link rel="stylesheet" href="CSS/responsive.css">
 </head>
 <body>
     <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
-    <div class="chatbot-container">
-        <button class="chat-toggle" id="chatToggle">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-        </button>
-        
-        <div class="chat-window" id="chatWindow">
-            <div class="chat-header">
-                <h3>Home Decor Support</h3>
-                <button class="close-chat" id="closeChat">×</button>
-            </div>
-            <div class="chat-messages" id="chatMessages">
-                <div class="message bot-message">
-                    Hello! Welcome to Home Decor Furniture. I'm here to help you with any questions about our furniture, orders, shipping, or general inquiries. How can I assist you today?
-                </div>
-            </div>
-            <div class="chat-input-area">
-                <input type="text" id="chatInput" class="chat-input" placeholder="Type your message...">
-                <button id="sendButton" class="send-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.542 60.542 0 0 0 18.443-8.852.75.75 0 0 0 0-1.288A60.542 60.542 0 0 0 3.478 2.405Z" />
-                    </svg>
-                </button>
-            </div>
-        </div>
+
+    <div class="chatbot-page-wrapper">
+        <h1>&#127968; DecorBot</h1>
+        <p>Your AI-powered shopping assistant. Ask about products, prices, budgets, orders, shipping, and more!</p>
+        <a href="index.html" class="back-link">&larr; Back to Home</a>
     </div>
 
+    <script src="js/chatbot.js"></script>
     <script>
-        // Website data for the chatbot
-        const websiteData = {
-            company: "Home Decor Furniture",
-            products: {
-                categories: ["Living Room", "Dining Room", "Bedroom", "Office", "3D Models"],
-                featured: [
-                    "Comfortable Sofa - ₹41,500",
-                    "Modern Armchair - ₹20,750", 
-                    "Wooden Coffee Table - ₹12,450",
-                    "Dining Table - ₹33,200",
-                    "Queen Size Bed - ₹49,800",
-                    "Office Chair - ₹10,790"
-                ]
-            },
-            policies: {
-                shipping: "We offer free delivery on orders over ₹50,000. Standard delivery takes 5-7 business days.",
-                returns: "30-day return policy for items in original condition. Contact our support team for returns.",
-                payment: "We accept all major credit cards, UPI, and net banking.",
-                warranty: "3-5 year warranty on all furniture items depending on the product."
-            },
-            contact: {
-                phone: "+91 9825000000",
-                email: "support@homedecorfurniture.com",
-                address: "Ahmedabad, Gujarat, India",
-                hours: "Monday-Friday: 9 AM - 6 PM IST"
-            },
-            features: [
-                "Premium Quality Materials",
-                "Expert Craftsmanship", 
-                "Sustainable Design",
-                "Customer Satisfaction Guarantee"
-            ]
-        };
-
-        // Chatbot functionality
-        document.addEventListener('DOMContentLoaded', () => {
-            const chatToggle = document.getElementById('chatToggle');
-            const chatWindow = document.getElementById('chatWindow');
-            const closeChat = document.getElementById('closeChat');
-            const chatMessages = document.getElementById('chatMessages');
-            const chatInput = document.getElementById('chatInput');
-            const sendButton = document.getElementById('sendButton');
-
-            let chatHistory = [{
-                role: "user",
-                parts: [{ text: `You are a friendly, knowledgeable, and professional customer support chatbot for ${websiteData.company}. Your name is 'DecorBot'. 
-
-You should answer questions about:
-- Products and categories: ${websiteData.products.categories.join(', ')}
-- Featured products: ${websiteData.products.featured.join(', ')}
-- Shipping: ${websiteData.policies.shipping}
-- Returns: ${websiteData.policies.returns}
-- Payment: ${websiteData.policies.payment}
-- Warranty: ${websiteData.policies.warranty}
-- Contact info: Phone: ${websiteData.contact.phone}, Email: ${websiteData.contact.email}
-- Company features: ${websiteData.features.join(', ')}
-
-Keep responses concise and helpful. If you don't know something specific, suggest visiting the FAQ page or contacting human support at ${websiteData.contact.phone}. Maintain a warm, inviting tone that matches our elegant furniture brand.` }]
-            }];
-
-            // Toggle chat window
-            chatToggle.addEventListener('click', () => {
-                chatWindow.classList.add('active');
-            });
-
-            closeChat.addEventListener('click', () => {
-                chatWindow.classList.remove('active');
-            });
-
-            // Add message to chat
-            function linkify(text) {
-                const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/gi;
-                return text.replace(urlRegex, (match) => {
-                    const href = match.startsWith('http') ? match : `https://${match}`;
-                    // Validate URL to prevent javascript: protocol
-                    try {
-                        new URL(href);
-                        const safeHref = href.replace(/"/g, '&quot;');
-                        return `<a href="${safeHref}" target="_blank" rel="noopener noreferrer">${match}</a>`;
-                    } catch (e) {
-                        return match; // If URL is invalid, return plain text
-                    }
-                });
-            }
-
-            function formatBotText(text) {
-                // escape basic HTML to avoid injection, then add simple formatting
-                const escaped = text
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;');
-                const withLinks = linkify(escaped);
-                const withBreaks = withLinks.replace(/\n/g, '<br>');
-                return withBreaks;
-            }
-
-            function addMessage(text, sender) {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('message');
-                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
-                if (sender === 'bot') {
-                    messageDiv.innerHTML = formatBotText(text);
-                } else {
-                    messageDiv.textContent = text; // keep user text plain for safety
-                }
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-
-            // Show loading indicator
-            function showLoading(show) {
-                if (show) {
-                    const loadingDiv = document.createElement('div');
-                    loadingDiv.id = 'loadingDots';
-                    loadingDiv.classList.add('bot-message', 'loading-dots');
-                    loadingDiv.innerHTML = '<div></div><div></div><div></div>';
-                    chatMessages.appendChild(loadingDiv);
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                } else {
-                    const loadingDiv = document.getElementById('loadingDots');
-                    if (loadingDiv) {
-                        loadingDiv.remove();
-                    }
-                }
-            }
-
-            // Simple AI response system (you can replace this with actual AI API)
-            function generateResponse(userMessage) {
-                const message = userMessage.toLowerCase();
-                
-                // Product inquiries
-                if (message.includes('product') || message.includes('furniture') || message.includes('sofa') || message.includes('chair') || message.includes('table') || message.includes('bed')) {
-                    return `We offer a wide range of furniture across ${websiteData.products.categories.join(', ')} categories. Our featured products include ${websiteData.products.featured.slice(0, 3).join(', ')}. You can browse our complete collection in the gallery section. Would you like to know about specific products or categories?`;
-                }
-                
-                // Pricing inquiries
-                if (message.includes('price') || message.includes('cost') || message.includes('₹') || message.includes('rupee')) {
-                    return `Our furniture prices range from ₹6,640 for bar stools to ₹74,700 for premium L-shaped sofas. All prices are clearly displayed on our product pages. We also offer financing options for larger purchases.`;
-                }
-                
-                // Shipping inquiries
-                if (message.includes('shipping') || message.includes('delivery') || message.includes('shipping')) {
-                    return websiteData.policies.shipping + " For specific delivery times, please contact us with your location.";
-                }
-                
-                // Return inquiries
-                if (message.includes('return') || message.includes('refund') || message.includes('exchange')) {
-                    return websiteData.policies.returns + " Please ensure items are in original packaging for returns.";
-                }
-                
-                // Payment inquiries
-                if (message.includes('payment') || message.includes('pay') || message.includes('card') || message.includes('upi')) {
-                    return websiteData.policies.payment + " We also offer EMI options for qualifying purchases.";
-                }
-                
-                // Contact inquiries
-                if (message.includes('contact') || message.includes('phone') || message.includes('email') || message.includes('call')) {
-                    return `You can reach us at ${websiteData.contact.phone} or email us at ${websiteData.contact.email}. Our support team is available ${websiteData.contact.hours}.`;
-                }
-                
-                // Warranty inquiries
-                if (message.includes('warranty') || message.includes('guarantee')) {
-                    return websiteData.policies.warranty + " We stand behind the quality of all our products.";
-                }
-                
-                // General greeting
-                if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
-                    return "Hello! I'm here to help you with any questions about our furniture collection, orders, or policies. What would you like to know?";
-                }
-                
-                // Default response
-                return "Thank you for your question! For specific inquiries about orders or complex issues, please call us at " + websiteData.contact.phone + " or visit our FAQ page. How else can I assist you today?";
-            }
-
-            // Send message
-            async function sendMessage() {
-                const userText = chatInput.value.trim();
-                if (userText === '') return;
-
-                addMessage(userText, 'user');
-                chatInput.value = '';
-                showLoading(true);
-
-                // Simulate AI processing time
-                setTimeout(() => {
-                    showLoading(false);
-                    const botResponse = generateResponse(userText);
-                    addMessage(botResponse, 'bot');
-                }, 1000);
-            }
-
-            // Event listeners
-            sendButton.addEventListener('click', sendMessage);
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    sendMessage();
-                }
-            });
+        // Auto-open the chat window on this page
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                var win = document.getElementById('chatWindow');
+                if (win) win.classList.add('active');
+                var input = document.getElementById('chatInput');
+                if (input) input.focus();
+            }, 300);
         });
     </script>
     <script src="js/mobile-menu.js"></script>
 </body>
-</html> 
+</html>
