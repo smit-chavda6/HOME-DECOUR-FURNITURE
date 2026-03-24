@@ -88,6 +88,29 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Normalize media paths for cross-device/browser compatibility.
+    function normalizeMediaUrl(url) {
+        if (!url) return '';
+        let u = String(url).trim();
+        if (!u) return '';
+
+        u = u.replace(/\\/g, '/');
+        u = u.replace(/^\.\//, '');
+        u = u.replace(/^\/public\//i, '/');
+
+        // If stale localhost URL was saved in DB, keep only its path for deployed environments.
+        const localMatch = u.match(/^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(\/.*)$/i);
+        if (localMatch && localMatch[1]) u = localMatch[1];
+
+        if (/^(uploads|image)\//i.test(u)) u = '/' + u;
+
+        try {
+            return encodeURI(u);
+        } catch {
+            return u;
+        }
+    }
+
     function deriveUsdzUrl(modelUrl) {
         if (!modelUrl) return '';
         if (/\.usdz(\?|#|$)/i.test(modelUrl)) return modelUrl;
@@ -1228,10 +1251,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const created = [];
             products.forEach(p => {
                 // Normalize new + legacy fields
-                const imgSrc = p.thumbnail || p.image || 'image/Logo maker project.webp';
+                const imgSrc = normalizeMediaUrl(p.thumbnail || p.image || 'image/Logo maker project.webp');
                 const is3D = !!(p.model_3d?.enabled || p.is_3d);
-                const modelSrc = p.model_3d?.file_url || p.model_src || '';
-                const usdzSrc = p.model_3d?.usdz_url || p.model_3d?.ios_url || p.usdz_src || p.ios_model_src || deriveUsdzUrl(modelSrc) || '';
+                const modelSrc = normalizeMediaUrl(p.model_3d?.file_url || p.model_src || '');
+                const usdzSrc = normalizeMediaUrl(p.model_3d?.usdz_url || p.model_3d?.ios_url || p.usdz_src || p.ios_model_src || deriveUsdzUrl(modelSrc) || '');
                 const iosSrcAttr = usdzSrc ? ` ios-src="${usdzSrc}"` : '';
 
                 const existing = galleryContainer.querySelector(`.product-card[data-product-id="${p.id}"]`);
@@ -1270,8 +1293,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Gallery images (deduplicated against thumbnail + poster)
                 if (Array.isArray(p.gallery) && p.gallery.length > 0) {
                     p.gallery.forEach(gImg => {
-                        if (gImg && tryAdd(gImg)) {
-                            slideItems.push(`<div class="slide-item" style="flex:0 0 100%;scroll-snap-align:start;width:100%;height:100%;position:relative;"><img src="${gImg}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.src='image/Logo maker project.webp';"></div>`);
+                        const safeGalleryImg = normalizeMediaUrl(gImg);
+                        if (safeGalleryImg && tryAdd(safeGalleryImg)) {
+                            slideItems.push(`<div class="slide-item" style="flex:0 0 100%;scroll-snap-align:start;width:100%;height:100%;position:relative;"><img src="${safeGalleryImg}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.src='image/Logo maker project.webp';"></div>`);
                         }
                     });
                 }

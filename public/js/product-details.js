@@ -88,6 +88,27 @@ function waitForCartSystem() {
     });
 }
 
+function normalizeMediaUrl(url) {
+    if (!url) return '';
+    let u = String(url).trim();
+    if (!u) return '';
+
+    u = u.replace(/\\/g, '/');
+    u = u.replace(/^\.\//, '');
+    u = u.replace(/^\/public\//i, '/');
+
+    const localMatch = u.match(/^https?:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?(\/.*)$/i);
+    if (localMatch && localMatch[1]) u = localMatch[1];
+
+    if (/^(uploads|image)\//i.test(u)) u = '/' + u;
+
+    try {
+        return encodeURI(u);
+    } catch {
+        return u;
+    }
+}
+
 function displayProductDetails(product) {
     console.log("Displaying product details for:", product.name);
 
@@ -128,8 +149,8 @@ function displayProductDetails(product) {
         if (thumbnailsContainer) thumbnailsContainer.innerHTML = "";
 
         const is3D = !!(product.model_3d?.enabled || product.is_3d);
-        const modelSrc = product.model_3d?.file_url || product.model_src || '';
-        const imgSrc = product.thumbnail || product.image || '';
+        const modelSrc = normalizeMediaUrl(product.model_3d?.file_url || product.model_src || '');
+        const imgSrc = normalizeMediaUrl(product.thumbnail || product.image || '');
 
         let allMedia = [];
 
@@ -141,7 +162,7 @@ function displayProductDetails(product) {
 
         let imgList = [];
         if (Array.isArray(product.images) && product.images.length > 0) {
-            imgList = product.images;
+            imgList = product.images.map(normalizeMediaUrl).filter(Boolean);
         } else if (imgSrc) {
             imgList = [imgSrc];
         } else if (!is3D) {
