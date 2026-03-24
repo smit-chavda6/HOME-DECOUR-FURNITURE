@@ -22,7 +22,7 @@
     <!-- Smooth Animations CSS -->
     <link rel="stylesheet" href="CSS/smooth-animations.css">
 </head>
-<body>
+<body data-disable-back-to-top="true">
   <script>(function(){try{var d=document;var t=localStorage.getItem('hdf-theme');if(!t){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}var st=d.createElement('style');st.id='no-fouc';st.textContent='*{transition:none!important}';d.head.appendChild(st);d.body.style.visibility='hidden';if(t==='dark'){d.body.classList.add('dark-mode');}var accent=localStorage.getItem('hdf-accent')||'accent-amber';if(accent) d.body.classList.add(accent);var meta=d.querySelector('meta[name="theme-color"]');if(meta) meta.setAttribute('content', t==='dark' ? '#0f0f11' : '#8B4513');d.body.style.visibility='';st.remove();}catch(e){}})();</script>
   <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode" hidden>
     <svg id="themeIcon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -78,7 +78,7 @@
     <div class="checkout-card">
       <!-- STEP 1: CART -->
       <div class="step-content active" data-step="1">
-        <h2 class="step-title">🛒 Review Your Cart</h2>
+        <h2 class="step-title">Review Your Cart</h2>
         <p class="step-subtitle">Check your items before proceeding</p>
         
         <div class="cart-summary" id="cartSummary">
@@ -107,16 +107,16 @@
           </div>
         </div>
 
-        <div style="background: #f0f8ff; padding: 15px; border-radius: 6px; margin-bottom: 30px; border-left: 4px solid #2196F3;">
-          <p style="font-size: 12px; color: #333; margin: 0;">
-            <strong>💡 Tip:</strong> You can modify your cart from the <a href="index.html" style="color: #8B4513; text-decoration: none;">home page</a> before checkout.
+        <div style="background: rgba(139, 69, 19, 0.05); padding: 15px; border-radius: 6px; margin-bottom: 30px; border-left: 4px solid #8B4513;">
+          <p style="font-size: 13px; color: #3b2a1a; margin: 0;">
+            <strong>Tip:</strong> You can modify your cart from the <a href="index.html" style="color: #8B4513; text-decoration: underline;">home page</a> before checkout.
           </p>
         </div>
       </div>
 
       <!-- STEP 2: SHIPPING -->
       <div class="step-content" data-step="2">
-        <h2 class="step-title">📦 Shipping Address</h2>
+        <h2 class="step-title">Shipping Address</h2>
         <p class="step-subtitle">Where should we deliver?</p>
         
         <form id="shippingForm" novalidate>
@@ -212,7 +212,7 @@
 
       <!-- STEP 3: BILLING -->
       <div class="step-content" data-step="3">
-        <h2 class="step-title">💳 Billing Address</h2>
+        <h2 class="step-title">Billing Address</h2>
         <p class="step-subtitle">Where should we send the invoice?</p>
         
         <label class="option-item">
@@ -264,7 +264,7 @@
 
       <!-- STEP 4: PAYMENT -->
       <div class="step-content" data-step="4">
-        <h2 class="step-title">💰 Payment Method</h2>
+        <h2 class="step-title">Payment Method</h2>
         <p class="step-subtitle">Choose how you want to pay</p>
 
         <div style="margin-bottom: 30px;">
@@ -303,8 +303,8 @@
           <label class="option-item crypto-option">
             <input type="radio" class="option-input" name="paymentMethod" value="crypto" onchange="selectPayment('crypto')" />
             <div class="option-content">
-              <div class="option-title">🪙 Pay with Crypto</div>
-              <div class="option-desc">MetaMask • Rainbow • WalletConnect • ETH / MATIC / BNB</div>
+              <div class="option-title">Pay with Crypto</div>
+              <div class="option-desc">MetaMask • WalletConnect • ETH / MATIC / BNB</div>
             </div>
           </label>
         </div>
@@ -313,7 +313,7 @@
         <form id="upiPayment" style="display: none;">
           <div class="form-group">
             <label class="form-label">UPI ID *</label>
-            <input type="text" class="form-input" placeholder="yourname@upi" required />
+            <input type="text" class="form-input" id="upiId" name="upiId" placeholder="yourname@upi" required />
             <div class="form-error"></div>
           </div>
         </form>
@@ -322,20 +322,20 @@
         <form id="cardPayment" style="display: none;">
           <div class="form-group">
             <label class="form-label">Cardholder Name *</label>
-            <input type="text" class="form-input" placeholder="John Doe" required />
+            <input type="text" class="form-input" id="cardName" name="cardName" placeholder="John Doe" required />
           </div>
           <div class="form-group">
             <label class="form-label">Card Number *</label>
-            <input type="text" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19" required />
+            <input type="text" class="form-input" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" maxlength="23" required />
           </div>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Expiry Date *</label>
-              <input type="text" class="form-input" placeholder="MM/YY" maxlength="5" required />
+              <input type="text" class="form-input" id="cardExpiry" name="cardExpiry" placeholder="MM/YY" maxlength="5" required />
             </div>
             <div class="form-group">
               <label class="form-label">CVV *</label>
-              <input type="password" class="form-input" placeholder="***" maxlength="4" required />
+              <input type="password" class="form-input" id="cardCvv" name="cardCvv" placeholder="***" maxlength="4" required />
             </div>
           </div>
         </form>
@@ -344,7 +344,7 @@
         <form id="netBankingPayment" style="display: none;">
           <div class="form-group">
             <label class="form-label">Select Your Bank *</label>
-            <select class="form-select" required>
+            <select class="form-select" id="netBankingBank" name="netBankingBank" required>
               <option value="">-- Choose Bank --</option>
               <option value="sbi">State Bank of India</option>
               <option value="hdfc">HDFC Bank</option>
@@ -359,9 +359,10 @@
           <div class="crypto-payment-container">
             <div class="crypto-header">
               <div class="crypto-icon-row">
-                <span class="crypto-icon">🦊</span>
-                <span class="crypto-icon">🌈</span>
-                <span class="crypto-icon">💎</span>
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+                  <path d="M3 5v14a2 2 0 0 0 2 2h16v-5H5v-2h16v-5H5V5"></path>
+                </svg>
               </div>
               <h3 class="crypto-title">Pay with Cryptocurrency</h3>
               <p class="crypto-subtitle">Connect your Web3 wallet to pay securely on-chain</p>
@@ -395,10 +396,10 @@
                   <span id="networkLabel">Ethereum Mainnet</span>
                 </div>
                 <button type="button" class="crypto-switch-network-btn" id="switchSepoliaBtn" onclick="switchToSepolia()" title="Switch to Sepolia for testing">
-                  🧪 Switch to Sepolia
+                  Switch to Sepolia
                 </button>
-                <button type="button" class="crypto-switch-network-btn" id="switchMainnetBtn" style="display:none;background:#4caf50;" onclick="switchToMainnet()" title="Switch back to Ethereum Mainnet">
-                  🔗 Switch to Mainnet
+                <button type="button" class="crypto-switch-network-btn" id="switchMainnetBtn" style="display:none;background:#8B4513;" onclick="switchToMainnet()" title="Switch back to Ethereum Mainnet">
+                  Switch to Mainnet
                 </button>
               </div>
 
@@ -427,7 +428,7 @@
                   <optgroup label="── Other ──">
                     <option value="bitcoin" data-type="view-only">BTC (Bitcoin - view price only)</option>
                     <option value="solana" data-type="view-only">SOL (Solana - view price only)</option>
-                    <option value="custom" data-type="custom">🔧 Custom Token (paste address)</option>
+                    <option value="custom" data-type="custom">Custom Token (paste address)</option>
                   </optgroup>
                 </select>
               </div>
@@ -574,7 +575,7 @@
     let checkoutData = {
       shipping: {},
       billing: {},
-      payment: {},
+      payment: { completed: false },
       cart: [],
       shippingCost: 0,
       gstRate: 0.18,
@@ -733,10 +734,212 @@
         updateCryptoPrice();
       }
 
-      checkoutData.payment.method = method;
+      // Reset payment completion whenever method changes.
+      checkoutData.payment = {
+        method,
+        completed: method === 'cod',
+        txHash: null,
+        txExplorer: null,
+        walletAddress: null,
+        cryptoAmount: null,
+        cryptoToken: null,
+        tokenType: null,
+        isTestnet: false,
+        upiId: null,
+        cardLast4: null,
+        bank: null
+      };
       // Example other charge: COD handling fee ₹49; otherwise ₹0
       checkoutData.otherCharge = (method === 'cod') ? 49 : 0;
       updatePriceSummary();
+    }
+
+    function luhnCheck(cardNumber) {
+      let sum = 0;
+      let shouldDouble = false;
+      for (let i = cardNumber.length - 1; i >= 0; i--) {
+        let digit = parseInt(cardNumber.charAt(i), 10);
+        if (shouldDouble) {
+          digit *= 2;
+          if (digit > 9) digit -= 9;
+        }
+        sum += digit;
+        shouldDouble = !shouldDouble;
+      }
+      return sum % 10 === 0;
+    }
+
+    function isValidCardExpiry(expiry) {
+      const match = /^([0-9]{2})\/([0-9]{2})$/.exec(expiry);
+      if (!match) return false;
+      const month = Number(match[1]);
+      const year = 2000 + Number(match[2]);
+      if (month < 1 || month > 12) return false;
+      const now = new Date();
+      const expiryDate = new Date(year, month, 0, 23, 59, 59, 999);
+      return expiryDate >= now;
+    }
+
+    function validatePaymentStep() {
+      const method = checkoutData.payment.method;
+      if (!method) {
+        showToast('Please select a payment method', 'error');
+        return false;
+      }
+
+      if (method === 'cod') {
+        checkoutData.payment.completed = true;
+        return true;
+      }
+
+      if (method === 'upi') {
+        const upiInput = document.getElementById('upiId');
+        const upi = (upiInput?.value || '').trim();
+        
+        // Check if field is empty (required field)
+        if (!upi) {
+          if (upiInput) {
+            upiInput.classList.add('error');
+            upiInput.focus();
+          }
+          showToast('Please enter your UPI ID', 'error');
+          checkoutData.payment.completed = false;
+          return false;
+        }
+        
+        // Format validation - only show inline error, no toast
+        const upiRegex = /^[a-zA-Z0-9._-]{2,}@[a-zA-Z]{2,}$/;
+        if (!upiRegex.test(upi)) {
+          if (upiInput) {
+            upiInput.classList.add('error');
+            upiInput.focus();
+          }
+          checkoutData.payment.completed = false;
+          return false;
+        }
+        if (upiInput) upiInput.classList.remove('error');
+        checkoutData.payment.upiId = upi;
+        checkoutData.payment.completed = true;
+        return true;
+      }
+
+      if (method === 'netbanking') {
+        const bankSelect = document.getElementById('netBankingBank');
+        const bank = (bankSelect?.value || '').trim();
+        if (!bank) {
+          if (bankSelect) {
+            bankSelect.classList.add('error');
+            bankSelect.focus();
+          }
+          showToast('Please select your bank', 'error');
+          checkoutData.payment.completed = false;
+          return false;
+        }
+        if (bankSelect) bankSelect.classList.remove('error');
+        checkoutData.payment.bank = bank;
+        checkoutData.payment.completed = true;
+        return true;
+      }
+
+      if (method === 'card') {
+        const nameInput = document.getElementById('cardName');
+        const numberInput = document.getElementById('cardNumber');
+        const expiryInput = document.getElementById('cardExpiry');
+        const cvvInput = document.getElementById('cardCvv');
+
+        const name = (nameInput?.value || '').trim();
+        const numberRaw = (numberInput?.value || '').trim();
+        const number = numberRaw.replace(/\s+/g, '');
+        const expiry = (expiryInput?.value || '').trim();
+        const cvv = (cvvInput?.value || '').trim();
+
+        // Check for empty required fields (show toast)
+        if (!name) {
+          if (nameInput) {
+            nameInput.classList.add('error');
+            nameInput.focus();
+          }
+          showToast('Please enter cardholder name', 'error');
+          checkoutData.payment.completed = false;
+          return false;
+        }
+        
+        if (!numberRaw) {
+          if (numberInput) {
+            numberInput.classList.add('error');
+            numberInput.focus();
+          }
+          showToast('Please enter card number', 'error');
+          checkoutData.payment.completed = false;
+          return false;
+        }
+        
+        if (!expiry) {
+          if (expiryInput) {
+            expiryInput.classList.add('error');
+            expiryInput.focus();
+          }
+          showToast('Please enter expiry date', 'error');
+          checkoutData.payment.completed = false;
+          return false;
+        }
+        
+        if (!cvv) {
+          if (cvvInput) {
+            cvvInput.classList.add('error');
+            cvvInput.focus();
+          }
+          showToast('Please enter CVV', 'error');
+          checkoutData.payment.completed = false;
+          return false;
+        }
+
+        // Format validation - only show inline error, no toast
+        if (name.length < 3) {
+          if (nameInput) nameInput.classList.add('error');
+          checkoutData.payment.completed = false;
+          return false;
+        }
+        if (nameInput) nameInput.classList.remove('error');
+
+        if (!/^[0-9]{13,19}$/.test(number) || !luhnCheck(number)) {
+          if (numberInput) numberInput.classList.add('error');
+          checkoutData.payment.completed = false;
+          return false;
+        }
+        if (numberInput) numberInput.classList.remove('error');
+
+        if (!isValidCardExpiry(expiry)) {
+          if (expiryInput) expiryInput.classList.add('error');
+          checkoutData.payment.completed = false;
+          return false;
+        }
+        if (expiryInput) expiryInput.classList.remove('error');
+
+        if (!/^[0-9]{3,4}$/.test(cvv)) {
+          if (cvvInput) cvvInput.classList.add('error');
+          checkoutData.payment.completed = false;
+          return false;
+        }
+        if (cvvInput) cvvInput.classList.remove('error');
+
+        checkoutData.payment.cardLast4 = number.slice(-4);
+        checkoutData.payment.completed = true;
+        return true;
+      }
+
+      if (method === 'crypto') {
+        if (!checkoutData.payment.txHash) {
+          showToast('Please complete the crypto transaction first', 'error');
+          checkoutData.payment.completed = false;
+          return false;
+        }
+        checkoutData.payment.completed = true;
+        return true;
+      }
+
+      checkoutData.payment.completed = false;
+      return false;
     }
 
     // VALIDATE INDIVIDUAL FIELD
@@ -819,11 +1022,7 @@
         return true;
       }
       if (step === 4) {
-        if (!checkoutData.payment.method) {
-          showToast('Please select a payment method', 'error');
-          return false;
-        }
-        return true;
+        return validatePaymentStep();
       }
       return true;
     }
@@ -880,6 +1079,11 @@
 
     // PLACE ORDER
     async function placeOrder() {
+      // Hard guard to prevent bypassing payment checks.
+      if (!validatePaymentStep()) {
+        return;
+      }
+
       const btn = document.getElementById('nextBtn');
       btn.disabled = true;
       btn.textContent = 'Processing...';
@@ -890,8 +1094,9 @@
           shipping: checkoutData.shipping,
           payment: {
             method: checkoutData.payment.method,
-            upiId: document.querySelector('#upiPayment input')?.value,
-            cardLast4: document.querySelector('#cardPayment input[maxlength="19"]')?.value?.slice(-4),
+            upiId: checkoutData.payment.upiId || null,
+            cardLast4: checkoutData.payment.cardLast4 || null,
+            netBankingBank: checkoutData.payment.bank || null,
             // Crypto payment data (populated when method === 'crypto')
             txHash: checkoutData.payment.txHash || null,
             txExplorer: checkoutData.payment.txExplorer || null,
@@ -997,8 +1202,8 @@
     }
 
     function viewOrder() {
-      // Redirect directly to the Orders & Reviews modal (Orders tab)
-      window.location.href = 'profile.html#my-orders';
+      // Open Orders & Reviews from navbar popup flow on home page
+      window.location.href = 'index.html?open=orders';
     }
 
     // REAL-TIME VALIDATION
@@ -1019,47 +1224,93 @@
     // PREFILL USER DATA FROM ACCOUNT
     async function prefillUserData() {
       try {
-        const response = await fetch('/api/check-auth', {
+        const authResponse = await fetch('/api/check-auth', {
           credentials: 'include'
         });
-        const data = await response.json();
+        const authData = await authResponse.json();
 
-        if (data.authenticated && data.user) {
-          const user = data.user;
-          
-          // Prefill and lock personal info fields (name, email, phone)
-          const fullNameInput = document.querySelector('#shippingForm input[name="fullName"]');
-          const emailInput = document.querySelector('#shippingForm input[name="email"]');
-          const phoneInput = document.querySelector('#shippingForm input[name="phone"]');
+        if (!(authData.authenticated && authData.user)) return;
 
-          if (fullNameInput && user.full_name) {
-            fullNameInput.value = user.full_name;
-            fullNameInput.setAttribute('readonly', 'true');
-            fullNameInput.style.backgroundColor = '#f8f9fa';
-          }
+        const user = authData.user;
 
-          if (emailInput && user.email) {
-            emailInput.value = user.email;
-            emailInput.setAttribute('readonly', 'true');
-            emailInput.style.backgroundColor = '#f8f9fa';
-          }
+        const fullNameInput = document.querySelector('#shippingForm input[name="fullName"]');
+        const emailInput = document.querySelector('#shippingForm input[name="email"]');
+        const phoneInput = document.querySelector('#shippingForm input[name="phone"]');
+        const countryInput = document.querySelector('#shippingForm input[name="country"]');
+        const address1Input = document.querySelector('#shippingForm input[name="address1"]');
+        const address2Input = document.querySelector('#shippingForm input[name="address2"]');
+        const cityInput = document.querySelector('#shippingForm input[name="city"]');
+        const stateInput = document.querySelector('#shippingForm input[name="state"]');
+        const postalInput = document.querySelector('#shippingForm input[name="postal"]');
 
-          if (phoneInput && user.phone) {
-            phoneInput.value = user.phone;
-            phoneInput.setAttribute('readonly', 'true');
-            phoneInput.style.backgroundColor = '#f8f9fa';
-          }
-
-          // Keep address fields editable - only restore from localStorage if empty
-          const addressFields = ['country', 'address1', 'address2', 'city', 'state', 'postal'];
-          addressFields.forEach(field => {
-            const input = document.querySelector(`#shippingForm input[name="${field}"]`);
-            if (input && !input.value) {
-              const saved = localStorage.getItem(`checkout_${field}`);
-              if (saved) input.value = saved;
-            }
-          });
+        // Auto-fill Full Name (readonly — comes from account)
+        if (fullNameInput && !fullNameInput.value && user.full_name) {
+          fullNameInput.value = user.full_name;
+          fullNameInput.setAttribute('readonly', 'true');
+          fullNameInput.style.backgroundColor = '#f8f9fa';
         }
+
+        // Auto-fill Email (readonly — comes from account)
+        if (emailInput && !emailInput.value && user.email) {
+          emailInput.value = user.email;
+          emailInput.setAttribute('readonly', 'true');
+          emailInput.style.backgroundColor = '#f8f9fa';
+        }
+
+        // Auto-fill Phone (editable so user can change for delivery)
+        const phoneCandidate = String(user.phone || '').trim();
+        const validPhoneRegex = /^[+]?[0-9\s-]{10,15}$/;
+        if (phoneInput && !phoneInput.value && validPhoneRegex.test(phoneCandidate)) {
+          phoneInput.value = phoneCandidate;
+        }
+
+        // Auto-fill Address fields from registration data
+        if (address1Input && !address1Input.value && user.address_line1) {
+          address1Input.value = user.address_line1;
+        }
+        if (address2Input && !address2Input.value && user.address_line2) {
+          address2Input.value = user.address_line2;
+        }
+        if (cityInput && !cityInput.value && user.city) {
+          cityInput.value = user.city;
+        }
+        if (stateInput && !stateInput.value && user.state) {
+          stateInput.value = user.state;
+        }
+        if (postalInput && !postalInput.value && user.postal_code) {
+          postalInput.value = user.postal_code;
+        }
+        if (countryInput && user.country) {
+          countryInput.value = user.country;
+        } else if (countryInput && !countryInput.value) {
+          countryInput.value = 'India';
+        }
+
+        // Show a subtle indicator that fields were auto-filled
+        const autoFilledFields = [address1Input, address2Input, cityInput, stateInput, postalInput, phoneInput].filter(
+          f => f && f.value
+        );
+        autoFilledFields.forEach(field => {
+          field.style.borderColor = 'rgba(40, 167, 69, 0.3)';
+          field.style.transition = 'border-color 2s ease';
+          setTimeout(() => {
+            field.style.borderColor = '';
+          }, 3000);
+        });
+
+        if (autoFilledFields.length > 0) {
+          console.log('✅ Checkout form auto-filled with user registration data');
+        }
+
+        // Restore locally typed checkout address details only when still empty
+        const addressFields = ['country', 'address1', 'address2', 'city', 'state', 'postal'];
+        addressFields.forEach(field => {
+          const input = document.querySelector(`#shippingForm input[name="${field}"]`);
+          if (input && !input.value) {
+            const saved = localStorage.getItem(`checkout_${field}`);
+            if (saved) input.value = saved;
+          }
+        });
       } catch (err) {
         console.log('Not logged in or error fetching user data:', err);
       }
@@ -1170,7 +1421,7 @@
     async function switchToSepolia() {
       const walletProv = cryptoState.walletProvider || window.ethereum;
       if (!walletProv) {
-        showToast('No wallet detected', 'error');
+        console.warn('No wallet detected');
         return;
       }
       try {
@@ -1193,10 +1444,10 @@
               }]
             });
           } catch (addError) {
-            showToast('Could not add Sepolia network: ' + addError.message, 'error');
+            console.warn('Could not add Sepolia network:', addError.message);
           }
         } else {
-          showToast('Could not switch to Sepolia: ' + switchError.message, 'error');
+          console.warn('Could not switch to Sepolia:', switchError.message);
         }
       }
     }
@@ -1205,7 +1456,7 @@
     async function switchToMainnet(chainIdHex) {
       const walletProv = cryptoState.walletProvider || window.ethereum;
       if (!walletProv) {
-        showToast('No wallet detected', 'error');
+        console.warn('No wallet detected');
         return;
       }
       // Default to Ethereum Mainnet (0x1) if no chainId specified
@@ -1225,7 +1476,7 @@
           method: 'wallet_switchEthereumChain',
           params: [{ chainId: targetChainHex }]
         });
-        showToast(`Switching to ${networkName}...`, 'info');
+        console.log(`Switching to ${networkName}...`);
       } catch (switchError) {
         if (switchError.code === 4902) {
           // Chain not added - add common mainnets
@@ -1254,13 +1505,13 @@
             try {
               await walletProv.request({ method: 'wallet_addEthereumChain', params: [config] });
             } catch (addError) {
-              showToast('Could not add network: ' + addError.message, 'error');
+              console.warn('Could not add network:', addError.message);
             }
           } else {
-            showToast(`${networkName} should already be in your wallet. Please switch manually.`, 'error');
+            console.warn(`${networkName} should already be in your wallet. Please switch manually.`);
           }
         } else {
-          showToast('Could not switch network: ' + switchError.message, 'error');
+          console.warn('Could not switch network:', switchError.message);
         }
       }
     }
@@ -1366,7 +1617,7 @@
       const geckoId = document.getElementById('customTokenCoinGeckoId').value.trim();
 
       if (!addr || !ethers.isAddress(addr)) {
-        showToast('Please enter a valid ERC-20 contract address', 'error');
+        console.warn('Invalid ERC-20 contract address');
         return;
       }
 
@@ -1384,7 +1635,7 @@
         cryptoState.customCoinGeckoId = geckoId || '';
         cryptoState.tokenType = 'custom';
 
-        showToast(`Loaded ${symbol} (${decimals} decimals)`, 'success');
+        console.log(`Loaded ${symbol} (${decimals} decimals)`);
 
         // Enable pay
         const payBtn = document.getElementById('cryptoPayBtn');
@@ -1394,7 +1645,7 @@
         await updateCryptoPrice();
         await updateTokenBalance();
       } catch (err) {
-        showToast('Failed to load token: ' + err.message, 'error');
+        console.warn('Failed to load token:', err.message);
       }
     }
 
@@ -1464,7 +1715,7 @@
           rainbow: 'https://rainbow.me/download',
           injected: 'https://metamask.io/download/'
         };
-        showToast('No Web3 wallet detected! Please install a wallet extension.', 'error');
+        console.warn('No Web3 wallet detected. Please install a wallet extension.');
         window.open(walletLinks[type] || walletLinks.metamask, '_blank');
         return;
       }
@@ -1475,15 +1726,15 @@
       if (!selectedProvider) {
         // The specific wallet is not installed
         if (type === 'rainbow') {
-          showToast('Rainbow Wallet not detected. Please install the Rainbow browser extension or use MetaMask.', 'error');
+          console.warn('Rainbow Wallet not detected. Please install the Rainbow browser extension or use MetaMask.');
           window.open('https://rainbow.me/download', '_blank');
           return;
         } else if (type === 'metamask') {
-          showToast('MetaMask not detected. Please install the MetaMask extension.', 'error');
+          console.warn('MetaMask not detected. Please install the MetaMask extension.');
           window.open('https://metamask.io/download/', '_blank');
           return;
         } else {
-          showToast('No compatible wallet found. Please install a Web3 wallet.', 'error');
+          console.warn('No compatible wallet found. Please install a Web3 wallet.');
           return;
         }
       }
@@ -1564,11 +1815,10 @@
         selectedProvider.on('accountsChanged', handleAccountsChanged);
         selectedProvider.on('chainChanged', handleChainChanged);
 
-        showToast(`${walletName} connected successfully!`, 'success');
+        console.log(`${walletName} connected successfully!`);
 
       } catch (err) {
         console.error('Wallet connection error:', err);
-        showToast(err.message || 'Failed to connect wallet', 'error');
         const connectBtn = document.getElementById('connectWalletBtn');
         connectBtn.textContent = 'Connect Wallet';
         connectBtn.disabled = false;
@@ -1608,7 +1858,7 @@
       connectBtn.textContent = 'Connect Wallet';
       connectBtn.disabled = false;
 
-      showToast('Wallet disconnected', 'info');
+      console.log('Wallet disconnected');
     }
 
     // Handle account changes
@@ -1788,17 +2038,17 @@
     // Pay with crypto - send transaction (native OR ERC-20)
     async function payWithCrypto() {
       if (!cryptoState.connected || !cryptoState.signer) {
-        showToast('Please connect your wallet first', 'error');
+        console.warn('Please connect your wallet first');
         return;
       }
 
       if (cryptoState.tokenType === 'view-only') {
-        showToast('This token cannot be sent on EVM. Choose an EVM-compatible token.', 'error');
+        console.warn('This token cannot be sent on EVM. Choose an EVM-compatible token.');
         return;
       }
 
       if (!cryptoState.cryptoAmount || cryptoState.cryptoAmount <= 0) {
-        showToast('Price conversion not ready. Please wait or refresh.', 'error');
+        console.warn('Price conversion not ready. Please wait or refresh.');
         return;
       }
 
@@ -1817,7 +2067,7 @@
           // ---- ERC-20 Token Transfer ----
           const contractAddr = cryptoState.tokenContract;
           if (!contractAddr) {
-            showToast('No contract address for this token on the current network.', 'error');
+            console.warn('No contract address for this token on the current network.');
             payBtn.disabled = false;
             payBtn.innerHTML = 'Pay with Crypto';
             return;
@@ -1840,7 +2090,7 @@
               const symbol = getTokenSymbol(cryptoState.selectedToken);
               const balFormatted = parseFloat(ethers.formatUnits(tokenBalance, tokenDecimals)).toFixed(6);
               const requiredFormatted = cryptoState.cryptoAmount.toFixed(6);
-              showToast(`Insufficient ${symbol} balance. You have ${balFormatted} ${symbol} but need ${requiredFormatted} ${symbol}.`, 'error');
+              console.warn(`Insufficient ${symbol} balance. You have ${balFormatted} ${symbol} but need ${requiredFormatted} ${symbol}.`);
               payBtn.disabled = false;
               payBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg> Pay with Crypto';
               return;
@@ -1851,7 +2101,7 @@
           }
 
           payBtn.innerHTML = '<span class="crypto-spinner"></span> Sending Transaction...';
-          showToast('Approve the token transfer in your wallet...', 'info');
+          console.log('Approve the token transfer in your wallet...');
           tx = await contract.transfer(MERCHANT_WALLET, amountRaw);
 
         } else {
@@ -1895,6 +2145,7 @@
         if (receipt.status === 1) {
           // Transaction confirmed - store tx hash in payment data
           checkoutData.payment.method = 'crypto';
+          checkoutData.payment.completed = true;
           checkoutData.payment.txHash = tx.hash;
           checkoutData.payment.txExplorer = explorerBase + tx.hash;
           checkoutData.payment.walletAddress = cryptoState.address;

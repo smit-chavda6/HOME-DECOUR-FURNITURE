@@ -22,6 +22,12 @@
 <body class="ap-page admin-page">
   <script>(function () { try { var d = document; var t = localStorage.getItem('hdf-theme'); if (!t) { t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; } var st = d.createElement('style'); st.id = 'no-fouc'; st.textContent = '*{transition:none!important}'; d.head.appendChild(st); d.body.style.visibility = 'hidden'; if (t === 'dark') { d.body.classList.add('dark-mode'); } var accent = localStorage.getItem('hdf-accent') || 'accent-amber'; if (accent) d.body.classList.add(accent); var meta = d.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', t === 'dark' ? '#0f0f11' : '#8B4513'); d.body.style.visibility = ''; st.remove(); } catch (e) { } })();</script>
 
+  <div class="admin-mobile-block" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem;text-align:center;background:linear-gradient(135deg,#2c1810,#3d2314);color:#fff;font-family:'Jost',sans-serif;">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#D2691E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    <h2 style="margin:1.5rem 0 0.75rem;font-size:1.5rem;color:#D2691E;">Desktop Only</h2>
+    <p style="max-width:320px;color:rgba(255,255,255,0.75);line-height:1.6;font-size:0.95rem;">The Admin Panel is designed for desktop use only. Please access it from a laptop or desktop browser for the best experience.</p>
+    <a href="index.html" style="margin-top:1.5rem;padding:0.75rem 2rem;background:linear-gradient(135deg,#8B4513,#D2691E);color:#fff;border-radius:50px;text-decoration:none;font-weight:600;font-size:0.9rem;">← Back to Home</a>
+  </div>
   <div class="admin-layout">
     <aside class="admin-sidebar" aria-label="Admin navigation">
       <div class="admin-profile">
@@ -52,10 +58,7 @@
           <span class="nav-icon" aria-hidden="true"><i data-feather="shopping-bag"></i></span>
           <span class="nav-label">Products</span>
         </a>
-        <a class="nav-link" href="/admin-notifications.html">
-          <span class="nav-icon" aria-hidden="true"><i data-feather="bell"></i></span>
-          <span class="nav-label">Notifications</span>
-        </a>
+
       </nav>
     </aside>
 
@@ -66,14 +69,8 @@
           <h1><span class="brand">HOME DECOR FURNITURE</span> — Products</h1>
 
           <div class="admin-actions">
-            <a href="/" target="_blank" class="btn secondary"
-              style="margin-right:8px; display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
-              <i data-feather="external-link" style="width:16px;height:16px;"></i> Go to Site
-            </a>
-            <button class="btn primary" id="btnAddProduct">
-              <i data-feather="plus" style="width:16px;height:16px;vertical-align:middle;margin-right:4px;"></i>
-              Add Product
-            </button>
+            <a href="/" target="_blank" class="ap-btn">Go to Site</a>
+            <button class="ap-btn primary" id="btnAddProduct">Add Product</button>
           </div>
         </div>
 
@@ -81,14 +78,7 @@
         <div class="ap-stats cards" id="apStats">
           <div class="ap-stat-card card">
             <div class="ap-stat-icon total">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" style="width:24px;height:24px;">
-                <path
-                  d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
-                </path>
-                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                <line x1="12" y1="22.08" x2="12" y2="12"></line>
-              </svg>
+              <i data-feather="box"></i>
             </div>
             <div class="ap-stat-info">
               <h3 id="statTotal" class="metric">0</h3>
@@ -97,11 +87,7 @@
           </div>
           <div class="ap-stat-card card">
             <div class="ap-stat-icon active">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" style="width:24px;height:24px;">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
+              <i data-feather="check-circle"></i>
             </div>
             <div class="ap-stat-info">
               <h3 id="statActive" class="metric">0</h3>
@@ -110,12 +96,7 @@
           </div>
           <div class="ap-stat-card card">
             <div class="ap-stat-icon featured">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" style="width:24px;height:24px;">
-                <polygon
-                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-                </polygon>
-              </svg>
+              <i data-feather="star"></i>
             </div>
             <div class="ap-stat-info">
               <h3 id="statFeatured" class="metric">0</h3>
@@ -124,12 +105,7 @@
           </div>
           <div class="ap-stat-card card">
             <div class="ap-stat-icon three-d">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" style="width:24px;height:24px;">
-                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                <path d="M2 17l10 5 10-5"></path>
-                <path d="M2 12l10 5 10-5"></path>
-              </svg>
+              <i data-feather="layers"></i>
             </div>
             <div class="ap-stat-info">
               <h3 id="stat3D">0</h3>
@@ -168,10 +144,6 @@
             <option value="name-desc">Name: Z→A</option>
           </select>
           <button class="ap-btn danger sm" id="btnResetAll" title="Delete all products">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
-              <polyline points="3 6 5 6 21 6" />
-              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-            </svg>
             Reset All
           </button>
         </div>

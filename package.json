@@ -4,6 +4,7 @@
   "description": "Backend server for Home Decor Furniture website with MongoDB authentication",
   "main": "server.js",
   "scripts": {
+    "build": "node -e \"console.log('No build step required for this project.')\"",
     "start": "node server.js",
     "dev": "nodemon server.js",
     "migrate": "node migrate.js",

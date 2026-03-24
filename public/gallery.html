@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="CSS/gallery.css">
     <link rel="stylesheet" href="CSS/cart-popup.css">
+    <link rel="stylesheet" href="CSS/wishlist-popup.css">
     <link rel="stylesheet" href="CSS/responsive.css">
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
@@ -88,6 +89,16 @@
                             <circle cx="12" cy="8" r="4" />
                             <path d="M4 20c0-4 8-4 8-4s8 0 8 4v1H4v-1z" />
                         </svg></a></li>
+                
+                <li class="navbar-item wishlist-nav-item" hidden>
+                    <a href="#" class="wishlist-icon-nav" id="wishlistNavButton" aria-label="Open wishlist" aria-haspopup="dialog" aria-expanded="false">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span class="sr-only">Wishlist</span>
+                        <span class="wishlist-count" id="wishlistNavCount" hidden>0</span>
+                    </a>
+                </li>
                 <li class="navbar-item">
                     <a href="#" class="cart-icon">
                         <svg viewBox="0 0 24 24">
@@ -192,10 +203,13 @@
         </div>
 
         <!-- Wishlist Section -->
-        <section class="wishlist-section" aria-labelledby="wishlistTitle">
+        <div class="wishlist-popup-backdrop" id="wishlistBackdrop" hidden></div>
+        <section class="wishlist-section wishlist-popup" id="wishlistPopup" aria-labelledby="wishlistTitle" role="dialog" aria-modal="true" aria-hidden="true">
             <div class="wishlist-header">
                 <h2 id="wishlistTitle">Your Wishlist</h2>
                 <div class="wishlist-actions">
+                    <button id="closeWishlistBtn" class="wishlist-close-btn" aria-label="Close wishlist"
+                        title="Close wishlist">×</button>
                     <button id="clearWishlistBtn" class="wishlist-clear-btn" aria-label="Clear wishlist"
                         title="Clear wishlist">Clear All</button>
                 </div>
@@ -203,6 +217,13 @@
             <p class="wishlist-empty" id="wishlistEmptyState">Your wishlist is empty.</p>
             <div class="wishlist-items" id="wishlistItems"></div>
         </section>
+
+        <button id="wishlistFloatingBtn" class="wishlist-floating-btn" type="button" aria-label="Open wishlist" aria-expanded="false" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            <span class="wishlist-count wishlist-floating-count" id="wishlistFloatingCount" hidden>0</span>
+        </button>
 
         <div class="gallery-container">
             <!-- Products will be loaded dynamically from the API -->
@@ -342,22 +363,10 @@
     <script src="js/gallery.js"></script>
     <script src="js/chatbot.js"></script>
     <script src="js/cart-popup.js"></script>
+    <script src="js/wishlist-popup.js"></script>
 
 
 
-    <!-- Add model-viewer script for 3D support -->
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-    <script>
-        function viewInRoom(btn) {
-            const modelViewer = btn.parentElement.querySelector('model-viewer');
-            if (modelViewer && modelViewer.activateAR) {
-                modelViewer.activateAR();
-            } else {
-                alert('AR is only supported on compatible mobile devices.');
-            }
-        }
-    </script>
-    <script src="js/app.js"></script>
     <script src="js/mobile-menu.js"></script>
 
     <!-- Smooth Scroll & Animations -->

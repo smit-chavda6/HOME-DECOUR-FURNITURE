@@ -102,13 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Product cards - zoom in
-        document.querySelectorAll('.product-card').forEach(card => {
-            if (!card.classList.contains('scroll-animate')) {
-                card.classList.add('scroll-animate-zoom');
-                observer.observe(card);
-            }
-        });
+        // (Removed product cards to prevent conflict with gallery.js logic)
 
         // Section headers - slide in from left
         document.querySelectorAll('section h2').forEach(header => {
@@ -266,7 +260,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (node.nodeType === 1) { // Element node
                         // Check if element should have animation
                         if (node.classList.contains('category-card') || 
-                            node.classList.contains('product-card') ||
                             node.classList.contains('modern-why-card')) {
                             assignAnimationsAutomatically();
                         }
@@ -286,52 +279,61 @@ document.addEventListener('DOMContentLoaded', function() {
     // 13. BACK TO TOP BUTTON
     // ========================================================================
 
-    // Create back to top button if it doesn't exist
-    let backToTopBtn = document.getElementById('backToTopBtn');
-    if (!backToTopBtn) {
-        backToTopBtn = document.createElement('button');
-        backToTopBtn.id = 'backToTopBtn';
-        backToTopBtn.setAttribute('aria-label', 'Back to top');
-        backToTopBtn.setAttribute('title', 'Back to top');
-        document.body.appendChild(backToTopBtn);
-    }
+    const disableBackToTopButton = document.body.hasAttribute('data-disable-back-to-top');
 
-    // Show/hide button based on scroll position
-    function toggleBackToTopButton() {
-        const scrollPosition = window.scrollY || document.documentElement.scrollTop;
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
+    if (disableBackToTopButton) {
+        const existingBackToTopBtn = document.getElementById('backToTopBtn');
+        if (existingBackToTopBtn) {
+            existingBackToTopBtn.remove();
+        }
+    } else {
+        // Create back to top button if it doesn't exist
+        let backToTopBtn = document.getElementById('backToTopBtn');
+        if (!backToTopBtn) {
+            backToTopBtn = document.createElement('button');
+            backToTopBtn.id = 'backToTopBtn';
+            backToTopBtn.setAttribute('aria-label', 'Back to top');
+            backToTopBtn.setAttribute('title', 'Back to top');
+            document.body.appendChild(backToTopBtn);
+        }
+
+        // Show/hide button based on scroll position
+        function toggleBackToTopButton() {
+            const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            
+            // Show button when scrolled down 300px or reached 50% of page
+            if (scrollPosition > 300 || scrollPosition > (documentHeight - windowHeight) * 0.5) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        }
+
+        // Scroll to top when button is clicked
+        backToTopBtn.addEventListener('click', () => {
+            // If Lenis is available, use it for smooth scroll
+            if (typeof Lenis !== 'undefined' && lenis) {
+                lenis.scrollTo(0, {
+                    duration: 1.5,
+                    easing: (t) => 1 - Math.pow(1 - t, 4)
+                });
+            } else {
+                // Fallback to smooth scroll
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        });
+
+        // Listen to scroll events
+        window.addEventListener('scroll', toggleBackToTopButton);
         
-        // Show button when scrolled down 300px or reached 50% of page
-        if (scrollPosition > 300 || scrollPosition > (documentHeight - windowHeight) * 0.5) {
-            backToTopBtn.classList.add('show');
-        } else {
-            backToTopBtn.classList.remove('show');
-        }
+        // Initial check
+        toggleBackToTopButton();
     }
-
-    // Scroll to top when button is clicked
-    backToTopBtn.addEventListener('click', () => {
-        // If Lenis is available, use it for smooth scroll
-        if (typeof Lenis !== 'undefined' && lenis) {
-            lenis.scrollTo(0, {
-                duration: 1.5,
-                easing: (t) => 1 - Math.pow(1 - t, 4)
-            });
-        } else {
-            // Fallback to smooth scroll
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-    });
-
-    // Listen to scroll events
-    window.addEventListener('scroll', toggleBackToTopButton);
-    
-    // Initial check
-    toggleBackToTopButton();
 
     // ========================================================================
     // 14. DEBUG MODE (Set to false in production)

@@ -29,12 +29,60 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             // Let cart popup system rebind later
         }
-        // If returning to desktop, remove the mobile clone if present
         if (window.innerWidth > 768 && existingMobileCart && existingMobileCart.parentNode) {
             existingMobileCart.parentNode.removeChild(existingMobileCart);
         }
     };
     ensureMobileCartIcon();
+    
+    // Global Wishlist Badge Init
+    function initializeGlobalWishlist() {
+        function updateGlobalWishlistButton() {
+            try {
+                const raw = localStorage.getItem('hd_wishlist');
+                const wishlist = raw ? JSON.parse(raw) : {};
+                const count = Object.keys(wishlist).length;
+                const navItems = document.querySelectorAll('.wishlist-nav-item');
+                navItems.forEach(item => {
+                    if (count > 0) {
+                        item.removeAttribute('hidden');
+                        item.style.removeProperty('display');
+                    } else {
+                        item.hidden = true;
+                    }
+                    
+                    const countSpan = item.querySelector('.wishlist-count');
+                    if (countSpan) {
+                        if (count > 0) {
+                            countSpan.removeAttribute('hidden');
+                            countSpan.style.removeProperty('display');
+                        } else {
+                            countSpan.hidden = true;
+                        }
+                        countSpan.textContent = String(count);
+                    }
+                });
+            } catch (e) {
+                console.warn('Failed to parse wishlist', e);
+            }
+        }
+        updateGlobalWishlistButton();
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'hd_wishlist') updateGlobalWishlistButton();
+        });
+        window.updateGlobalWishlistButton = updateGlobalWishlistButton;
+        
+        // Handle wishlist icon clicks globally (redirect to gallery if not on gallery)
+        document.querySelectorAll('.wishlist-icon-nav').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (!window.location.pathname.endsWith('gallery.html')) {
+                    e.preventDefault();
+                    window.location.href = 'gallery.html#wishlist';
+                }
+            });
+        });
+    }
+    initializeGlobalWishlist();
     
     // Check authentication status and update navbar
     checkAuthAndUpdateNavbar();
@@ -152,6 +200,16 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (data.authenticated) {
                 updateNavbarForLoggedInUser(data.user);
+                // Deep-link support: open Orders & Reviews modal from URL query
+                try {
+                    const params = new URLSearchParams(window.location.search || '');
+                    const open = (params.get('open') || '').toLowerCase();
+                    if (open === 'orders' || open === 'reviews') {
+                        showOrdersAndReviewsModal();
+                        // Clean query after opening
+                        window.history.replaceState(null, '', window.location.pathname + (window.location.hash || ''));
+                    }
+                } catch (e) {}
             } else {
                 updateNavbarForLoggedOutUser();
             }
@@ -175,6 +233,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.preventDefault();
                 showLoginPopup(user);
             });
+            
+            // Welcome Notification once per session, but only after preloader is fully gone.
+            const welcomeKey = 'welcomed_' + user.username;
+            if (!sessionStorage.getItem(welcomeKey)) {
+                const showWelcomeWhenReady = () => {
+                    const preloaderVisible = document.body.classList.contains('loading') || !!document.querySelector('.preloader');
+                    const notifierReady = !!(window.cartPopupSystem && window.cartPopupSystem.showNotification);
+
+                    if (!preloaderVisible && notifierReady) {
+                        window.cartPopupSystem.showNotification(`Welcome back, ${user.username}!`, 'success');
+                        sessionStorage.setItem(welcomeKey, '1');
+                        return;
+                    }
+
+                    setTimeout(showWelcomeWhenReady, 120);
+                };
+
+                showWelcomeWhenReady();
+            }
         }
     }
     
@@ -361,51 +438,51 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Create table format
             ordersList.innerHTML = `
-                <table style="width:100%;border-collapse:collapse;font-size:13px;background:white;">
+                <table style="width:100%;border-collapse:collapse;font-size:14px;background:var(--bg-color, white); color: var(--text-color, #1a1a1a);">
                     <thead>
-                        <tr style="background:#f8f9fa;border-bottom:2px solid #dee2e6;">
-                            <th style="padding:12px 8px;text-align:left;font-weight:600;color:#495057;width:60px;">Order</th>
-                            <th style="padding:12px 8px;text-align:left;font-weight:600;color:#495057;">Product Details</th>
-                            <th style="padding:12px 8px;text-align:center;font-weight:600;color:#495057;width:100px;">Quantity</th>
-                            <th style="padding:12px 8px;text-align:right;font-weight:600;color:#495057;width:120px;">Price</th>
-                            <th style="padding:12px 8px;text-align:center;font-weight:600;color:#495057;width:140px;">Action</th>
+                        <tr style="border-bottom:1px solid var(--border-color, #e0e0e0);">
+                            <th style="padding:12px;text-align:left;font-weight:500;">Order</th>
+                            <th style="padding:12px;text-align:left;font-weight:500;">Product</th>
+                            <th style="padding:12px;text-align:center;font-weight:500;">Qty</th>
+                            <th style="padding:12px;text-align:right;font-weight:500;">Price</th>
+                            <th style="padding:12px;text-align:center;font-weight:500;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${orders.map((order, orderIndex) => {
                             const items = order.items || [];
                             return items.map((item, itemIndex) => `
-                                <tr style="border-bottom:1px solid #e9ecef;">
+                                <tr style="border-bottom:1px solid var(--border-color, #f0f0f0);">
                                     ${itemIndex === 0 ? `
-                                        <td rowspan="${items.length}" style="padding:12px 8px;vertical-align:top;border-right:1px solid #e9ecef;">
-                                            <div style="font-weight:600;color:#D2691E;font-size:16px;">#${orderIndex + 1}</div>
-                                            <div style="font-size:11px;color:#6c757d;margin-top:4px;">${order.created_at ? new Date(order.created_at).toLocaleDateString('en-GB') : 'N/A'}</div>
-                                            <div style="font-size:11px;color:#28a745;font-weight:600;margin-top:4px;text-transform:capitalize;">${order.status || 'pending'}</div>
+                                        <td rowspan="${items.length}" style="padding:12px;vertical-align:top;border-right:1px solid var(--border-color, #f0f0f0);">
+                                            <div style="font-weight:500;font-size:14px;">#${order._id ? order._id.toString().slice(-6) : (order.id || orderIndex + 1)}</div>
+                                            <div style="font-size:12px;color:var(--text-muted, #666);margin-top:4px;">${order.created_at ? new Date(order.created_at).toLocaleDateString() : 'N/A'}</div>
+                                            <div style="font-size:11px;font-weight:500;margin-top:4px;text-transform:uppercase;">${order.status || 'pending'}</div>
                                         </td>
                                     ` : ''}
-                                    <td style="padding:12px 8px;">
-                                        <div class="product-name" style="font-weight:600;color:#212529;margin-bottom:4px;">${item.name || item.product_name || 'Product'}</div>
-                                        <div class="product-meta" style="color:#6c757d;font-size:11px;">₹${item.price ? item.price.toLocaleString() : 0} per unit</div>
+                                    <td style="padding:12px;">
+                                        <div style="font-weight:500;margin-bottom:4px;">${item.name || item.product_name || 'Product'}</div>
+                                        <div style="color:var(--text-muted, #666);font-size:12px;">$${item.price ? item.price.toLocaleString() : 0}</div>
                                     </td>
-                                    <td style="padding:12px 8px;text-align:center;color:#495057;font-weight:500;">
-                                        <span class="qty-chip" style="background:#e9ecef;padding:4px 12px;border-radius:4px;">${item.quantity}</span>
+                                    <td style="padding:12px;text-align:center;">
+                                        <span style="background:transparent;border:1px solid var(--border-color, #e0e0e0);padding:4px 8px;border-radius:4px;font-size:12px;">${item.quantity}</span>
                                     </td>
-                                    <td style="padding:12px 8px;text-align:right;font-weight:600;color:#D2691E;font-size:14px;">
-                                        ₹${item.quantity && item.price ? (item.quantity * item.price).toLocaleString() : 0}
+                                    <td style="padding:12px;text-align:right;font-weight:500;">
+                                        $${item.quantity && item.price ? (item.quantity * item.price).toLocaleString() : 0}
                                     </td>
-                                    <td style="padding:12px 8px;text-align:center;">
+                                    <td style="padding:12px;text-align:center;">
                                         <button class="review-btn-modal" data-product-id="${item.product_id}" data-order-id="${order._id || order.id}" data-product-name="${item.name || item.product_name}" 
-                                        style="padding:8px 16px;background:linear-gradient(135deg, #D2691E 0%, #8B4513 100%);color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all 0.3s;box-shadow:0 2px 4px rgba(210,105,30,0.2);">
-                                            ⭐ Write Review
+                                        style="padding:6px 12px;background:var(--text-color, #1a1a1a);color:var(--bg-color, #fff);border:1px solid var(--text-color, #1a1a1a);border-radius:4px;cursor:pointer;font-size:12px;transition:all 0.2s;">
+                                            Review
                                         </button>
                                     </td>
                                 </tr>
                             `).join('');
                         }).join('')}
-                        <tr class="orders-total-row" style="background:#f8f9fa;border-top:2px solid #dee2e6;">
-                            <td colspan="3" style="padding:12px 8px;text-align:right;font-weight:600;color:#495057;">Total Amount:</td>
-                            <td style="padding:12px 8px;text-align:right;font-weight:700;color:#D2691E;font-size:16px;">
-                                ₹${orders.reduce((sum, order) => sum + (order.total || 0), 0).toLocaleString()}
+                        <tr>
+                            <td colspan="3" style="padding:16px 12px;text-align:right;font-weight:500;">Total Amount:</td>
+                            <td style="padding:16px 12px;text-align:right;font-weight:500;">
+                                $${orders.reduce((sum, order) => sum + (order.total || 0), 0).toLocaleString()}
                             </td>
                             <td></td>
                         </tr>
@@ -426,11 +503,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     const hasReviewed = reviewedProducts.has(String(productId));
                     
                     if (hasReviewed) {
-                        btn.textContent = '✓ Already Reviewed';
+                        btn.textContent = 'Reviewed';
                         btn.disabled = true;
-                        btn.style.background = '#6c757d';
+                        btn.style.background = 'transparent';
+                        btn.style.color = 'var(--text-muted, #999)';
+                        btn.style.border = '1px solid var(--border-color, #e0e0e0)';
                         btn.style.cursor = 'not-allowed';
-                        btn.style.opacity = '0.7';
                         btn.title = 'You have already reviewed this product';
                     } else {
                         btn.addEventListener('click', (e) => {
@@ -481,27 +559,25 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             reviewsList.innerHTML = reviews.map(review => `
-                <div style="border-bottom:1px solid #e9ecef;padding:16px 0;font-size:13px;display:flex;gap:12px;align-items:flex-start;">
-                    <!-- Product Image -->
-                    <div style="flex-shrink:0;width:60px;height:60px;background:#f0f0f0;border-radius:6px;overflow:hidden;">
+                <div style="border-bottom:1px solid var(--border-color, #e0e0e0);padding:16px 0;font-size:13px;display:flex;gap:12px;align-items:flex-start;">
+                    <div style="flex-shrink:0;width:48px;height:48px;background:var(--bg-muted, #f8f8f8);border:1px solid var(--border-color, #e0e0e0);border-radius:4px;overflow:hidden;">
                         ${review.product_image ? `
                             <img src="${review.product_image}" alt="${review.product_name}" style="width:100%;height:100%;object-fit:cover;">
                         ` : `
-                            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#e9ecef;color:#999;font-size:24px;">📦</div>
+                            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--text-muted, #999);font-size:18px;">📦</div>
                         `}
                     </div>
                     
-                    <!-- Review Details -->
                     <div style="flex:1;min-width:0;">
                         <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;gap:8px;">
                             <div style="flex:1;">
-                                <strong style="color:#212529;display:block;margin-bottom:4px;">${review.product_name || 'Product'}</strong>
-                                <span style="color:#6c757d;font-size:11px;">ID: ${review.product_id ? review.product_id.toString().slice(-8) : 'N/A'}</span>
+                                <strong style="color:var(--text-color, #1a1a1a);display:block;margin-bottom:4px;font-weight:500;">${review.product_name || 'Product'}</strong>
+                                <span style="color:var(--text-muted, #666);font-size:11px;">ID: ${review.product_id ? review.product_id.toString().slice(-8) : 'N/A'}</span>
                             </div>
-                            <span style="color:#D2691E;font-weight:600;font-size:14px;white-space:nowrap;">${renderHalfStars(review.rating)}</span>
+                            <span style="color:var(--text-color, #1a1a1a);font-weight:600;font-size:14px;white-space:nowrap;letter-spacing:1px;">${renderHalfStars(review.rating)}</span>
                         </div>
-                        <p style="margin:8px 0;color:#495057;font-size:12px;line-height:1.4;">${review.comment || '<em style="color:#999;">No comment</em>'}</p>
-                        <div style="color:#999;font-size:11px;">${new Date(review.created_at).toLocaleDateString()}</div>
+                        <p style="margin:8px 0;color:var(--text-color, #1a1a1a);font-size:13px;line-height:1.4;">${review.comment || '<em style="color:var(--text-muted, #999);">No comment</em>'}</p>
+                        <div style="color:var(--text-muted, #888);font-size:11px;">${new Date(review.created_at).toLocaleDateString()}</div>
                     </div>
                 </div>
             `).join('');
@@ -529,49 +605,47 @@ document.addEventListener('DOMContentLoaded', function() {
         const reviewModal = document.createElement('div');
         reviewModal.className = 'review-modal-overlay';
         reviewModal.innerHTML = `
-            <div class="review-modal" style="max-width:500px;background:white;border-radius:12px;padding:0;box-shadow:0 10px 40px rgba(0,0,0,0.2);">
-                <div style="background:linear-gradient(135deg, #D2691E 0%, #8B4513 100%);color:white;padding:20px;border-radius:12px 12px 0 0;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;">
-                        <h3 style="margin:0;font-size:20px;font-weight:600;">Write a Review</h3>
-                        <button class="review-modal-close" style="background:rgba(255,255,255,0.2);border:none;width:32px;height:32px;border-radius:50%;font-size:20px;cursor:pointer;color:white;transition:all 0.3s;">×</button>
+            <div class="review-modal" style="max-width:480px;background:var(--bg-color, #fff);border:1px solid var(--border-color, #e0e0e0);border-radius:8px;padding:0;box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+                <div style="border-bottom:1px solid var(--border-color, #e0e0e0);padding:20px;display:flex;justify-content:space-between;align-items:center;">
+                    <div style="display:flex;flex-direction:column;gap:4px;">
+                        <h3 style="margin:0;font-size:16px;font-weight:500;">Write a Review</h3>
+                        <p style="margin:0;font-size:13px;color:var(--text-muted, #666);">${escapeHTML(productName)}</p>
                     </div>
-                    <p style="margin:8px 0 0 0;font-size:14px;opacity:0.9;">${escapeHTML(productName)}</p>
+                    <button class="review-modal-close" style="background:transparent;border:none;font-size:24px;cursor:pointer;color:var(--text-color, #1a1a1a);">&times;</button>
                 </div>
                 
                 <div style="padding:24px;">
-                    <div style="margin-bottom:24px;">
-                        <label style="display:block;margin-bottom:12px;font-weight:600;color:#212529;font-size:15px;">How would you rate this product?</label>
-                        <div class="rating-card" style="background:#f8f9fa;padding:20px;border-radius:8px;text-align:center;">
-                            <div class="review-stars-half" id="review-stars-half" style="display:inline-flex;gap:8px;font-size:48px;margin-bottom:12px;">
+                    <div style="margin-bottom:20px;">
+                        <label style="display:block;margin-bottom:12px;font-weight:500;font-size:14px;">Product Rating</label>
+                        <div class="rating-card" style="display:flex;align-items:center;gap:16px;">
+                            <div class="review-stars-half" id="review-stars-half" style="display:inline-flex;gap:4px;font-size:28px;">
                                 ${[1, 2, 3, 4, 5].map(i => `
-                                    <div class="star-wrapper" data-rating="${i}" style="position:relative;cursor:pointer;transition:all 0.2s;">
-                                        <span class="star-bg" style="color:#e4e5e9;">★</span>
-                                        <span class="star-fill" style="position:absolute;left:0;top:0;color:#ffc107;overflow:hidden;width:0%;transition:width 0.2s;">★</span>
+                                    <div class="star-wrapper" data-rating="${i}" style="position:relative;cursor:pointer;">
+                                        <span class="star-bg" style="color:var(--border-color, #e0e0e0);">★</span>
+                                        <span class="star-fill" style="position:absolute;left:0;top:0;color:var(--text-color, #1a1a1a);overflow:hidden;width:0%;transition:width 0.2s;">★</span>
                                     </div>
                                 `).join('')}
                             </div>
                             <input type="hidden" id="review-rating-half" value="0">
-                            <div id="rating-display" style="font-size:16px;font-weight:600;color:#D2691E;min-height:24px;">
-                                <span style="color:#6c757d;">Click on stars to rate</span>
-                            </div>
+                            <div id="rating-display" style="font-size:13px;color:var(--text-muted, #666);">Select rating</div>
                         </div>
                     </div>
                     
-                    <div style="margin-bottom:20px;">
-                        <label style="display:block;margin-bottom:8px;font-weight:600;color:#212529;font-size:15px;">Share your thoughts (optional)</label>
-                        <textarea id="review-comment-half" placeholder="What did you like or dislike about this product?" 
-                        style="width:100%;padding:12px;border:2px solid #e9ecef;border-radius:8px;font-family:inherit;font-size:14px;resize:vertical;transition:border-color 0.3s;" 
+                    <div style="margin-bottom:24px;">
+                        <label style="display:block;margin-bottom:8px;font-weight:500;font-size:14px;">Your Comments</label>
+                        <textarea id="review-comment-half" placeholder="Share your experience..." 
+                        style="width:100%;padding:12px;background:transparent;border:1px solid var(--border-color, #e0e0e0);border-radius:4px;font-family:inherit;font-size:13px;resize:vertical;" 
                         rows="4"></textarea>
                     </div>
                     
-                    <div style="display:flex;gap:12px;">
+                    <div style="display:flex;gap:12px;justify-content:flex-end;">
                         <button class="review-modal-cancel" 
-                        style="flex:1;padding:12px;background:#f8f9fa;color:#495057;border:2px solid #dee2e6;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.3s;">
+                        style="padding:8px 16px;background:transparent;color:var(--text-color, #1a1a1a);border:1px solid var(--border-color, #e0e0e0);border-radius:4px;cursor:pointer;font-weight:500;font-size:13px;transition:all 0.2s;">
                             Cancel
                         </button>
                         <button class="review-modal-submit" 
-                        style="flex:1;padding:12px;background:linear-gradient(135deg, #D2691E 0%, #8B4513 100%);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;transition:all 0.3s;box-shadow:0 4px 12px rgba(210,105,30,0.3);">
-                            Submit Review
+                        style="padding:8px 16px;background:var(--text-color, #1a1a1a);color:var(--bg-color, #fff);border:1px solid var(--text-color, #1a1a1a);border-radius:4px;cursor:pointer;font-weight:500;font-size:13px;transition:all 0.2s;">
+                            Submit
                         </button>
                     </div>
                 </div>
@@ -654,7 +728,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const display = modal.querySelector('#rating-display');
                 if (rating > 0) {
                     const starText = '★'.repeat(Math.floor(rating)) + (rating % 1 !== 0 ? '⯨' : '');
-                    display.innerHTML = `<span style="color:#ffc107;font-size:20px;">${starText}</span> <span style="color:#212529;margin-left:8px;">${rating} out of 5</span>`;
+                    display.innerHTML = `<span style="color:var(--text-color, #1a1a1a);font-size:16px;">${starText}</span> <span style="color:var(--text-color, #1a1a1a);margin-left:8px;">${rating} out of 5</span>`;
                 } else {
                     display.textContent = 'No rating selected';
                 }
@@ -676,26 +750,25 @@ document.addEventListener('DOMContentLoaded', function() {
         const textarea = reviewModal.querySelector('#review-comment-half');
         
         submitBtn.addEventListener('mouseenter', () => {
-            submitBtn.style.transform = 'translateY(-2px)';
-            submitBtn.style.boxShadow = '0 6px 20px rgba(210,105,30,0.4)';
+            submitBtn.style.background = 'var(--text-muted, #333)';
         });
         submitBtn.addEventListener('mouseleave', () => {
-            submitBtn.style.transform = 'translateY(0)';
-            submitBtn.style.boxShadow = '0 4px 12px rgba(210,105,30,0.3)';
+            submitBtn.style.background = 'var(--text-color, #1a1a1a)';
         });
         
         cancelBtn.addEventListener('mouseenter', () => {
-            cancelBtn.style.background = '#e9ecef';
+            cancelBtn.style.background = 'var(--bg-muted, #f8f8f8)';
         });
         cancelBtn.addEventListener('mouseleave', () => {
-            cancelBtn.style.background = '#f8f9fa';
+            cancelBtn.style.background = 'transparent';
         });
         
         textarea.addEventListener('focus', () => {
-            textarea.style.borderColor = '#D2691E';
+            textarea.style.borderColor = 'var(--text-color, #1a1a1a)';
+            textarea.style.outline = 'none';
         });
         textarea.addEventListener('blur', () => {
-            textarea.style.borderColor = '#e9ecef';
+            textarea.style.borderColor = 'var(--border-color, #e0e0e0)';
         });
         
         // Submit review

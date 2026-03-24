@@ -15,32 +15,31 @@
 }
 
 :root {
-  --bg: #faf8f5;
-  /* Minimal warm off-white */
+  --bg: #f9f9f9;
   --surface: #ffffff;
-  --panel: #fcfcfb;
-  --border: #eae4dd;
-  --text: #2c2826;
-  --muted: #8a8480;
-  --accent1: #d4a373;
-  --accent2: #c08457;
+  --panel: #ffffff;
+  --border: #e0e0e0;
+  --text: #1a1a1a;
+  --muted: #6b6b6b;
+  --accent1: #333333;
+  --accent2: #000000;
   --accentText: #ffffff;
-  --ok: #2d7a4f;
-  --warn: #c0392b;
+  --ok: #10b981;
+  --warn: #ef4444;
 }
 
-/* Dark mode overrides (match site-wide dark palette) */
+/* Dark mode overrides */
 body.dark-mode {
-  --bg: #0f0f11;
-  --surface: #16181d;
-  --panel: #121318;
-  --border: #22262f;
-  --text: #eaeef5;
-  --muted: #a4a9b6;
-  --accent1: #d4a373;
-  --accent2: #c08457;
-  --accentText: #111;
-  --ok: #22c55e;
+  --bg: #0a0a0a;
+  --surface: #121212;
+  --panel: #1a1a1a;
+  --border: #262626;
+  --text: #f0f0f0;
+  --muted: #888888;
+  --accent1: #cccccc;
+  --accent2: #ffffff;
+  --accentText: #000000;
+  --ok: #10b981;
   --warn: #ef4444;
 }
 
@@ -53,49 +52,53 @@ body {
 
 /* New sidebar layout */
 .admin-layout {
-  display: grid;
-  grid-template-columns: 250px 1fr;
-  gap: 0;
-  max-width: 1440px;
-  margin: 0 auto
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
 }
 
 .admin-sidebar {
-  position: sticky;
+  position: fixed;
   top: 0;
-  align-self: start;
+  left: 0;
+  width: 260px;
   height: 100vh;
   background: var(--surface);
   border-right: 1px solid var(--border);
-  padding: 30px 20px;
+  padding: 32px 24px;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 36px;
+  z-index: 50;
+  overflow-y: auto;
 }
 
 .admin-main {
+  flex: 1;
+  margin-left: 260px;
   min-height: 100vh;
-  padding: 20px;
+  padding: 32px 40px;
+  max-width: calc(100% - 260px);
 }
 
 .admin-profile {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px
+  gap: 14px;
+  padding: 0 8px;
 }
 
 .admin-profile .avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--accent1), var(--accent2));
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent2);
+  color: var(--accentText);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font-weight: 600;
-  font-size: 1.1rem;
+  font-weight: 500;
+  font-size: 1rem;
 }
 
 .admin-profile .name {
@@ -118,51 +121,45 @@ body {
 .admin-nav {
   display: flex;
   flex-direction: column;
-  gap: 6px
+  gap: 4px;
 }
 
 .admin-nav .nav-link {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 12px 14px;
-  border-radius: 12px;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 8px;
   color: var(--muted);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 0.95rem;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .admin-nav .nav-link .nav-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px
+  width: 18px;
+  height: 18px;
 }
 
 .admin-nav .nav-link .nav-icon svg {
-  width: 20px;
-  height: 20px;
-  stroke: currentColor
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
 }
 
 .admin-nav .nav-link:hover {
-  background: rgba(192, 132, 87, 0.05);
-  color: var(--accent2)
+  background: var(--bg);
+  color: var(--text);
 }
 
 .admin-nav .nav-link.active {
-  background: rgba(192, 132, 87, 0.1);
-  color: var(--accent2);
-  font-weight: 600;
-}
-
-.admin-nav .nav-icon {
-  width: 20px;
-  text-align: center;
-  opacity: .9
+  background: var(--accent2);
+  color: var(--accentText);
+  font-weight: 500;
 }
 
 .admin-wrap {
@@ -194,26 +191,26 @@ body {
 }
 
 .btn {
-  padding: 10px 18px;
-  border-radius: 30px;
+  padding: 8px 16px;
+  border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
   cursor: pointer;
-  font-family: 'Jost', sans-serif;
+  font-family: inherit;
   font-weight: 500;
   font-size: 0.9rem;
   transition: all 0.2s;
 }
 
 .btn:hover {
-  border-color: var(--accent2);
+  border-color: var(--accent1);
 }
 
 .btn.primary {
-  background: linear-gradient(135deg, var(--accent1), var(--accent2));
-  border: 0;
-  color: #fff;
+  background: var(--accent2);
+  border: 1px solid var(--accent2);
+  color: var(--accentText);
 }
 
 .btn.primary:hover {
@@ -222,38 +219,38 @@ body {
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
-  margin: 20px 0 40px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin: 0 0 40px;
 }
 
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  box-shadow: none;
 }
 
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 20px
+  gap: 24px;
 }
 
 .chart-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 20px;
   min-height: 220px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  box-shadow: none;
 }
 
 .chart-card h3 {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--muted);
   margin: 0 0 16px 0;
   font-weight: 500;
@@ -262,26 +259,27 @@ body {
 }
 
 .chart-card canvas {
-  flex: 1
+  flex: 1;
 }
 
 .panel {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  margin-top: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  border-radius: 8px;
+  margin-top: 24px;
+  box-shadow: none;
 }
 
 .panel h2 {
   margin: 0;
-  padding: 24px 24px 0;
-  font-size: 18px;
-  font-weight: 600;
+  padding: 20px 24px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
 }
 
 .panel .content {
-  padding: 24px
+  padding: 24px;
 }
 
 .panel .notice {
@@ -513,15 +511,22 @@ body.dark-mode .role.admin {
 
 @media (max-width: 768px) {
   .admin-layout {
-    grid-template-columns: 1fr
+    flex-direction: column;
   }
 
   .admin-sidebar {
     position: static;
+    width: 100%;
     height: auto;
     border-right: 0;
     border-bottom: 1px solid var(--border);
-    border-radius: 0
+    padding: 24px 20px;
+  }
+
+  .admin-main {
+    margin-left: 0;
+    max-width: 100%;
+    padding: 20px;
   }
 
   .admin-profile {

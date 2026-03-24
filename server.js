@@ -142,9 +142,15 @@ const userSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    full_name: String,
-    phone: String,
+    full_name: { type: String, required: true },
+    phone: { type: String, required: true, unique: true },
     address: String,
+    address_line1: { type: String, default: '' },
+    address_line2: { type: String, default: '' },
+    city: { type: String, default: '' },
+    state: { type: String, default: '' },
+    country: { type: String, default: 'India' },
+    postal_code: { type: String, default: '' },
     role: { type: String, default: 'user', enum: ['user', 'admin'] },
     created_at: { type: Date, default: Date.now },
     updated_at: { type: Date, default: Date.now }
@@ -540,19 +546,44 @@ app.get('/', (req, res) => {
 // Register endpoint
 app.post('/api/register', authLimiter, async (req, res) => {
     try {
-        const { username, email, password, full_name, phone, address } = req.body;
+        const { username, email, password, full_name, phone, address_line1, address_line2, city, state, country, postal_code } = req.body;
 
-        if (!username || !email || !password) {
-            return res.status(400).json({ error: 'Username, email, and password are required' });
+        // Validate all required fields
+        if (!username || !email || !password || !full_name || !phone || !address_line1 || !city || !state || !country || !postal_code) {
+            return res.status(400).json({ error: 'All fields are required. Please fill in every field.' });
         }
         if (password.length < 6) {
             return res.status(400).json({ error: 'Password must be at least 6 characters long' });
         }
-
-        const existing = await User.findOne({ $or: [{ username }, { email }] });
-        if (existing) {
-            return res.status(400).json({ error: 'Username or email already exists' });
+        // Validate phone format
+        const phoneRegex = /^[+]?[0-9\s-]{10,15}$/;
+        if (!phoneRegex.test(phone.trim())) {
+            return res.status(400).json({ error: 'Please enter a valid phone number (10-15 digits)' });
         }
+        // Validate postal code
+        const postalRegex = /^[0-9]{6}$/;
+        if (!postalRegex.test(postal_code.trim())) {
+            return res.status(400).json({ error: 'PIN code must be exactly 6 digits' });
+        }
+
+        // Check for duplicate username
+        const existingUsername = await User.findOne({ username });
+        if (existingUsername) {
+            return res.status(400).json({ error: 'Username is already taken. Please choose a different username.' });
+        }
+        // Check for duplicate email
+        const existingEmail = await User.findOne({ email });
+        if (existingEmail) {
+            return res.status(400).json({ error: 'Email address is already registered. Please use a different email or login.' });
+        }
+        // Check for duplicate phone
+        const existingPhone = await User.findOne({ phone: phone.trim() });
+        if (existingPhone) {
+            return res.status(400).json({ error: 'Phone number is already registered. Please use a different phone number.' });
+        }
+
+        // Build full address string for backward compatibility
+        const fullAddress = [address_line1, address_line2, city, state, country, postal_code].filter(Boolean).join(', ');
 
         const hash = await hashPassword(password, 10);
         const user = await User.create({
@@ -560,8 +591,14 @@ app.post('/api/register', authLimiter, async (req, res) => {
             email,
             password: hash,
             full_name,
-            phone,
-            address
+            phone: phone.trim(),
+            address: fullAddress,
+            address_line1,
+            address_line2: address_line2 || '',
+            city,
+            state,
+            country: country || 'India',
+            postal_code
         });
 
         res.json({
@@ -571,6 +608,14 @@ app.post('/api/register', authLimiter, async (req, res) => {
         });
     } catch (err) {
         console.error('Register error:', err.message);
+        // Handle MongoDB duplicate key errors
+        if (err.code === 11000) {
+            const field = Object.keys(err.keyPattern || {})[0];
+            if (field === 'username') return res.status(400).json({ error: 'Username is already taken.' });
+            if (field === 'email') return res.status(400).json({ error: 'Email address is already registered.' });
+            if (field === 'phone') return res.status(400).json({ error: 'Phone number is already registered.' });
+            return res.status(400).json({ error: 'An account with these details already exists.' });
+        }
         res.status(500).json({ error: 'Error creating user' });
     }
 });
@@ -630,19 +675,46 @@ app.post('/api/logout', (req, res) => {
 });
 
 // Check authentication status
-app.get('/api/check-auth', authLimiter, (req, res) => {
+app.get('/api/check-auth', authLimiter, async (req, res) => {
     if (req.session.userId) {
-        res.json({
-            authenticated: true,
-            user: {
-                id: req.session.userId,
-                username: req.session.username,
-                full_name: req.session.fullName,
-                email: req.session.email,
-                phone: req.session.phone,
-                role: req.session.role || 'user'
+        try {
+            // Fetch full user profile from DB for address fields
+            const user = await User.findById(req.session.userId, '-password').lean();
+            if (user) {
+                res.json({
+                    authenticated: true,
+                    user: {
+                        id: user._id,
+                        username: user.username,
+                        full_name: user.full_name,
+                        email: user.email,
+                        phone: user.phone,
+                        address_line1: user.address_line1 || '',
+                        address_line2: user.address_line2 || '',
+                        city: user.city || '',
+                        state: user.state || '',
+                        country: user.country || 'India',
+                        postal_code: user.postal_code || '',
+                        role: user.role || 'user'
+                    }
+                });
+            } else {
+                res.json({ authenticated: false });
             }
-        });
+        } catch (err) {
+            // Fallback to session data if DB fails
+            res.json({
+                authenticated: true,
+                user: {
+                    id: req.session.userId,
+                    username: req.session.username,
+                    full_name: req.session.fullName,
+                    email: req.session.email,
+                    phone: req.session.phone,
+                    role: req.session.role || 'user'
+                }
+            });
+        }
     } else {
         res.json({ authenticated: false });
     }
@@ -695,7 +767,7 @@ app.post('/api/admin/upload-model', requireAdmin, uploadModel.single('model'), (
 // Admin: list users
 app.get('/api/admin/users', requireAdmin, writeLimiter, async (req, res) => {
     try {
-        const users = await User.find({}, '_id username email full_name phone address role created_at updated_at').sort({ created_at: -1 }).lean();
+        const users = await User.find({}, '_id username email full_name phone address address_line1 address_line2 city state country postal_code role created_at updated_at').sort({ created_at: -1 }).lean();
         // Map _id to id for frontend compatibility
         const formattedUsers = users.map(u => ({ ...u, id: u._id.toString() }));
         res.json({ users: formattedUsers });
@@ -1147,10 +1219,44 @@ app.post('/api/orders', writeLimiter, async (req, res) => {
         const shipping = body.shipping || {};
         const payment = body.payment || {};
         const amounts = body.amounts || {};
+        const paymentMethod = String(payment.method || '').toLowerCase();
 
         if (!items.length) return res.status(400).json({ error: 'Cart is empty' });
         if (!shipping.fullName || !shipping.email || !shipping.address1 || !shipping.city || !shipping.state || !shipping.postal) {
             return res.status(400).json({ error: 'Missing shipping fields' });
+        }
+
+        const allowedPaymentMethods = new Set(['cod', 'upi', 'card', 'netbanking', 'crypto']);
+        if (!allowedPaymentMethods.has(paymentMethod)) {
+            return res.status(400).json({ error: 'Invalid payment method' });
+        }
+
+        if (paymentMethod === 'upi') {
+            const upiId = String(payment.upiId || '').trim();
+            if (!/^[a-zA-Z0-9._-]{2,}@[a-zA-Z]{2,}$/.test(upiId)) {
+                return res.status(400).json({ error: 'Invalid UPI ID' });
+            }
+        }
+
+        if (paymentMethod === 'card') {
+            const cardLast4 = String(payment.cardLast4 || '').trim();
+            if (!/^[0-9]{4}$/.test(cardLast4)) {
+                return res.status(400).json({ error: 'Invalid card details' });
+            }
+        }
+
+        if (paymentMethod === 'netbanking') {
+            const bank = String(payment.netBankingBank || '').trim();
+            if (!bank) {
+                return res.status(400).json({ error: 'Select a bank for net banking payment' });
+            }
+        }
+
+        if (paymentMethod === 'crypto') {
+            const txHash = String(payment.txHash || '').trim();
+            if (!/^0x[a-fA-F0-9]{64}$/.test(txHash)) {
+                return res.status(400).json({ error: 'Crypto payment is not completed' });
+            }
         }
 
         const order = await Order.create({
@@ -1164,9 +1270,9 @@ app.post('/api/orders', writeLimiter, async (req, res) => {
             state: String(shipping.state),
             country: String(shipping.country || ''),
             postal: String(shipping.postal),
-            payment_method: String(payment.method || 'cod'),
-            upi_id: payment.upiId ? String(payment.upiId) : null,
-            card_last4: payment.cardLast4 ? String(payment.cardLast4) : null,
+            payment_method: paymentMethod,
+            upi_id: paymentMethod === 'upi' && payment.upiId ? String(payment.upiId) : null,
+            card_last4: paymentMethod === 'card' && payment.cardLast4 ? String(payment.cardLast4) : null,
             subtotal: parseInt(amounts.subtotal || 0, 10),
             shipping: parseInt(amounts.shipping || 0, 10),
             tax: parseInt(amounts.tax || 0, 10),

@@ -14,6 +14,7 @@
 
     <link rel="stylesheet" href="CSS/style.css">
     <link rel="stylesheet" href="CSS/cart-popup.css">
+    <link rel="stylesheet" href="CSS/wishlist-popup.css">
     <link rel="stylesheet" href="CSS/dark-mode.css">
     <link rel="stylesheet" href="CSS/chatbot.css">
 
@@ -118,6 +119,16 @@
                             <circle cx="12" cy="8" r="4" />
                             <path d="M4 20c0-4 8-4 8-4s8 0 8 4v1H4v-1z" />
                         </svg></a></li>
+                
+                <li class="navbar-item wishlist-nav-item" hidden>
+                    <a href="#" class="wishlist-icon-nav" aria-label="Open wishlist">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span class="sr-only">Wishlist</span>
+                        <span class="wishlist-count" hidden>0</span>
+                    </a>
+                </li>
                 <li class="navbar-item">
                     <a href="#" class="cart-icon">
                         <svg viewBox="0 0 24 24">
@@ -137,6 +148,10 @@
             </div>
         </div>
     </nav>
+
+    <section class="index-tagline-banner" aria-label="Brand tagline">
+        <p>HomeSphere 2.0 AR: The Future of Furniture is Here.</p>
+    </section>
 
     <!-- Hero Section with Slideshow -->
     <section class="hero-section">
@@ -556,6 +571,7 @@
     <script src="js/gallery.js"></script>
     <script src="js/chatbot.js"></script>
     <script src="js/cart-popup.js"></script>
+    <script src="js/wishlist-popup.js"></script>
 
     <script src="js/success-animation.js"></script>
 

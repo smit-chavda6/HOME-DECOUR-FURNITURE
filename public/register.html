@@ -30,7 +30,6 @@
     <link rel="icon" type="image/png" sizes="48x48" href="image/Logo maker project.webp">
     <link rel="apple-touch-icon" sizes="180x180" href="image/Logo maker project.webp">
     <link rel="manifest" href="manifest.json">
-    <!-- Styles moved to CSS/register.css -->
 </head>
 
 <body>
@@ -68,6 +67,16 @@
                             <circle cx="12" cy="8" r="4" />
                             <path d="M4 20c0-4 8-4 8-4s8 0 8 4v1H4v-1z" />
                         </svg></a></li>
+                
+                <li class="navbar-item wishlist-nav-item" hidden>
+                    <a href="#" class="wishlist-icon-nav" aria-label="Open wishlist">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span class="sr-only">Wishlist</span>
+                        <span class="wishlist-count" hidden>0</span>
+                    </a>
+                </li>
                 <li class="navbar-item">
                     <a href="#" class="cart-icon">
                         <svg viewBox="0 0 24 24">
@@ -89,93 +98,228 @@
     </nav>
 
     <section class="register-section">
-        <form class="register-form" id="registerForm">
-            <h2>Create Your Account</h2>
-            <p class="form-tagline">HomeSphere 2.0 AR: The Future of Furniture is Here.</p>
+        <!-- Floating Decorative Shapes -->
+        <div class="register-bg-shapes">
+            <div class="bg-shape shape-1"></div>
+            <div class="bg-shape shape-2"></div>
+            <div class="bg-shape shape-3"></div>
+        </div>
+
+        <div class="register-card">
+            <h2 class="register-title">Create Your Account</h2>
+            <p class="register-subtitle">Join us to explore premium furniture for your dream home</p>
+
+            <!-- Progress Stepper -->
+            <div class="stepper">
+                <div class="stepper-step active" data-step="1">
+                    <div class="stepper-circle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                            <circle cx="12" cy="8" r="4"/>
+                            <path d="M4 20c0-4 8-4 8-4s8 0 8 4v1H4v-1z"/>
+                        </svg>
+                    </div>
+                    <span class="stepper-label">Account</span>
+                </div>
+                <div class="stepper-line"><div class="stepper-line-fill"></div></div>
+                <div class="stepper-step" data-step="2">
+                    <div class="stepper-circle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                    <span class="stepper-label">Personal</span>
+                </div>
+                <div class="stepper-line"><div class="stepper-line-fill"></div></div>
+                <div class="stepper-step" data-step="3">
+                    <div class="stepper-circle">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                            <circle cx="12" cy="9" r="2.5"/>
+                        </svg>
+                    </div>
+                    <span class="stepper-label">Address</span>
+                </div>
+            </div>
 
             <div id="alertContainer"></div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="username">Username *</label>
-                    <input type="text" id="username" name="username" required autocomplete="username">
-                </div>
-                <div class="form-group">
-                    <label for="email">Email Address *</label>
-                    <input type="email" id="email" name="email" required autocomplete="email">
-                </div>
-            </div>
+            <form id="registerForm" novalidate>
+                <!-- Step 1: Account Information -->
+                <div class="step-panel active" data-step="1">
+                    <div class="step-header">
+                        <span class="step-badge">Step 1 of 3</span>
+                        <h3 class="step-title">Account Information</h3>
+                        <p class="step-desc">Set up your login credentials</p>
+                    </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="password">Password *</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="password" name="password" required autocomplete="new-password">
-                        <button type="button" class="password-toggle" id="togglePassword" aria-label="Show password">
-                            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
-                            <svg class="eye-off-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                                <line x1="1" y1="1" x2="23" y2="23"/>
-                            </svg>
-                        </button>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="username">Username *</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <input type="text" id="username" name="username" required autocomplete="username" placeholder="Choose a unique username">
+                            </div>
+                            <div class="field-error" id="usernameError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                <input type="email" id="email" name="email" required autocomplete="email" placeholder="your@email.com">
+                            </div>
+                            <div class="field-error" id="emailError"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password">Password *</label>
+                            <div class="password-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                <input type="password" id="password" name="password" required autocomplete="new-password" placeholder="Min. 6 characters">
+                                <button type="button" class="password-toggle" id="togglePassword" aria-label="Show password">
+                                    <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="eye-off-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password *</label>
+                            <div class="password-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                <input type="password" id="confirmPassword" name="confirmPassword" required autocomplete="new-password" placeholder="Re-enter password">
+                                <button type="button" class="password-toggle" id="toggleConfirmPassword" aria-label="Show password">
+                                    <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg class="eye-off-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="password-requirements">
+                        <h4>🔒 Password Requirements</h4>
+                        <ul>
+                            <li id="req-length" class="req-pending">At least 6 characters long</li>
+                            <li id="req-match" class="req-pending">Passwords match</li>
+                        </ul>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="confirmPassword">Confirm Password *</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="confirmPassword" name="confirmPassword" required
-                            autocomplete="new-password">
-                        <button type="button" class="password-toggle" id="toggleConfirmPassword" aria-label="Show password">
-                            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
-                            <svg class="eye-off-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                                <line x1="1" y1="1" x2="23" y2="23"/>
-                            </svg>
-                        </button>
+
+                <!-- Step 2: Personal Information -->
+                <div class="step-panel" data-step="2">
+                    <div class="step-header">
+                        <span class="step-badge">Step 2 of 3</span>
+                        <h3 class="step-title">Personal Information</h3>
+                        <p class="step-desc">Tell us about yourself</p>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName">Full Name *</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <input type="text" id="fullName" name="fullName" required autocomplete="name" placeholder="Enter your full name">
+                            </div>
+                            <div class="field-error" id="fullNameError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                <input type="tel" id="phone" name="phone" required autocomplete="tel" placeholder="+91 98765 43210">
+                            </div>
+                            <div class="field-error" id="phoneError"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="password-requirements">
-                <h4>Password Requirements:</h4>
-                <ul>
-                    <li>At least 6 characters long</li>
-                    <li>Can contain letters, numbers, and special characters</li>
-                </ul>
-            </div>
+                <!-- Step 3: Address Details -->
+                <div class="step-panel" data-step="3">
+                    <div class="step-header">
+                        <span class="step-badge">Step 3 of 3</span>
+                        <h3 class="step-title">Address Details</h3>
+                        <p class="step-desc">Where should we deliver your furniture?</p>
+                    </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="fullName">Full Name *</label>
-                    <input type="text" id="fullName" name="fullName" required autocomplete="name">
+                    <div class="form-group full-width">
+                        <label for="addressLine1">Address Line 1 *</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            <input type="text" id="addressLine1" name="addressLine1" required autocomplete="address-line1" placeholder="House no., street name">
+                        </div>
+                        <div class="field-error" id="addressLine1Error"></div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="addressLine2">Address Line 2 <span class="optional-tag">(Optional)</span></label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                            <input type="text" id="addressLine2" name="addressLine2" autocomplete="address-line2" placeholder="Landmark, area, colony">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">City *</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="2"/><line x1="15" y1="22" x2="15" y2="2"/></svg>
+                                <input type="text" id="city" name="city" required autocomplete="address-level2" placeholder="e.g. Ahmedabad">
+                            </div>
+                            <div class="field-error" id="cityError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State *</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                                <input type="text" id="state" name="state" required autocomplete="address-level1" placeholder="e.g. Gujarat">
+                            </div>
+                            <div class="field-error" id="stateError"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="country">Country *</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                                <input type="text" id="country" name="country" required autocomplete="country-name" value="India" placeholder="India">
+                            </div>
+                            <div class="field-error" id="countryError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="postalCode">PIN Code *</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                <input type="text" id="postalCode" name="postalCode" required autocomplete="postal-code" placeholder="e.g. 380001" pattern="[0-9]{6}" maxlength="6">
+                            </div>
+                            <div class="field-error" id="postalCodeError"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" name="phone" autocomplete="tel">
+
+                <!-- Navigation Buttons -->
+                <div class="step-nav">
+                    <button type="button" class="btn-back" id="btnBack" style="visibility: hidden;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        Back
+                    </button>
+                    <button type="button" class="btn-next" id="btnNext">
+                        Next
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                    <button type="submit" class="btn-submit" id="btnSubmit" style="display: none;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <span id="registerBtnText">Create Account</span>
+                        <span id="registerBtnLoader" class="loading" style="display: none;"></span>
+                    </button>
                 </div>
-            </div>
 
-            <div class="form-group full-width">
-                <label for="address">Address</label>
-                <textarea id="address" name="address" placeholder="Enter your full address"
-                    autocomplete="street-address"></textarea>
-            </div>
-
-            <button type="submit" class="btn-primary" id="registerBtn">
-                <span id="registerBtnText">Create Account</span>
-                <span id="registerBtnLoader" class="loading" style="display: none;"></span>
-            </button>
-
-            <div class="form-links" style="margin-top: 16px;">
-                Already have an account? <a href="login.html">Login</a>
-            </div>
-        </form>
+                <div class="form-links">
+                    Already have an account? <a href="login.html">Login</a>
+                </div>
+            </form>
+        </div>
     </section>
 
     <footer class="footer">

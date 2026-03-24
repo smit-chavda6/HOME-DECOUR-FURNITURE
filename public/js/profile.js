@@ -507,14 +507,25 @@
   // Handle URL hash to open Orders/Reviews modal on page load
   async function handleHashNavigation() {
     const hash = window.location.hash;
-    if (hash === '#my-orders' || hash === '#my-reviews') {
+    const params = new URLSearchParams(window.location.search);
+    const openParam = (params.get('open') || '').toLowerCase();
+    const openFromQuery = openParam === 'orders' || openParam === 'reviews';
+    const openFromHash = hash === '#my-orders' || hash === '#my-reviews';
+    let openFromSession = false;
+    try {
+      openFromSession = sessionStorage.getItem('hdf-open-orders') === '1';
+      if (openFromSession) sessionStorage.removeItem('hdf-open-orders');
+    } catch (e) {}
+
+    if (openFromHash || openFromQuery || openFromSession) {
       if (ordersReviewsModal) {
         ordersReviewsModal.classList.add('active');
-        showTab(hash === '#my-reviews' ? 'reviews' : 'orders');
+        const tab = (hash === '#my-reviews' || openParam === 'reviews') ? 'reviews' : 'orders';
+        showTab(tab);
         if (!ordersLoaded) { await loadOrders(); ordersLoaded = true; }
         if (!reviewsLoaded) { await loadReviews(); reviewsLoaded = true; }
       }
-      // Clean up hash
+      // Clean up hash/query after opening modal
       window.history.replaceState(null, '', window.location.pathname);
     }
   }

@@ -43,9 +43,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const wishlistItemsEl = document.getElementById('wishlistItems');
     const wishlistEmptyEl = document.getElementById('wishlistEmptyState');
     const clearWishlistBtn = document.getElementById('clearWishlistBtn');
+    const closeWishlistBtn = document.getElementById('closeWishlistBtn');
+    const wishlistBackdrop = document.getElementById('wishlistBackdrop');
+    const wishlistNavItem = document.querySelector('.wishlist-nav-item');
+    const wishlistNavButton = document.getElementById('wishlistNavButton');
+    const wishlistNavCount = document.getElementById('wishlistNavCount');
+    const wishlistFloatingBtn = document.getElementById('wishlistFloatingBtn');
+    const wishlistFloatingCount = document.getElementById('wishlistFloatingCount');
     const WISHLIST_KEY = 'hd_wishlist';
     let wishlist = {};
-
+    let wishlistCloseTimer = null;
+    let wishlistLastFocusedEl = null;
+    const WISHLIST_ANIM_MS = 220;
     // Current filter state
     let currentFilter = 'all';
     let currentSearch = '';
@@ -59,6 +68,107 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!isGalleryPage) {
         console.debug('gallery.js: No gallery found on this page; skipping init');
         return;
+    }
+
+    function normalizeModelSrc(src) {
+        if (!src) return '';
+        try {
+            return encodeURI(String(src).trim());
+        } catch {
+            return String(src).trim().replace(/\s/g, '%20');
+        }
+    }
+
+    function toAbsoluteUrl(url) {
+        if (!url) return '';
+        try {
+            return new URL(url, window.location.origin).href;
+        } catch {
+            return '';
+        }
+    }
+
+    function deriveUsdzUrl(modelUrl) {
+        if (!modelUrl) return '';
+        if (/\.usdz(\?|#|$)/i.test(modelUrl)) return modelUrl;
+        if (/\.(glb|gltf)(\?|#|$)/i.test(modelUrl)) {
+            return modelUrl.replace(/\.(glb|gltf)(\?|#|$)/i, '.usdz$2');
+        }
+        return '';
+    }
+
+    function getDeviceInfo() {
+        const ua = navigator.userAgent || '';
+        const isAndroid = /Android/i.test(ua);
+        const isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        return {
+            isAndroid,
+            isIOS,
+            isMobile: isAndroid || isIOS || /Mobile|Phone/i.test(ua)
+        };
+    }
+
+    function openExternalUrl(url) {
+        if (!url) return false;
+        try {
+            const a = document.createElement('a');
+            a.href = url;
+            a.rel = 'noopener';
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    function launchNativeAR({ productTitle, modelSrc, usdzSrc, modelViewer, productId }) {
+        const title = productTitle || 'Furniture Item';
+        const normalizedModel = normalizeModelSrc(modelSrc);
+        const normalizedUsdz = normalizeModelSrc(usdzSrc || deriveUsdzUrl(normalizedModel));
+        const absoluteModel = toAbsoluteUrl(normalizedModel);
+        const absoluteUsdz = toAbsoluteUrl(normalizedUsdz);
+        const detailsUrl = `${window.location.origin}/product-details.html?id=${encodeURIComponent(productId || '')}`;
+        const { isAndroid, isIOS } = getDeviceInfo();
+
+        // 1) Preferred route: model-viewer native AR handoff
+        if (modelViewer && modelViewer.canActivateAR) {
+            try {
+                modelViewer.activateAR();
+                return true;
+            } catch {
+                // Continue with device-specific fallbacks
+            }
+        }
+
+        // 2) Android fallback: Scene Viewer intent (works on modern Android Chrome/WebView)
+        if (isAndroid && absoluteModel) {
+            const intentUrl = `intent://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(absoluteModel)}&mode=ar_preferred&title=${encodeURIComponent(title)}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${encodeURIComponent(detailsUrl)};end;`;
+            if (openExternalUrl(intentUrl)) return true;
+        }
+
+        // 3) iOS fallback: Quick Look via USDZ
+        if (isIOS && absoluteUsdz) {
+            try {
+                const arLink = document.createElement('a');
+                arLink.setAttribute('rel', 'ar');
+                arLink.setAttribute('href', absoluteUsdz);
+                arLink.style.display = 'none';
+                const img = document.createElement('img');
+                img.alt = title;
+                arLink.appendChild(img);
+                document.body.appendChild(arLink);
+                arLink.click();
+                arLink.remove();
+                return true;
+            } catch {
+                // Continue to modal fallback
+            }
+        }
+
+        return false;
     }
 
     function renderSkeletonCards(count) {
@@ -138,15 +248,112 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    function isWishlisted(productId) {
+        return !!(productId && wishlist[String(productId)]);
+    }
+
+    function addToWishlistFromCard(card) {
+        if (!card) return;
+        const product = getProductDataFromCard(card);
+        if (!product?.id) return;
+        wishlist[String(product.id)] = product;
+        saveWishlist();
+        renderWishlist();
+        syncWishlistButtons();
+    }
+
+    function removeFromWishlist(productId) {
+        if (!productId) return;
+        delete wishlist[String(productId)];
+        saveWishlist();
+        renderWishlist();
+        syncWishlistButtons();
+    }
+
+    function syncWishlistButtons() {
+        document.querySelectorAll('.action-wishlist-btn').forEach(btn => {
+            const pid = btn.getAttribute('data-product-id') || btn.closest('.product-card')?.getAttribute('data-product-id');
+            const active = isWishlisted(pid);
+            btn.classList.toggle('active', active);
+            btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+            btn.setAttribute('title', active ? 'Remove from Wishlist' : 'Add to Wishlist');
+        });
+    }
+
+    function openWishlistPopup() {
+        if (!wishlistSection || Object.keys(wishlist).length === 0) return;
+        if (wishlistCloseTimer) {
+            clearTimeout(wishlistCloseTimer);
+            wishlistCloseTimer = null;
+        }
+        const activeEl = document.activeElement;
+        if (activeEl && !wishlistSection.contains(activeEl)) {
+            wishlistLastFocusedEl = activeEl;
+        }
+        if (wishlistBackdrop) wishlistBackdrop.hidden = false;
+        wishlistSection.inert = false;
+        wishlistSection.style.display = 'block';
+        wishlistSection.classList.remove('is-closing');
+        wishlistBackdrop?.classList.remove('is-closing');
+        wishlistSection.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('wishlist-popup-open');
+        document.body.classList.remove('wishlist-popup-closing');
+        if (wishlistNavButton) wishlistNavButton.setAttribute('aria-expanded', 'true');
+        if (wishlistFloatingBtn) wishlistFloatingBtn.setAttribute('aria-expanded', 'true');
+
+        // Move focus into dialog for accessibility.
+        const firstFocusable = wishlistSection.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (firstFocusable && typeof firstFocusable.focus === 'function') {
+            requestAnimationFrame(() => firstFocusable.focus());
+        }
+    }
+
+    function closeWishlistPopup() {
+        if (!wishlistSection) return;
+        const fallbackFocusEl = (wishlistLastFocusedEl && document.contains(wishlistLastFocusedEl))
+            ? wishlistLastFocusedEl
+            : wishlistNavButton;
+
+        // Move focus outside the dialog before hiding it from assistive tech.
+        if (wishlistSection.contains(document.activeElement) && fallbackFocusEl && typeof fallbackFocusEl.focus === 'function') {
+            fallbackFocusEl.focus();
+        }
+
+        wishlistSection.inert = true;
+        wishlistSection.setAttribute('aria-hidden', 'true');
+        wishlistSection.classList.add('is-closing');
+        wishlistBackdrop?.classList.add('is-closing');
+        document.body.classList.add('wishlist-popup-closing');
+        document.body.classList.remove('wishlist-popup-open');
+        if (wishlistNavButton) wishlistNavButton.setAttribute('aria-expanded', 'false');
+        if (wishlistFloatingBtn) wishlistFloatingBtn.setAttribute('aria-expanded', 'false');
+
+        if (wishlistCloseTimer) clearTimeout(wishlistCloseTimer);
+        wishlistCloseTimer = setTimeout(() => {
+            if (wishlistBackdrop) {
+                wishlistBackdrop.hidden = true;
+                wishlistBackdrop.classList.remove('is-closing');
+            }
+            wishlistSection.style.display = 'none';
+            wishlistSection.classList.remove('is-closing');
+            document.body.classList.remove('wishlist-popup-closing');
+            wishlistCloseTimer = null;
+        }, WISHLIST_ANIM_MS);
+    }
+
     function getProductDataFromCard(card) {
         const id = card.getAttribute('data-product-id');
         const title = card.querySelector('.product-title')?.textContent?.trim() || `Product ${id}`;
         const price = card.querySelector('.current-price')?.textContent?.trim() || '';
+        const ratingText = card.querySelector('.rating-count')?.textContent?.trim() || '';
         const imgEl = card.querySelector('.product-image img');
         const modelEl = card.querySelector('model-viewer');
         const is3d = card.getAttribute('data-is-3d') === '1';
         const modelSrc = card.getAttribute('data-model-src') || '';
         const imageAttr = card.getAttribute('data-image');
+        const category = card.getAttribute('data-category') || '';
+        const material = card.getAttribute('data-material') || '';
+        const brand = card.getAttribute('data-brand') || '';
 
         // Priority for image: 
         // 1. data-image attribute (explicitly set)
@@ -194,8 +401,20 @@ document.addEventListener('DOMContentLoaded', function () {
             // Let the specific resolve logic handle SVG/badge if it's truly a fallback
         }
 
-        const category = card.getAttribute('data-category') || '';
-        return { id, title, price, image, category, is_3d: is3d, model_src: modelSrc };
+        const description = material || (category ? `${category} piece with clean modern styling.` : 'Premium furniture crafted for modern interiors.');
+        return {
+            id,
+            title,
+            price,
+            image,
+            category,
+            brand,
+            material,
+            description,
+            rating_text: ratingText,
+            is_3d: is3d,
+            model_src: modelSrc
+        };
     }
 
     function parsePriceToNumber(priceText) {
@@ -227,15 +446,30 @@ document.addEventListener('DOMContentLoaded', function () {
     function renderWishlist() {
         if (!wishlistItemsEl || !wishlistEmptyEl) return;
 
+        const esc = (v) => String(v || '').replace(/[&<>"']/g, (ch) => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[ch]));
+
         const wishlistSection = document.querySelector('.wishlist-section');
         const items = Object.values(wishlist);
+        const isPopupOpen = document.body.classList.contains('wishlist-popup-open');
 
         if (items.length === 0) {
             if (wishlistSection) wishlistSection.style.display = 'none';
-            wishlistItemsEl.innerHTML = '';
-            wishlistEmptyEl.style.display = 'block';
+            wishlistEmptyEl.style.display = 'none';
+            wishlistItemsEl.innerHTML = `
+                <div class="wishlist-empty-card">
+                    <div class="wishlist-empty-icon" aria-hidden="true">♡</div>
+                    <h3>Your wishlist is empty</h3>
+                    <p>Save products you love and compare them later in one clean place.</p>
+                </div>
+            `;
         } else {
-            if (wishlistSection) wishlistSection.style.display = 'block';
+            if (wishlistSection) wishlistSection.style.display = isPopupOpen ? 'block' : 'none';
             wishlistEmptyEl.style.display = 'none';
 
             const html = items.map(item => {
@@ -246,26 +480,32 @@ document.addEventListener('DOMContentLoaded', function () {
                 const hasValidImage = item.image && item.image.trim().length > 0 && !item.image.includes('data:image/svg');
 
                 if (hasValidImage) {
-                    thumbHtml = `<div class="wishlist-thumb"><img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.onerror=null;this.src='image/Logo maker project.webp';"/></div>`;
+                    thumbHtml = `<div class="wishlist-thumb"><img src="${esc(item.image)}" alt="${esc(item.title)}" loading="lazy" onerror="this.onerror=null;this.src='image/Logo maker project.webp';"/></div>`;
                 } else {
                     // Fallback for 3D items without any resolved image
                     thumbHtml = `<div class="wishlist-thumb wishlist-thumb-3d" aria-label="3D model">3D</div>`;
                 }
 
+                const rating = item.rating_text ? `<div class="wishlist-rating">★ ${esc(item.rating_text)}</div>` : '';
+                const desc = esc(item.description || item.category || 'Premium furniture crafted for modern interiors.');
+                const price = esc(item.price || '');
+                const id = esc(item.id);
+                const title = esc(item.title);
+
                 return `
                 <div class="wishlist-item" data-product-id="${item.id}">
                     ${thumbHtml}
                     <div class="wishlist-meta">
-                        <a class="wishlist-title" href="product-details.html?id=${item.id}">${item.title}</a>
-                        ${item.price ? `<div class="wishlist-price">${item.price}</div>` : ''}
-                        <div class="wishlist-meta-actions">
-                            <a class="wishlist-view" href="product-details.html?id=${item.id}" title="View Details">
+                        <a class="wishlist-title" href="product-details.html?id=${id}">${title}</a>
+                        ${rating}
+                        <p class="wishlist-desc">${desc}</p>
+                        ${price ? `<div class="wishlist-price">${price}</div>` : ''}
+                        <div class="wishlist-meta-actions wishlist-actions-row">
+                            <button class="wishlist-move-btn" data-product-id="${id}" aria-label="Move to cart" title="Move to Cart">Move to Cart</button>
+                            <a class="wishlist-icon-btn wishlist-view" href="product-details.html?id=${id}" title="View Details" aria-label="View Details">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </a>
-                            <button class="wishlist-add-to-cart" data-product-id="${item.id}" aria-label="Add to cart" title="Add to Cart">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path><line x1="12" y1="9" x2="12" y2="15"></line><line x1="15" y1="12" x2="9" y2="12"></line></svg>
-                            </button>
-                            <button class="wishlist-remove" data-product-id="${item.id}" aria-label="Remove" title="Remove">
+                            <button class="wishlist-icon-btn wishlist-remove" data-product-id="${id}" aria-label="Remove" title="Remove">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                             </button>
                         </div>
@@ -283,7 +523,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
 
-            wishlistItemsEl.querySelectorAll('.wishlist-add-to-cart').forEach(btn => {
+            wishlistItemsEl.querySelectorAll('.wishlist-move-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -313,43 +553,39 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
         }
-        syncWishlistButtons();
-    }
-
-    function addToWishlistFromCard(card) {
-        const data = getProductDataFromCard(card);
-        wishlist[data.id] = data;
-        saveWishlist();
-        renderWishlist();
-        // Immediately sync buttons to reflect state
-        syncWishlistButtons();
-    }
-
-    function removeFromWishlist(id) {
-        if (wishlist[id]) {
-            delete wishlist[id];
-            saveWishlist();
-            renderWishlist();
-            // Immediately sync buttons to reflect state
-            syncWishlistButtons();
+        if (window.wishlistSystem && typeof window.wishlistSystem.updateNavbarButton === 'function') {
+            window.wishlistSystem.updateNavbarButton();
         }
     }
 
-    function isWishlisted(id) { return !!wishlist[id]; }
-
-    function syncWishlistButtons() {
-        document.querySelectorAll('.action-wishlist-btn').forEach(btn => {
-            const id = btn.getAttribute('data-product-id') || btn.closest('.product-card')?.getAttribute('data-product-id');
-            if (!id) return;
-            if (isWishlisted(id)) {
-                btn.classList.add('active');
-                btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
-            } else {
-                btn.classList.remove('active');
-                btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
-            }
-        });
-    }
+    window.wishlistSystem = {
+        add: (product) => {
+            if (!product?.id) return;
+            wishlist[String(product.id)] = product;
+            saveWishlist();
+            renderWishlist();
+            syncWishlistButtons();
+        },
+        remove: (productId) => removeFromWishlist(productId),
+        has: (productId) => isWishlisted(productId),
+        wishlist,
+        updateNavbarButton: () => {
+            try {
+                const count = Object.keys(wishlist).length;
+                if (wishlistNavItem) wishlistNavItem.hidden = count === 0;
+                if (wishlistNavCount) {
+                    wishlistNavCount.hidden = count === 0;
+                    wishlistNavCount.textContent = String(count);
+                }
+                if (wishlistFloatingBtn) wishlistFloatingBtn.hidden = count === 0;
+                if (wishlistFloatingCount) {
+                    wishlistFloatingCount.hidden = count === 0;
+                    wishlistFloatingCount.textContent = String(count);
+                }
+                if (count === 0) closeWishlistPopup();
+            } catch { }
+        }
+    };
 
     // Filter functionality
     filterButtons.forEach(button => {
@@ -370,38 +606,11 @@ document.addEventListener('DOMContentLoaded', function () {
         applyFilters();
     }
 
-    // Intersection Observer for scroll animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
-            }
-        });
-    }, observerOptions);
-
     // Observe gallery items for animation
     function observeItems(items) {
-        items.forEach(item => observer.observe(item));
+        // Obsolete function since scroll animations are handled differently now.
     }
     observeItems(galleryItems);
-
-    // Add hover effects to gallery items
-    function bindHover(items) {
-        items.forEach(item => {
-            item.addEventListener('mouseenter', function () {
-                this.style.transform = 'translateY(-15px) scale(1.02)';
-            });
-            item.addEventListener('mouseleave', function () {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
-    }
-    bindHover(galleryItems);
 
     // Add click effects to gallery items
     function bindRipple(items) {
@@ -574,7 +783,6 @@ document.addEventListener('DOMContentLoaded', function () {
             galleryItems.forEach(item => {
                 item.style.display = 'block';
                 item.style.opacity = '1';
-                item.style.transform = 'translateY(0)';
             });
             updateResultsCounter(galleryItems.length);
         }
@@ -682,11 +890,9 @@ document.addEventListener('DOMContentLoaded', function () {
             if (categoryMatch && searchMatch && priceMatch) {
                 item.style.display = 'block';
                 item.style.opacity = '1';
-                item.style.transform = 'translateY(0)';
                 visibleItems.push(item);
             } else {
                 item.style.opacity = '0';
-                item.style.transform = 'translateY(20px)';
                 setTimeout(() => {
                     item.style.display = 'none';
                 }, 300);
@@ -854,15 +1060,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.preventDefault();
                 const productCard = btn.closest('.product-card');
                 const productTitle = productCard.querySelector('.product-title').textContent;
-                const modelSrc = (btn.getAttribute('data-model-src') || '').replace(/\s/g, '%20');
+                const modelSrc = normalizeModelSrc(btn.getAttribute('data-model-src') || '');
+                const usdzSrc = normalizeModelSrc(btn.getAttribute('data-usdz-src') || productCard?.getAttribute('data-usdz-src') || '');
                 const productId = btn.getAttribute('data-product-id');
-                // Try to trigger AR directly from the on-card model-viewer if supported
                 const mvOnCard = productCard.querySelector('model-viewer');
-                if (mvOnCard && mvOnCard.canActivateAR) {
-                    try { mvOnCard.activateAR(); return; } catch { }
+                const started = launchNativeAR({
+                    productTitle,
+                    modelSrc,
+                    usdzSrc,
+                    modelViewer: mvOnCard,
+                    productId
+                });
+                if (!started) {
+                    showGalleryARExperience(productTitle, modelSrc, productId, usdzSrc);
                 }
-                // Fallback: open our 3D modal
-                showGalleryARExperience(productTitle, modelSrc, productId);
             });
         });
 
@@ -944,14 +1155,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 const card = arBtn.closest('.product-card');
                 const title = card?.querySelector('.product-title')?.textContent || 'Item';
                 const rawSrc = arBtn.getAttribute('data-model-src') || '';
-                const modelSrc = rawSrc.replace(/\s/g, '%20');
+                const modelSrc = normalizeModelSrc(rawSrc);
+                const usdzSrc = normalizeModelSrc(arBtn.getAttribute('data-usdz-src') || card?.getAttribute('data-usdz-src') || '');
                 const id = arBtn.getAttribute('data-product-id') || card?.getAttribute('data-product-id');
-                // Prefer direct AR from on-card viewer
                 const mv = card?.querySelector('model-viewer');
-                if (mv && mv.canActivateAR) {
-                    try { mv.activateAR(); return; } catch { }
+                const started = launchNativeAR({
+                    productTitle: title,
+                    modelSrc,
+                    usdzSrc,
+                    modelViewer: mv,
+                    productId: id
+                });
+                if (!started) {
+                    showGalleryARExperience(title, modelSrc, id, usdzSrc);
                 }
-                showGalleryARExperience(title, modelSrc, id);
                 return;
             }
 
@@ -979,9 +1196,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Initialize wishlist state immediately so buttons reflect saved items
     try {
-        loadWishlist();
-        renderWishlist(); // safe no-op if section doesn't exist
-        syncWishlistButtons();
+        
+         // safe no-op if section doesn't exist
+        window.wishlistSystem && window.wishlistSystem.updateNavbarButton();
     } catch (e) { console.debug('Wishlist init skipped:', e); }
 
     // Fetch products from API and append to gallery (if any)
@@ -1014,6 +1231,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const imgSrc = p.thumbnail || p.image || 'image/Logo maker project.webp';
                 const is3D = !!(p.model_3d?.enabled || p.is_3d);
                 const modelSrc = p.model_3d?.file_url || p.model_src || '';
+                const usdzSrc = p.model_3d?.usdz_url || p.model_3d?.ios_url || p.usdz_src || p.ios_model_src || deriveUsdzUrl(modelSrc) || '';
+                const iosSrcAttr = usdzSrc ? ` ios-src="${usdzSrc}"` : '';
 
                 const existing = galleryContainer.querySelector(`.product-card[data-product-id="${p.id}"]`);
                 const priceHtml = `<span class="current-price">₹${Number(p.price || 0).toLocaleString('en-IN')}</span>`;
@@ -1038,7 +1257,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // For 3D products: model-viewer is always slide 1, poster counts as "used"
                 if (is3D && modelSrc) {
-                    slideItems.push(`<div class="slide-item" style="flex:0 0 100%;scroll-snap-align:start;width:100%;height:100%;position:relative;"><model-viewer src="${modelSrc}" poster="${imgSrc}" shadow-intensity="1" alt="${p.name}" camera-controls auto-rotate disable-zoom ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:100%;touch-action:pan-y;"></model-viewer></div>`);
+                    slideItems.push(`<div class="slide-item" style="flex:0 0 100%;scroll-snap-align:start;width:100%;height:100%;position:relative;"><model-viewer src="${modelSrc}"${iosSrcAttr} poster="${imgSrc}" shadow-intensity="1" alt="${p.name}" camera-controls auto-rotate disable-zoom ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:100%;touch-action:pan-y;"></model-viewer></div>`);
                     // poster already shows the thumbnail, so mark it used
                     tryAdd(imgSrc);
                 }
@@ -1059,6 +1278,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 let mediaHtml = '';
                 if (slideItems.length > 1) {
+                    const isMobileViewport = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+                    const dotSize = isMobileViewport ? 5 : 8;
+                    const dotGap = isMobileViewport ? 3 : 5;
                     mediaHtml = `
                         <div class="product-slider-wrapper" style="position:relative;width:100%;height:100%;overflow:hidden;touch-action:pan-y;">
                             <div class="product-slider-container" data-slide-count="${slideItems.length}" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;width:100%;height:100%;touch-action:pan-y;">
@@ -1066,8 +1288,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                             <button class="slider-nav prev" aria-label="Previous" style="position:absolute;left:4px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.85);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;font-weight:bold;color:#333;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.4);z-index:3;opacity:0;transition:opacity .2s;">&#10094;</button>
                             <button class="slider-nav next" aria-label="Next" style="position:absolute;right:4px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.85);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;font-weight:bold;color:#333;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,0.4);z-index:3;opacity:0;transition:opacity .2s;">&#10095;</button>
-                            <div class="slider-dots" style="position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:5px;z-index:4;">
-                                ${slideItems.map((_, i) => `<button class="slider-dot" data-index="${i}" aria-label="Go to slide ${i + 1}" style="width:8px;height:8px;padding:0;border:none;border-radius:50%;background:${i === 0 ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.45)'};box-shadow:0 1px 2px rgba(0,0,0,0.3);cursor:pointer;transition:background .3s, transform .2s;"></button>`).join('')}
+                            <div class="slider-dots" style="position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:${dotGap}px;z-index:4;">
+                                ${slideItems.map((_, i) => `<button class="slider-dot" data-index="${i}" aria-label="Go to slide ${i + 1}" style="width:${dotSize}px;height:${dotSize}px;min-width:${dotSize}px;min-height:${dotSize}px;max-width:${dotSize}px;max-height:${dotSize}px;padding:0;border:none;border-radius:50%;background:${i === 0 ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.45)'};box-shadow:0 1px 2px rgba(0,0,0,0.3);cursor:pointer;transition:background .3s, transform .2s;"></button>`).join('')}
                             </div>
                         </div>
                     `;
@@ -1080,6 +1302,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (existing) {
                     existing.setAttribute('data-is-3d', is3D ? '1' : '0');
                     existing.setAttribute('data-model-src', modelSrc);
+                    if (usdzSrc) existing.setAttribute('data-usdz-src', usdzSrc); else existing.removeAttribute('data-usdz-src');
                     existing.setAttribute('data-price', String(Number(p.price || 0)));
                     if (imgSrc) existing.setAttribute('data-image', imgSrc); else existing.removeAttribute('data-image');
                     // Update existing static card with latest DB data
@@ -1096,6 +1319,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                     const titleEl = existing.querySelector('.product-title');
                     if (titleEl) titleEl.textContent = p.name;
+                    const existingArBtn = existing.querySelector('.view-in-room-btn');
+                    if (existingArBtn) {
+                        existingArBtn.setAttribute('data-model-src', modelSrc);
+                        if (usdzSrc) existingArBtn.setAttribute('data-usdz-src', usdzSrc); else existingArBtn.removeAttribute('data-usdz-src');
+                    }
                     const ratingWrap = existing.querySelector('.product-rating');
                     if (ratingWrap) {
                         const starsHtml = renderStars(p.rating || 0);
@@ -1117,6 +1345,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     card.setAttribute('data-product-id', p.id);
                     card.setAttribute('data-is-3d', is3D ? '1' : '0');
                     card.setAttribute('data-model-src', modelSrc);
+                    if (usdzSrc) card.setAttribute('data-usdz-src', usdzSrc);
                     card.setAttribute('data-price', String(Number(p.price || 0)));
                     if (imgSrc) card.setAttribute('data-image', imgSrc);
                     if (p.brand) card.setAttribute('data-brand', p.brand);
@@ -1137,7 +1366,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     </svg>
                                 </button>
                                 ${is3D ? `
-                                <button class="action-btn view-in-room-btn" data-product-id="${p.id}" data-model-src="${modelSrc}" title="View in Room">
+                                <button class="action-btn view-in-room-btn" data-product-id="${p.id}" data-model-src="${modelSrc}" data-usdz-src="${usdzSrc}" title="View in Room">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
                                         <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
@@ -1187,7 +1416,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 galleryItems = Array.from(document.querySelectorAll('.product-card')).filter((card) => !card.classList.contains('skeleton-card'));
                 observeItems(created);
-                bindHover(created);
                 bindRipple(created);
                 // Bind only the newly created cards to avoid double-binding existing buttons
                 bindCardButtons(created);
@@ -1211,11 +1439,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             let currentIndex = 0;
                             let autoPlayTimer = null;
+                            const isMobileViewport = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
 
                             const updateDots = (idx) => {
                                 dots.forEach((d, i) => {
                                     d.style.background = i === idx ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.45)';
-                                    d.style.transform = i === idx ? 'scale(1.3)' : 'scale(1)';
+                                    d.style.transform = i === idx ? (isMobileViewport ? 'scale(1.1)' : 'scale(1.3)') : 'scale(1)';
                                 });
                             };
 
@@ -1278,7 +1507,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 updatePriceRange();
                 applyFilters();
-                syncWishlistButtons();
+                window.wishlistSystem && window.wishlistSystem.updateNavbarButton();
 
                 // Also reveal any existing cards that were updated (not newly created)
                 const allRealCards = galleryContainer.querySelectorAll('.product-card:not(.skeleton-card):not(.card-revealed)');
@@ -1305,21 +1534,27 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             const productCard = btn.closest('.product-card');
             const productTitle = productCard.querySelector('.product-title').textContent;
-            const modelSrc = (btn.getAttribute('data-model-src') || '').replace(/\s/g, '%20');
+            const modelSrc = normalizeModelSrc(btn.getAttribute('data-model-src') || '');
+            const usdzSrc = normalizeModelSrc(btn.getAttribute('data-usdz-src') || productCard?.getAttribute('data-usdz-src') || '');
             const productId = btn.getAttribute('data-product-id');
-            // Try direct AR from on-card viewer first
             const mvOnCard = productCard.querySelector('model-viewer');
-            if (mvOnCard && mvOnCard.canActivateAR) {
-                try { mvOnCard.activateAR(); return; } catch { }
+            const started = launchNativeAR({
+                productTitle,
+                modelSrc,
+                usdzSrc,
+                modelViewer: mvOnCard,
+                productId
+            });
+            if (!started) {
+                showGalleryARExperience(productTitle, modelSrc, productId, usdzSrc);
             }
-            // Otherwise open fallback modal
-            showGalleryARExperience(productTitle, modelSrc, productId);
         });
     });
 
     // Function to show AR experience from gallery
-    function showGalleryARExperience(productTitle, modelSrc, productId) {
+    function showGalleryARExperience(productTitle, modelSrc, productId, usdzSrc = '') {
         const esc = (s) => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' }[c]));
+        const iosSrcAttr = usdzSrc ? ` ios-src="${esc(usdzSrc)}"` : '';
         const modal = document.createElement('div');
         modal.className = 'gallery-ar-modal';
         modal.innerHTML = `
@@ -1330,7 +1565,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <button class="gallery-ar-close">&times;</button>
                 </div>
                 <div class="gallery-ar-body">
-                    <model-viewer src="${esc(modelSrc)}" alt="${esc(productTitle)}" camera-controls auto-rotate background-color="#121419" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:400px;border-radius:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,0.35);"></model-viewer>
+                    <model-viewer src="${esc(modelSrc)}"${iosSrcAttr} alt="${esc(productTitle)}" camera-controls auto-rotate background-color="#121419" ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:400px;border-radius:1.2rem;box-shadow:0 2px 12px rgba(0,0,0,0.35);"></model-viewer>
                     <div class="gallery-ar-instructions">
                         <h4>How to use AR:</h4>
                         <ol>
@@ -1605,11 +1840,20 @@ document.addEventListener('DOMContentLoaded', function () {
         overlay.addEventListener('click', closeModal);
 
         startBtn.addEventListener('click', () => {
-            if (modelViewer && modelViewer.canActivateAR) {
-                modelViewer.activateAR();
-            } else {
+            const started = launchNativeAR({
+                productTitle,
+                modelSrc,
+                usdzSrc,
+                modelViewer,
+                productId
+            });
+            if (!started) {
                 if (window.cartPopupSystem) {
-                    window.cartPopupSystem.showNotification('AR not supported on this device', 'warning');
+                    const { isIOS } = getDeviceInfo();
+                    const msg = isIOS
+                        ? 'This iPhone/iPad needs a USDZ model file for AR. Please open product details.'
+                        : 'AR is not available on this device/browser. Please open product details.';
+                    window.cartPopupSystem.showNotification(msg, 'warning');
                 }
             }
         });
@@ -1625,8 +1869,69 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Initialize wishlist UI ---
     if (wishlistSection) {
+        wishlistSection.inert = true;
         loadWishlist();
         renderWishlist();
+        syncWishlistButtons();
+        
+        if (window.location.hash === '#wishlist') {
+            setTimeout(() => {
+                openWishlistPopup();
+                window.history.replaceState(null, '', window.location.pathname + window.location.search);
+            }, 300);
+        }
+
+        if (wishlistNavButton) {
+            wishlistNavButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                openWishlistPopup();
+            });
+        }
+
+        if (wishlistFloatingBtn) {
+            wishlistFloatingBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openWishlistPopup();
+            });
+        }
+
+        if (closeWishlistBtn) {
+            closeWishlistBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                closeWishlistPopup();
+            });
+        }
+
+        if (wishlistBackdrop) {
+            wishlistBackdrop.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeWishlistPopup();
+            });
+        }
+
+        wishlistSection?.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        const handleWishlistOutsideClose = (e) => {
+            if (!document.body.classList.contains('wishlist-popup-open')) return;
+            const target = e.target;
+            const clickedInsidePopup = !!target.closest('.wishlist-popup');
+            const clickedWishlistButton = !!target.closest('#wishlistNavButton');
+            if (!clickedInsidePopup && !clickedWishlistButton) {
+                closeWishlistPopup();
+            }
+        };
+
+        document.addEventListener('click', handleWishlistOutsideClose, true);
+        document.addEventListener('touchstart', handleWishlistOutsideClose, { passive: true, capture: true });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.body.classList.contains('wishlist-popup-open')) {
+                closeWishlistPopup();
+            }
+        });
 
         // Clear all
         if (clearWishlistBtn) {
@@ -1634,6 +1939,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 wishlist = {};
                 saveWishlist();
                 renderWishlist();
+                syncWishlistButtons();
+                closeWishlistPopup();
+                
                 if (window.cartPopupSystem) {
                     window.cartPopupSystem.showNotification('Wishlist cleared', 'info');
                 }
@@ -1643,8 +1951,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Remove single via delegation
         if (wishlistItemsEl) {
             wishlistItemsEl.addEventListener('click', (e) => {
-                const removeBtn = e.target.closest('[data-action="remove"]');
-                const addBtn = e.target.closest('[data-action="add-to-cart"]');
+                const removeBtn = e.target.closest('.wishlist-remove');
+                const addBtn = e.target.closest('.wishlist-move-btn');
                 const itemEl = e.target.closest('.wishlist-item');
                 const id = itemEl?.getAttribute('data-product-id');
                 if (!itemEl || !id) return;

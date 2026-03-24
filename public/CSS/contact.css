@@ -72,10 +72,7 @@ body {
     color: var(--p-cream);
     position: relative;
     top: auto;
-    height: auto;
-    min-height: calc(100vh - 80px);
-    display: flex;
-    flex-direction: column;
+    height: auto;                     
     justify-content: center;
     padding: 60px 80px;
     z-index: 10;

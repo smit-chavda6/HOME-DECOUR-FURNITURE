@@ -33,8 +33,18 @@
         <li class="navbar-item"><a href="about.html" class="navbar-link">About Us</a></li>
         <li class="navbar-item"><a href="contact.html" class="navbar-link">Contact Us</a></li>
         <li class="navbar-item"><a href="login.html" class="navbar-link navbar-login-btn" id="navbar-login-btn" title="Login"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 8-4 8-4s8 0 8 4v1H4v-1z"/></svg></a></li>
-        <li class="navbar-item">
-          <a href="#" class="cart-icon">
+        
+                <li class="navbar-item wishlist-nav-item" hidden>
+                    <a href="#" class="wishlist-icon-nav" aria-label="Open wishlist">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span class="sr-only">Wishlist</span>
+                        <span class="wishlist-count" hidden>0</span>
+                    </a>
+                </li>
+                <li class="navbar-item">
+                    <a href="#" class="cart-icon">
             <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
             Cart
             <span class="cart-count">0</span>
@@ -167,89 +177,7 @@
     </div>
   </div>
 
-  <!-- Write/Edit Review Modal -->
-  <div class="modal-overlay" id="reviewModal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="modal" role="document">
-      <div class="modal-header">
-        <h3 id="reviewModalTitle">Write a review</h3>
-        <button class="modal-close" data-close="reviewModal" aria-label="Close">&times;</button>
-      </div>
-      <div class="modal-body">
-        <form id="reviewForm" class="form">
-          <input type="hidden" id="reviewProductId" />
-          <input type="hidden" id="reviewOrderId" />
-          <div class="field">
-            <label for="reviewRating">Rating</label>
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-              <div id="reviewRatingStars" class="stars interactive" aria-label="Choose a rating" role="radiogroup"></div>
-              <span id="reviewRatingValue" class="rating-value" aria-live="polite" style="font-weight:600;min-width:48px;">0.0</span>
-            </div>
-            <input type="hidden" id="reviewRating" required />
-          </div>
-          <div class="field">
-            <label for="reviewComment">Comment (optional)</label>
-            <textarea id="reviewComment" rows="4" placeholder="Share your experience…"></textarea>
-          </div>
-          <div class="actions">
-            <button class="btn" type="button" data-close="reviewModal">Cancel</button>
-            <button class="btn primary" type="submit">Save review</button>
-          </div>
-          <div id="reviewMsg" class="msg" role="status" aria-live="polite"></div>
-        </form>
-      </div>
-    </div>
-  </div>
 
-  <!-- Orders & Reviews Modal -->
-  <div class="modal-overlay" id="ordersReviewsModal" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="modal modal--wide" role="document">
-      <div class="modal-header">
-        <h3>My Orders & Reviews</h3>
-        <button class="modal-close" data-close="ordersReviewsModal" aria-label="Close">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="tabs">
-          <button class="tab-btn active" id="tabOrdersBtn" aria-controls="ordersTab" aria-selected="true">Orders</button>
-          <button class="tab-btn" id="tabReviewsBtn" aria-controls="reviewsTab" aria-selected="false">Reviews</button>
-        </div>
-        <div id="ordersTab" class="tab-pane" style="display:block;">
-          <table class="data-table" id="ordersTable" aria-describedby="orders-caption">
-            <caption id="orders-caption" class="sr-only">Your orders list</caption>
-            <thead>
-              <tr>
-                <th scope="col">Order #</th>
-                <th scope="col">Date</th>
-                <th scope="col">Status</th>
-                <th scope="col">Total</th>
-                <th scope="col">Items</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="ordersList">
-              <tr><td colspan="6">Loading your orders…</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div id="reviewsTab" class="tab-pane" style="display:none;">
-          <table class="data-table" id="reviewsTable" aria-describedby="reviews-caption">
-            <caption id="reviews-caption" class="sr-only">Your reviews list</caption>
-            <thead>
-              <tr>
-                <th scope="col">Product</th>
-                <th scope="col">Rating</th>
-                <th scope="col">Comment</th>
-                <th scope="col">Updated</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="reviewsList">
-              <tr><td colspan="5">No reviews yet.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <footer class="footer">
     <div class="footer-container">

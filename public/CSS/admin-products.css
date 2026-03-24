@@ -4,35 +4,35 @@
 
 /* ---------- Variables ---------- */
 :root {
-    --ap-bg: #faf8f5;
+    --ap-bg: #f9f9f9;
     --ap-card: #ffffff;
-    --ap-border: #eae4dd;
-    --ap-text: #2c2826;
-    --ap-text-muted: #8a8480;
-    --ap-accent: #c08457;
-    --ap-accent-light: #d4a373;
-    --ap-accent-hover: #a36f45;
-    --ap-success: #2d7a4f;
-    --ap-danger: #c0392b;
-    --ap-warning: #d4a017;
-    --ap-radius: 16px;
-    --ap-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    --ap-shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.05);
-    --ap-transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    --ap-font: 'Jost', system-ui, sans-serif;
+    --ap-border: #e0e0e0;
+    --ap-text: #1a1a1a;
+    --ap-text-muted: #6b6b6b;
+    --ap-accent: #000000;
+    --ap-accent-light: #333333;
+    --ap-accent-hover: #1a1a1a;
+    --ap-success: #10b981;
+    --ap-danger: #ef4444;
+    --ap-warning: #f59e0b;
+    --ap-radius: 8px;
+    --ap-shadow: none;
+    --ap-shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.05);
+    --ap-transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --ap-font: inherit;
 }
 
 body.dark-mode {
-    --ap-bg: #0f0f11;
-    --ap-card: #16181d;
-    --ap-border: #22262f;
-    --ap-text: #eaeef5;
-    --ap-text-muted: #a4a9b6;
-    --ap-accent: #d4a373;
-    --ap-accent-light: #c08457;
-    --ap-accent-hover: #e2b08a;
-    --ap-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    --ap-shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.3);
+    --ap-bg: #0a0a0a;
+    --ap-card: #121212;
+    --ap-border: #262626;
+    --ap-text: #f0f0f0;
+    --ap-text-muted: #888888;
+    --ap-accent: #ffffff;
+    --ap-accent-light: #cccccc;
+    --ap-accent-hover: #e5e5e5;
+    --ap-shadow: none;
+    --ap-shadow-lg: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 /* ---------- Page Layout ---------- */
@@ -190,45 +190,32 @@ body.dark-mode {
     display: flex;
     align-items: center;
     gap: 20px;
-    box-shadow: var(--ap-shadow);
-    transition: transform var(--ap-transition), box-shadow var(--ap-transition);
-}
-
-.ap-stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--ap-shadow-lg);
+    box-shadow: none;
 }
 
 .ap-stat-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 14px;
+    width: 48px;
+    height: 48px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
     flex-shrink: 0;
+    background: var(--ap-bg);
+    border: 1px solid var(--ap-border);
+    color: var(--ap-text);
 }
 
-.ap-stat-icon.total {
-    background: rgba(139, 69, 19, 0.1);
-    color: var(--ap-accent);
+.ap-stat-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.5;
 }
 
-.ap-stat-icon.active {
-    background: rgba(45, 122, 79, 0.1);
-    color: var(--ap-success);
-}
-
-.ap-stat-icon.featured {
-    background: rgba(212, 160, 23, 0.1);
-    color: var(--ap-warning);
-}
-
-.ap-stat-icon.three-d {
-    background: rgba(108, 99, 255, 0.1);
-    color: #6c63ff;
-}
+.ap-stat-icon.total { background: var(--ap-bg); color: var(--ap-text); }
+.ap-stat-icon.active { background: var(--ap-bg); color: var(--ap-success); }
+.ap-stat-icon.featured { background: var(--ap-bg); color: var(--ap-warning); }
+.ap-stat-icon.three-d { background: var(--ap-bg); color: var(--ap-text); }
 
 .ap-stat-info h3 {
     font-size: 1.5rem;
@@ -311,9 +298,9 @@ body.dark-mode {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 18px;
+    padding: 8px 16px;
     border: 1px solid var(--ap-border);
-    border-radius: 30px;
+    border-radius: 6px;
     background: var(--ap-card);
     color: var(--ap-text);
     font-size: 0.9rem;
@@ -333,12 +320,13 @@ body.dark-mode {
 .ap-btn svg {
     width: 16px;
     height: 16px;
+    stroke-width: 1.5;
 }
 
 .ap-btn.primary {
-    background: linear-gradient(135deg, var(--ap-accent-light), var(--ap-accent));
-    border-color: transparent;
-    color: #fff;
+    background: var(--ap-accent);
+    border-color: var(--ap-accent);
+    color: var(--ap-bg);
 }
 
 .ap-btn.primary:hover {
@@ -346,29 +334,30 @@ body.dark-mode {
 }
 
 .ap-btn.danger {
-    background: var(--ap-danger);
+    background: var(--ap-card);
     border-color: var(--ap-danger);
-    color: #fff;
+    color: var(--ap-danger);
 }
 
 .ap-btn.danger:hover {
-    background: #a93226;
+    background: var(--ap-danger);
+    color: #ffffff;
 }
 
 .ap-btn.success {
-    background: var(--ap-success);
+    background: var(--ap-card);
     border-color: var(--ap-success);
-    color: #fff;
+    color: var(--ap-success);
 }
 
 .ap-btn.sm {
-    padding: 8px 12px;
+    padding: 6px 12px;
     font-size: 0.8rem;
 }
 
 .ap-btn.icon-only {
     padding: 8px;
-    border: none;
+    border: 1px solid transparent;
     background: transparent;
 }
 
@@ -480,48 +469,24 @@ body.dark-mode {
 
 .ap-badge {
     display: inline-flex;
-    padding: 4px 12px;
-    border-radius: 30px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    border: 1px solid var(--ap-border);
+    background: transparent;
+    color: var(--ap-text-muted);
 }
 
-.ap-badge.featured {
-    background: rgba(212, 160, 23, 0.15);
-    color: var(--ap-warning);
-}
-
-.ap-badge.trending {
-    background: rgba(108, 99, 255, 0.12);
-    color: #6c63ff;
-}
-
-.ap-badge.new {
-    background: rgba(45, 122, 79, 0.12);
-    color: var(--ap-success);
-}
-
-.ap-badge.has-3d {
-    background: rgba(139, 69, 19, 0.1);
-    color: var(--ap-accent);
-}
-
-.ap-badge.out-of-stock {
-    background: rgba(192, 57, 43, 0.12);
-    color: var(--ap-danger);
-}
-
-.ap-badge.active {
-    background: rgba(45, 122, 79, 0.12);
-    color: var(--ap-success);
-}
-
-.ap-badge.inactive {
-    background: rgba(192, 57, 43, 0.12);
-    color: var(--ap-danger);
-}
+.ap-badge.featured { color: var(--ap-warning); border-color: var(--ap-warning); }
+.ap-badge.trending { color: var(--ap-accent); border-color: var(--ap-accent); }
+.ap-badge.new { color: var(--ap-accent); border-color: var(--ap-accent); }
+.ap-badge.has-3d { color: var(--ap-text); border-color: var(--ap-text); }
+.ap-badge.out-of-stock { color: var(--ap-danger); border-color: var(--ap-danger); }
+.ap-badge.active { color: var(--ap-success); border-color: var(--ap-success); }
+.ap-badge.inactive { color: var(--ap-danger); border-color: var(--ap-danger); }
 
 .ap-actions-cell {
     display: flex;
