@@ -324,9 +324,10 @@ const ContactMessage = mongoose.model('ContactMessage', contactMessageSchema);
 
 // ============= MONGODB CONNECTION =============
 
+// Improved MongoDB connection with Vercel/Serverless in mind
 mongoose.connect(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+    serverSelectionTimeoutMS: 5000, // Keep this low so functions don't time out
+    socketTimeoutMS: 45000,
 })
     .then(() => {
         console.log('Connected to MongoDB');
@@ -540,7 +541,7 @@ function requireAdmin(req, res, next) {
 // ============= ROUTES =============
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Register endpoint
@@ -1695,16 +1696,15 @@ if (!process.env.VERCEL) {
     startServer(DEFAULT_PORT);
 }
 
-// Export for Vercel serverless handler
-module.exports = app;
-
 // Graceful shutdown
-process.on('SIGINT', async () => {
-    console.log('Shutting down gracefully...');
-    await mongoose.connection.close();
-    console.log('Database connection closed');
-    process.exit(0);
-});
+if (!process.env.VERCEL) {
+    process.on('SIGINT', async () => {
+        console.log('Shutting down gracefully...');
+        await mongoose.connection.close();
+        console.log('Database connection closed');
+        process.exit(0);
+    });
+}
 
 // ================= CHATBOT (Gemini) BACKEND =================
 
@@ -2173,3 +2173,23 @@ ${orderContext ? '\n## 📦 ORDER DATA:\n' + orderContext : ''}`;
         return res.status(500).json({ error: 'Server error' });
     }
 });
+
+// 404 handler
+app.use((req, res) => {
+    res.status(404).json({ error: 'Endpoint not found' });
+});
+
+// Final Error Logging Middleware
+app.use((err, req, res, next) => {
+    console.error(`[Fatal Error] ${req.method} ${req.url}:`, err.message);
+    if (res.headersSent) return next(err);
+    res.status(500).json({ 
+        error: 'Backend session or database error', 
+        message: IS_PROD ? 'Internal server error occurred' : err.message,
+        path: req.url 
+    });
+});
+
+// Export for Vercel serverless handler
+module.exports = app;
+
