@@ -88,20 +88,6 @@ function waitForCartSystem() {
     });
 }
 
-const normalizeUrl = (url) => {
-    if (!url) return "";
-    if (url.startsWith("data:")) return url;
-    try {
-        // Decode first to handle already encoded or partially encoded strings
-        const decoded = decodeURIComponent(String(url).trim());
-        // Then encode once properly
-        return encodeURI(decoded).replace(/#/g, '%23').replace(/\?/g, '%3F');
-    } catch (e) {
-        // Simple fallback if decodeURIComponent fails
-        return String(url).trim().replace(/\s/g, "%20");
-    }
-};
-
 function displayProductDetails(product) {
     console.log("Displaying product details for:", product.name);
 
@@ -148,30 +134,21 @@ function displayProductDetails(product) {
         let allMedia = [];
 
         if (is3D && modelSrc) {
-            allMedia.push({ 
-                type: '3d', 
-                src: normalizeUrl(modelSrc), 
-                poster: normalizeUrl(imgSrc) || "image/Logo maker project.webp" 
-            });
+            allMedia.push({ type: '3d', src: modelSrc, poster: imgSrc || "image/Logo maker project.webp" });
             const viewInRoomBtn = document.getElementById("view-in-room-btn");
             if (viewInRoomBtn) viewInRoomBtn.style.display = "flex";
         }
 
         let imgList = [];
-        // Support both field names for compatibility
-        const gallery = product.gallery || product.images || [];
-        if (Array.isArray(gallery) && gallery.length > 0) {
-            imgList = gallery;
+        if (Array.isArray(product.images) && product.images.length > 0) {
+            imgList = product.images;
         } else if (imgSrc) {
             imgList = [imgSrc];
         } else if (!is3D) {
             imgList = ["image/Logo maker project.webp"];
         }
 
-        imgList.forEach(url => {
-            const normalized = normalizeUrl(url);
-            if (normalized) allMedia.push({ type: 'image', src: normalized });
-        });
+        imgList.forEach(url => allMedia.push({ type: 'image', src: url }));
 
         const renderMainMedia = (media, thumbEl) => {
             if (thumbnailsContainer) {
@@ -443,7 +420,7 @@ function initializeEventListeners() {
                 }
             }
             // Fallback: open modal with 3D viewer
-            showProductARExperience(currentProduct.name || "Product", normalizeUrl(currentProduct.model_src), currentProduct.id || currentProduct._id);
+            showProductARExperience(currentProduct.name || "Product", String(currentProduct.model_src).replace(/\s/g, "%20"), currentProduct.id || currentProduct._id);
         });
     }
 }

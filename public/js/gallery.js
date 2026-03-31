@@ -73,10 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function normalizeModelSrc(src) {
         if (!src) return '';
         try {
-            // Decoding first handles strings that are already partially or fully encoded in the DB
-            const decoded = decodeURIComponent(String(src).trim());
-            // encodeURI is safe for non-ASCII characters like ™ and spaces, but doesn't double-encode %
-            return encodeURI(decoded).replace(/#/g, '%23').replace(/\?/g, '%3F');
+            return encodeURI(String(src).trim());
         } catch {
             return String(src).trim().replace(/\s/g, '%20');
         }
@@ -1235,10 +1232,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const is3D = !!(p.model_3d?.enabled || p.is_3d);
                 const modelSrc = p.model_3d?.file_url || p.model_src || '';
                 const usdzSrc = p.model_3d?.usdz_url || p.model_3d?.ios_url || p.usdz_src || p.ios_model_src || deriveUsdzUrl(modelSrc) || '';
-                const encodedModelSrc = normalizeModelSrc(modelSrc);
-                const encodedImgSrc = normalizeModelSrc(imgSrc);
-                const encodedUsdzSrc = normalizeModelSrc(usdzSrc);
-                const iosSrcAttr = encodedUsdzSrc ? ` ios-src="${encodedUsdzSrc}"` : '';
+                const iosSrcAttr = usdzSrc ? ` ios-src="${usdzSrc}"` : '';
 
                 const existing = galleryContainer.querySelector(`.product-card[data-product-id="${p.id}"]`);
                 const priceHtml = `<span class="current-price">₹${Number(p.price || 0).toLocaleString('en-IN')}</span>`;
@@ -1262,23 +1256,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
 
                 // For 3D products: model-viewer is always slide 1, poster counts as "used"
-                if (is3D && encodedModelSrc) {
-                    slideItems.push(`<div class="slide-item" style="flex:0 0 100%;scroll-snap-align:start;width:100%;height:100%;position:relative;"><model-viewer src="${encodedModelSrc}"${iosSrcAttr} poster="${encodedImgSrc}" shadow-intensity="1" alt="${p.name}" camera-controls auto-rotate disable-zoom ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:100%;touch-action:pan-y;"></model-viewer></div>`);
+                if (is3D && modelSrc) {
+                    slideItems.push(`<div class="slide-item" style="flex:0 0 100%;scroll-snap-align:start;width:100%;height:100%;position:relative;"><model-viewer src="${modelSrc}"${iosSrcAttr} poster="${imgSrc}" shadow-intensity="1" alt="${p.name}" camera-controls auto-rotate disable-zoom ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:100%;touch-action:pan-y;"></model-viewer></div>`);
                     // poster already shows the thumbnail, so mark it used
                     tryAdd(imgSrc);
                 }
 
                 // Non-3D or extra thumbnail (skipped if already used as poster above)
                 if (imgSrc && tryAdd(imgSrc)) {
-                    slideItems.push(`<div class="slide-item" style="flex:0 0 100%;scroll-snap-align:start;width:100%;height:100%;position:relative;"><img src="${encodedImgSrc}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.src='image/Logo maker project.webp';"></div>`);
+                    slideItems.push(`<div class="slide-item" style="flex:0 0 100%;scroll-snap-align:start;width:100%;height:100%;position:relative;"><img src="${imgSrc}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.src='image/Logo maker project.webp';"></div>`);
                 }
 
                 // Gallery images (deduplicated against thumbnail + poster)
                 if (Array.isArray(p.gallery) && p.gallery.length > 0) {
                     p.gallery.forEach(gImg => {
                         if (gImg && tryAdd(gImg)) {
-                            const encodedGImg = normalizeModelSrc(gImg);
-                            slideItems.push(`<div class="slide-item" style="flex:0 0 100%;scroll-snap-align:start;width:100%;height:100%;position:relative;"><img src="${encodedGImg}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.src='image/Logo maker project.webp';"></div>`);
+                            slideItems.push(`<div class="slide-item" style="flex:0 0 100%;scroll-snap-align:start;width:100%;height:100%;position:relative;"><img src="${gImg}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.src='image/Logo maker project.webp';"></div>`);
                         }
                     });
                 }
@@ -1304,7 +1297,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Single slide — no slider UI needed (handles both 3D-only and normal single-image)
                     mediaHtml = slideItems[0];
                 } else {
-                    mediaHtml = `<div style="width:100%;height:100%;"><img src="${encodedImgSrc}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='image/Logo maker project.webp';"></div>`;
+                    mediaHtml = `<div style="width:100%;height:100%;"><img src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='image/Logo maker project.webp';"></div>`;
                 }
                 if (existing) {
                     existing.setAttribute('data-is-3d', is3D ? '1' : '0');
