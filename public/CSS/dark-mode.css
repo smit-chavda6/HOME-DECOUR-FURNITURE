@@ -3486,3 +3486,80 @@ body.dark-mode .notification {
 body.dark-mode .notification-message {
   color: var(--dm-text) !important;
 }
+
+/* AR Room Analyzer v2 Dark Mode Overrides */
+body.dark-mode .ar-overlay-container {
+    background: #000 !important;
+}
+body.dark-mode .ar-bottom-sheet {
+    background: rgba(12, 12, 16, 0.94) !important;
+    border-top-color: rgba(255,255,255,0.04) !important;
+}
+body.dark-mode .ar-product-card {
+    background: rgba(255,255,255,0.04) !important;
+    border-color: rgba(255,255,255,0.06) !important;
+}
+body.dark-mode .ar-product-card:hover {
+    border-color: rgba(255,255,255,0.12) !important;
+}
+body.dark-mode .ar-product-card.selected {
+    border-color: var(--accent1) !important;
+    box-shadow: 0 0 0 1px var(--accent1), 0 12px 32px rgba(0,0,0,0.3) !important;
+}
+body.dark-mode .ar-sheet-title,
+body.dark-mode .ar-product-info h4 {
+    color: #eaeef5 !important;
+}
+body.dark-mode .ar-sheet-subtitle,
+body.dark-mode .ar-product-category {
+    color: rgba(255,255,255,0.35) !important;
+}
+body.dark-mode .ar-product-price {
+    color: var(--accent1) !important;
+}
+body.dark-mode .ar-sheet-ai-badge {
+    background: rgba(210, 105, 30, 0.12) !important;
+    color: var(--accent1) !important;
+}
+body.dark-mode .ar-view-btn {
+    border-color: rgba(255,255,255,0.08) !important;
+    color: rgba(255,255,255,0.6) !important;
+}
+body.dark-mode .ar-view-btn:hover,
+body.dark-mode .ar-product-card.selected .ar-view-btn {
+    background: var(--accent1) !important;
+    border-color: var(--accent1) !important;
+    color: #fff !important;
+}
+body.dark-mode .ar-step {
+    background: rgba(0,0,0,0.6) !important;
+    border-color: rgba(255,255,255,0.04) !important;
+}
+body.dark-mode .ar-step.active {
+    border-color: rgba(210, 105, 30, 0.35) !important;
+}
+body.dark-mode .ar-step.done {
+    border-color: rgba(74, 222, 128, 0.25) !important;
+}
+
+/* Dedicated AR CTA section dark mode */
+body.dark-mode .ar-dedicated-cta {
+    background: var(--dm-surface) !important;
+}
+body.dark-mode .ar-cta-text h2 {
+    color: var(--dm-text) !important;
+}
+body.dark-mode .ar-cta-text p {
+    color: var(--dm-muted) !important;
+}
+body.dark-mode .ar-cta-text .hero-ar-button {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2)) !important;
+    color: var(--accentText) !important;
+}
+body.dark-mode .ar-badge {
+    background: rgba(212, 163, 115, 0.1) !important;
+    color: var(--accent1) !important;
+}
+body.dark-mode .ar-phone-mockup {
+    border-color: #0b0c0f !important;
+}

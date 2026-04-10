@@ -328,6 +328,46 @@
 
         <!-- CARD FORM -->
         <form id="cardPayment" style="display: none;">
+          <!-- 3D Card Interactive Visualizer -->
+          <div class="card-3d-wrapper">
+            <div class="card-3d-inner" id="interactive3dCard">
+              <div class="card-3d-front">
+                <div class="card-logo">HOME DECOR</div>
+                <div class="card-chip">
+                  <div class="chip-line"></div>
+                  <div class="chip-line"></div>
+                  <div class="chip-line"></div>
+                  <div class="chip-main"></div>
+                </div>
+                <div class="card-contactless">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 21.3c-2.4-1.2-4.1-3.6-4.5-6.3"></path><path d="M12 21.6c-3.2-1.6-5.4-4.8-5.9-8.4"></path><path d="M15.5 21.9c-4-1.9-6.7-6-7.3-10.5"></path><path d="M19 22.2c-4.8-2.3-8-7.2-8.7-12.6"></path></svg>
+                </div>
+                <div class="card-number-display" id="displayCardNumber">#### #### #### ####</div>
+                <div class="card-details-row">
+                  <div class="card-detail-group">
+                    <span class="card-label">Cardholder Name</span>
+                    <div class="card-value" id="displayCardName">JOHN DOE</div>
+                  </div>
+                  <div class="card-detail-group" style="text-align: right;">
+                    <span class="card-label">Expires</span>
+                    <div class="card-value" id="displayCardExpiry">MM/YY</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-3d-back">
+                <div class="card-magnetic-stripe"></div>
+                <div class="card-cvc-box">
+                  <span class="cvc-label">CVV</span>
+                  <div class="cvc-stripe" id="displayCardCVC">***</div>
+                </div>
+                <div class="card-back-text">
+                  This card is property of HOME DECOR FURNITURE. Use of this card is governed by the cardholder agreement.
+                </div>
+                <div class="card-logo back-logo">HOME DECOR</div>
+              </div>
+            </div>
+          </div>
+
           <div class="form-group">
             <label class="form-label">Cardholder Name *</label>
             <input type="text" class="form-input" id="cardName" name="cardName" placeholder="John Doe" required />
@@ -343,7 +383,12 @@
             </div>
             <div class="form-group">
               <label class="form-label">CVV *</label>
-              <input type="password" class="form-input" id="cardCvv" name="cardCvv" placeholder="***" maxlength="4" required />
+              <div style="position: relative;">
+                <input type="password" class="form-input" id="cardCvv" name="cardCvv" placeholder="***" maxlength="4" required style="padding-right: 42px;" />
+                <button type="button" id="toggleCVV" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #8B4513; padding: 0; outline: none; display: flex;">
+                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                </button>
+              </div>
             </div>
           </div>
         </form>
@@ -727,6 +772,118 @@
       document.getElementById('billingFormContainer').style.display = isChecked ? 'none' : 'block';
     }
 
+    // 3D credit card input mapping logic (initialized on card payment selection)
+    let is3DCardLogicInitialized = false;
+    function init3DCreditCardLogic() {
+      if (is3DCardLogicInitialized) return;
+
+      const inputName = document.getElementById('inputCardName') || document.getElementById('cardName');
+      const inputNumber = document.getElementById('inputCardNumber') || document.getElementById('cardNumber');
+      const inputExpiry = document.getElementById('inputCardExpiry') || document.getElementById('cardExpiry');
+      const inputCVC = document.getElementById('inputCardCVC') || document.getElementById('cardCvv');
+
+      const displayName = document.getElementById('displayCardName');
+      const displayNumber = document.getElementById('displayCardNumber');
+      const displayExpiry = document.getElementById('displayCardExpiry');
+      const displayCVC = document.getElementById('displayCardCVC');
+
+      const cardEl = document.getElementById('interactive3dCard');
+      const toggleBtn = document.getElementById('toggleCVV') || document.getElementById('toggleCvv');
+
+      if (!inputNumber) return;
+
+      let isCVVVisible = false;
+      let currentCVV = '';
+
+      function updateText(el, value, fallback) {
+        if (!el) return;
+        el.textContent = value || fallback;
+      }
+
+      function updateCVCDisplay() {
+        if (!displayCVC) return;
+        if (!currentCVV) {
+          displayCVC.textContent = '***';
+          return;
+        }
+        displayCVC.textContent = isCVVVisible ? currentCVV : '•'.repeat(currentCVV.length);
+      }
+
+      inputNumber.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/\D/g, '');
+        val = val.replace(/(.{4})/g, '$1 ').trim();
+        e.target.value = val;
+        updateText(displayNumber, val, '#### #### #### ####');
+      });
+
+      if (inputName) {
+        inputName.addEventListener('input', (e) => {
+          updateText(displayName, e.target.value, 'JOHN DOE');
+        });
+      }
+
+      if (inputExpiry) {
+        inputExpiry.addEventListener('input', (e) => {
+          let val = e.target.value.replace(/\D/g, '');
+          if (val.length >= 2) {
+            val = val.substring(0, 2) + '/' + val.substring(2, 4);
+          }
+          e.target.value = val;
+          updateText(displayExpiry, val, 'MM/YY');
+        });
+      }
+
+      if (inputCVC) {
+        inputCVC.addEventListener('input', (e) => {
+          let val = e.target.value.replace(/\D/g, '');
+          e.target.value = val;
+          currentCVV = val;
+          updateCVCDisplay();
+        });
+
+        inputCVC.addEventListener('focus', () => {
+          if (cardEl) cardEl.classList.add('flipped');
+        });
+
+        inputCVC.addEventListener('blur', () => {
+          if (cardEl) cardEl.classList.remove('flipped');
+        });
+      }
+
+      if (toggleBtn && inputCVC) {
+        toggleBtn.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+        });
+
+        toggleBtn.addEventListener('click', () => {
+          isCVVVisible = !isCVVVisible;
+          inputCVC.type = isCVVVisible ? 'text' : 'password';
+
+          if (toggleBtn.id === 'toggleCVV') {
+            toggleBtn.innerHTML = isCVVVisible
+              ? '<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
+              : '<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+          } else {
+            toggleBtn.textContent = isCVVVisible ? 'Hide' : 'Show';
+            toggleBtn.setAttribute('aria-label', isCVVVisible ? 'Hide CVV' : 'Show CVV');
+          }
+
+          updateCVCDisplay();
+        });
+      }
+
+      // Sync initial values to the 3D card if fields are prefilled.
+      updateText(displayName, inputName && inputName.value ? inputName.value : '', 'JOHN DOE');
+      updateText(displayNumber, inputNumber.value || '', '#### #### #### ####');
+      updateText(displayExpiry, inputExpiry && inputExpiry.value ? inputExpiry.value : '', 'MM/YY');
+      if (inputCVC) {
+        currentCVV = inputCVC.value ? inputCVC.value.replace(/\D/g, '') : '';
+        updateCVCDisplay();
+      }
+
+      is3DCardLogicInitialized = true;
+    }
+
     // SELECT PAYMENT
     function selectPayment(method) {
       document.querySelectorAll('form[id$="Payment"]').forEach(form => form.style.display = 'none');
@@ -734,7 +891,10 @@
       document.getElementById('codPayment').style.display = 'none';
 
       if (method === 'upi') document.getElementById('upiPayment').style.display = 'block';
-      else if (method === 'card') document.getElementById('cardPayment').style.display = 'block';
+      else if (method === 'card') {
+        document.getElementById('cardPayment').style.display = 'block';
+        init3DCreditCardLogic();
+      }
       else if (method === 'netbanking') document.getElementById('netBankingPayment').style.display = 'block';
       else if (method === 'cod') document.getElementById('codPayment').style.display = 'block';
       else if (method === 'crypto') {

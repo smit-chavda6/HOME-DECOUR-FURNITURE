@@ -1255,11 +1255,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     return true;
                 };
 
-                // For 3D products: model-viewer is always slide 1, poster counts as "used"
+                // For 3D products: model-viewer is always slide 1
                 if (is3D && modelSrc) {
                     slideItems.push(`<div class="slide-item" style="flex:0 0 100%;scroll-snap-align:start;width:100%;height:100%;position:relative;"><model-viewer src="${modelSrc}"${iosSrcAttr} poster="${imgSrc}" shadow-intensity="1" alt="${p.name}" camera-controls auto-rotate disable-zoom ar ar-modes="scene-viewer quick-look webxr" style="width:100%;height:100%;touch-action:pan-y;"></model-viewer></div>`);
-                    // poster already shows the thumbnail, so mark it used
-                    tryAdd(imgSrc);
+                    // DO NOT mark it as used. Allow the user to swipe to the actual photo!
+                    // tryAdd(imgSrc); 
                 }
 
                 // Non-3D or extra thumbnail (skipped if already used as poster above)

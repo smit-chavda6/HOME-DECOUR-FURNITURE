@@ -507,13 +507,27 @@ async function seedDefaultAdmin() {
 }
 
 async function seedDefaultProducts() {
-    // Products table is intentionally empty after reset.
-    // All products will be added via the admin panel.
     try {
+        const dynamicModels = getDynamic3DModels();
+        let addedCount = 0;
+        for (const dm of dynamicModels) {
+            const exists = await Product.findOne({ name: dm.name });
+            if (!exists) {
+                const newProduct = { ...dm };
+                delete newProduct._id;
+                delete newProduct.id;
+                await Product.create(newProduct);
+                addedCount++;
+            }
+        }
+        
         const count = await Product.countDocuments();
+        if (addedCount > 0) {
+            console.log(`Auto-seeded ${addedCount} 3D models into database.`);
+        }
         console.log(`Products in database: ${count}`);
     } catch (err) {
-        console.warn('Error checking products:', err.message);
+        console.warn('Error checking or seeding products:', err.message);
     }
 }
 
@@ -897,6 +911,93 @@ app.delete('/api/admin/messages/:id', requireAdmin, async (req, res) => {
 // ============= PRODUCTS API =============
 
 // Public: list products with advanced filtering, sorting, pagination
+
+// Helper to generate dynamic 3D models from the directory
+function getDynamic3DModels() {
+    const crypto = require('crypto');
+    try {
+        const modelsDirLocal = path.join(__dirname, 'public', '3d models');
+        if (!fs.existsSync(modelsDirLocal)) return [];
+        const files = fs.readdirSync(modelsDirLocal);
+        const glbFiles = files.filter(f => f.toLowerCase().endsWith('.glb'));
+        return glbFiles.map((file, index) => {
+            const baseName = file.substring(0, file.lastIndexOf('.'));
+            const pngName = baseName + '.png';
+            const hasPng = files.includes(pngName);
+            const imagePath = hasPng ? `3d models/${pngName}` : 'image/Logo maker project.webp';
+            
+            let category = 'decor';
+            let specificDesc = `A beautifully crafted AI-suggested piece to elevate your room's aesthetic. Designed with premium materials.`;
+            const lowerName = baseName.toLowerCase();
+            
+            let dimensions = { length: 50, width: 50, height: 50, unit: 'cm' };
+            let weight = 15;
+            
+            if (lowerName.includes('sofa')) {
+                category = 'sofa';
+                specificDesc = `Sink into unparalleled comfort with this exquisite ${baseName}. Featuring high-density foam, premium upholstery, and a robust wooden frame.`;
+                dimensions = { length: 200, width: 90, height: 85, unit: 'cm' };
+                weight = 45;
+            } else if (lowerName.includes('chair')) {
+                category = 'chair';
+                specificDesc = `Experience ergonomic perfection with the ${baseName}. Ideal for lounging or working, boasting impeccable stitching and a supportive design.`;
+                dimensions = { length: 65, width: 70, height: 105, unit: 'cm' };
+                weight = 12;
+            } else if (lowerName.includes('table') || lowerName.includes('desk')) {
+                category = 'table';
+                specificDesc = `Transform your dining or workspace with this sturdy ${baseName}. Expertly finished with a scratch-resistant surface and modern legs.`;
+                dimensions = { length: 150, width: 90, height: 75, unit: 'cm' };
+                weight = 30;
+            } else if (lowerName.includes('bed')) {
+                category = 'bed';
+                specificDesc = `Rest easy on this luxurious ${baseName}. Designed for deep sleep with a reinforced frame and a gorgeous, contemporary headboard.`;
+                dimensions = { length: 210, width: 160, height: 110, unit: 'cm' };
+                weight = 65;
+            }
+            
+            const hash = crypto.createHash('md5').update(baseName).digest('hex').substring(0, 24);
+            const price = 15000 + (index * 500);
+            
+            return {
+                _id: hash,
+                id: hash,
+                name: baseName,
+                slug: generateSlug(baseName),
+                sku: `DYN-${hash.substring(0,6).toUpperCase()}`,
+                description: `${specificDesc} This product is fully optimized for our AR Room Analyzer so you can experience it live in your space before buying.`,
+                short_description: `Premium ${category} perfectly picked for your setup.`,
+                material: 'Premium materials',
+                brand: 'HomeSphere Exclusives',
+                category: category,
+                price: price,
+                original_price: price + 3000,
+                discount: Math.round((3000 / (price + 3000)) * 100),
+                stock: 10,
+                weight: weight,
+                dimensions: dimensions,
+                color_variants: ['#8B4513', '#FFFFFF', '#000000', '#A0522D'], // Ensure color field is populated
+                image: imagePath,
+                thumbnail: imagePath,
+                gallery: [], // Removed wrong mock images
+                model_src: `3d models/${file}`,
+                is_3d: true,
+                rating: 4.8,
+                rating_count: 50 + index * 7,
+                in_stock: true,
+                is_active: true,
+                model_3d: {
+                    file_url: `3d models/${file}`,
+                    enabled: true,
+                    format: 'glb'
+                }
+            };
+        });
+    } catch(e) {
+        console.error('Failed to read dynamic models:', e);
+        return [];
+    }
+}
+
 app.get('/api/products', async (req, res) => {
     try {
         const { category, q, sort, order, page, limit, featured, trending, new_arrival, min_price, max_price, brand, material, has_3d } = req.query || {};
@@ -955,7 +1056,6 @@ app.get('/api/products', async (req, res) => {
             Product.countDocuments(filter)
         ]);
 
-        // Map _id to id for frontend compatibility + ensure thumbnail/image consistency
         const formattedProducts = products.map(p => ({
             ...p,
             id: p._id.toString(),
@@ -980,16 +1080,18 @@ app.get('/api/products', async (req, res) => {
 // Public: get single product by id or slug
 app.get('/api/products/:idOrSlug', async (req, res) => {
     try {
-        const param = req.params.idOrSlug;
+        const p = req.params.idOrSlug;
         let product;
-
-        if (/^[0-9a-fA-F]{24}$/.test(param)) {
-            product = await Product.findById(param).lean();
-        } else {
-            product = await Product.findOne({ slug: param }).lean();
+        if (isValidObjectId(p)) {
+            product = await Product.findById(p).lean();
+        }
+        if (!product) {
+            product = await Product.findOne({ slug: p }).lean();
         }
 
-        if (!product) return res.status(404).json({ error: 'Product not found' });
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
 
         const productData = {
             ...product,
