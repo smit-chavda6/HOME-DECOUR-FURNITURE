@@ -1,4 +1,4 @@
-# HOME DECOUR FURNITURE
+# HOME DECOR FURNITURE
 
 This repository powers the Home Decor Furniture storefront. Below is the quick start guide merged as the main README for fast onboarding and testing.
 
