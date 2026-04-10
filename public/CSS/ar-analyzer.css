@@ -47,8 +47,8 @@ body.ar-active .back-to-top {
 }
 
 .ar-topbar-btn {
-    width: 42px;
-    height: 42px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     border: none;
     background: rgba(255,255,255,0.12);
@@ -1041,7 +1041,7 @@ body.ar-active .back-to-top {
     .ar-phone-mockup { width: 240px; height: 480px; }
 
     .ar-topbar { padding: 12px 14px; }
-    .ar-topbar-btn { width: 38px; height: 38px; }
+    .ar-topbar-btn { width: 48px; height: 48px; }
     .ar-topbar-title { font-size: 0.85rem; }
     .ar-topbar-icon { width: 28px; height: 28px; }
 
@@ -1051,5 +1051,193 @@ body.ar-active .back-to-top {
 
     .ar-step { min-width: 220px; font-size: 0.78rem; padding: 8px 14px; }
     .ar-model-hint { bottom: 80px; font-size: 0.7rem; }
+}
+
+/* ═══ Live analyzer additions ═══ */
+.ar-capture-canvas {
+    position: absolute;
+    inset: 0;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ar-detection-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 14;
+    pointer-events: none;
+}
+
+.ar-detection-box {
+    position: absolute;
+    border: 1.5px solid rgba(255, 255, 255, 0.8);
+    border-radius: 14px;
+    box-shadow: 0 0 0 1px rgba(210, 105, 30, 0.16), 0 0 22px rgba(210, 105, 30, 0.1);
+    backdrop-filter: blur(2px);
+}
+
+.ar-detection-box span {
+    position: absolute;
+    top: -24px;
+    left: 0;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(20, 18, 16, 0.84);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.ar-live-status {
+    position: absolute;
+    top: 72px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 18;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: rgba(17, 15, 13, 0.58);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    color: rgba(255,255,255,0.88);
+    border: 1px solid rgba(255,255,255,0.08);
+    max-width: calc(100vw - 28px);
+    box-sizing: border-box;
+}
+
+.ar-live-status.error {
+    background: rgba(111, 31, 31, 0.72);
+}
+
+.ar-live-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(74, 222, 128, 0.15);
+    color: #a7f3d0;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.ar-floating-controls {
+    position: absolute;
+    right: 14px;
+    bottom: 118px;
+    z-index: 21;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ar-overlay-container.results-open .ar-floating-controls {
+    transform: translateY(-44vh);
+}
+
+.ar-fab {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.ar-fab:hover,
+.ar-fab.active {
+    transform: translateY(-1px) scale(1.03);
+    background: rgba(210,105,30,0.24);
+}
+
+.ar-fab.primary {
+    background: linear-gradient(135deg, #8B4513, #D2691E);
+    border-color: rgba(255,255,255,0.14);
+}
+
+.ar-fab.primary:hover {
+    background: linear-gradient(135deg, #a35618, #e67926);
+}
+
+.ar-sheet-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.ar-meta-chip,
+.ar-product-reason {
+    font-family: var(--font-primary, 'Jost', sans-serif);
+}
+
+.ar-meta-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.72);
+    font-size: 0.72rem;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+.ar-product-reason {
+    margin: 8px 0 0;
+    color: rgba(255,255,255,0.58);
+    font-size: 0.72rem;
+    line-height: 1.35;
+}
+
+.ar-card-best-fit {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(74, 222, 128, 0.22);
+    color: #d1fae5;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+@media (max-width: 576px) {
+    .ar-live-status {
+        top: 62px;
+        font-size: 0.74rem;
+        padding: 7px 12px;
+    }
+
+    .ar-floating-controls {
+        right: 10px;
+        bottom: 110px;
+    }
+
+    .ar-fab {
+        width: 40px;
+        height: 40px;
+    }
+
+    .ar-product-reason {
+        font-size: 0.66rem;
+    }
 }
 

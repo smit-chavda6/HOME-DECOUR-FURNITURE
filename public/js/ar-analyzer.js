@@ -15,6 +15,16 @@ class ARRoomAnalyzer {
         this.allProducts = [];
         this.suggestedProducts = [];
         this.analysisResults = null;
+        this.analysisTimer = null;
+        this.analysisIntervalMs = 500;
+        this.captureCanvas = null;
+        this.captureContext = null;
+        this.visionReady = false;
+        this.cocoModel = null;
+        this.flashEnabled = false;
+        this.lastRoomHint = 'living room';
+        this.lastLightLabel = 'Balanced';
+        this.lastPlacementHint = 'Center of the room';
         this.carouselDrag = { isDown: false, startX: 0, scrollLeft: 0 };
 
         this.init();
@@ -23,6 +33,7 @@ class ARRoomAnalyzer {
     init() {
         this.injectHTML();
         this.loadModelViewerScript();
+        this.loadVisionScripts();
         this.bindEvents();
         this.prefetchProducts();
     }
@@ -30,23 +41,24 @@ class ARRoomAnalyzer {
     /* ─── Prefetch all 3D products for intelligent filtering ─── */
     async prefetchProducts() {
         try {
-            const res = await fetch('/api/products?has_3d=true&limit=50');
+            const res = await fetch('/api/products?limit=100', { credentials: 'include' });
             if (res.ok) {
                 const data = await res.json();
-                this.allProducts = (data.products || [])
-                    .filter(p => p.model_src || (p.model_3d && p.model_3d.file_url))
-                    .map(p => ({
-                        id: p.id,
-                        title: p.name,
-                        category: (p.category || 'decor').toLowerCase(),
-                        price: p.price,
-                        priceFormatted: `₹${Number(p.price || 0).toLocaleString('en-IN')}`,
-                        image: p.image || p.thumbnail || 'image/Logo maker project.webp',
-                        modelSrc: p.model_src || (p.model_3d && p.model_3d.file_url) || '',
-                        rating: p.rating || 4.5,
-                        brand: p.brand || '',
-                        description: p.short_description || p.description || ''
-                    }));
+                this.allProducts = (data.products || []).map(p => ({
+                    id: p.id,
+                    title: p.name,
+                    category: (p.category || 'decor').toLowerCase(),
+                    price: p.price,
+                    priceFormatted: `₹${Number(p.price || 0).toLocaleString('en-IN')}`,
+                    image: p.image || p.thumbnail || 'image/Logo maker project.webp',
+                    modelSrc: p.model_src || (p.model_3d && p.model_3d.file_url) || '',
+                    url: `product-details.html?id=${encodeURIComponent(p.id)}`,
+                    rating: p.rating || 4.5,
+                    brand: p.brand || '',
+                    description: p.short_description || p.description || '',
+                    colorHint: this.extractColorHint(p),
+                    isThreeD: !!(p.is_3d || (p.model_3d && p.model_3d.enabled))
+                }));
             }
         } catch (err) {
             console.error('AR Analyzer: Failed to prefetch products', err);
@@ -60,6 +72,34 @@ class ARRoomAnalyzer {
             script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js';
             document.head.appendChild(script);
         }
+    }
+
+    loadVisionScripts() {
+        const ensureScript = (src, type) => new Promise((resolve, reject) => {
+            const existing = document.querySelector(`script[src="${src}"]`);
+            if (existing) {
+                if (type === 'module') existing.type = 'module';
+                resolve();
+                return;
+            }
+            const script = document.createElement('script');
+            script.src = src;
+            if (type) script.type = type;
+            script.onload = () => resolve();
+            script.onerror = () => reject(new Error(`Failed to load ${src}`));
+            document.head.appendChild(script);
+        });
+
+        this.visionReady = false;
+        this.visionScriptsPromise = ensureScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js')
+            .then(() => ensureScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js'))
+            .then(() => {
+            this.visionReady = true;
+            return true;
+            }).catch((err) => {
+                console.warn('AR Analyzer: vision scripts failed to load', err);
+                return false;
+            });
     }
 
     /* ─── Inject the overlay HTML ─── */
@@ -90,6 +130,14 @@ class ARRoomAnalyzer {
                 <!-- Camera Feed -->
                 <div class="ar-camera-wrapper">
                     <video id="ar-video-feed" autoplay playsinline muted></video>
+                    <canvas id="ar-capture-canvas" class="ar-capture-canvas" aria-hidden="true"></canvas>
+
+                    <div class="ar-detection-overlay" id="arDetectionOverlay" aria-hidden="true"></div>
+
+                    <div class="ar-live-status" id="arLiveStatus">
+                        <span class="ar-live-pill">Live</span>
+                        <span id="arStatusText">Tap Analyze My Room to start the camera.</span>
+                    </div>
 
                     <!-- Scan frame corners (shown during scan) -->
                     <div class="ar-scan-frame" id="arScanFrame">
@@ -110,11 +158,31 @@ class ARRoomAnalyzer {
 
                     <!-- Model Viewer placeholder -->
                     <div id="arModelViewerContainer" class="ar-model-viewer-container"></div>
+
+                    <div class="ar-floating-controls">
+                        <button type="button" class="ar-fab primary" id="arStartScanBtn" aria-label="Analyze room">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="8"></circle>
+                                <path d="M12 8v8M8 12h8"></path>
+                            </svg>
+                        </button>
+                        <button type="button" class="ar-fab" id="arResetBtn" aria-label="Reset analysis">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="1 4 1 10 7 10"></polyline>
+                                <path d="M3.51 15a9 9 0 1 0 .49-8.9L1 10"></path>
+                            </svg>
+                        </button>
+                        <button type="button" class="ar-fab" id="arFlashBtn" aria-label="Toggle flash">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Scan Button -->
+                <!-- Capture Button -->
                 <div class="ar-scan-action" id="arScanAction">
-                    <button id="arStartScanBtn" class="ar-scan-btn">
+                    <button id="arAnalyzeBtn" class="ar-scan-btn">
                         <div class="ar-scan-btn-ring"></div>
                         <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10"/>
@@ -168,6 +236,7 @@ class ARRoomAnalyzer {
                         </div>
                         <h3 class="ar-sheet-title">Perfect for Your Space</h3>
                         <p class="ar-sheet-subtitle" id="arSheetSubtitle">Based on your room analysis</p>
+                        <div class="ar-sheet-meta" id="arSheetMeta"></div>
                     </div>
 
                     <div class="ar-product-carousel" id="arProductCarousel">
@@ -187,7 +256,7 @@ class ARRoomAnalyzer {
     renderCarousel() {
         const carousel = document.getElementById('arProductCarousel');
         if (!this.suggestedProducts.length) {
-            carousel.innerHTML = `<div class="ar-no-results">No 3D products matched. Try scanning a different area.</div>`;
+            carousel.innerHTML = `<div class="ar-no-results">No products matched yet. Try a different angle or reset the scene.</div>`;
             return;
         }
 
@@ -195,7 +264,8 @@ class ARRoomAnalyzer {
             <div class="ar-product-card" data-id="${product.id}">
                 <div class="ar-card-img-wrap">
                     <img class="ar-product-img" src="${product.image}" alt="${product.title}" loading="lazy" onerror="this.src='image/Logo maker project.webp'">
-                    <div class="ar-card-3d-tag">3D</div>
+                    ${product.isThreeD ? '<div class="ar-card-3d-tag">3D</div>' : ''}
+                    ${product.bestFit ? '<div class="ar-card-best-fit">Best Fit</div>' : ''}
                 </div>
                 <div class="ar-product-info">
                     <span class="ar-product-category">${product.category}</span>
@@ -204,8 +274,9 @@ class ARRoomAnalyzer {
                         <span class="ar-product-price">${product.priceFormatted}</span>
                         <span class="ar-product-rating">★ ${product.rating.toFixed(1)}</span>
                     </div>
+                    <p class="ar-product-reason">${product.rationale || 'Recommended for your room'}</p>
                 </div>
-                <button class="ar-view-btn">View in AR</button>
+                <button class="ar-view-btn">Try in Room</button>
             </div>
         `).join('');
 
@@ -255,7 +326,10 @@ class ARRoomAnalyzer {
                 card.classList.add('selected');
                 const pId = card.getAttribute('data-id');
                 const product = this.suggestedProducts.find(p => p.id === pId);
-                if (product) this.showModelInAR(product);
+                if (product) {
+                    if (product.modelSrc) this.showModelInAR(product);
+                    else window.open(product.url, '_blank', 'noopener');
+                }
             });
         });
     }
@@ -263,14 +337,17 @@ class ARRoomAnalyzer {
     /* ─── Events ─── */
     bindEvents() {
         document.addEventListener('click', (e) => {
-            if (e.target.closest('.hero-ar-button') || e.target.closest('#navbarARBtn')) {
+            if (e.target.closest('.hero-ar-button') || e.target.closest('#navbarARBtn') || e.target.closest('#checkoutAnalyzeRoomBtn')) {
                 e.preventDefault();
                 this.openAR();
             }
         });
 
         document.getElementById('arCloseBtn').addEventListener('click', () => this.closeAR());
-        document.getElementById('arStartScanBtn').addEventListener('click', () => this.startScan());
+        document.getElementById('arStartScanBtn').addEventListener('click', () => this.startLiveAnalysis());
+        document.getElementById('arAnalyzeBtn').addEventListener('click', () => this.startLiveAnalysis());
+        document.getElementById('arResetBtn').addEventListener('click', () => this.resetScene());
+        document.getElementById('arFlashBtn').addEventListener('click', () => this.toggleFlash());
         document.getElementById('arCloseResultsBtn').addEventListener('click', () => this.closeResults());
     }
 
@@ -283,12 +360,13 @@ class ARRoomAnalyzer {
     }
 
     closeAR() {
-        this.container.classList.remove('active', 'scanning', 'results-open', 'showing-model', 'analysis-running');
+        this.container.classList.remove('active', 'scanning', 'results-open', 'showing-model', 'analysis-running', 'camera-ready');
         this.modelViewerContainer.innerHTML = '';
         document.querySelectorAll('.ar-product-card').forEach(c => c.classList.remove('selected'));
         document.querySelectorAll('.ar-step').forEach(s => s.classList.remove('done', 'active'));
         document.body.style.overflow = '';
         document.body.classList.remove('ar-active');
+        this.stopAnalysisLoop();
         this.stopCamera();
     }
 
@@ -309,6 +387,9 @@ class ARRoomAnalyzer {
             this.video.srcObject = this.stream;
             this.video.classList.add('environment');
             this.isCameraActive = true;
+            this.container.classList.add('camera-ready');
+            this.setStatus('Camera live. Move slowly around the room.');
+            this.startLiveAnalysis();
         } catch (err) {
             // Fallback: if back camera isn't available (e.g. desktop), try any camera
             try {
@@ -318,13 +399,16 @@ class ARRoomAnalyzer {
                 });
                 this.video.srcObject = this.stream;
                 this.isCameraActive = true;
+                this.container.classList.add('camera-ready');
                 const track = this.stream.getVideoTracks()[0];
                 const settings = track.getSettings();
                 this.video.classList.toggle('environment', settings.facingMode !== 'user');
+                this.setStatus('Camera live. Move slowly around the room.');
+                this.startLiveAnalysis();
             } catch (error) {
                 console.error('Camera error:', error);
-                alert('Unable to access camera. Please ensure permissions are granted and you are on HTTPS.');
-                this.closeAR();
+                this.setStatus('Camera permission denied. Retry to continue.');
+                this.showCameraError();
             }
         }
     }
@@ -338,92 +422,332 @@ class ARRoomAnalyzer {
         }
     }
 
-    /* ─── AI Scan Simulation with step-by-step progress ─── */
-    startScan() {
-        if (this.isScanning) return;
-        this.isScanning = true;
-        this.container.classList.add('scanning', 'analysis-running');
-
-        const hud = document.getElementById('arHudText');
-        const steps = document.querySelectorAll('.ar-step');
-
-        // Phase 1: Detecting layout
-        hud.textContent = 'Scanning room geometry…';
-        setTimeout(() => {
-            steps[0].classList.add('active');
-        }, 300);
-
-        setTimeout(() => {
-            steps[0].classList.remove('active');
-            steps[0].classList.add('done');
-
-            // Phase 2: Identifying style
-            hud.textContent = 'Analyzing room style…';
-            steps[1].classList.add('active');
-        }, 1500);
-
-        setTimeout(() => {
-            steps[1].classList.remove('active');
-            steps[1].classList.add('done');
-
-            // Phase 3: Matching products
-            hud.textContent = 'Finding best matches…';
-            steps[2].classList.add('active');
-            this.performAIAnalysis();
-        }, 2800);
-
-        setTimeout(() => {
-            steps[2].classList.remove('active');
-            steps[2].classList.add('done');
-
-            hud.textContent = 'Analysis complete';
-            this.container.classList.remove('scanning', 'analysis-running');
-            this.container.classList.add('results-open');
-            this.isScanning = false;
-        }, 4200);
+    stopAnalysisLoop() {
+        if (this.analysisTimer) {
+            clearInterval(this.analysisTimer);
+            this.analysisTimer = null;
+        }
+        this.isScanning = false;
     }
 
-    /* ─── Intelligent AI Product Matching ─── */
-    performAIAnalysis() {
-        // Simulate detecting room type from camera frame
-        const roomTypes = ['living room', 'bedroom', 'office', 'dining room'];
-        const detected = roomTypes[Math.floor(Math.random() * roomTypes.length)];
+    /* ─── Live AI Room Analysis ─── */
+    async startLiveAnalysis() {
+        if (!this.isCameraActive) {
+            await this.openAR();
+            return;
+        }
+        if (!this.isCameraActive || this.isScanning) return;
+        this.isScanning = true;
+        this.container.classList.add('scanning', 'analysis-running');
+        this.setStatus('Analyzing room in real time...');
 
-        // Map room type to relevant categories
-        const categoryMap = {
-            'living room': ['sofa', 'decor', 'table'],
-            'bedroom': ['bed', 'decor', 'chair'],
-            'office': ['chair', 'table', 'decor'],
-            'dining room': ['table', 'chair', 'decor']
+        const ready = await this.visionScriptsPromise;
+        if (!ready || !window.cocoSsd) {
+            this.setStatus('Live AI unavailable. Showing smart catalog suggestions instead.');
+            this.isScanning = false;
+            this.runFallbackAnalysis();
+            return;
+        }
+
+        if (!this.cocoModel) {
+            try {
+                this.setStatus('Loading AI model...');
+                if (window.tf?.ready) {
+                    await window.tf.ready();
+                }
+                this.cocoModel = await window.cocoSsd.load({ base: 'lite_mobilenet_v2' });
+            } catch (error) {
+                console.warn('AR Analyzer: coco-ssd failed to load', error);
+                this.setStatus('AI model load failed. Using fallback analysis.');
+                this.isScanning = false;
+                this.runFallbackAnalysis();
+                return;
+            }
+        }
+
+        this.stopAnalysisLoop();
+        const tick = async () => {
+            if (!this.isCameraActive || !this.video || this.video.readyState < 2) return;
+            try {
+                const analysis = await this.analyzeCurrentFrame();
+                if (analysis) this.applyAnalysis(analysis);
+            } catch (error) {
+                console.warn('AR Analyzer: frame analysis failed', error);
+            }
         };
 
-        const relevantCategories = categoryMap[detected] || ['decor'];
+        await tick();
+        this.analysisTimer = window.setInterval(tick, this.analysisIntervalMs);
+    }
 
-        // Score and rank products based on relevance to detected room
-        const scored = this.allProducts.map(p => {
+    async analyzeCurrentFrame() {
+        const video = this.video;
+        const width = video.videoWidth || 640;
+        const height = video.videoHeight || 480;
+        if (!this.captureCanvas) {
+            this.captureCanvas = document.getElementById('ar-capture-canvas') || document.createElement('canvas');
+            this.captureContext = this.captureCanvas.getContext('2d', { willReadFrequently: true });
+        }
+
+        const canvas = this.captureCanvas;
+        const ctx = this.captureContext;
+        const maxWidth = 480;
+        const scale = Math.min(1, maxWidth / width);
+        canvas.width = Math.max(160, Math.round(width * scale));
+        canvas.height = Math.max(120, Math.round(height * scale));
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        const colorStats = this.getColorStats(imageData);
+
+        let detections = [];
+        try {
+            detections = await this.cocoModel.detect(canvas);
+        } catch (error) {
+            console.warn('AR Analyzer: detection error', error);
+        }
+
+        return this.buildAnalysis(detections, { width: canvas.width, height: canvas.height, colorStats });
+    }
+
+    buildAnalysis(detections, frame) {
+        const normalized = (detections || []).filter(det => det.score >= 0.45);
+        const counts = normalized.reduce((acc, det) => {
+            const label = String(det.class || '').toLowerCase();
+            acc[label] = (acc[label] || 0) + 1;
+            return acc;
+        }, {});
+
+        const roomType = this.deriveRoomType(counts);
+        const occupiedRatio = normalized.reduce((sum, det) => {
+            const [x, y, w, h] = det.bbox || [0, 0, 0, 0];
+            return sum + ((w * h) / Math.max(1, frame.width * frame.height));
+        }, 0);
+
+        const lightLabel = frame.colorStats.luminance < 82 ? 'Low light' : frame.colorStats.luminance > 170 ? 'Bright' : 'Balanced';
+        const spaceLabel = occupiedRatio > 0.34 ? 'Compact' : occupiedRatio > 0.2 ? 'Moderate' : 'Open';
+        const placementHint = this.getPlacementHint(roomType, normalized, frame);
+        const palette = frame.colorStats.palette;
+        const products = this.rankProducts(roomType, palette, placementHint, normalized);
+
+        return {
+            roomType,
+            lightLabel,
+            spaceLabel,
+            placementHint,
+            palette,
+            detections: normalized,
+            products
+        };
+    }
+
+    deriveRoomType(counts) {
+        const labels = Object.keys(counts);
+        const has = (name) => labels.includes(name);
+        if (has('bed') || has('pillow') || has('blanket')) return 'bedroom';
+        if (has('couch') || has('sofa') || has('tv') || has('television')) return 'living room';
+        if (has('dining table') || (has('chair') && (counts.chair || 0) >= 2)) return 'dining room';
+        if (has('laptop') || has('keyboard') || has('mouse') || has('desk') || has('chair')) return 'office';
+        if (has('sink') || has('toilet') || has('refrigerator')) return 'utility room';
+        return 'living room';
+    }
+
+    getPlacementHint(roomType, detections, frame) {
+        const leftLoad = detections.filter(d => (d.bbox?.[0] || 0) < frame.width * 0.4).length;
+        const rightLoad = detections.filter(d => (d.bbox?.[0] || 0) > frame.width * 0.6).length;
+        const topLoad = detections.filter(d => (d.bbox?.[1] || 0) < frame.height * 0.35).length;
+        const openSide = Math.min(leftLoad, rightLoad) === leftLoad ? 'left wall' : 'right wall';
+        if (roomType === 'bedroom') return `Best fit: ${openSide}, away from the door path`;
+        if (roomType === 'office') return `Best fit: near the brightest wall and power source`;
+        if (roomType === 'dining room') return `Best fit: center zone with clear chair pull-out space`;
+        if (roomType === 'living room') return `Best fit: ${openSide}, leaving a clear walkway`;
+        return topLoad < 2 ? 'Best fit: open wall segment' : 'Best fit: a clear corner zone';
+    }
+
+    getColorStats(data) {
+        let r = 0;
+        let g = 0;
+        let b = 0;
+        let count = 0;
+        for (let i = 0; i < data.length; i += 16) {
+            r += data[i];
+            g += data[i + 1];
+            b += data[i + 2];
+            count += 1;
+        }
+        const avgR = count ? r / count : 0;
+        const avgG = count ? g / count : 0;
+        const avgB = count ? b / count : 0;
+        const luminance = Math.round((0.2126 * avgR) + (0.7152 * avgG) + (0.0722 * avgB));
+        const palette = luminance > 165 ? 'warm-neutral' : avgB > avgR ? 'cool-neutral' : 'earth-tone';
+        return { luminance, palette };
+    }
+
+    extractColorHint(product) {
+        const text = `${product.name || ''} ${product.short_description || ''} ${product.description || ''}`.toLowerCase();
+        if (/(white|ivory|cream|beige|oak|natural|linen|sand)/.test(text)) return 'warm-neutral';
+        if (/(grey|gray|graphite|charcoal|black|navy|blue|steel)/.test(text)) return 'cool-neutral';
+        if (/(walnut|brown|tan|rust|terracotta|mustard|amber)/.test(text)) return 'earth-tone';
+        return 'neutral';
+    }
+
+    rankProducts(roomType, palette, placementHint, detections) {
+        const roomCategoryMap = {
+            'bedroom': ['bed', 'nightstand', 'chair', 'storage'],
+            'living room': ['sofa', 'chair', 'table', 'decor'],
+            'office': ['chair', 'table', 'storage', 'lighting'],
+            'dining room': ['table', 'chair', 'decor'],
+            'utility room': ['storage', 'chair', 'decor']
+        };
+        const targetCategories = roomCategoryMap[roomType] || ['decor'];
+        const roomNeed = detections.length > 6 ? 'small' : detections.length > 2 ? 'medium' : 'large';
+
+        const scored = this.allProducts.map((product) => {
             let score = 0;
-            const catIndex = relevantCategories.indexOf(p.category);
-            if (catIndex === 0) score += 100;       // Primary category
-            else if (catIndex === 1) score += 60;   // Secondary
-            else if (catIndex === 2) score += 30;   // Tertiary
-            else score += 5;                        // Weak match
-            score += (p.rating || 0) * 5;           // Boost by rating
-            score += Math.random() * 15;            // Slight randomness for variety
-            return { ...p, score };
+            const category = String(product.category || '').toLowerCase();
+            const categoryIndex = targetCategories.findIndex(item => category.includes(item));
+            if (categoryIndex === 0) score += 110;
+            else if (categoryIndex === 1) score += 75;
+            else if (categoryIndex === 2) score += 55;
+            else if (categoryIndex >= 0) score += 35;
+
+            if (String(product.colorHint || '').includes(palette)) score += 18;
+            if (roomNeed === 'small' && /compact|small|nest|slim|mini/.test(`${product.title} ${product.description}`.toLowerCase())) score += 20;
+            if (roomNeed === 'large' && /sectional|large|king|dining|long/.test(`${product.title} ${product.description}`.toLowerCase())) score += 16;
+            score += (Number(product.rating) || 0) * 6;
+            score += Math.max(0, 14 - (Number(product.price) || 0) / 20000);
+            score += product.isThreeD ? 12 : 0;
+            score += Math.random() * 5;
+            return { ...product, score };
         });
 
         scored.sort((a, b) => b.score - a.score);
+        const count = Math.min(6, scored.length);
+        this.suggestedProducts = scored.slice(0, count).map((product, index) => ({
+            ...product,
+            bestFit: index === 0,
+            rationale: this.getRecommendationReason(roomType, product, placementHint)
+        }));
+        return this.suggestedProducts;
+    }
 
-        // Pick top 3-5 (not all!)
-        const count = Math.min(scored.length, 3 + Math.floor(Math.random() * 3));
-        this.suggestedProducts = scored.slice(0, count);
-        this.analysisResults = { roomType: detected, categories: relevantCategories };
+    getRecommendationReason(roomType, product, placementHint) {
+        const category = String(product.category || '').toLowerCase();
+        if (roomType === 'bedroom' && category.includes('bed')) return `${placementHint} · built for bedrooms`;
+        if (roomType === 'living room' && (category.includes('sofa') || category.includes('chair'))) return `${placementHint} · visual match for lounge seating`;
+        if (roomType === 'office' && (category.includes('chair') || category.includes('table'))) return `${placementHint} · productivity-friendly sizing`;
+        if (roomType === 'dining room' && category.includes('table')) return `${placementHint} · balanced dining layout`;
+        return `${placementHint} · versatile fit`;
+    }
 
-        // Update subtitle
-        const subtitle = document.getElementById('arSheetSubtitle');
-        subtitle.textContent = `Detected: ${detected.charAt(0).toUpperCase() + detected.slice(1)} · ${this.suggestedProducts.length} items curated`;
+    applyAnalysis(analysis) {
+        this.analysisResults = analysis;
+        this.lastRoomHint = analysis.roomType;
+        this.lastLightLabel = analysis.lightLabel;
+        this.lastPlacementHint = analysis.placementHint;
 
+        this.renderDetections(analysis.detections);
+        this.renderLiveSummary(analysis);
         this.renderCarousel();
+
+        if (analysis.lightLabel === 'Low light') {
+            this.setStatus('Low light detected. Turn on a lamp for better accuracy.');
+        } else {
+            this.setStatus(`Detected ${analysis.roomType} · ${analysis.spaceLabel} space · ${analysis.detections.length} objects`);
+        }
+
+        this.container.classList.add('results-open');
+        this.container.classList.remove('scanning');
+    }
+
+    renderDetections(detections) {
+        const overlay = document.getElementById('arDetectionOverlay');
+        if (!overlay) return;
+        overlay.innerHTML = detections.slice(0, 8).map((det) => {
+            const [x, y, width, height] = det.bbox || [0, 0, 0, 0];
+            const label = String(det.class || 'object').replace(/\b\w/g, c => c.toUpperCase());
+            const confidence = Math.round((det.score || 0) * 100);
+            return `<div class="ar-detection-box" style="left:${(x / this.captureCanvas.width) * 100}%; top:${(y / this.captureCanvas.height) * 100}%; width:${(width / this.captureCanvas.width) * 100}%; height:${(height / this.captureCanvas.height) * 100}%">
+                <span>${label} ${confidence}%</span>
+            </div>`;
+        }).join('');
+    }
+
+    renderLiveSummary(analysis) {
+        const subtitle = document.getElementById('arSheetSubtitle');
+        const meta = document.getElementById('arSheetMeta');
+        if (subtitle) {
+            subtitle.textContent = `Detected ${analysis.roomType} · ${analysis.spaceLabel} space · ${analysis.lightLabel}`;
+        }
+        if (meta) {
+            meta.innerHTML = `
+                <span class="ar-meta-chip">Space: ${analysis.spaceLabel}</span>
+                <span class="ar-meta-chip">Palette: ${analysis.palette}</span>
+                <span class="ar-meta-chip">Placement: ${analysis.placementHint}</span>
+            `;
+        }
+    }
+
+    runFallbackAnalysis() {
+        const roomType = this.lastRoomHint || 'living room';
+        const palette = 'warm-neutral';
+        const placementHint = this.lastPlacementHint || 'Center of the room';
+        this.suggestedProducts = this.rankProducts(roomType, palette, placementHint, []);
+        this.analysisResults = {
+            roomType,
+            lightLabel: 'Balanced',
+            spaceLabel: 'Open',
+            placementHint,
+            palette,
+            detections: [],
+            products: this.suggestedProducts
+        };
+        this.renderLiveSummary(this.analysisResults);
+        this.renderCarousel();
+    }
+
+    resetScene() {
+        this.stopAnalysisLoop();
+        this.container.classList.remove('results-open', 'scanning', 'analysis-running', 'showing-model');
+        document.getElementById('arDetectionOverlay').innerHTML = '';
+        document.getElementById('arSheetSubtitle').textContent = 'Based on your room analysis';
+        document.getElementById('arSheetMeta').innerHTML = '';
+        document.getElementById('arHudText').textContent = 'Point the camera at your room';
+        if (this.isCameraActive) {
+            this.startLiveAnalysis();
+        }
+        if (navigator.vibrate) navigator.vibrate(20);
+    }
+
+    toggleFlash() {
+        this.flashEnabled = !this.flashEnabled;
+        const track = this.stream?.getVideoTracks?.()[0];
+        const capabilities = track?.getCapabilities?.() || {};
+        if (track && capabilities.torch) {
+            track.applyConstraints({ advanced: [{ torch: this.flashEnabled }] }).catch(() => {});
+        }
+        const button = document.getElementById('arFlashBtn');
+        if (button) button.classList.toggle('active', this.flashEnabled);
+        this.setStatus(this.flashEnabled ? 'Flash enabled' : 'Flash off');
+        if (navigator.vibrate) navigator.vibrate(10);
+    }
+
+    setStatus(message) {
+        const statusEl = document.getElementById('arStatusText');
+        const hud = document.getElementById('arHud'); // Hide HUD so it doesn't overlap LIVE status
+        if (statusEl) statusEl.textContent = message;
+        if (hud) hud.style.display = 'none';
+    }
+
+    showCameraError() {
+        const overlay = document.getElementById('arLiveStatus');
+        if (overlay) overlay.classList.add('error');
+        const button = document.getElementById('arAnalyzeBtn');
+        if (button) {
+            button.innerHTML = '<span style="font-size:12px;font-weight:700;">Retry</span>';
+            button.setAttribute('aria-label', 'Retry camera access');
+        }
+        this.container.classList.remove('results-open');
     }
 
     /* ─── Show 3D Model ─── */

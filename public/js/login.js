@@ -41,15 +41,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Store user info in localStorage
                 localStorage.setItem('user', JSON.stringify(data.user));
                 localStorage.setItem('isLoggedIn', 'true');
-                // Determine where to go next: redirect param > role-based default
+                // Determine where to go next: redirect param > normal authenticated destination
                 const params = new URLSearchParams(window.location.search);
                 let redirect = params.get('redirect');
                 let target = null;
                 // Validate redirect URL to prevent open redirect
                 if (redirect && isValidRedirectUrl(redirect)) {
                     target = redirect;
-                } else if (data.user && data.user.role === 'admin') {
-                    target = 'admin.html';
                 } else {
                     target = 'profile.html';
                 }
@@ -102,13 +100,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const data = await response.json();
 
             if (data.authenticated) {
-                // Already logged in: honor redirect param or route by role
+                // Already logged in: honor redirect param or route to the normal authenticated page
                 const params = new URLSearchParams(window.location.search);
                 let redirect = params.get('redirect');
                 if (redirect && isValidRedirectUrl(redirect)) {
                     window.location.href = redirect;
-                } else if (data.user && data.user.role === 'admin') {
-                    window.location.href = 'admin.html';
                 } else {
                     window.location.href = 'profile.html';
                 }

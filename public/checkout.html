@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="CSS/dark-mode.css" />
   <link rel="stylesheet" href="CSS/animations.css" />
   <link rel="stylesheet" href="CSS/checkout.css" />
+  <link rel="stylesheet" href="CSS/ar-analyzer.css" />
     <link rel="stylesheet" href="CSS/responsive.css">
     
     <!-- Smooth Animations CSS -->
@@ -119,6 +120,21 @@
           <p style="font-size: 13px; color: #3b2a1a; margin: 0;">
             <strong>Tip:</strong> You can modify your cart from the <a href="index.html" style="color: #8B4513; text-decoration: underline;">home page</a> before checkout.
           </p>
+        </div>
+
+        <div class="checkout-room-analyzer-promo" style="background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(248,244,239,0.96)); border: 1px solid rgba(139, 69, 19, 0.12); border-radius: 20px; padding: 18px; margin-bottom: 28px; box-shadow: 0 18px 40px rgba(39, 24, 14, 0.08);">
+          <div style="display:flex; gap:14px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+            <div style="min-width: 220px; flex: 1;">
+              <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; background:rgba(139,69,19,0.08); color:#8B4513; font-size:12px; font-weight:700; letter-spacing:0.3px; text-transform:uppercase; margin-bottom:10px;">
+                AI Room Analysis
+              </div>
+              <h3 style="margin:0 0 6px; font-size:1.05rem; color:#24150f;">See what fits in your room before you buy</h3>
+              <p style="margin:0; color:#6a5647; font-size:0.92rem; line-height:1.5;">Open your camera, scan the room, and get live furniture suggestions with a clean AR-style overlay.</p>
+            </div>
+            <button type="button" class="hero-ar-button cta-button primary" id="checkoutAnalyzeRoomBtn" style="min-width: 220px; justify-content:center;">
+              Analyze My Room
+            </button>
+          </div>
         </div>
       </div>
 
@@ -620,6 +636,8 @@
       </div>
     </div>
   </div>
+
+  <script defer src="js/ar-analyzer.js"></script>
 
   <script>
     let currentStepNum = 1;
