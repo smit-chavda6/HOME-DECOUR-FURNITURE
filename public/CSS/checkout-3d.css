@@ -1,0 +1,220 @@
+/* ==========================================================================
+   ☕ PREMIUM 3D CREDIT CARD STYLES
+   ========================================================================== */
+
+.card-3d-wrapper {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto 30px;
+  position: relative;
+  z-index: 100;
+}
+
+.card-3d-inner {
+  width: 100%;
+  aspect-ratio: 1.586;
+  position: relative;
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-style: preserve-3d;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(26, 17, 8, 0.2), 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Toggle this class via JS to flip the card */
+.card-3d-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+/* Front & Back Base Styles */
+.card-3d-front,
+.card-3d-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  /* Deep Espresso luxury background */
+  background: linear-gradient(135deg, #2A2118 0%, #1A1108 100%);
+  color: #fff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Subtle pattern overlay */
+.card-3d-front::after,
+.card-3d-back::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle at 100% 0%, rgba(198, 156, 109, 0.15) 0%, transparent 40%),
+                    radial-gradient(circle at 0% 100%, rgba(255, 255, 255, 0.05) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+/* ================== FRONT FACE ================== */
+.card-3d-front {
+  padding: 25px;
+}
+
+.card-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  color: #C69C6D; /* Champagne Gold */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  margin-bottom: auto;
+}
+
+.card-chip {
+  width: 45px;
+  height: 35px;
+  background: linear-gradient(135deg, #e0c38c 0%, #b8860b 100%);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 15px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.chip-line {
+  position: absolute;
+  background: rgba(0,0,0,0.2);
+}
+.chip-line:nth-child(1) { width: 100%; height: 1px; top: 10px; }
+.chip-line:nth-child(2) { width: 100%; height: 1px; top: 25px; }
+.chip-line:nth-child(3) { width: 1px; height: 100%; left: 15px; }
+.chip-main {
+  position: absolute;
+  width: 20px;
+  height: 15px;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 3px;
+  top: 10px;
+  left: 12px;
+}
+
+.card-contactless {
+  position: absolute;
+  top: 60px;
+  right: 25px;
+  width: 24px;
+  height: 24px;
+  color: #C69C6D;
+  opacity: 0.8;
+}
+
+.card-number-display {
+  font-family: 'Courier New', monospace;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+  margin-top: 25px;
+  margin-bottom: 20px;
+  min-height: 27px;
+}
+
+.card-details-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-detail-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 4px;
+}
+
+.card-value {
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+
+/* ================== BACK FACE ================== */
+.card-3d-back {
+  transform: rotateY(180deg);
+  padding: 0;
+}
+
+.card-magnetic-stripe {
+  width: 100%;
+  height: 45px;
+  background: #0f0a05;
+  margin-top: 25px;
+}
+
+.card-cvc-box {
+  margin: 15px 25px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.cvc-label {
+  font-size: 0.7rem;
+  margin-right: 10px;
+  color: #C69C6D;
+}
+
+.cvc-stripe {
+  background: #fff;
+  color: #1A1108;
+  height: 35px;
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 15px;
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+  border-radius: 4px;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.card-back-text {
+  font-size: 0.55rem;
+  padding: 12px 25px 5px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.4;
+  text-align: center;
+  margin-top: auto;
+}
+
+.back-logo {
+  text-align: right;
+  padding: 5px 25px 15px;
+  font-size: 1rem;
+  opacity: 0.5;
+  margin-bottom: 0;
+}
+
+/* Responsive Scaling */
+@media (max-width: 400px) {
+  .card-3d-inner {
+    height: 190px;
+  }
+  .card-number-display {
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    margin-top: 20px;
+  }
+  .card-value {
+    font-size: 0.8rem;
+  }
+  .card-3d-front {
+    padding: 20px;
+  }
+}

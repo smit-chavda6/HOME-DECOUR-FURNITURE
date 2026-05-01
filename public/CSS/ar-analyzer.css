@@ -1,1243 +1,688 @@
-/* ══════════════════════════════════════════════════════════
-   AR Room Analyzer v2.0 — Premium Redesigned Styles
-   ══════════════════════════════════════════════════════════ */
+/* =========================================================================
+   AR Room Stager v3.0 — Mobile-Only Premium UI
+   ========================================================================= */
 
-/* ─── Hide chatbot & back-to-top when AR is active ─── */
-body.ar-active .chatbot-container,
-body.ar-active #backToTopBtn,
-body.ar-active .back-to-top {
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    z-index: 0 !important;
-}
-
-/* ═══ Full-Screen Overlay ═══ */
-.ar-overlay-container {
+/* ── Container ── */
+.ars-container {
     position: fixed;
     inset: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 100000;
-    background: #000;
+    z-index: 99999;
+    display: none;
+    background: #0f0f11;
+    font-family: 'Jost', sans-serif;
+}
+.ars-container.active { display: flex; }
+
+/* ── Desktop Blocker ── */
+.ars-desktop-msg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f0f11;
+    z-index: 10;
+}
+.ars-desktop-inner {
+    text-align: center;
+    max-width: 380px;
+    padding: 50px 40px;
+    background: #1a1a1e;
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.06);
+    color: #fff;
+}
+.ars-desktop-inner svg {
+    color: #D2691E;
+    margin-bottom: 20px;
+}
+.ars-desktop-inner h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 10px;
+}
+.ars-desktop-inner p {
+    color: #999;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0 0 28px;
+}
+.ars-desktop-close {
+    padding: 14px 36px;
+    border: none;
+    border-radius: 14px;
+    background: #D2691E;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.ars-desktop-close:hover { background: #8B4513; }
+
+/* ── Mobile UI ── */
+.ars-mobile-ui {
     display: flex;
     flex-direction: column;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.35s ease, visibility 0.35s;
-}
-
-.ar-overlay-container.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-/* ═══ Top Bar ═══ */
-.ar-topbar {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    padding: 16px 20px;
+    height: 100%;
+    background: #0f0f11;
+}
+
+/* ── Top bar ── */
+.ars-topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    z-index: 30;
-    background: linear-gradient(180deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.25) 60%, transparent 100%);
+    padding: 12px 16px;
+    background: rgba(15,15,17,0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    z-index: 10;
+    flex-shrink: 0;
 }
-
-.ar-topbar-btn {
-    width: 48px;
-    height: 48px;
+.ars-topbar-btn {
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     border: none;
-    background: rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.06);
     color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    transition: background 0.25s, transform 0.2s;
+    transition: all 0.2s;
 }
-
-.ar-topbar-btn:hover {
-    background: rgba(255,255,255,0.25);
-    transform: scale(1.05);
-}
-
-.ar-topbar-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #fff;
-    font-family: var(--font-primary, 'Jost', sans-serif);
-    font-size: 0.95rem;
+.ars-topbar-btn:hover { background: rgba(255,255,255,0.12); }
+.ars-topbar-title {
+    font-size: 1rem;
     font-weight: 600;
+    color: #fff;
     letter-spacing: 0.5px;
 }
 
-.ar-topbar-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.15);
+/* ── Heart button ── */
+.ars-heart-btn {
+    transition: all 0.3s;
+}
+.ars-heart-btn.active svg {
+    fill: #e74c3c;
+    stroke: #e74c3c;
+}
+.ars-heart-btn.pop {
+    animation: heartPop 0.4s ease;
+}
+@keyframes heartPop {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.4); }
+    60% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+/* ── Viewer Area ── */
+.ars-viewer-area {
+    flex: 1;
+    position: relative;
+    background: linear-gradient(180deg, #121214 0%, #1a1a1e 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(8px);
-}
-
-/* ═══ Camera Feed ═══ */
-.ar-camera-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
     overflow: hidden;
-    background: #0a0a0a;
+    min-height: 0;
 }
 
-#ar-video-feed {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: scaleX(-1);
+.ars-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    color: #555;
+    text-align: center;
+    padding: 20px;
+}
+.ars-placeholder svg { opacity: 0.3; }
+.ars-placeholder p {
+    font-size: 0.9rem;
+    margin: 0;
+    max-width: 220px;
+    line-height: 1.5;
 }
 
-#ar-video-feed.environment {
-    transform: scaleX(1);
-}
-
-/* ═══ Scan Frame ═══ */
-.ar-scan-frame {
+.ars-model-container {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 75%;
-    max-width: 340px;
-    aspect-ratio: 3 / 4;
-    z-index: 12;
-    opacity: 0;
-    transition: opacity 0.4s;
-    pointer-events: none;
+    inset: 0;
 }
 
-.ar-overlay-container.scanning .ar-scan-frame {
-    opacity: 1;
-}
-
-.ar-scan-corner {
-    position: absolute;
-    width: 28px;
-    height: 28px;
-    border-color: rgba(255,255,255,0.85);
-    border-style: solid;
-    transition: border-color 0.4s;
-}
-
-.ar-scan-corner.tl { top: 0; left: 0; border-width: 3px 0 0 3px; border-top-left-radius: 8px; }
-.ar-scan-corner.tr { top: 0; right: 0; border-width: 3px 3px 0 0; border-top-right-radius: 8px; }
-.ar-scan-corner.bl { bottom: 0; left: 0; border-width: 0 0 3px 3px; border-bottom-left-radius: 8px; }
-.ar-scan-corner.br { bottom: 0; right: 0; border-width: 0 3px 3px 0; border-bottom-right-radius: 8px; }
-
-.ar-overlay-container.scanning .ar-scan-corner {
-    border-color: var(--accent-primary, #D2691E);
-}
-
-.ar-scan-beam {
-    position: absolute;
-    top: 5%;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent 0%, var(--accent-primary, #D2691E) 20%, var(--accent-primary, #D2691E) 80%, transparent 100%);
-    box-shadow: 0 0 20px 4px rgba(210, 105, 30, 0.4);
-    animation: arScanBeam 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
-    opacity: 0;
-}
-
-.ar-overlay-container.scanning .ar-scan-beam {
-    opacity: 1;
-}
-
-@keyframes arScanBeam {
-    0%   { top: 5%;  opacity: 0; }
-    8%   { opacity: 1; }
-    92%  { opacity: 1; }
-    100% { top: 95%; opacity: 0; }
-}
-
-/* ═══ HUD Chip ═══ */
-.ar-hud {
-    position: absolute;
-    top: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 15;
-    pointer-events: none;
-}
-
-.ar-hud-chip {
+/* model-viewer AR slot button */
+.ars-ar-slot-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(0,0,0,0.55);
+    padding: 12px 24px;
+    border: none;
+    border-radius: 50px;
+    background: #D2691E;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(210,105,30,0.4);
+}
+
+/* ── Floating actions over viewer ── */
+.ars-viewer-actions {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 5;
+}
+.ars-fab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.12);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    padding: 8px 18px;
-    border-radius: 50px;
-    border: 1px solid rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.9);
-    font-family: var(--font-primary, 'Jost', sans-serif);
-    font-size: 0.82rem;
-    letter-spacing: 0.3px;
-    white-space: nowrap;
-}
-
-.ar-hud-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #4ade80;
-    box-shadow: 0 0 6px rgba(74, 222, 128, 0.5);
-    animation: arDotPulse 2s infinite;
-}
-
-@keyframes arDotPulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50%      { opacity: 0.5; transform: scale(0.8); }
-}
-
-/* ═══ Scan Button ═══ */
-.ar-scan-action {
-    position: absolute;
-    bottom: 50px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 20;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    transition: opacity 0.3s, transform 0.3s;
-}
-
-.ar-overlay-container.results-open .ar-scan-action,
-.ar-overlay-container.analysis-running .ar-scan-action {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(-50%) translateY(20px);
-}
-
-.ar-scan-btn {
-    position: relative;
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.15);
-    border: 3px solid rgba(255,255,255,0.6);
     color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.ars-fab:hover { background: rgba(255,255,255,0.2); }
+#arsPlaceBtn {
+    background: #D2691E;
+    border-color: transparent;
+    box-shadow: 0 4px 20px rgba(210,105,30,0.4);
+}
+#arsPlaceBtn:hover { background: #8B4513; }
+
+/* ── Size Visualizer Panel ── */
+.ars-size-panel {
+    background: #1a1a1e;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+}
+.ars-size-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px 20px;
+    border: none;
+    background: transparent;
+    color: #ccc;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.ars-size-toggle:hover { color: #fff; }
+.ars-size-toggle .ars-chevron {
+    margin-left: auto;
+    transition: transform 0.3s;
+}
+.ars-size-panel.expanded .ars-chevron { transform: rotate(180deg); }
+
+.ars-size-details {
+    display: none;
+    padding: 0 20px 16px;
+    gap: 16px;
+}
+.ars-dim {
+    flex: 1;
+    text-align: center;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    padding: 12px 8px;
+}
+.ars-dim-label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #888;
+    margin-bottom: 6px;
+}
+.ars-dim-value {
+    display: block;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #D2691E;
+}
+
+/* ── Stage Tray ── */
+.ars-stage-tray {
+    background: #151517;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 10px 16px;
+    flex-shrink: 0;
+}
+.ars-tray-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.ars-tray-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.ars-tray-clear {
+    border: none;
+    background: none;
+    color: #e74c3c;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.ars-tray-clear:hover { background: rgba(231,76,60,0.1); }
+
+.ars-tray-scroll {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+.ars-tray-scroll::-webkit-scrollbar { display: none; }
+
+.ars-tray-item {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    overflow: hidden;
+    flex-shrink: 0;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.3s, transform 0.2s;
+}
+.ars-tray-item.active { border-color: #D2691E; }
+.ars-tray-item:hover { transform: scale(1.05); }
+.ars-tray-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.ars-tray-remove {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: none;
+    background: #e74c3c;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(8px);
-    transition: background 0.3s, border-color 0.3s, transform 0.2s;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
 }
+.ars-tray-item:hover .ars-tray-remove { opacity: 1; }
 
-.ar-scan-btn:hover {
-    background: rgba(255,255,255,0.25);
-    border-color: #fff;
-    transform: scale(1.06);
+/* ── Product Catalog ── */
+.ars-catalog {
+    background: #0f0f11;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+    max-height: 42vh;
+    display: flex;
+    flex-direction: column;
 }
-
-.ar-scan-btn:active {
-    transform: scale(0.95);
-}
-
-.ar-scan-btn-ring {
-    position: absolute;
-    inset: -6px;
-    border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.15);
-    animation: arRingPulse 3s ease-in-out infinite;
-}
-
-@keyframes arRingPulse {
-    0%, 100% { transform: scale(1); opacity: 0.5; }
-    50%      { transform: scale(1.15); opacity: 0; }
-}
-
-.ar-scan-label {
-    color: rgba(255,255,255,0.7);
-    font-family: var(--font-primary, 'Jost', sans-serif);
-    font-size: 0.8rem;
-    letter-spacing: 1px;
+.ars-catalog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
     text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.ars-catalog-count {
+    font-weight: 400;
+    color: #666;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.8rem;
 }
 
-/* ═══ Analysis Steps (during scan) ═══ */
-.ar-analysis-steps {
-    position: absolute;
-    bottom: 120px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 20;
+.ars-catalog-scroll {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px 16px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
 }
 
-.ar-overlay-container.analysis-running .ar-analysis-steps {
-    opacity: 1;
-}
-
-.ar-step {
+.ars-product-card {
     display: flex;
     align-items: center;
-    gap: 10px;
-    background: rgba(0,0,0,0.55);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding: 10px 18px;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.06);
-    color: rgba(255,255,255,0.4);
-    font-family: var(--font-primary, 'Jost', sans-serif);
-    font-size: 0.82rem;
-    min-width: 240px;
-    transition: color 0.3s, border-color 0.3s;
+    gap: 14px;
+    background: #1a1a1e;
+    border-radius: 16px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid rgba(255,255,255,0.04);
+}
+.ars-product-card:hover { background: #222226; }
+.ars-product-card.active {
+    border-color: #D2691E;
+    background: rgba(210,105,30,0.08);
 }
 
-.ar-step.active {
-    color: rgba(255,255,255,0.9);
-    border-color: rgba(210, 105, 30, 0.4);
-}
-
-.ar-step.done {
-    color: rgba(255,255,255,0.6);
-    border-color: rgba(74, 222, 128, 0.3);
-}
-
-.ar-step-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.ars-card-img {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    overflow: hidden;
     flex-shrink: 0;
-    transition: background 0.3s;
+    background: #2a2a2e;
 }
-
-.ar-step.active .ar-step-icon {
-    background: rgba(210, 105, 30, 0.25);
-}
-
-.ar-step.done .ar-step-icon {
-    background: rgba(74, 222, 128, 0.15);
-}
-
-.ar-step-check {
-    margin-left: auto;
-    opacity: 0;
-    color: #4ade80;
-    font-weight: 700;
-    transition: opacity 0.3s;
-}
-
-.ar-step.done .ar-step-check {
-    opacity: 1;
-}
-
-/* ═══ Bottom Sheet ═══ */
-.ar-bottom-sheet {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+.ars-card-img img {
     width: 100%;
-    background: rgba(15, 15, 18, 0.92);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border-top-left-radius: 26px;
-    border-top-right-radius: 26px;
-    padding: 0 0 30px;
-    z-index: 25;
-    transform: translateY(100%);
-    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-    border-top: 1px solid rgba(255,255,255,0.06);
+    height: 100%;
+    object-fit: cover;
 }
 
-.ar-overlay-container.results-open .ar-bottom-sheet {
-    transform: translateY(0);
+.ars-card-info {
+    flex: 1;
+    min-width: 0;
+}
+.ars-card-cat {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #D2691E;
+    font-weight: 600;
+}
+.ars-card-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 2px 0 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ars-card-price {
+    font-size: 0.82rem;
+    color: #999;
+    font-weight: 500;
 }
 
-.ar-sheet-handle-bar {
+.ars-card-actions {
     display: flex;
-    justify-content: center;
-    padding: 12px 0 6px;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
 }
 
-.ar-sheet-handle {
-    width: 36px;
-    height: 4px;
-    border-radius: 2px;
-    background: rgba(255,255,255,0.15);
+.ars-btn-stage {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(210,105,30,0.15);
+    color: #D2691E;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
+.ars-btn-stage:hover { background: rgba(210,105,30,0.25); }
 
-/* Close button inside the results tray */
-.ar-close-results-btn {
-    position: absolute;
-    top: 10px;
-    right: 16px;
+.ars-card-actions .ars-heart-btn {
     width: 34px;
     height: 34px;
     border-radius: 50%;
     border: none;
-    background: rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.6);
-    display: none; /* Hidden on desktop */
+    background: rgba(255,255,255,0.06);
+    color: #888;
+    display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
+    transition: all 0.2s;
+    align-self: center;
+}
+.ars-card-actions .ars-heart-btn:hover { background: rgba(255,255,255,0.12); }
+.ars-card-actions .ars-heart-btn.active {
+    color: #e74c3c;
+}
+.ars-card-actions .ars-heart-btn.active svg {
+    fill: #e74c3c;
+    stroke: #e74c3c;
 }
 
-.ar-close-results-btn:hover {
-    background: rgba(255,255,255,0.15);
-    color: #fff;
-}
-
-.ar-sheet-handle-bar {
-    position: relative;
-}
-
-.ar-sheet-header {
-    padding: 8px 24px 16px;
-}
-
-.ar-sheet-ai-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 12px;
-    background: rgba(210, 105, 30, 0.15);
-    color: #D2691E;
-    border-radius: 50px;
-    font-family: var(--font-primary, 'Jost', sans-serif);
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-}
-
-.ar-sheet-title {
-    font-family: var(--font-secondary, 'Playfair Display', serif);
-    font-size: 1.4rem;
-    color: #fff;
-    margin: 0 0 4px;
-    font-weight: 500;
-}
-
-.ar-sheet-subtitle {
-    font-family: var(--font-primary, 'Jost', sans-serif);
-    font-size: 0.82rem;
-    color: rgba(255,255,255,0.45);
-    margin: 0;
-}
-
-/* ═══ Product Carousel ═══ */
-.ar-product-carousel {
-    display: flex;
-    gap: 14px;
-    overflow-x: auto;
-    padding: 4px 24px 10px;
-    scrollbar-width: none;
-    cursor: grab;
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: auto;
-}
-
-.ar-product-carousel::-webkit-scrollbar { display: none; }
-.ar-product-carousel.grabbing { cursor: grabbing; scroll-behavior: auto; }
-
-.ar-product-card {
-    min-width: 180px;
-    max-width: 180px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 18px;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.06);
-    cursor: pointer;
-    transition: border-color 0.3s, transform 0.25s, box-shadow 0.3s;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-.ar-product-card:hover {
-    border-color: rgba(255,255,255,0.15);
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.3);
-}
-
-.ar-product-card.selected {
-    border-color: var(--accent-primary, #D2691E);
-    box-shadow: 0 0 0 1px var(--accent-primary, #D2691E), 0 12px 32px rgba(210, 105, 30, 0.2);
-}
-
-.ar-card-img-wrap {
-    position: relative;
-    height: 130px;
-    overflow: hidden;
-    background: rgba(255,255,255,0.04);
-}
-
-.ar-product-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s;
-}
-
-.ar-product-card:hover .ar-product-img {
-    transform: scale(1.06);
-}
-
-.ar-card-3d-tag {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    padding: 3px 8px;
-    border-radius: 6px;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(6px);
-    color: #fff;
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}
-
-.ar-product-info {
-    padding: 12px 14px 8px;
-    flex: 1;
-}
-
-.ar-product-category {
-    font-family: var(--font-primary, 'Jost', sans-serif);
-    font-size: 0.65rem;
-    color: rgba(255,255,255,0.35);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    display: block;
-    margin-bottom: 4px;
-}
-
-.ar-product-info h4 {
-    font-family: var(--font-primary, 'Jost', sans-serif);
-    font-size: 0.88rem;
-    font-weight: 500;
-    color: #fff;
-    margin: 0 0 8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 1.3;
-}
-
-.ar-product-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.ar-product-price {
-    font-family: var(--font-primary, 'Jost', sans-serif);
-    font-size: 0.9rem;
-    color: var(--accent-primary, #D2691E);
-    font-weight: 600;
-}
-
-.ar-product-rating {
-    font-size: 0.72rem;
-    color: rgba(255,255,255,0.5);
-}
-
-.ar-view-btn {
-    margin: 0 14px 12px;
-    padding: 8px 0;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    background: transparent;
-    color: rgba(255,255,255,0.7);
-    font-family: var(--font-primary, 'Jost', sans-serif);
-    font-size: 0.78rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
-    letter-spacing: 0.3px;
-}
-
-.ar-view-btn:hover, .ar-product-card.selected .ar-view-btn {
-    background: var(--accent-primary, #D2691E);
-    border-color: var(--accent-primary, #D2691E);
-    color: #fff;
-}
-
-.ar-no-results {
-    color: rgba(255,255,255,0.4);
-    font-family: var(--font-primary, 'Jost', sans-serif);
-    font-size: 0.85rem;
-    padding: 20px;
+.ars-empty {
     text-align: center;
-    width: 100%;
+    color: #555;
+    padding: 32px 20px;
+    font-size: 0.9rem;
 }
 
-/* ═══ Model Viewer Container ═══ */
-.ar-model-viewer-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 22;
-    display: none;
-    pointer-events: none;
-}
-
-.ar-overlay-container.showing-model .ar-model-viewer-container {
-    display: flex;
-    flex-direction: column;
-}
-
-.ar-model-viewer-container model-viewer {
-    flex: 1;
-    width: 100%;
-    background-color: transparent;
-    --poster-color: transparent;
-    pointer-events: auto;
-}
-
-.ar-model-info-bar {
-    position: absolute;
-    top: 70px;
+/* ── Toast ── */
+.ars-toast {
+    position: fixed;
+    bottom: 30px;
     left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.55);
+    transform: translateX(-50%) translateY(80px);
+    padding: 14px 28px;
+    background: rgba(26,26,30,0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    padding: 8px 14px 8px 18px;
-    border-radius: 50px;
     border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 50px;
     color: #fff;
-    font-family: var(--font-primary, 'Jost', sans-serif);
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    z-index: 30;
-    white-space: nowrap;
-    max-width: 90%;
-    pointer-events: auto;
-}
-
-.ar-model-close-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(255,255,255,0.12);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: background 0.2s;
-}
-
-.ar-model-close-btn:hover {
-    background: rgba(255,255,255,0.25);
-}
-
-.ar-model-hint {
-    position: absolute;
-    bottom: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(8px);
-    padding: 8px 16px;
-    border-radius: 50px;
-    color: rgba(255,255,255,0.6);
-    font-family: var(--font-primary, 'Jost', sans-serif);
-    font-size: 0.75rem;
+    z-index: 999999;
     pointer-events: none;
-    animation: arHintFade 5s forwards;
-    z-index: 28;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+    white-space: nowrap;
+}
+.ars-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
-@keyframes arHintFade {
-    0%, 65% { opacity: 1; }
-    100% { opacity: 0; visibility: hidden; }
+/* ── Hide on desktop (>1024px) ── */
+@media (min-width: 1025px) {
+    .ars-mobile-ui { display: none !important; }
+    .ars-desktop-msg { display: flex !important; }
 }
 
-.ar-native-btn {
-    position: absolute;
-    bottom: 24px;
-    right: 24px;
-    background: rgba(255,255,255,0.92);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 50px;
-    font-family: var(--font-primary, 'Jost', sans-serif);
-    font-weight: 600;
-    font-size: 0.82rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #1a1a1a;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    transition: transform 0.2s;
-    pointer-events: auto;
+/* ── Ensure body.ar-active hides chatbot and back-to-top ── */
+body.ar-active .chatbot-container,
+body.ar-active .back-to-top,
+body.ar-active .chatbot-toggle-btn {
+    display: none !important;
 }
 
-.ar-native-btn:hover {
-    transform: scale(1.04);
-}
-
-/* ══════════════════════════════════════════════════════════
-   AR CTA Section (Homepage)
-   ══════════════════════════════════════════════════════════ */
-
+/* =========================================================================
+   Homepage AR CTA Section — "Experience HomeSphere 2.0 AR"
+   ========================================================================= */
 .ar-dedicated-cta {
-    padding: 100px 0;
-    background: var(--bg-secondary);
-    position: relative;
+    padding: 100px 20px;
+    background: #fdfdfd;
     overflow: hidden;
 }
 
 .ar-cta-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 5%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 60px;
+    gap: 80px;
 }
 
 .ar-cta-text {
     flex: 1;
-    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
 
 .ar-badge {
     display: inline-block;
-    padding: 6px 12px;
-    background: rgba(139, 69, 19, 0.1);
-    color: var(--accent-primary, #8B4513);
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    margin-bottom: 20px;
+    padding: 8px 20px;
+    background: #f5eae1;
+    color: #a86c43;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-radius: 30px;
+    margin-bottom: 24px;
 }
 
 .ar-cta-text h2 {
-    font-family: var(--font-secondary);
-    font-size: 2.8rem;
-    color: var(--text-primary);
-    margin: 0 0 20px;
+    font-size: 3rem;
+    font-weight: 800;
+    color: #1d1d1f;
     line-height: 1.2;
+    margin: 0 0 20px;
+    letter-spacing: -0.5px;
 }
 
 .ar-cta-text p {
-    font-family: var(--font-primary);
-    font-size: 1.1rem;
-    color: var(--text-secondary);
+    font-size: 1.05rem;
+    color: #666;
+    line-height: 1.7;
     margin: 0 0 40px;
-    line-height: 1.6;
+    max-width: 460px;
 }
 
-.ar-cta-text .hero-ar-button {
-    display: inline-flex;
+.ar-dedicated-cta .hero-ar-button {
+    background: #ffffff;
+    color: #1d1d1f;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+    border-radius: 50px;
+    padding: 18px 40px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    display: flex;
     align-items: center;
     gap: 12px;
-    padding: 16px 32px;
-    background: var(--btn-color);
-    color: var(--btn-text);
+    transition: transform 0.3s, box-shadow 0.3s;
     border: none;
-    border-radius: 30px;
-    font-family: var(--font-primary);
-    font-weight: 500;
-    font-size: 1rem;
-    letter-spacing: 1px;
     cursor: pointer;
-    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
-    text-decoration: none;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
 }
 
-.ar-cta-text .hero-ar-button:hover {
-    background: var(--accent-primary, #8B4513);
-    transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(139, 69, 19, 0.2);
+.ar-dedicated-cta .hero-ar-button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
 }
 
-/* Visual Mockup */
 .ar-cta-visual {
     flex: 1;
     display: flex;
     justify-content: center;
-    align-items: center;
-    position: relative;
+    perspective: 1000px;
 }
 
 .ar-phone-mockup {
-    width: 320px;
-    height: 600px;
-    background: #000;
-    border-radius: 40px;
-    border: 12px solid #222;
     position: relative;
+    width: 320px;
+    height: 650px;
+    border-radius: 40px;
     overflow: hidden;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.2);
-    transform: rotate(5deg);
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.ar-phone-mockup:hover {
-    transform: rotate(0deg) scale(1.02);
+    box-shadow: -20px 30px 60px rgba(0, 0, 0, 0.15);
+    border: 12px solid #2d2d2f;
+    background: #1a1a1e;
+    transform: rotate(6deg) translateY(-10px);
 }
 
 .ar-phone-mockup img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.8;
 }
 
 .ar-scan-overlay {
     position: absolute;
-    top: 10%;
-    left: 10%;
-    right: 10%;
-    bottom: 10%;
-    border-radius: 20px;
+    inset: 0;
     pointer-events: none;
+    padding: 30px;
 }
 
 .ar-scan-corner-cta {
     position: absolute;
     width: 30px;
     height: 30px;
-    border-color: rgba(255, 255, 255, 0.9);
+    border-color: #ffffff;
     border-style: solid;
+    border-width: 0;
 }
-
-.ar-scan-corner-cta.top-left { top: 0; left: 0; border-width: 3px 0 0 3px; border-top-left-radius: 12px; }
-.ar-scan-corner-cta.top-right { top: 0; right: 0; border-width: 3px 3px 0 0; border-top-right-radius: 12px; }
-.ar-scan-corner-cta.bottom-left { bottom: 0; left: 0; border-width: 0 0 3px 3px; border-bottom-left-radius: 12px; }
-.ar-scan-corner-cta.bottom-right { bottom: 0; right: 0; border-width: 0 3px 3px 0; border-bottom-right-radius: 12px; }
+.ar-scan-corner-cta.top-left { top: 30px; left: 30px; border-top-width: 3px; border-left-width: 3px; border-radius: 8px 0 0 0; }
+.ar-scan-corner-cta.top-right { top: 30px; right: 30px; border-top-width: 3px; border-right-width: 3px; border-radius: 0 8px 0 0; }
+.ar-scan-corner-cta.bottom-left { bottom: 30px; left: 30px; border-bottom-width: 3px; border-left-width: 3px; border-radius: 0 0 0 8px; }
+.ar-scan-corner-cta.bottom-right { bottom: 30px; right: 30px; border-bottom-width: 3px; border-right-width: 3px; border-radius: 0 0 8px 0; }
 
 .ar-scan-line {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--accent-primary, #8B4513);
-    box-shadow: 0 0 15px rgba(139, 69, 19, 0.8);
-    animation: mockScan 3s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+    left: 20px;
+    right: 20px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #D2691E, transparent);
+    animation: arScanMove 2.5s ease-in-out infinite;
+    box-shadow: 0 0 15px rgba(210, 105, 30, 0.6);
 }
 
-@keyframes mockScan {
-    0% { top: 0%; opacity: 0; }
+@keyframes arScanMove {
+    0% { top: 20%; opacity: 0; }
     10% { opacity: 1; }
     90% { opacity: 1; }
-    100% { top: 100%; opacity: 0; }
+    100% { top: 80%; opacity: 0; }
 }
 
-/* ══════════════════════════════════════════════════════════
-   Responsive
-   ══════════════════════════════════════════════════════════ */
-
-@media (max-width: 992px) {
+/* Responsive */
+@media (max-width: 900px) {
     .ar-cta-container {
         flex-direction: column;
-        text-align: center;
-        gap: 40px;
+        gap: 60px;
     }
     .ar-cta-text h2 { font-size: 2.2rem; }
-    .ar-cta-text p { margin: 0 auto 30px; }
-    .ar-phone-mockup { width: 280px; height: 520px; transform: rotate(0); }
+    .ar-phone-mockup { width: 280px; height: 580px; transform: rotate(0); }
 }
 
-@media (max-width: 768px) {
-    /* ─── Mobile: Compact bottom drawer, camera stays visible ─── */
-    .ar-bottom-sheet {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        top: auto;
-        width: 100%;
-        height: auto;
-        max-height: 44vh;
-        border-radius: 0;
-        border-top-left-radius: 22px;
-        border-top-right-radius: 22px;
-        background: rgba(10, 10, 14, 0.92);
-        backdrop-filter: blur(30px);
-        -webkit-backdrop-filter: blur(30px);
-        padding: 0;
-        z-index: 25;
-        transform: translateY(100%);
-        transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-        border-top: 1px solid rgba(255,255,255,0.06);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-    }
-
-    .ar-overlay-container.results-open .ar-bottom-sheet {
-        transform: translateY(0);
-    }
-
-    .ar-sheet-handle-bar {
-        padding: 10px 0 4px;
-    }
-
-    .ar-sheet-header {
-        padding: 0 16px 8px;
-        flex-shrink: 0;
-    }
-
-    .ar-sheet-title {
-        font-size: 1rem;
-        margin-bottom: 2px;
-    }
-
-    .ar-sheet-subtitle {
-        font-size: 0.72rem;
-    }
-
-    .ar-sheet-ai-badge {
-        margin-bottom: 6px;
-        font-size: 0.65rem;
-        padding: 3px 10px;
-    }
-
-    /* Mobile: Horizontal scroll of compact mini-cards */
-    .ar-product-carousel {
-        flex-direction: row;
-        overflow-x: auto;
-        overflow-y: hidden;
-        padding: 0 14px 14px;
-        gap: 10px;
-        flex-shrink: 0;
-        cursor: grab;
-        align-items: stretch;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .ar-product-card {
-        min-width: 140px;
-        max-width: 140px;
-        flex-direction: column;
-        border-radius: 14px;
-        overflow: hidden;
-        flex-shrink: 0;
-    }
-
-    .ar-card-img-wrap {
-        width: 100%;
-        min-width: unset;
-        height: 90px;
-        min-height: unset;
-    }
-
-    .ar-product-img {
-        border-radius: 0;
-    }
-
-    .ar-card-3d-tag {
-        top: 5px;
-        right: 5px;
-        left: auto;
-        font-size: 0.55rem;
-        padding: 2px 5px;
-    }
-
-    .ar-product-info {
-        padding: 8px 10px 4px;
-        flex: 1;
-    }
-
-    .ar-product-category {
-        font-size: 0.55rem;
-        margin-bottom: 2px;
-    }
-
-    .ar-product-info h4 {
-        font-size: 0.78rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: 1.2;
-        margin-bottom: 4px;
-    }
-
-    .ar-product-meta {
-        margin-top: 0;
-    }
-
-    .ar-product-price {
-        font-size: 0.82rem;
-    }
-
-    .ar-product-rating {
-        font-size: 0.6rem;
-    }
-
-    .ar-view-btn {
-        margin: 0 8px 8px;
-        padding: 5px 0;
-        border-radius: 8px;
-        font-size: 0.68rem;
-    }
-
-    /* Mobile handle bar */
-    .ar-sheet-handle {
-        width: 36px;
-        height: 4px;
-        border-radius: 2px;
-    }
-
-    .ar-close-results-btn {
-        display: flex;
-        width: 30px;
-        height: 30px;
-    }
-}
-
-@media (max-width: 576px) {
-    .ar-dedicated-cta { padding: 60px 0; }
+@media (max-width: 480px) {
+    .ar-dedicated-cta { padding: 60px 16px; }
     .ar-cta-text h2 { font-size: 1.8rem; }
-    .ar-cta-text .hero-ar-button { width: 100%; justify-content: center; }
-    .ar-phone-mockup { width: 240px; height: 480px; }
-
-    .ar-topbar { padding: 12px 14px; }
-    .ar-topbar-btn { width: 48px; height: 48px; }
-    .ar-topbar-title { font-size: 0.85rem; }
-    .ar-topbar-icon { width: 28px; height: 28px; }
-
-    .ar-scan-btn { width: 64px; height: 64px; }
-    .ar-scan-label { font-size: 0.7rem; }
-    .ar-scan-action { bottom: 35px; }
-
-    .ar-step { min-width: 220px; font-size: 0.78rem; padding: 8px 14px; }
-    .ar-model-hint { bottom: 80px; font-size: 0.7rem; }
+    .ar-phone-mockup { width: 240px; height: 500px; }
 }
-
-/* ═══ Live analyzer additions ═══ */
-.ar-capture-canvas {
-    position: absolute;
-    inset: 0;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.ar-detection-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 14;
-    pointer-events: none;
-}
-
-.ar-detection-box {
-    position: absolute;
-    border: 1.5px solid rgba(255, 255, 255, 0.8);
-    border-radius: 14px;
-    box-shadow: 0 0 0 1px rgba(210, 105, 30, 0.16), 0 0 22px rgba(210, 105, 30, 0.1);
-    backdrop-filter: blur(2px);
-}
-
-.ar-detection-box span {
-    position: absolute;
-    top: -24px;
-    left: 0;
-    padding: 4px 8px;
-    border-radius: 999px;
-    background: rgba(20, 18, 16, 0.84);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-.ar-live-status {
-    position: absolute;
-    top: 72px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 18;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 14px;
-    border-radius: 999px;
-    background: rgba(17, 15, 13, 0.58);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    color: rgba(255,255,255,0.88);
-    border: 1px solid rgba(255,255,255,0.08);
-    max-width: calc(100vw - 28px);
-    box-sizing: border-box;
-}
-
-.ar-live-status.error {
-    background: rgba(111, 31, 31, 0.72);
-}
-
-.ar-live-pill {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px 8px;
-    border-radius: 999px;
-    background: rgba(74, 222, 128, 0.15);
-    color: #a7f3d0;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-}
-
-.ar-floating-controls {
-    position: absolute;
-    right: 14px;
-    bottom: 118px;
-    z-index: 21;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.ar-overlay-container.results-open .ar-floating-controls {
-    transform: translateY(-44vh);
-}
-
-.ar-fab {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.12);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    box-shadow: 0 10px 28px rgba(0,0,0,0.18);
-    transition: transform 0.2s ease, background 0.2s ease;
-}
-
-.ar-fab:hover,
-.ar-fab.active {
-    transform: translateY(-1px) scale(1.03);
-    background: rgba(210,105,30,0.24);
-}
-
-.ar-fab.primary {
-    background: linear-gradient(135deg, #8B4513, #D2691E);
-    border-color: rgba(255,255,255,0.14);
-}
-
-.ar-fab.primary:hover {
-    background: linear-gradient(135deg, #a35618, #e67926);
-}
-
-.ar-sheet-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-}
-
-.ar-meta-chip,
-.ar-product-reason {
-    font-family: var(--font-primary, 'Jost', sans-serif);
-}
-
-.ar-meta-chip {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 10px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.06);
-    color: rgba(255,255,255,0.72);
-    font-size: 0.72rem;
-    border: 1px solid rgba(255,255,255,0.06);
-}
-
-.ar-product-reason {
-    margin: 8px 0 0;
-    color: rgba(255,255,255,0.58);
-    font-size: 0.72rem;
-    line-height: 1.35;
-}
-
-.ar-card-best-fit {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    padding: 4px 8px;
-    border-radius: 999px;
-    background: rgba(74, 222, 128, 0.22);
-    color: #d1fae5;
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-
-@media (max-width: 576px) {
-    .ar-live-status {
-        top: 62px;
-        font-size: 0.74rem;
-        padding: 7px 12px;
-    }
-
-    .ar-floating-controls {
-        right: 10px;
-        bottom: 110px;
-    }
-
-    .ar-fab {
-        width: 40px;
-        height: 40px;
-    }
-
-    .ar-product-reason {
-        font-size: 0.66rem;
-    }
-}
-

@@ -1,0 +1,1093 @@
+/* ==========================================================================
+   📱 CHECKOUT PAGE — FULL MOBILE RESPONSIVENESS OVERHAUL
+   Covers: navbar, progress stepper, checkout card, forms, payment methods,
+   crypto section, card modal, 3D card, sticky summary, buttons, toasts,
+   confirmation, and all sub-components.
+   ========================================================================== */
+
+/* ─── Tablet breakpoint (≤ 768px) ─── */
+@media (max-width: 768px) {
+
+  /* ── NAVBAR ── */
+  .navbar {
+    padding: 10px 0;
+  }
+
+  .navbar-container {
+    padding: 0 14px;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .navbar-logo {
+    height: 32px;
+  }
+
+  .navbar-name {
+    font-size: 14px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── CHECKOUT WRAPPER ── */
+  .checkout-wrapper {
+    padding: 12px;
+    padding-top: 70px;
+    max-width: 100%;
+  }
+
+  /* ── PROGRESS STEPPER ── */
+  .progress-container {
+    margin-bottom: 24px;
+    padding: 8px 0;
+    top: 56px;
+  }
+
+  .progress-title {
+    font-size: 11px;
+    margin-bottom: 10px;
+  }
+
+  .progress-steps {
+    gap: 0;
+  }
+
+  .progress-step {
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .progress-step-circle {
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
+  }
+
+  .progress-step-label {
+    font-size: 10px;
+    white-space: nowrap;
+  }
+
+  .progress-line {
+    margin: 0 2px;
+    align-self: center;
+    flex: 1;
+    min-width: 0;
+    margin-top: -12px;
+  }
+
+  /* ── CHECKOUT CARD ── */
+  .checkout-card {
+    padding: 20px 16px;
+    border-radius: 10px;
+    overflow: visible;
+    scroll-margin-top: 120px;
+  }
+
+  /* ── STEP CONTENT ── */
+  .step-content {
+    overflow: visible;
+  }
+
+  /* ── STEP TITLES ── */
+  .step-title {
+    font-size: 22px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow: visible;
+    white-space: normal;
+    padding-top: 2px;
+  }
+
+  .step-subtitle {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  /* ── FORMS ── */
+  .form-row {
+    grid-template-columns: 1fr !important;
+    gap: 0;
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .form-label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .form-input,
+  .form-select {
+    padding: 11px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+
+  /* ── OPTION ITEMS (radio/checkbox) ── */
+  .option-item {
+    padding: 10px 12px;
+    gap: 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+
+  .option-title {
+    font-size: 13px;
+  }
+
+  .option-desc {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .option-price {
+    font-size: 13px;
+    min-width: auto;
+  }
+
+  .option-input {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  /* ── CART SUMMARY ── */
+  .cart-summary {
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  .cart-items {
+    max-height: 180px;
+  }
+
+  .cart-item {
+    padding: 8px 4px;
+    gap: 8px;
+  }
+
+  .cart-item-img {
+    width: 42px;
+    height: 42px;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .cart-item-name {
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  .cart-item-qty {
+    font-size: 10px;
+  }
+
+  .cart-item-price {
+    font-size: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── PRICE BREAKDOWN ── */
+  .price-breakdown {
+    font-size: 12px;
+    gap: 6px;
+    padding-top: 12px;
+  }
+
+  .price-row.total {
+    font-size: 14px;
+  }
+
+  /* ── BUTTONS ── */
+  .button-group {
+    flex-direction: column-reverse;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 14px;
+    border-radius: 10px;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    flex: none;
+  }
+
+  .btn-secondary {
+    flex: none;
+  }
+
+  /* ── STICKY ORDER SUMMARY ── */
+  .sticky-order-summary {
+    position: relative;
+    top: 0;
+    z-index: 10;
+    max-height: none;
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 10px;
+  }
+
+  .sticky-summary-items {
+    max-height: 120px;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .sticky-summary-item-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 5px;
+  }
+
+  .sticky-summary-item-name {
+    font-size: 11px;
+  }
+
+  .sticky-summary-item-qty {
+    font-size: 9px;
+  }
+
+  .sticky-summary-total-amount {
+    font-size: 15px;
+  }
+
+  .sticky-summary-total-label {
+    font-size: 12px;
+  }
+
+  /* ── PAYMENT SECTION ── */
+  .card-payment-placeholder {
+    padding: 18px 14px;
+    border-radius: 10px;
+  }
+
+  .card-payment-placeholder h3 {
+    font-size: 1rem;
+  }
+
+  .card-payment-placeholder p {
+    font-size: 0.85rem;
+  }
+
+  /* ── CRYPTO SECTION ── */
+  .crypto-payment-container {
+    padding: 16px 12px;
+    border-radius: 10px;
+  }
+
+  .crypto-title {
+    font-size: 1.1rem;
+  }
+
+  .crypto-subtitle {
+    font-size: 12px;
+  }
+
+  .crypto-connect-btn {
+    padding: 12px 18px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+
+  .crypto-wallet-info {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .crypto-wallet-address {
+    font-size: 12px;
+    word-break: break-all;
+  }
+
+  .crypto-wallet-badge {
+    align-self: flex-start;
+  }
+
+  .crypto-wallet-network {
+    font-size: 11px;
+  }
+
+  .crypto-disconnect-btn {
+    align-self: flex-start;
+    padding: 5px 14px;
+  }
+
+  .crypto-network-bar {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+    padding: 10px 12px;
+  }
+
+  .crypto-switch-network-btn {
+    text-align: center;
+    padding: 8px 14px;
+  }
+
+  .crypto-price-box {
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  .crypto-price-label {
+    font-size: 12px;
+  }
+
+  .crypto-price-value {
+    font-size: 14px;
+  }
+
+  .crypto-amount {
+    font-size: 16px !important;
+  }
+
+  .crypto-balance-row {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .crypto-pay-btn {
+    padding: 14px 20px;
+    font-size: 15px;
+    border-radius: 10px;
+  }
+
+  .crypto-token-select {
+    margin-bottom: 14px;
+  }
+
+  .crypto-token-dropdown {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .crypto-custom-token {
+    padding: 12px;
+  }
+
+  .crypto-custom-token .form-group {
+    margin-bottom: 8px;
+  }
+
+  .crypto-testnet-banner {
+    padding: 10px 12px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+
+  /* ── WALLET MODAL ── */
+  .wallet-modal {
+    width: 94%;
+    max-width: none;
+    padding: 22px 16px;
+    border-radius: 14px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .wallet-modal-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .wallet-modal-subtitle {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .wallet-option-btn {
+    padding: 12px 14px;
+    gap: 12px;
+    border-radius: 10px;
+  }
+
+  .wallet-option-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+  }
+
+  .wallet-option-emoji {
+    font-size: 24px;
+    width: 32px;
+  }
+
+  .wallet-option-name {
+    font-size: 13px;
+  }
+
+  .wallet-option-desc {
+    font-size: 11px;
+  }
+
+  /* ── CARD MODAL (3D card) ── */
+  .card-modal {
+    max-width: none;
+    width: 94%;
+    padding: 20px 14px;
+    border-radius: 14px;
+  }
+
+  .card-3d-wrapper {
+    margin-bottom: 16px;
+  }
+
+  /* ── CONFIRMATION ── */
+  .confirmation {
+    padding: 30px 16px;
+  }
+
+  .confirmation-icon {
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+  }
+
+  .confirmation-title {
+    font-size: 20px;
+  }
+
+  .order-id {
+    font-size: 12px;
+    padding: 10px;
+    word-break: break-all;
+  }
+
+  /* ── TOAST ── */
+  .toast-container {
+    top: auto;
+    bottom: 16px;
+    left: 12px;
+    right: 12px;
+  }
+
+  .toast {
+    min-width: 0;
+    max-width: 100%;
+    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: 8px;
+  }
+
+  /* ── FLOATING PROGRESS FAB ── */
+  .checkout-progress-fab {
+    right: 12px;
+    bottom: 12px;
+    width: 48px;
+    height: 48px;
+  }
+
+  .checkout-progress-fab .progress-ring {
+    width: 36px;
+    height: 36px;
+  }
+
+  .checkout-progress-fab .progress-text {
+    font-size: 0.7rem;
+  }
+
+  /* ── CHECKOUT ROOM ANALYZER PROMO ── */
+  .checkout-room-analyzer-promo {
+    padding: 14px !important;
+    border-radius: 14px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .checkout-room-analyzer-promo > div {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .checkout-room-analyzer-promo h3 {
+    font-size: 0.95rem !important;
+  }
+
+  .checkout-room-analyzer-promo p {
+    font-size: 0.85rem !important;
+  }
+
+  .checkout-room-analyzer-promo .hero-ar-button {
+    min-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* ── SUCCESS DIALOG ── */
+  .success-dialog {
+    margin: 5vh 10px;
+    padding: 22px 18px 18px;
+    max-width: none;
+    border-radius: 16px;
+  }
+
+  .success-title {
+    font-size: 1.3rem;
+  }
+
+  .success-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .success-actions .btn {
+    width: 100%;
+  }
+}
+
+
+/* ─── Small phone breakpoint (≤ 480px) ─── */
+@media (max-width: 480px) {
+
+  /* ── NAVBAR ── */
+  .navbar {
+    padding: 8px 0;
+  }
+
+  .navbar-container {
+    padding: 0 10px;
+    gap: 8px;
+  }
+
+  .navbar-logo {
+    height: 28px;
+  }
+
+  .navbar-name {
+    font-size: 12px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── WRAPPER ── */
+  .checkout-wrapper {
+    padding: 8px;
+    padding-top: 60px;
+  }
+
+  /* ── PROGRESS STEPPER ── */
+  .progress-container {
+    margin-bottom: 16px;
+    padding: 6px 0;
+    top: 48px;
+  }
+
+  .progress-title {
+    font-size: 10px;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .progress-step-circle {
+    width: 28px;
+    height: 28px;
+    font-size: 11px;
+  }
+
+  .progress-step-label {
+    font-size: 9px;
+  }
+
+  .progress-line {
+    margin-top: -8px;
+  }
+
+  /* ── CHECKOUT CARD ── */
+  .checkout-card {
+    padding: 16px 12px;
+    border-radius: 8px;
+  }
+
+  /* ── STEP TITLES ── */
+  .step-title {
+    font-size: 19px;
+    margin-bottom: 6px;
+  }
+
+  .step-subtitle {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  /* ── FORMS ── */
+  .form-input,
+  .form-select {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  /* ── OPTION ITEMS ── */
+  .option-item {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .option-title {
+    font-size: 12px;
+  }
+
+  .option-desc {
+    font-size: 10px;
+  }
+
+  /* ── CART ── */
+  .cart-item {
+    padding: 6px 2px;
+    gap: 6px;
+  }
+
+  .cart-item-img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .cart-item-name {
+    font-size: 11px;
+  }
+
+  .cart-item-price {
+    font-size: 11px;
+  }
+
+  .price-breakdown {
+    font-size: 11px;
+  }
+
+  .price-row.total {
+    font-size: 13px;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    padding: 13px 16px;
+    font-size: 13px;
+  }
+
+  .button-group {
+    margin-top: 16px;
+    gap: 8px;
+  }
+
+  /* ── CRYPTO ── */
+  .crypto-payment-container {
+    padding: 14px 10px;
+  }
+
+  .crypto-title {
+    font-size: 1rem;
+  }
+
+  .crypto-connect-btn {
+    padding: 11px 14px;
+    font-size: 13px;
+  }
+
+  .crypto-pay-btn {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .crypto-price-box {
+    padding: 12px;
+  }
+
+  .crypto-price-value {
+    font-size: 13px;
+  }
+
+  .crypto-amount {
+    font-size: 15px !important;
+  }
+
+  /* ── MODALS ── */
+  .wallet-modal {
+    width: 96%;
+    padding: 18px 12px;
+    border-radius: 12px;
+  }
+
+  .card-modal {
+    width: 96%;
+    padding: 16px 10px;
+    border-radius: 12px;
+  }
+
+  /* ── CONFIRMATION ── */
+  .confirmation {
+    padding: 24px 12px;
+  }
+
+  .confirmation-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 28px;
+  }
+
+  .confirmation-title {
+    font-size: 18px;
+  }
+
+  .confirmation-text {
+    font-size: 12px;
+  }
+
+  .order-id {
+    font-size: 11px;
+    padding: 8px;
+  }
+
+  /* ── TIP BOX ── */
+  .checkout-wrapper [style*="border-left: 4px solid #8B4513"] {
+    padding: 10px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .checkout-wrapper [style*="border-left: 4px solid #8B4513"] p {
+    font-size: 12px !important;
+  }
+
+  /* ── COD PAYMENT BOX ── */
+  #codPayment {
+    padding: 14px !important;
+    border-radius: 8px !important;
+  }
+
+  #codPayment p {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+  }
+}
+
+
+/* ─── Extra small phones (≤ 360px) ─── */
+@media (max-width: 360px) {
+
+  .navbar-name {
+    font-size: 11px;
+  }
+
+  .navbar-logo {
+    height: 24px;
+  }
+
+  .checkout-wrapper {
+    padding: 6px;
+    padding-top: 54px;
+  }
+
+  .checkout-card {
+    padding: 14px 10px;
+  }
+
+  .step-title {
+    font-size: 17px;
+  }
+
+  /* Hide labels on tiny screens — just show circles */
+  .progress-step-label {
+    display: none;
+  }
+
+  .progress-step {
+    flex-direction: row;
+  }
+
+  .progress-step-circle {
+    width: 26px;
+    height: 26px;
+    font-size: 10px;
+  }
+
+  .progress-line {
+    margin-top: 0;
+  }
+
+  .cart-item-img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .option-item {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .crypto-payment-container {
+    padding: 12px 8px;
+  }
+
+  .wallet-modal {
+    width: 98%;
+    padding: 14px 10px;
+  }
+
+  .card-modal {
+    width: 98%;
+    padding: 14px 8px;
+  }
+}
+
+
+/* ─── 3D CARD RESPONSIVE OVERRIDES ─── */
+@media (max-width: 768px) {
+  .card-3d-wrapper {
+    max-width: 100%;
+    margin: 0 auto 16px;
+  }
+
+  .card-3d-inner {
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  .card-3d-front {
+    padding: 18px;
+  }
+
+  .card-number-display {
+    font-size: 1.1rem !important;
+    letter-spacing: 1.5px;
+    margin-top: 16px;
+    margin-bottom: 14px;
+  }
+
+  .card-value {
+    font-size: 0.88rem;
+  }
+
+  .card-label {
+    font-size: 0.55rem;
+  }
+
+  .card-logo {
+    font-size: 1.15rem;
+  }
+
+  .card-chip {
+    width: 38px;
+    height: 28px;
+    border-radius: 5px;
+    margin-bottom: 12px;
+  }
+
+  .card-contactless {
+    top: 50px;
+    right: 18px;
+  }
+
+  .card-contactless svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .card-magnetic-stripe {
+    height: 36px;
+    margin-top: 18px;
+  }
+
+  .card-cvc-box {
+    margin: 10px 18px 0;
+    padding: 6px 8px;
+  }
+
+  .cvc-stripe {
+    height: 28px;
+    font-size: 0.9rem;
+    padding: 0 10px;
+  }
+
+  .card-back-text {
+    font-size: 0.5rem;
+    padding: 8px 18px 4px;
+    max-width: 80%;
+  }
+
+  .back-logo {
+    font-size: 0.9rem;
+    padding: 4px 18px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-3d-inner {
+    max-width: 300px;
+  }
+
+  .card-3d-front {
+    padding: 14px;
+  }
+
+  .card-number-display {
+    font-size: 0.95rem !important;
+    letter-spacing: 1px;
+    margin-top: 12px;
+    margin-bottom: 10px;
+  }
+
+  .card-value {
+    font-size: 0.8rem;
+  }
+
+  .card-logo {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+
+  .card-chip {
+    width: 34px;
+    height: 24px;
+    margin-bottom: 10px;
+  }
+
+  .card-contactless {
+    top: 42px;
+    right: 14px;
+  }
+
+  .card-contactless svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .card-3d-inner {
+    max-width: 270px;
+  }
+
+  .card-3d-front {
+    padding: 12px;
+  }
+
+  .card-number-display {
+    font-size: 0.85rem !important;
+    letter-spacing: 0.8px;
+    margin-top: 10px;
+    margin-bottom: 8px;
+  }
+
+  .card-value {
+    font-size: 0.72rem;
+  }
+
+  .card-logo {
+    font-size: 0.9rem;
+  }
+}
+
+
+/* ─── CARD MODAL FORM FIELDS MOBILE ─── */
+@media (max-width: 768px) {
+  .card-modal .form-group {
+    margin-top: 12px !important;
+  }
+
+  .card-modal .form-group .form-label {
+    font-size: 12px !important;
+    margin-bottom: 5px !important;
+  }
+
+  .card-modal .form-group .form-input {
+    padding: 10px !important;
+    font-size: 14px !important;
+  }
+
+  .card-modal .form-row {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .card-modal .btn-primary {
+    margin-top: 18px !important;
+    padding: 13px !important;
+    font-size: 1rem !important;
+  }
+
+  /* CVV toggle eye button positioning */
+  .card-modal .form-group[style*="position: relative"] button[id="toggleCVV"] {
+    bottom: 10px !important;
+    right: 10px !important;
+  }
+}
+
+
+/* ─── LANDSCAPE MOBILE FIXES ─── */
+@media (max-height: 500px) and (orientation: landscape) {
+  .checkout-wrapper {
+    padding-top: 50px;
+  }
+
+  .wallet-modal,
+  .card-modal {
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .card-3d-inner {
+    max-width: 260px;
+  }
+}
+
+
+/* ─── SAFE AREA (notch) SUPPORT ─── */
+@supports (padding: env(safe-area-inset-bottom)) {
+  @media (max-width: 768px) {
+    .button-group {
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .checkout-progress-fab {
+      bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .toast-container {
+      bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    }
+  }
+}
+
+
+/* ─── PREVENT HORIZONTAL SCROLL ON ALL MOBILE ─── */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .checkout-wrapper {
+    overflow-x: hidden;
+  }
+
+  /* Ensure all inline style containers don't overflow */
+  .checkout-wrapper * {
+    max-width: 100%;
+  }
+
+  /* Prevent long monospace text from causing overflow */
+  .crypto-wallet-address,
+  .order-id,
+  input[type="text"] {
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* Fix inline-styled elements that could overflow */
+  [style*="min-width: 220px"] {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+}

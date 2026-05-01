@@ -1109,20 +1109,24 @@ body.dark-mode .navbar-name {
 	top: 64px;
 	z-index: 90;
 	padding: 10px 0;
-	background: inherit;
+	background: rgba(255, 255, 255, 0.95);
+	-webkit-backdrop-filter: blur(12px);
+	backdrop-filter: blur(12px);
 	border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body.dark-mode .progress-container {
+	background: rgba(15, 15, 17, 0.97);
+	-webkit-backdrop-filter: saturate(1.2) blur(12px);
+	backdrop-filter: saturate(1.2) blur(12px);
+	border-bottom-color: var(--dm-border);
 }
 
 /* Light mode glassy blur under sticky steps */
 body:not(.dark-mode) .progress-container {
-	background: rgba(255, 255, 255, 0.65);
-	-webkit-backdrop-filter: saturate(1.2) blur(8px);
-	backdrop-filter: saturate(1.2) blur(8px);
-}
-
-body.dark-mode .progress-container {
-	border-bottom-color: #222;
-	background: #0f0f11;
+	background: rgba(255, 255, 255, 0.97);
+	-webkit-backdrop-filter: saturate(1.2) blur(12px);
+	backdrop-filter: saturate(1.2) blur(12px);
 }
 
 /* STICKY ORDER SUMMARY */
@@ -1360,7 +1364,9 @@ body.dark-mode .progress-step-label {
 }
 
 body.dark-mode .checkout-card {
-	background: #1a1a1a;
+	background: var(--dm-surface);
+	border: 1px solid var(--dm-border);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 /* STEP CONTENT */
@@ -1381,7 +1387,7 @@ body.dark-mode .checkout-card {
 }
 
 body.dark-mode .step-title {
-	color: #e0e0e0;
+	color: var(--dm-text);
 }
 
 .step-subtitle {
@@ -1716,7 +1722,7 @@ body.dark-mode .order-id {
 	position: fixed;
 	top: calc(var(--navbar-h, 70px) + 12px);
 	right: 16px;
-	z-index: 1205;
+	z-index: 100000;
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
@@ -2246,6 +2252,58 @@ body.dark-mode .crypto-balance-row {
 	transition: transform 0.3s;
 }
 
+.card-modal {
+	max-width: 500px;
+	max-height: 90vh;
+	overflow-y: auto;
+}
+
+.card-payment-placeholder {
+	background: rgba(139, 69, 19, 0.03);
+	padding: 25px 20px;
+	border-radius: 12px;
+	border: 1px dashed rgba(139, 69, 19, 0.2);
+	text-align: center;
+}
+.card-payment-placeholder .placeholder-icon {
+	margin-bottom: 12px;
+	opacity: 0.8;
+	color: #8B4513;
+}
+.card-payment-placeholder h3 {
+	margin: 0 0 8px;
+	font-family: 'Jost', sans-serif;
+	color: #8B4513;
+	font-size: 1.1rem;
+}
+.card-payment-placeholder p {
+	margin: 0 0 16px;
+	color: #6d4c2b;
+	font-size: 0.95rem;
+}
+.card-status-label {
+	margin-top: 12px;
+	font-weight: 700;
+	color: #1f7a30;
+}
+
+body.dark-mode .card-payment-placeholder {
+	background: rgba(255, 255, 255, 0.03);
+	border-color: rgba(255, 255, 255, 0.1);
+}
+body.dark-mode .card-payment-placeholder .placeholder-icon {
+	color: var(--accent2, #D28B4F);
+}
+body.dark-mode .card-payment-placeholder h3 {
+	color: #f1e6dc;
+}
+body.dark-mode .card-payment-placeholder p {
+	color: #b9a999;
+}
+body.dark-mode .card-status-label {
+	color: #4CAF50;
+}
+
 .wallet-modal-overlay.active .wallet-modal {
 	transform: translateY(0);
 }
@@ -2767,4 +2825,582 @@ body.dark-mode .crypto-token-dropdown optgroup {
 	.back-logo {
 		font-size: 0.98rem;
 	}
+}
+
+/* ==========================================================================
+   ☾ COMPREHENSIVE CHECKOUT DARK MODE — ALL ELEMENTS
+   Uses site tokens: --dm-bg, --dm-surface, --dm-panel, --dm-border,
+   --dm-text, --dm-muted, --accent1, --accent2, --accentText
+   ========================================================================== */
+
+/* ── Body & Wrapper ── */
+body.dark-mode .checkout-wrapper {
+	color: var(--dm-text);
+}
+
+/* ── Progress Stepper ── */
+body.dark-mode .progress-step-circle {
+	background: var(--dm-border);
+	color: var(--dm-muted);
+}
+
+body.dark-mode .progress-step.active .progress-step-circle {
+	background: linear-gradient(135deg, var(--accent1), var(--accent2));
+	color: var(--accentText);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .progress-step.completed .progress-step-circle {
+	background: #2e7d32;
+	color: #fff;
+}
+
+body.dark-mode .progress-line {
+	background: var(--dm-border);
+}
+
+body.dark-mode .progress-title {
+	color: var(--dm-muted);
+}
+
+/* ── Step Titles & Subtitles ── */
+body.dark-mode .step-title {
+	color: var(--dm-text);
+}
+
+body.dark-mode .step-subtitle {
+	color: var(--dm-muted);
+}
+
+/* ── Tip Box (inline-styled) ── */
+body.dark-mode [style*="border-left: 4px solid #8B4513"] {
+	background: rgba(212, 163, 115, 0.08) !important;
+	border-left-color: var(--accent1) !important;
+}
+
+body.dark-mode [style*="border-left: 4px solid #8B4513"] p {
+	color: var(--dm-muted) !important;
+}
+
+body.dark-mode [style*="border-left: 4px solid #8B4513"] strong {
+	color: var(--dm-text) !important;
+}
+
+body.dark-mode [style*="border-left: 4px solid #8B4513"] a {
+	color: var(--accent2) !important;
+}
+
+/* ── AR Room Analyzer Promo ── */
+body.dark-mode .checkout-room-analyzer-promo {
+	background: linear-gradient(135deg, var(--dm-surface), var(--dm-panel)) !important;
+	border-color: var(--dm-border) !important;
+	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35) !important;
+}
+
+body.dark-mode .checkout-room-analyzer-promo [style*="background:rgba(139,69,19,0.08)"] {
+	background: rgba(212, 163, 115, 0.12) !important;
+	color: var(--accent1) !important;
+}
+
+body.dark-mode .checkout-room-analyzer-promo h3 {
+	color: var(--dm-text) !important;
+}
+
+body.dark-mode .checkout-room-analyzer-promo p {
+	color: var(--dm-muted) !important;
+}
+
+/* ── Cart Summary ── */
+body.dark-mode .cart-summary {
+	background: var(--dm-panel);
+	border: 1px solid var(--dm-border);
+}
+
+body.dark-mode .cart-item {
+	border-color: var(--dm-border);
+}
+
+body.dark-mode .cart-item-name {
+	color: var(--dm-text);
+}
+
+body.dark-mode .cart-item-qty {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .cart-item-price {
+	color: var(--accent1);
+}
+
+body.dark-mode .cart-item-img {
+	background: var(--dm-surface);
+}
+
+/* ── Price Breakdown ── */
+body.dark-mode .price-breakdown {
+	border-top-color: var(--dm-border);
+	color: var(--dm-muted);
+}
+
+body.dark-mode .price-row {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .price-row span {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .price-row.total {
+	color: var(--accent1);
+}
+
+body.dark-mode .price-row.total span {
+	color: var(--accent1);
+}
+
+/* ── Option Items (radio/checkbox) ── */
+body.dark-mode .option-item {
+	border-color: var(--dm-border);
+	background: transparent;
+}
+
+body.dark-mode .option-item:hover {
+	border-color: var(--accent2);
+	background: rgba(212, 163, 115, 0.05);
+}
+
+body.dark-mode .option-item.selected,
+body.dark-mode .option-item:has(input:checked) {
+	border-color: var(--accent2);
+	background: rgba(212, 163, 115, 0.08);
+}
+
+body.dark-mode .option-title {
+	color: var(--dm-text);
+}
+
+body.dark-mode .option-desc {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .option-price {
+	color: var(--accent1);
+}
+
+body.dark-mode .option-input {
+	accent-color: var(--accent2);
+}
+
+/* ── Delivery Method (shipping options inside step 2) ── */
+body.dark-mode [style*="margin-top: 30px; margin-bottom: 20px"] .form-label {
+	color: var(--dm-text) !important;
+}
+
+/* ── Form Inputs (checkout-specific overrides) ── */
+body.dark-mode .form-label {
+	color: var(--dm-text);
+}
+
+body.dark-mode .form-input,
+body.dark-mode .form-select {
+	background: var(--dm-panel);
+	border-color: var(--dm-border);
+	color: var(--dm-text);
+}
+
+body.dark-mode .form-input::placeholder {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .form-input:focus,
+body.dark-mode .form-select:focus {
+	border-color: var(--accent2);
+	box-shadow: 0 0 0 3px rgba(192, 132, 87, 0.2);
+}
+
+body.dark-mode .form-error {
+	color: #ff6b6b;
+}
+
+/* ── Buttons ── */
+body.dark-mode .btn-primary {
+	background: linear-gradient(135deg, var(--accent1), var(--accent2));
+	color: var(--accentText);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .btn-primary:hover {
+	box-shadow: 0 6px 22px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .btn-secondary {
+	background: transparent;
+	border-color: var(--accent2);
+	color: var(--accent2);
+}
+
+body.dark-mode .btn-secondary:hover {
+	background: rgba(192, 132, 87, 0.1);
+	color: var(--accent1);
+}
+
+/* ── COD Payment Box (inline-styled with blue) ── */
+body.dark-mode #codPayment {
+	background: rgba(33, 150, 243, 0.08) !important;
+	border-left-color: #42a5f5 !important;
+}
+
+body.dark-mode #codPayment p {
+	color: var(--dm-text) !important;
+}
+
+body.dark-mode #codPayment small {
+	color: var(--dm-muted) !important;
+}
+
+/* ── Card Payment Placeholder ── */
+body.dark-mode .card-payment-placeholder {
+	background: rgba(255, 255, 255, 0.03) !important;
+	border-color: var(--dm-border) !important;
+}
+
+body.dark-mode .card-payment-placeholder .placeholder-icon {
+	color: var(--accent1) !important;
+}
+
+body.dark-mode .card-payment-placeholder h3 {
+	color: var(--dm-text) !important;
+}
+
+body.dark-mode .card-payment-placeholder p {
+	color: var(--dm-muted) !important;
+}
+
+body.dark-mode .card-status-label {
+	color: #4caf50 !important;
+}
+
+/* ── Card Modal (wallet-modal.card-modal) ── */
+body.dark-mode .card-modal {
+	background: var(--dm-surface) !important;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7) !important;
+	border: 1px solid var(--dm-border);
+}
+
+body.dark-mode .card-modal .wallet-modal-header h3 {
+	color: var(--dm-text) !important;
+}
+
+body.dark-mode .card-modal .wallet-modal-close {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .card-modal .wallet-modal-close:hover {
+	color: var(--dm-text);
+}
+
+/* Card modal form fields */
+body.dark-mode .card-modal .form-label {
+	color: var(--dm-text) !important;
+}
+
+body.dark-mode .card-modal .form-input {
+	background: var(--dm-panel) !important;
+	border: 1px solid var(--dm-border) !important;
+	color: var(--dm-text) !important;
+}
+
+body.dark-mode .card-modal .form-input::placeholder {
+	color: var(--dm-muted) !important;
+}
+
+body.dark-mode .card-modal .form-input:focus {
+	border-color: var(--accent2) !important;
+	box-shadow: 0 0 0 3px rgba(192, 132, 87, 0.2) !important;
+}
+
+/* Card modal Confirm & Pay button */
+body.dark-mode .card-modal .btn-primary {
+	background: linear-gradient(135deg, var(--accent1), var(--accent2)) !important;
+	color: var(--accentText) !important;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* CVV toggle button in card modal */
+body.dark-mode .card-modal #toggleCVV {
+	color: var(--accent1) !important;
+}
+
+/* ── Confirmation Section ── */
+body.dark-mode .confirmation-icon {
+	background: #1b5e20;
+	color: #a5d6a7;
+}
+
+body.dark-mode .confirmation-title {
+	color: var(--dm-text);
+}
+
+body.dark-mode .confirmation-text {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .order-id {
+	background: var(--dm-panel);
+	color: var(--dm-text);
+	border: 1px solid var(--dm-border);
+}
+
+/* ── Sticky Order Summary dark mode ── */
+body.dark-mode .sticky-order-summary {
+	background: rgba(22, 24, 29, 0.85);
+	border-color: var(--dm-border);
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+	-webkit-backdrop-filter: saturate(1.2) blur(8px);
+	backdrop-filter: saturate(1.2) blur(8px);
+}
+
+body.dark-mode .sticky-summary-title {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .sticky-summary-item-name {
+	color: var(--dm-text);
+}
+
+body.dark-mode .sticky-summary-item-qty {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .sticky-summary-item-img {
+	background-color: var(--dm-panel);
+}
+
+body.dark-mode .sticky-summary-total {
+	border-top-color: var(--dm-border);
+}
+
+body.dark-mode .sticky-summary-total-label {
+	color: var(--dm-text);
+}
+
+body.dark-mode .sticky-summary-total-amount {
+	color: var(--accent1);
+}
+
+/* ── Wallet Modal dark mode ── */
+body.dark-mode .wallet-modal {
+	background: var(--dm-surface);
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+	border: 1px solid var(--dm-border);
+}
+
+body.dark-mode .wallet-modal-header h3 {
+	color: var(--dm-text);
+}
+
+body.dark-mode .wallet-modal-subtitle {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .wallet-modal-note {
+	color: var(--dm-muted) !important;
+}
+
+body.dark-mode .wallet-option-btn {
+	background: var(--dm-panel);
+	border-color: var(--dm-border);
+}
+
+body.dark-mode .wallet-option-btn:hover {
+	border-color: var(--accent2);
+	background: rgba(192, 132, 87, 0.08);
+}
+
+body.dark-mode .wallet-option-name {
+	color: var(--dm-text);
+}
+
+body.dark-mode .wallet-option-desc {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .wallet-option-arrow {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .wallet-option-btn:hover .wallet-option-arrow {
+	color: var(--accent2);
+}
+
+body.dark-mode .wallet-modal-footer {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .wallet-modal-footer a {
+	color: var(--accent2);
+}
+
+body.dark-mode .wallet-modal-close {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .wallet-modal-close:hover {
+	color: var(--dm-text);
+}
+
+/* ── Crypto Section dark mode enhancements ── */
+body.dark-mode .crypto-payment-container {
+	background: linear-gradient(135deg, var(--dm-surface) 0%, var(--dm-panel) 100%);
+	border-color: var(--dm-border);
+}
+
+body.dark-mode .crypto-title {
+	color: var(--dm-text);
+}
+
+body.dark-mode .crypto-subtitle {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .crypto-hint {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .crypto-wallet-info {
+	background: var(--dm-panel);
+	border-color: var(--dm-border);
+}
+
+body.dark-mode .crypto-wallet-badge {
+	background: rgba(46, 125, 50, 0.15);
+	color: #81c784;
+}
+
+body.dark-mode .crypto-wallet-address {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .crypto-network-bar {
+	background: var(--dm-panel);
+	border-color: var(--dm-border);
+}
+
+body.dark-mode .crypto-network-info {
+	color: var(--dm-text);
+}
+
+body.dark-mode .crypto-switch-network-btn {
+	background: linear-gradient(135deg, rgba(212, 163, 115, 0.1), rgba(192, 132, 87, 0.1));
+	border-color: var(--dm-border);
+	color: var(--dm-text);
+}
+
+body.dark-mode .crypto-switch-network-btn:hover {
+	border-color: var(--accent2);
+}
+
+body.dark-mode .crypto-price-box {
+	background: var(--dm-panel);
+	border-color: var(--dm-border);
+}
+
+body.dark-mode .crypto-price-label {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .crypto-price-value {
+	color: var(--dm-text);
+}
+
+body.dark-mode .crypto-price-converted {
+	background: rgba(98, 126, 234, 0.08);
+}
+
+body.dark-mode .crypto-rate-info {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .crypto-price-note {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .crypto-refresh-btn {
+	border-color: var(--dm-border);
+}
+
+body.dark-mode .crypto-refresh-btn:hover {
+	background: var(--dm-surface);
+	border-color: var(--accent2);
+}
+
+body.dark-mode .crypto-balance-row {
+	background: var(--dm-panel);
+	color: var(--dm-muted);
+}
+
+body.dark-mode .crypto-pay-note {
+	color: var(--dm-muted);
+}
+
+body.dark-mode .crypto-testnet-banner {
+	background: linear-gradient(135deg, rgba(255, 152, 0, 0.08), rgba(255, 152, 0, 0.04));
+	border-color: rgba(255, 152, 0, 0.3);
+	color: var(--dm-text);
+}
+
+body.dark-mode .crypto-custom-token {
+	background: var(--dm-panel);
+	border-color: var(--dm-border);
+}
+
+body.dark-mode .crypto-token-dropdown {
+	background: var(--dm-panel);
+	border-color: var(--dm-border);
+	color: var(--dm-text);
+}
+
+/* ── Toast dark mode ── */
+body.dark-mode .toast {
+	background: var(--dm-surface);
+	color: var(--dm-text);
+	border-color: var(--dm-border);
+	box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+}
+
+body.dark-mode .toast-error {
+	background: rgba(239, 68, 68, 0.1);
+	border-color: rgba(239, 68, 68, 0.25);
+	color: #fca5a5;
+}
+
+body.dark-mode .toast-success {
+	background: rgba(76, 175, 80, 0.1);
+	border-color: rgba(76, 175, 80, 0.25);
+	color: #a5d6a7;
+}
+
+body.dark-mode .toast-info {
+	background: rgba(33, 150, 243, 0.1);
+	border-color: rgba(33, 150, 243, 0.25);
+	color: #90caf9;
+}
+
+/* ── Floating progress FAB dark mode ── */
+body.dark-mode .checkout-progress-fab {
+	background: var(--dm-surface);
+	border-color: var(--dm-border);
+	box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .checkout-progress-fab .ring-bg {
+	stroke: var(--dm-border);
+}
+
+body.dark-mode .checkout-progress-fab .ring-fg {
+	stroke: var(--accent2);
+}
+
+body.dark-mode .checkout-progress-fab .progress-text {
+	color: var(--accent1);
 }

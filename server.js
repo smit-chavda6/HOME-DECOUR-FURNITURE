@@ -346,8 +346,24 @@ async function initializeData() {
         await fixReviewIndexes();
         // Ensure default admin exists
         await seedDefaultAdmin();
-        // Seed default products
+        
+        // Remove only the specific obsolete products requested by the user
+        const badProducts = [
+            'white_chair',
+            'table_mr_ft',
+            'sofa_chair',
+            'simple_modern_chair_free_model',
+            'old_sofa_free',
+            'no_43',
+            'low_poly_modern_sofa_free_model',
+            'free_leather_sofa_stool'
+        ];
+        const deleteResult = await Product.deleteMany({ name: { $in: badProducts } });
+        console.log(`Removed ${deleteResult.deletedCount} obsolete 3D models from database.`);
+        
+        // Re-seed the current valid dynamic products
         await seedDefaultProducts();
+        
         // Seed initial product reviews (DISABLED - clearing all customer data)
         // await seedInitialReviews();
         // Mark all existing orders as delivered

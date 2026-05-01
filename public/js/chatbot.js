@@ -35,10 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="bot-notification" id="botNotification"></div>
                 <div class="chat-header">
                     <div class="chat-header-info">
-                        <div class="chat-header-avatar">&#127968;</div>
+                        <div class="chat-header-avatar">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;">
+                                <path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z"/>
+                            </svg>
+                        </div>
                         <div>
                             <h3>DecorBot</h3>
-                            <span class="chat-header-status">Online - AI Assistant</span>
+                            <span class="chat-header-status">Active Now</span>
                         </div>
                     </div>
                     <div class="chat-header-actions">
@@ -160,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sender === 'bot') {
             var avatar = document.createElement('div');
             avatar.className = 'bot-avatar';
-            avatar.innerHTML = '&#127968;';
+            avatar.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z"/></svg>';
             msg.appendChild(avatar);
         }
 
@@ -232,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loader = document.createElement('div');
                 loader.id = 'chatTypingIndicator';
                 loader.classList.add('message', 'bot-message', 'typing-indicator');
-                loader.innerHTML = '<div class="bot-avatar">&#127968;</div><div class="message-bubble typing-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+                loader.innerHTML = '<div class="bot-avatar"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M12 3l1.912 5.813a2 2 0 0 0 1.275 1.275L21 12l-5.813 1.912a2 2 0 0 0-1.275 1.275L12 21l-1.912-5.813a2 2 0 0 0-1.275-1.275L3 12l5.813-1.912a2 2 0 0 0 1.275-1.275L12 3z"/></svg></div><div class="message-bubble typing-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
                 chatMessages.appendChild(loader);
             }
             chatMessages.scrollTop = chatMessages.scrollHeight;

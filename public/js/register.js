@@ -218,7 +218,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Update buttons
-        btnBack.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+        btnBack.style.display = currentStep === 1 ? 'none' : 'flex';
+        btnNext.style.margin = currentStep === 1 ? '0 auto' : '0 0 0 auto';
+        btnSubmit.style.margin = '0 0 0 auto';
 
         if (currentStep === totalSteps) {
             btnNext.style.display = 'none';

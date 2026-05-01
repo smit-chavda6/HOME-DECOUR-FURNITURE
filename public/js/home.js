@@ -185,14 +185,15 @@ document.addEventListener('DOMContentLoaded', function () {
         // Create popup DOM
         const popup = document.createElement('div');
         popup.className = 'login-ad-popup';
+        const redirectPath = encodeURIComponent(window.location.pathname + window.location.search);
         popup.innerHTML = `
             <div class="login-ad-content">
                 <button class="login-ad-close" aria-label="Close">&times;</button>
                 <h3>Welcome to Home Decor!</h3>
                 <p>Register or Login now to save items to your wishlist, track orders easily, and get exclusive member deals.</p>
                 <div class="login-ad-actions">
-                    <a href="login.html" class="btn btn-primary">Login Now</a>
-                    <a href="register.html" class="btn btn-secondary">Create Account</a>
+                    <a href="login.html?redirect=${redirectPath}" class="btn btn-primary">Login Now</a>
+                    <a href="register.html?redirect=${redirectPath}" class="btn btn-secondary">Create Account</a>
                 </div>
             </div>
         `;
