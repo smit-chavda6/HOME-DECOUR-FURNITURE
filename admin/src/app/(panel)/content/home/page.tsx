@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { BlockForm, type BlockSection } from "@/components/panel/block-form";
 import { LastSaved } from "@/components/panel/last-saved";
-import { PageTitle } from "@/components/panel/page-title";
+import { PageHero } from "@/components/panel/ui";
+import { Home } from "lucide-react";
 import { saveHomeAction } from "@/lib/actions/content";
 import { requireAdmin } from "@/lib/auth";
 import { getBlock } from "@/lib/data/content";
@@ -11,7 +12,8 @@ export const metadata: Metadata = { title: "Home page" };
 const sections: BlockSection[] = [
   {
     title: "Headline",
-    description: "Three short lines. The second line gets a small room picture after it; the third is in the accent style.",
+    icon: "headline",
+    description: "Three short lines. The third is set in the copper italic accent.",
     fields: [
       { name: "eyebrow", label: "Small text above", optional: true, wide: true, maxLength: 80 },
       { name: "line1", label: "Line 1", maxLength: 40 },
@@ -22,6 +24,7 @@ const sections: BlockSection[] = [
   },
   {
     title: "Buttons",
+    icon: "buttons",
     description: "Links can be a page of the shop (/shop, /ar/live, /shop?category=sofa) or a full https:// address.",
     fields: [
       { name: "primaryLabel", label: "Main button text", maxLength: 40 },
@@ -37,9 +40,9 @@ export default async function HomeContentPage() {
   const block = await getBlock("home");
 
   return (
-    <div>
-      <PageTitle title="Home page" description={<LastSaved at={block.updatedAt} by={block.updatedBy} />} />
-      <BlockForm action={saveHomeAction} sections={sections} values={block.data} />
+    <div className="rise">
+      <PageHero icon={Home} eyebrow="Website · home page" title="The first" accent="impression" description={<LastSaved at={block.updatedAt} by={block.updatedBy} />} />
+      <BlockForm action={saveHomeAction} sections={sections} values={block.data} preview="home" />
     </div>
   );
 }

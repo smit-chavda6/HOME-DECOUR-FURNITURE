@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { PageTitle } from "@/components/panel/page-title";
+import { FilePen, FilePlus2 } from "lucide-react";
+import { PageHero } from "@/components/panel/ui";
 import { PostForm } from "@/components/panel/post-form";
 import { requireAdmin } from "@/lib/auth";
 import { getPostForEdit, type PostFormValues } from "@/lib/data/content";
@@ -30,8 +31,12 @@ export default async function PostPage({ params }: PageProps<"/content/blog/[id]
   }
 
   return (
-    <div>
-      <PageTitle title={post.id ? post.title : "New article"} description={post.id ? "Edit article" : undefined} />
+    <div className="rise">
+      {post.id ? (
+        <PageHero icon={FilePen} eyebrow="Journal · edit" title={post.title} description="Changes appear in the shop when you save." />
+      ) : (
+        <PageHero icon={FilePlus2} eyebrow="Journal · new" title="A new" accent="story" description="Write it here; the preview on the right shows how readers will see it." />
+      )}
       <PostForm post={post} />
     </div>
   );

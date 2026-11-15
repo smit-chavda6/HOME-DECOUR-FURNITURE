@@ -27,6 +27,7 @@ export function ImageField({
   error,
   hint = "Upload a file or paste a path or URL.",
   onUploadingChange,
+  onValueChange,
 }: {
   name: string;
   label: string;
@@ -34,8 +35,14 @@ export function ImageField({
   error?: string;
   hint?: string;
   onUploadingChange?: (uploading: boolean) => void;
+  /** Called with the new path or URL whenever it changes (typing or upload). */
+  onValueChange?: (value: string) => void;
 }) {
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValueState] = useState(defaultValue);
+  const setValue = (v: string) => {
+    setValueState(v);
+    onValueChange?.(v);
+  };
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const preview = assetUrl(value);
@@ -47,7 +54,7 @@ export function ImageField({
 
   return (
     <div className="grid gap-4 sm:grid-cols-[8rem_minmax(0,1fr)]">
-      <div className="relative aspect-square overflow-hidden rounded-xl bg-surface-2">
+      <div className="relative aspect-square overflow-hidden rounded-2xl bg-surface-2 ring-1 ring-line">
         {preview ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={preview} alt="Preview" className="size-full object-cover" />

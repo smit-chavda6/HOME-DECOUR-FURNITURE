@@ -65,7 +65,7 @@ export function FaqEditor({ initial }: { initial: Faq }) {
     updateGroup(gi, { items: groups[gi].items.map((it, i) => (i === ii ? { ...it, ...patch } : it)) });
 
   return (
-    <form action={action} className="max-w-3xl space-y-6" noValidate>
+    <form action={action} className="max-w-4xl space-y-6" noValidate>
       <input type="hidden" name="faq" value={JSON.stringify({ groups })} />
 
       {groups.length === 0 && (
@@ -75,7 +75,7 @@ export function FaqEditor({ initial }: { initial: Faq }) {
       )}
 
       {groups.map((group, gi) => (
-        <section key={gi} className="rounded-card bg-surface p-4 ring-1 ring-line sm:p-5">
+        <section key={gi} className="rounded-card bg-surface p-5 ring-1 ring-line sm:p-6">
           <div className="flex items-start gap-2">
             <div className="min-w-0 flex-1">
               <label htmlFor={`g-${gi}`} className="eyebrow">
@@ -109,7 +109,7 @@ export function FaqEditor({ initial }: { initial: Faq }) {
               const qErr = e[`groups.${gi}.items.${ii}.q`];
               const aErr = e[`groups.${gi}.items.${ii}.a`];
               return (
-                <li key={ii} className="flex gap-2 rounded-xl border border-line p-3">
+                <li key={ii} className="flex gap-2 rounded-2xl border border-line bg-[var(--field)] p-3 transition focus-within:border-accent/40">
                   <div className="min-w-0 flex-1 space-y-2">
                     <Input
                       aria-label={`Question ${ii + 1}`}
@@ -172,9 +172,11 @@ export function FaqEditor({ initial }: { initial: Faq }) {
         Add group
       </Button>
 
-      <div className="sticky bottom-0 -mx-4 space-y-3 border-t border-line bg-bg/90 px-4 py-4 backdrop-blur sm:mx-0 sm:px-0">
-        <FormMessage ok={state.ok}>{state.message}</FormMessage>
-        <SubmitButton pendingText="Saving…">Save FAQ</SubmitButton>
+      <div className="glass sticky bottom-3 z-10 !bg-surface-solid/90 shadow-[var(--shadow-lift)] flex flex-wrap items-center gap-3 rounded-[1.5rem] p-2">
+        <SubmitButton size="lg" pendingText="Saving…">Save FAQ</SubmitButton>
+        <div className="min-w-0 flex-1">
+          <FormMessage ok={state.ok}>{state.message}</FormMessage>
+        </div>
       </div>
     </form>
   );

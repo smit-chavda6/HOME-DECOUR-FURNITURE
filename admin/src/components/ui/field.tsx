@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 /** Shared look for text inputs, selects and textareas. */
 export const controlStyles =
-  "w-full rounded-xl border border-line bg-surface px-4 text-sm text-ink placeholder:text-muted/70 transition-colors focus:border-accent focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-accent/40 disabled:opacity-60 aria-[invalid=true]:border-red-600 dark:aria-[invalid=true]:border-red-400";
+  "w-full rounded-xl border border-line bg-[var(--field)] px-4 text-sm text-ink shadow-[inset_0_1px_2px_rgb(0_0_0/0.06)] placeholder:text-muted/60 transition-all duration-200 hover:border-accent/30 focus:border-accent/70 focus:bg-[var(--field-focus)] focus:shadow-[0_0_0_4px_var(--glow)] focus:outline-none disabled:opacity-60 aria-[invalid=true]:border-red-600 dark:aria-[invalid=true]:border-red-400";
 
 type FieldProps = {
   label: string;
@@ -27,7 +27,7 @@ export function Field({
 }: FieldProps) {
   return (
     <div className={cn("space-y-1.5", className)}>
-      <label htmlFor={htmlFor} className="flex items-baseline justify-between text-sm font-medium">
+      <label htmlFor={htmlFor} className="flex items-baseline justify-between text-[0.8rem] font-semibold tracking-wide text-ink/85">
         {label}
         {optional && <span className="text-xs font-normal text-muted">Optional</span>}
       </label>

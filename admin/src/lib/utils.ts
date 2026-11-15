@@ -77,3 +77,8 @@ export function slugify(text: string) {
     .replace(/^-+|-+$/g, "")
     .slice(0, 80);
 }
+
+/** Timestamp (ms) for `days` days before now, for "last 7 days"-style counts on a page. */
+export function daysAgo(days: number) {
+  return Date.now() - days * 86_400_000;
+}

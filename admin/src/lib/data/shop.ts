@@ -223,3 +223,49 @@ export async function getOrders({ limit = 200, status }: { limit?: number; statu
       })),
   }));
 }
+
+export type DayPoint = { date: string; revenue: number; orders: number; customers: number };
+
+/**
+ * One point per day (India time) for the last `days` days, oldest first:
+ * revenue and orders (excluding cancelled and unpaid) and new customers.
+ * Days with nothing are included as zeros so charts have a steady x-axis.
+ */
+export async function getDailySeries(days = 30): Promise<DayPoint[]> {
+  await connectDb();
+  const tz = "Asia/Kolkata";
+  const key = (d: Date) => new Intl.DateTimeFormat("en-CA", { timeZone: tz }).format(d); // YYYY-MM-DD
+  const since = new Date(Date.now() - (days - 1) * 86_400_000);
+  since.setUTCHours(0, 0, 0, 0);
+  since.setTime(since.getTime() - 86_400_000); // margin for the time-zone shift; trimmed below
+
+  const [orders, users] = await Promise.all([
+    Order.aggregate<{ _id: string; revenue: number; orders: number }>([
+      { $match: { created_at: { $gte: since }, status: { $nin: ["cancelled", "pending_payment"] } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$created_at", timezone: tz } },
+          revenue: { $sum: "$total" },
+          orders: { $sum: 1 },
+        },
+      },
+    ]),
+    User.aggregate<{ _id: string; customers: number }>([
+      { $match: { created_at: { $gte: since } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$created_at", timezone: tz } },
+          customers: { $sum: 1 },
+        },
+      },
+    ]),
+  ]);
+
+  const byDay = new Map(orders.map((o) => [o._id, o]));
+  const usersByDay = new Map(users.map((u) => [u._id, u.customers]));
+  return Array.from({ length: days }, (_, i) => {
+    const date = key(new Date(Date.now() - (days - 1 - i) * 86_400_000));
+    const o = byDay.get(date);
+    return { date, revenue: o?.revenue ?? 0, orders: o?.orders ?? 0, customers: usersByDay.get(date) ?? 0 };
+  });
+}

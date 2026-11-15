@@ -6,8 +6,8 @@ const base =
 const variants = {
   /** Copper gradient with a soft glow: the main call to action. */
   primary:
-    "bg-[linear-gradient(110deg,var(--accent),var(--accent-2)_50%,var(--accent))] bg-[length:200%_100%] bg-left text-accent-ink shadow-[0_10px_40px_-12px_var(--glow)] hover:bg-right hover:shadow-[0_14px_50px_-10px_var(--glow)]",
-  outline: "glass text-ink hover:border-ink/30 hover:bg-ink/[0.07]",
+    "bg-accent text-accent-ink shadow-[0_1px_2px_rgb(0_0_0/0.08),0_8px_20px_-10px_var(--glow)] hover:bg-[#a8380a] hover:shadow-[0_1px_2px_rgb(0_0_0/0.08),0_12px_28px_-10px_var(--glow)]",
+  outline: "border border-line-strong bg-surface text-ink shadow-[var(--shadow-sm)] hover:border-ink/25 hover:bg-surface-2",
   ghost: "text-ink hover:bg-ink/[0.07]",
   /** Light pill for use on dark imagery or the inverse bands. */
   inverse: "bg-ink text-bg hover:bg-ink/85",

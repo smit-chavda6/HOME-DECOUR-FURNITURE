@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { BlockForm, type BlockSection } from "@/components/panel/block-form";
 import { LastSaved } from "@/components/panel/last-saved";
-import { PageTitle } from "@/components/panel/page-title";
+import { PageHero } from "@/components/panel/ui";
+import { Settings } from "lucide-react";
 import { saveSettingsAction } from "@/lib/actions/content";
 import { requireAdmin } from "@/lib/auth";
 import { getBlock } from "@/lib/data/content";
@@ -11,6 +12,7 @@ export const metadata: Metadata = { title: "Store settings" };
 const sections: BlockSection[] = [
   {
     title: "Store",
+    icon: "store",
     fields: [
       { name: "name", label: "Store name", maxLength: 80 },
       { name: "tagline", label: "Tagline", optional: true, maxLength: 160 },
@@ -19,6 +21,7 @@ const sections: BlockSection[] = [
   },
   {
     title: "Contact details",
+    icon: "phone",
     description: "Shown in the footer, on the Contact page and on the FAQ page.",
     fields: [
       { name: "phone", label: "Phone", placeholder: "+91 98250 00000" },
@@ -30,6 +33,7 @@ const sections: BlockSection[] = [
   },
   {
     title: "Social links",
+    icon: "share",
     description: "Full https:// addresses. Empty ones are hidden.",
     fields: [
       { name: "instagram", label: "Instagram", type: "url", optional: true },
@@ -45,9 +49,9 @@ export default async function SettingsPage() {
   const block = await getBlock("settings");
 
   return (
-    <div>
-      <PageTitle title="Store settings" description={<LastSaved at={block.updatedAt} by={block.updatedBy} />} />
-      <BlockForm action={saveSettingsAction} sections={sections} values={block.data} />
+    <div className="rise">
+      <PageHero icon={Settings} eyebrow="Website · store" title="Store" accent="settings" description={<LastSaved at={block.updatedAt} by={block.updatedBy} />} />
+      <BlockForm action={saveSettingsAction} sections={sections} values={block.data} preview="settings" />
     </div>
   );
 }

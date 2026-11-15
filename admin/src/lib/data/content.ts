@@ -25,6 +25,9 @@ export type PostRow = {
   id: string;
   slug: string;
   title: string;
+  excerpt: string;
+  image: string;
+  words: number;
   status: "draft" | "published";
   publishedAt: string;
   updatedAt: string;
@@ -37,6 +40,9 @@ export async function getPostRows(): Promise<PostRow[]> {
     id: String(d._id),
     slug: d.slug,
     title: d.title,
+    excerpt: d.excerpt ?? "",
+    image: d.image ?? "",
+    words: (d.body ?? "").split(/s+/).filter(Boolean).length,
     status: d.status,
     publishedAt: new Date(d.published_at ?? Date.now()).toISOString(),
     updatedAt: new Date(d.updated_at ?? Date.now()).toISOString(),

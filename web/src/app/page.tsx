@@ -45,7 +45,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero stats={stats} content={content} />
+      <Hero stats={stats} content={content} featured={featured} />
       <Marquee />
       <div id="collections" className="scroll-mt-20">
         <CategoryGrid counts={counts} />

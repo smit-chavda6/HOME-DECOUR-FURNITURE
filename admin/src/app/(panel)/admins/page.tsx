@@ -1,127 +1,151 @@
 import type { Metadata } from "next";
-import { LogOut } from "lucide-react";
+import {
+  FilePen,
+  Image as ImageIcon,
+  KeyRound,
+  LogIn,
+  LogOut,
+  Package,
+  ShieldAlert,
+  ShieldCheck,
+  ShoppingCart,
+  Trash2,
+  UserPlus,
+  Settings,
+} from "lucide-react";
 import { AdminActiveToggle, ChangePasswordForm, NewAdminForm } from "@/components/panel/admin-forms";
-import { PageTitle } from "@/components/panel/page-title";
+import { Avatar, PageHero, SectionCard, StatStrip } from "@/components/panel/ui";
 import { logoutEverywhereAction } from "@/lib/actions/auth";
 import { requireAdmin } from "@/lib/auth";
 import { getAdmins, getAuditLog } from "@/lib/data/admins";
-import { cn, formatDateTime } from "@/lib/utils";
+import { cn, daysAgo, formatDateTime } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Admins & log" };
 
-const tone = (action: string) =>
-  action.startsWith("login.failed") || action.startsWith("login.blocked")
-    ? "text-red-700 dark:text-red-400"
-    : action.startsWith("login") || action.startsWith("logout")
-      ? "text-muted"
-      : "";
+/** Icon and colour for each kind of log entry. */
+function kind(action: string) {
+  if (action.startsWith("login.failed") || action.startsWith("login.blocked"))
+    return { icon: ShieldAlert, tone: "bg-red-600/15 text-red-700 dark:text-red-300" };
+  if (action.startsWith("login")) return { icon: LogIn, tone: "bg-sage/15 text-sage" };
+  if (action.startsWith("logout")) return { icon: LogOut, tone: "bg-surface-2 text-muted" };
+  if (action.includes("deleted")) return { icon: Trash2, tone: "bg-red-600/10 text-red-700 dark:text-red-300" };
+  if (action.startsWith("product")) return { icon: Package, tone: "bg-accent/15 text-accent" };
+  if (action.startsWith("order")) return { icon: ShoppingCart, tone: "bg-accent/15 text-accent" };
+  if (action.startsWith("post") || action.startsWith("content")) return { icon: FilePen, tone: "bg-accent/15 text-accent" };
+  if (action.startsWith("image")) return { icon: ImageIcon, tone: "bg-accent/15 text-accent" };
+  if (action.startsWith("admin")) return { icon: UserPlus, tone: "bg-accent/15 text-accent" };
+  if (action.startsWith("password")) return { icon: KeyRound, tone: "bg-accent/15 text-accent" };
+  return { icon: Settings, tone: "bg-surface-2 text-muted" };
+}
+
+/** "content.home.saved" -> "Content · home saved" */
+const human = (action: string) => {
+  const [first, ...rest] = action.split(".");
+  return `${first.charAt(0).toUpperCase()}${first.slice(1)} · ${rest.join(" ")}`;
+};
 
 export default async function AdminsPage() {
   const me = await requireAdmin();
   const [admins, log] = await Promise.all([getAdmins(), getAuditLog()]);
+  const dayAgo = daysAgo(1);
+  const failed24h = log.filter((l) => l.action.startsWith("login.failed") && new Date(l.at).getTime() >= dayAgo).length;
+  const changes = log.filter((l) => !l.action.startsWith("login") && !l.action.startsWith("logout")).length;
 
   return (
-    <div className="space-y-14">
-      <PageTitle
-        title="Admins & log"
-        description="Admin accounts are separate from shop customers. Only people listed here can sign in to this panel."
+    <div className="rise">
+      <PageHero
+        icon={ShieldCheck}
+        eyebrow="Security"
+        title="Who holds"
+        accent="the keys"
+        description="Admin accounts are separate from shop customers. Only the people listed here can sign in to this panel, and every sign-in and change is recorded."
       />
 
-      <section>
-        <h2 className="font-display text-xl font-semibold">Admins</h2>
-        <div className="mt-4 relative overflow-x-auto rounded-card ring-1 ring-line">
-          <table className="w-full min-w-[40rem] text-left text-sm">
-            <thead className="bg-surface-2 text-xs text-muted uppercase">
-              <tr>
-                <th className="px-4 py-3 font-semibold">Name</th>
-                <th className="px-4 py-3 font-semibold">Email</th>
-                <th className="px-4 py-3 font-semibold">Last sign-in</th>
-                <th className="px-4 py-3 font-semibold">Can sign in</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-line bg-surface">
-              {admins.map((a) => (
-                <tr key={a.id}>
-                  <td className="px-4 py-3">
-                    <p className="font-medium">{a.name}</p>
-                    <p className="text-xs text-muted">@{a.username}</p>
-                  </td>
-                  <td className="px-4 py-3">{a.email}</td>
-                  <td className="px-4 py-3 text-muted">
-                    {a.lastLoginAt ? formatDateTime(a.lastLoginAt) : "Never"}
-                    {a.lastLoginIp && <span className="block text-xs">{a.lastLoginIp}</span>}
-                  </td>
-                  <td className="px-4 py-3">
-                    {a.id === me.id ? (
-                      <span className="text-xs text-muted">You</span>
-                    ) : (
-                      <AdminActiveToggle id={a.id} active={a.active} name={a.name} />
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <StatStrip
+        items={[
+          { label: "Admins", value: admins.length, tone: "accent" },
+          { label: "Active", value: admins.filter((a) => a.active).length, tone: "good" },
+          { label: "Failed sign-ins (24 h)", value: failed24h, tone: failed24h ? "warn" : "default" },
+          { label: "Recent changes", value: changes },
+        ]}
+      />
 
-      <div className="grid gap-10 lg:grid-cols-2">
-        <section className="rounded-card bg-surface p-5 ring-1 ring-line sm:p-6">
-          <h2 className="font-display text-xl font-semibold">Add an admin</h2>
-          <p className="mt-1 text-sm text-muted">They can do everything you can. Only add people you trust.</p>
-          <div className="mt-5">
-            <NewAdminForm />
-          </div>
-        </section>
+      <ul className="mb-6 grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+        {admins.map((a) => (
+          <li key={a.id} className={cn("sheen rounded-card bg-surface p-5 ring-1 ring-line", !a.active && "opacity-60")}>
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <Avatar name={a.name} className="size-12 text-sm" />
+                <div className="min-w-0">
+                  <p className="truncate font-display text-lg font-semibold tracking-tight">
+                    {a.name}
+                    {a.id === me.id && <span className="ml-2 rounded-full bg-accent/15 px-2 py-0.5 align-middle text-[0.65rem] font-medium text-accent">You</span>}
+                  </p>
+                  <p className="truncate text-sm text-muted">
+                    @{a.username} · {a.email}
+                  </p>
+                </div>
+              </div>
+              {a.id !== me.id && <AdminActiveToggle id={a.id} active={a.active} name={a.name} />}
+            </div>
+            <p className="mt-4 border-t border-line pt-3 text-xs text-muted">
+              {a.lastLoginAt ? (
+                <>
+                  Last sign-in {formatDateTime(a.lastLoginAt)}
+                  {a.lastLoginIp && <span className="font-mono"> · {a.lastLoginIp}</span>}
+                </>
+              ) : (
+                "Never signed in"
+              )}
+            </p>
+          </li>
+        ))}
+      </ul>
 
-        <section className="rounded-card bg-surface p-5 ring-1 ring-line sm:p-6">
-          <h2 className="font-display text-xl font-semibold">Your password</h2>
-          <p className="mt-1 text-sm text-muted">Changing it signs you out on every other device.</p>
-          <div className="mt-5">
-            <ChangePasswordForm />
-          </div>
-          <form action={logoutEverywhereAction} className="mt-8 border-t border-line pt-6">
+      <div className="mb-6 grid gap-6 lg:grid-cols-2">
+        <SectionCard icon={UserPlus} title="Add an admin" description="They can do everything you can. Only add people you trust.">
+          <NewAdminForm />
+        </SectionCard>
+
+        <SectionCard icon={KeyRound} title="Your password" description="Changing it signs you out on every other device.">
+          <ChangePasswordForm />
+          <form action={logoutEverywhereAction} className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-surface-2 p-4">
             <p className="text-sm text-muted">Lost a device or left yourself signed in somewhere?</p>
             <button
               type="submit"
-              className="mt-3 inline-flex h-10 items-center gap-2 rounded-full border border-line px-4 text-sm font-medium hover:bg-surface-2"
+              className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-surface px-4 text-sm font-medium transition hover:border-accent/50 hover:text-accent"
             >
               <LogOut className="size-4" aria-hidden />
               Sign out everywhere
             </button>
           </form>
-        </section>
+        </SectionCard>
       </div>
 
-      <section>
-        <h2 className="font-display text-xl font-semibold">Activity log</h2>
-        <p className="mt-1 text-sm text-muted">The latest {log.length} sign-ins and changes. Entries are kept for 180 days.</p>
-        <div className="mt-4 relative overflow-x-auto rounded-card ring-1 ring-line">
-          <table className="w-full min-w-[40rem] text-left text-sm">
-            <thead className="bg-surface-2 text-xs text-muted uppercase">
-              <tr>
-                <th className="px-4 py-3 font-semibold">When</th>
-                <th className="px-4 py-3 font-semibold">Who</th>
-                <th className="px-4 py-3 font-semibold">What</th>
-                <th className="px-4 py-3 font-semibold">IP</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-line bg-surface">
-              {log.map((entry) => (
-                <tr key={entry.id}>
-                  <td className="px-4 py-2.5 whitespace-nowrap text-muted">{formatDateTime(entry.at)}</td>
-                  <td className="px-4 py-2.5">{entry.username || "—"}</td>
-                  <td className={cn("px-4 py-2.5", tone(entry.action))}>
-                    <span className="font-mono text-xs">{entry.action}</span>
-                    {entry.target && <span className="ml-2">{entry.target}</span>}
-                  </td>
-                  <td className="px-4 py-2.5 font-mono text-xs text-muted">{entry.ip}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <SectionCard icon={ShieldCheck} title="Activity log" description={`The latest ${log.length} sign-ins and changes. Entries are kept for 180 days.`}>
+        <ol className="relative space-y-1 before:absolute before:top-2 before:bottom-2 before:left-[1.05rem] before:w-px before:bg-line">
+          {log.map((entry) => {
+            const { icon: Icon, tone } = kind(entry.action);
+            return (
+              <li key={entry.id} className="relative flex items-start gap-3 rounded-xl px-1 py-2 transition hover:bg-surface-2">
+                <span className={cn("relative z-10 grid size-8 shrink-0 place-items-center rounded-full ring-4 ring-[var(--surface-solid)]", tone)}>
+                  <Icon className="size-3.5" aria-hidden />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm">
+                    <span className="font-medium">{entry.username || "Someone"}</span>{" "}
+                    <span className="text-muted">{human(entry.action)}</span>
+                    {entry.target && <span className="ml-1 font-medium">“{entry.target}”</span>}
+                  </p>
+                  <p className="font-mono text-[0.68rem] text-muted">
+                    {formatDateTime(entry.at)} · {entry.ip}
+                  </p>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </SectionCard>
     </div>
   );
 }
