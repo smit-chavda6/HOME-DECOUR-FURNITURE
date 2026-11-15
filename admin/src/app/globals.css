@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Admin design tokens: the shop's warm palette, toned down for a work tool.
+   Follows the computer's light/dark setting (Tailwind's default "dark:").
+--------------------------------------------------------------------------- */
+:root {
+  --bg: #f4f1ec;
+  --surface: #fffdfa;
+  --surface-2: #ece6dc;
+  --ink: #1b1714;
+  --muted: #6b6157;
+  --line: #e0d7ca;
+  --accent: #9a5527;
+  --accent-2: #c98b55;
+  --accent-ink: #fff8f0;
+  --sage: #4f7a4f;
+  --glass: rgb(255 255 255 / 0.6);
+  --glass-line: rgb(27 23 20 / 0.08);
+  --glow: rgb(154 85 39 / 0.18);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d0c0b;
+    --surface: #161412;
+    --surface-2: #211e1a;
+    --ink: #f5f0e8;
+    --muted: #a1978a;
+    --line: #2e2924;
+    --accent: #e3a56f;
+    --accent-2: #f3cf9e;
+    --accent-ink: #1a110a;
+    --sage: #8fb08a;
+    --glass: rgb(255 255 255 / 0.045);
+    --glass-line: rgb(255 255 255 / 0.09);
+    --glow: rgb(227 165 111 / 0.3);
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-ink: var(--accent-ink);
+  --color-sage: var(--sage);
+
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-face), var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --radius-card: 1rem;
+}
+
+@layer base {
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .glass {
+    background: var(--glass);
+    border: 1px solid var(--glass-line);
+    backdrop-filter: blur(12px);
+  }
+}
+
+@layer utilities {
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+}
