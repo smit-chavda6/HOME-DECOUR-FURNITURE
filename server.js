@@ -361,8 +361,10 @@ async function initializeData() {
         const deleteResult = await Product.deleteMany({ name: { $in: badProducts } });
         console.log(`Removed ${deleteResult.deletedCount} obsolete 3D models from database.`);
         
-        // Re-seed the current valid dynamic products
-        await seedDefaultProducts();
+        // Auto-adding a product for every .glb file is switched off: it kept
+        // re-creating old products (with made-up ratings) in the shared database
+        // after they were removed. Products are managed in the admin panel.
+        // await seedDefaultProducts();
         
         // Seed initial product reviews (DISABLED - clearing all customer data)
         // await seedInitialReviews();
