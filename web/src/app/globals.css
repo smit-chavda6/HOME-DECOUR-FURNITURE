@@ -406,3 +406,64 @@
 .stagger > :nth-child(7) { animation-delay: 360ms; }
 .stagger > :nth-child(8) { animation-delay: 420ms; }
 .stagger > :nth-child(n + 9) { animation-delay: 480ms; }
+
+/* ---------------------------------------------------------------------------
+   Home hero colours. Dark theme (the default): espresso with copper light.
+   Light theme: warm sand with an espresso headline. Same copper accent.
+--------------------------------------------------------------------------- */
+.hero-theme {
+  /* dark: the site's original warm black with copper light and hairlines */
+  --h-bg: linear-gradient(180deg, #0c0a09 0%, #0c0a09 100%);
+  --h-glow: rgb(227 165 111 / 0.16);
+  --h-hairline: rgb(255 255 255 / 0.035);
+  --h-ink: #f5f0e8;
+  --h-text: rgb(245 240 232 / 0.72);
+  --h-muted: #a1978a;
+  --h-dot: rgb(255 255 255 / 0.25);
+  --h-line: rgb(255 255 255 / 0.12);
+  --h-accent: #e3a56f;
+  --h-accent-strong: #f3cf9e;
+  --h-chip-bg: rgb(255 255 255 / 0.06);
+  --h-chip-text: rgb(245 240 232 / 0.85);
+  --h-btn-bg: #e3a56f;
+  --h-btn-ink: #1a110a;
+  --h-btn-hover: #efb987;
+  --h-card-bg: rgb(30 25 21 / 0.85);
+  --h-card-ring: rgb(255 255 255 / 0.1);
+  --h-card-label: #e3a56f;
+  --h-pill-bg: #f5f0e8;
+  --h-pill-ink: #1b1714;
+  --h-pill-icon: #9a5527;
+  --h-disc-a: #1c1916;
+  --h-disc-b: #13110f;
+  --h-branch: #c9a982;
+  --h-shadow: rgb(0 0 0 / 0.55);
+}
+
+[data-theme="light"] .hero-theme {
+  --h-bg: linear-gradient(160deg, #f3ebdf 0%, #efe6d8 45%, #e6d8c3 100%);
+  --h-glow: rgb(184 112 63 / 0.14);
+  --h-hairline: transparent;
+  --h-ink: #1b1714;
+  --h-text: #5c5148;
+  --h-muted: #6b5d50;
+  --h-dot: #c9b79c;
+  --h-line: #dccab0;
+  --h-accent: #b8703f;
+  --h-accent-strong: #8a4c24;
+  --h-chip-bg: rgb(255 255 255 / 0.6);
+  --h-chip-text: #4a3f36;
+  --h-btn-bg: #1b1714;
+  --h-btn-ink: #f7efe3;
+  --h-btn-hover: #2d2620;
+  --h-card-bg: rgb(255 255 255 / 0.8);
+  --h-card-ring: #e5d6c0;
+  --h-card-label: #9a5527;
+  --h-pill-bg: #1b1714;
+  --h-pill-ink: #f7efe3;
+  --h-pill-icon: #e3a56f;
+  --h-disc-a: #fbf6ee;
+  --h-disc-b: #f1e6d6;
+  --h-branch: #6b4a2c;
+  --h-shadow: rgb(91 58 34 / 0.35);
+}
