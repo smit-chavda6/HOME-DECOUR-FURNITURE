@@ -4,7 +4,7 @@ import { User } from "lucide-react";
 import { buttonStyles } from "@/components/ui/button";
 import { site } from "@/lib/site";
 import { CartButton } from "@/components/cart/cart-button";
-import { LogoMark } from "./logo-mark";
+import { LogoMark, Wordmark } from "./logo-mark";
 import { MobileNav } from "./mobile-nav";
 import { NavLinks, NavLinksFallback } from "./nav-links";
 import { SearchDialog } from "./search-dialog";
@@ -16,17 +16,10 @@ export function Logo({ className }: { className?: string }) {
     <Link
       href="/"
       aria-label={`${site.name} home`}
-      className={className ?? "flex items-center gap-3"}
+      className={className ?? "flex items-center gap-2.5"}
     >
       <LogoMark className="size-8 text-ink" />
-      <span aria-hidden className="h-7 w-px bg-line" />
-      <span className="flex flex-col leading-none">
-        {/* The intro loader glides its wordmark onto this span. */}
-        <span data-brand-target className="text-[0.82rem] font-semibold tracking-[0.26em] text-ink uppercase">
-          Home Decor
-        </span>
-        <span className="mt-1.5 text-[0.55rem] font-medium tracking-[0.42em] text-muted uppercase">Furniture</span>
-      </span>
+      <Wordmark />
     </Link>
   );
 }

@@ -1,5 +1,5 @@
 /**
- * Writes the HD monogram app icons: app/icon.svg, plus PNGs rendered with
+ * Writes the window-mark app icons: app/icon.svg, plus PNGs rendered with
  * headless Chrome (app/apple-icon.png, public/icon-192.png, public/icon-512.png).
  *
  * Run: node scripts/brand/icons.mjs
@@ -12,11 +12,13 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-const frame = "M10 9V39M24 9V39M24 9h4a11 11 0 0 1 11 11v8a11 11 0 0 1-11 11h-4";
-const bar = "M10 24H24";
+// Same geometry as MARK in src/components/layout/logo-mark.tsx.
+const frame = "M12 7h24a5 5 0 0 1 5 5v24a5 5 0 0 1-5 5H12a5 5 0 0 1-5-5V12a5 5 0 0 1 5-5z";
+const mullions = "M24 7v34M7 24h34";
+const pane = "M11.5 11.5h10v10h-10z";
 
 // rx 0 for maskable/apple icons (the OS rounds them), 11 for the favicon.
-const icon = (rx) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="${rx}" fill="#0f0e0d"/><g transform="translate(24 24) scale(0.66) translate(-24.5 -24)" fill="none" stroke-linecap="square" stroke-width="3.4"><path d="${frame}" stroke="#f2eee8"/><path d="${bar}" stroke="#e3a56f"/></g></svg>`;
+const icon = (rx) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><defs><linearGradient id="s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3cf9e"/><stop offset="1" stop-color="#e3a56f"/></linearGradient></defs><rect width="48" height="48" rx="${rx}" fill="#0c0a09"/><g transform="translate(24 24) scale(0.68) translate(-24 -24)" fill="none"><path d="${pane}" fill="url(#s)"/><path d="${frame}" stroke="#f5f0e8" stroke-width="3.4"/><path d="${mullions}" stroke="#f5f0e8" stroke-width="2.7"/></g></svg>`;
 
 writeFileSync(path.join(root, "src/app/icon.svg"), icon(11));
 

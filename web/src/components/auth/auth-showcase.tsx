@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Box, Heart, PackageCheck } from "lucide-react";
-import { LogoMark } from "@/components/layout/logo-mark";
+import { LogoMark, Wordmark } from "@/components/layout/logo-mark";
 import { EASE_OUT } from "@/lib/motion";
 import { assetUrl } from "@/lib/utils";
 
@@ -42,10 +42,9 @@ export function AuthShowcase() {
       />
       <div className="absolute inset-0 -z-10 bg-gradient-to-t from-black/90 via-black/40 to-black/60" />
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5">
         <LogoMark className="size-8 text-white" />
-        <span className="h-6 w-px bg-white/25" />
-        <span className="text-xs font-semibold tracking-[0.26em] uppercase">Home Decor</span>
+        <Wordmark tone="white" />
       </div>
 
       <div>

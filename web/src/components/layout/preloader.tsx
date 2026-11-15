@@ -4,45 +4,71 @@ import { useEffect, useRef, useState } from "react";
 import { animate, stagger } from "motion/react";
 import { markIntroDone } from "@/hooks/use-intro-done";
 import { INTRO_SEEN_KEY as SEEN_KEY } from "@/lib/inline-scripts";
-import { site } from "@/lib/site";
 
-const LINE_1 = "HOME DECOR";
-const LINE_2 = "FURNITURE";
-const OUT = [0.16, 1, 0.3, 1] as const; // power4.out
-const IN_OUT = [0.77, 0, 0.175, 1] as const;
+const OUT = [0.16, 1, 0.3, 1] as const;
+const DRAW = [0.65, 0, 0.35, 1] as const;
 
-/** Letters as masked spans (tagged for animation); a space becomes a fixed gap. */
-function Letters({ text, tag }: { text: string; tag: "data-l1" | "data-l2" }) {
-  return (
-    <>
-      {text.split("").map((ch, i) =>
-        ch === " " ? (
-          <span key={i} className="inline-block w-[0.3em]" />
-        ) : (
-          <span key={i} className="inline-block overflow-hidden align-bottom">
-            {/* Inline transform, not a Tailwind translate class: Tailwind v4 uses the
-                separate `translate` property, which would stack under motion's transform. */}
-            <span {...{ [tag]: "" }} className="inline-block" style={{ transform: "translateY(115%)" }}>
-              {ch}
-            </span>
-          </span>
-        ),
-      )}
-    </>
-  );
+/** Rounded rectangle as a path, so it can be "drawn" with a dash offset. */
+function rr(x: number, y: number, w: number, h: number, r: number) {
+  return `M${x + r} ${y}H${x + w - r}A${r} ${r} 0 0 1 ${x + w} ${y + r}V${y + h - r}A${r} ${r} 0 0 1 ${x + w - r} ${y + h}H${x + r}A${r} ${r} 0 0 1 ${x} ${y + h - r}V${y + r}A${r} ${r} 0 0 1 ${x + r} ${y}Z`;
 }
 
 /**
- * Brand intro, rebuilt from the original site's preloader:
+ * The room as an architect's elevation drawing (viewBox 800×480). Each entry
+ * is one stroke; they draw in this order.
+ */
+const LINES = [
+  // floor and skirting
+  "M20 400H796",
+  "M20 392H796",
+  // window: frame, mullions, sill
+  rr(96, 64, 168, 300, 3),
+  "M152 64V364M208 64V364M96 214H264",
+  "M84 372H276",
+  // abstract print
+  rr(336, 118, 112, 142, 2),
+  rr(350, 132, 84, 114, 1),
+  "M350 190H434M392 132V246",
+  // sofa: three back cushions, seat, arms, plinth
+  rr(318, 272, 104, 70, 22),
+  rr(424, 272, 104, 70, 22),
+  rr(530, 272, 104, 70, 22),
+  rr(306, 330, 340, 52, 16),
+  rr(286, 300, 40, 84, 18),
+  rr(626, 300, 40, 84, 18),
+  "M300 384H652V392",
+  // throw cushion
+  "M352 300l58-6 4 40-58 6z",
+  // arc lamp
+  "M712 398V182C712 116 660 92 604 106",
+  "M574 138a30 26 0 0 1 60 0z",
+  "M690 398h44",
+  // snake plant in a planter
+  "M744 400l5-58h36l5 58",
+  "M756 342C750 300 753 262 763 228c5 40 5 76 1 114",
+  "M770 342C769 292 775 246 787 210c3 50 0 94-7 132",
+  "M781 342c2-34 8-58 20-78-2 34-7 58-14 78",
+];
+
+/** Copper measurement lines with end ticks. */
+const DIMENSIONS = ["M286 430H666", "M286 422V438M666 422V438", "M70 64V364", "M62 64H78M62 364H78"];
+
+/** Sunlight falling from the window, across the wall and floor. */
+const BEAMS = [
+  "M152 64L264 64L560 392L380 392Z",
+  "M96 214L152 214L330 392L240 392Z",
+  "M208 214L264 214L640 392L520 392Z",
+];
+
+/**
+ * Brand intro: the home page's room as a fine line drawing that draws
+ * itself, then "turns on the sun": the window glows, warm light falls through
+ * it and the brand rises underneath. The screen then lifts away from the
+ * bottom, the same way the hero picture opens.
  *
- * 1. "HOME DECOR" rises letter by letter while a counter and hairline run to 50.
- * 2. "FURNITURE" follows, the counter reaches 100 and the HomeSphere line fades in.
- * 3. On wide screens the wordmark glides up into the navbar logo; on phones it lifts away.
- * 4. The screen splits open like two doors onto the page.
- *
- * Shown once per browser session. The server renders it visible so the page
- * never flashes underneath; the head script hides it for returning visitors
- * and for reduced motion (it marks <html> with "intro-done").
+ * About 3.4 seconds, shown once per browser session, skipped with a click.
+ * The server renders it visible so the page never flashes underneath; the
+ * head script hides it for returning visitors and reduced motion.
  */
 export function Preloader() {
   const root = useRef<HTMLDivElement>(null);
@@ -50,8 +76,6 @@ export function Preloader() {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    // Decided by the head script before paint, so it's stable across the
-    // double effect run in React dev mode.
     if (document.documentElement.classList.contains("intro-done")) {
       const id = requestAnimationFrame(() => setVisible(false));
       return () => cancelAnimationFrame(id);
@@ -63,26 +87,17 @@ export function Preloader() {
     }
 
     const el = root.current!;
-    const q = (sel: string) => el.querySelectorAll<HTMLElement>(sel);
+    const q = (sel: string) => el.querySelectorAll<HTMLElement | SVGElement>(sel);
     const one = (sel: string) => el.querySelector<HTMLElement>(sel)!;
-    const counter = one("[data-counter]");
-    const brand = one("[data-brand]");
     const controls: { stop: () => void }[] = [];
     const timers: number[] = [];
-    const at = (ms: number, fn: () => void) =>
-      timers.push(window.setTimeout(() => el.isConnected && fn(), ms));
+    const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(() => el.isConnected && fn(), ms));
     const run = (...args: unknown[]) => {
       // animate() has many overloads; this keeps every call stoppable on unmount.
       const c = (animate as (...a: unknown[]) => { stop: () => void })(...args);
       controls.push(c);
       return c;
     };
-    const count = (from: number, to: number, duration: number) =>
-      run(from, to, {
-        duration,
-        ease: [0.45, 0, 0.55, 1],
-        onUpdate: (v: number) => (counter.textContent = String(Math.floor(v)).padStart(3, "0")),
-      });
 
     const html = document.documentElement;
     const prevOverflow = html.style.overflow;
@@ -93,65 +108,40 @@ export function Preloader() {
       html.style.overflow = prevOverflow;
     };
     stopIntro.current = stopAll;
-    const finish = () => {
+
+    // 1. The drawing draws itself, line by line, while the camera eases in.
+    run(one("[data-scene]"), { scale: [1.06, 1], opacity: [0, 1] }, { duration: 2.6, ease: OUT });
+    run(q("[data-line]"), { strokeDashoffset: [1, 0] }, { duration: 1.1, delay: stagger(0.045), ease: DRAW });
+    run(q("[data-dim]"), { strokeDashoffset: [1, 0] }, { duration: 0.8, delay: stagger(0.08, { startDelay: 0.9 }), ease: DRAW });
+    run(q("[data-label]"), { opacity: [0, 1] }, { duration: 0.6, delay: stagger(0.1, { startDelay: 1.3 }) });
+
+    // 2. Sunrise: window panes glow, beams fall, lamp warms.
+    run(q("[data-pane]"), { opacity: [0, 1] }, { duration: 0.9, delay: stagger(0.08, { startDelay: 1.35 }), ease: OUT });
+    run(q("[data-beam]"), { opacity: [0, 1] }, { duration: 1.2, delay: stagger(0.12, { startDelay: 1.5 }), ease: OUT });
+    run(one("[data-sun]"), { opacity: [0, 1] }, { duration: 1.4, delay: 1.35 });
+    run(one("[data-lamp]"), { opacity: [0, 0.9] }, { duration: 1, delay: 1.7 });
+
+    // 3. The brand.
+    run(q("[data-letter]"), { y: ["110%", "0%"] }, { duration: 0.9, delay: stagger(0.04, { startDelay: 1.75 }), ease: OUT });
+    run(one("[data-sub]"), { opacity: [0, 1], letterSpacing: ["0.9em", "0.5em"] }, { duration: 1, delay: 2.15, ease: OUT });
+
+    // 4. Lift away; page entrances start together.
+    at(2900, () => {
+      markIntroDone();
+      run(one("[data-stage]"), { y: -50, opacity: 0, scale: 1.03 }, { duration: 0.7, ease: [0.65, 0, 0.35, 1] });
+      run(el, { clipPath: ["inset(0% 0% 0% 0%)", "inset(0% 0% 100% 0%)"] }, { duration: 0.9, delay: 0.05, ease: [0.65, 0, 0.35, 1] });
+    });
+    at(3900, () => {
       stopAll();
       setVisible(false);
-      markIntroDone();
-    };
-
-    // Phase 1: HOME DECOR, counter to 50.
-    run(q("[data-l1]"), { y: ["115%", "0%"] }, { duration: 1.1, delay: stagger(0.05), ease: OUT });
-    run(q("[data-meta]"), { opacity: [0, 1] }, { duration: 0.6, delay: 0.35 });
-    at(150, () => count(0, 50, 1.3));
-    run(one("[data-fill]"), { scaleX: [0, 0.5] }, { duration: 1.3, delay: 0.15, ease: [0.45, 0, 0.55, 1] });
-
-    // Phase 2: FURNITURE, counter to 100, tagline.
-    run(q("[data-l2]"), { y: ["115%", "0%"] }, { duration: 1, delay: stagger(0.04, { startDelay: 1.25 }), ease: OUT });
-    at(1450, () => count(50, 100, 1));
-    run(one("[data-fill]"), { scaleX: [0.5, 1] }, { duration: 1, delay: 1.45, ease: [0.45, 0, 0.55, 1] });
-    run(one("[data-tagline]"), { opacity: [0, 1], y: [8, 0] }, { duration: 0.8, delay: 1.8, ease: OUT });
-
-    // Phase 3: brief hold, then clear the extras.
-    at(2750, () => {
-      run(q("[data-meta], [data-tagline]"), { opacity: 0 }, { duration: 0.35 });
-      run(q("[data-l2]"), { opacity: 0 }, { duration: 0.35 });
     });
-
-    // Phase 4: glide into the navbar wordmark (desktop) or lift away (phone).
-    at(2950, () => {
-      const target = document.querySelector<HTMLElement>("[data-brand-target]");
-      const line1 = one("[data-line1]");
-      const desktop = window.innerWidth >= 768 && target && target.offsetParent !== null;
-      if (desktop) {
-        // Scale happens around the brand's centre (C), so move line 1's centre
-        // (L) onto the target's centre (T): d = T - C - scale * (L - C).
-        const t = target.getBoundingClientRect();
-        const l = line1.getBoundingClientRect();
-        const c = brand.getBoundingClientRect();
-        const scale = t.width / l.width;
-        const cx = c.left + c.width / 2;
-        const cy = c.top + c.height / 2;
-        const dx = t.left + t.width / 2 - cx - scale * (l.left + l.width / 2 - cx);
-        const dy = t.top + t.height / 2 - cy - scale * (l.top + l.height / 2 - cy);
-        run(brand, { x: dx, y: dy, scale }, { duration: 1.1, ease: IN_OUT });
-      } else {
-        run(brand, { y: -30, scale: 0.85, opacity: 0 }, { duration: 0.8, ease: IN_OUT });
-      }
-    });
-
-    // Phase 5: doors open; the real navbar is now where the wordmark landed.
-    at(3850, () => {
-      markIntroDone();
-      run(one("[data-door-l]"), { x: "-100%" }, { duration: 0.75, ease: [0.65, 0, 0.35, 1] });
-      run(one("[data-door-r]"), { x: "100%" }, { duration: 0.75, ease: [0.65, 0, 0.35, 1] });
-      run(brand, { opacity: 0 }, { duration: 0.35, delay: 0.25 });
-    });
-    at(4650, finish);
 
     return stopAll;
   }, []);
 
   if (!visible) return null;
+
+  const dash = { strokeDasharray: 1, strokeDashoffset: 1 } as const;
 
   return (
     <>
@@ -160,45 +150,112 @@ export function Preloader() {
         ref={root}
         data-preloader
         aria-hidden
-        className="fixed inset-0 z-[80] overflow-hidden text-ink"
+        className="fixed inset-0 z-[80] overflow-hidden bg-[#0c0a09] text-white"
         onClick={() => {
-          // Skip: stop every pending step before the elements disappear.
           stopIntro.current();
           setVisible(false);
           markIntroDone();
         }}
       >
-        <div data-door-l className="absolute inset-y-0 left-0 w-1/2 bg-bg" />
-        <div data-door-r className="absolute inset-y-0 right-0 w-1/2 bg-bg" />
+        {/* Same ground as the hero: warm black, copper light, drawing-paper hairlines. */}
+        <div className="absolute inset-0 bg-[radial-gradient(60rem_40rem_at_10%_95%,rgb(227_165_111/0.14),transparent_70%),radial-gradient(50rem_30rem_at_85%_0%,rgb(243_207_158/0.06),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,rgb(255_255_255/0.03)_0_1px,transparent_1px_7rem)]" />
 
-        <div className="relative grid h-full place-items-center px-6">
-          <div className="text-center">
-            <h2
-              data-brand
-              className="flex flex-col items-center gap-1 text-[clamp(2rem,9vw,2.7rem)] leading-[1.05] font-semibold tracking-[0.04em] will-change-transform md:flex-row md:gap-0 md:text-[clamp(1.8rem,5vw,3.5rem)]"
-            >
-              <span data-line1 className="whitespace-nowrap">
-                <Letters text={LINE_1} tag="data-l1" />
-              </span>
-              <span className="hidden w-[0.3em] md:inline-block" />
-              <span className="whitespace-nowrap">
-                <Letters text={LINE_2} tag="data-l2" />
-              </span>
-            </h2>
-            <p
-              data-tagline
-              className="mx-auto mt-6 max-w-[95vw] font-mono text-[clamp(0.68rem,1.5vw,0.9rem)] tracking-[0.22em] text-balance text-muted uppercase opacity-0"
-            >
-              {site.tagline}
-            </p>
-          </div>
-        </div>
+        <div data-stage className="relative flex h-full flex-col items-center justify-center px-5">
+          <svg
+            data-scene
+            viewBox="0 0 800 480"
+            className="w-full max-w-[44rem] overflow-visible opacity-0"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <defs>
+              <linearGradient id="pl-sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stopColor="#fbe9cc" />
+                <stop offset="1" stopColor="#e9a46a" />
+              </linearGradient>
+              <linearGradient id="pl-beam" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stopColor="#f6d3a0" stopOpacity="0.32" />
+                <stop offset="1" stopColor="#f6d3a0" stopOpacity="0" />
+              </linearGradient>
+              <radialGradient id="pl-sun" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0" stopColor="#f3c58d" stopOpacity="0.45" />
+                <stop offset="1" stopColor="#f3c58d" stopOpacity="0" />
+              </radialGradient>
+              <radialGradient id="pl-lamp" cx="0.5" cy="0" r="0.9">
+                <stop offset="0" stopColor="#ffe3b5" stopOpacity="0.5" />
+                <stop offset="1" stopColor="#ffe3b5" stopOpacity="0" />
+              </radialGradient>
+            </defs>
 
-        <p data-meta data-counter className="absolute right-6 bottom-12 font-mono text-sm tracking-[0.1em] opacity-0 sm:right-12">
-          000
-        </p>
-        <div data-meta className="absolute inset-x-6 bottom-8 h-px bg-line opacity-0 sm:inset-x-12">
-          <div data-fill className="h-full origin-left bg-ink" style={{ transform: "scaleX(0)" }} />
+            {/* light (behind the drawing) */}
+            <ellipse data-sun cx="180" cy="214" rx="260" ry="220" fill="url(#pl-sun)" style={{ opacity: 0 }} />
+            {[0, 1, 2].flatMap((c) =>
+              [0, 1].map((r) => (
+                <rect
+                  key={`${c}${r}`}
+                  data-pane
+                  x={98 + c * 56}
+                  y={66 + r * 150}
+                  width={52}
+                  height={146}
+                  fill="url(#pl-sky)"
+                  opacity={0}
+                  style={{ opacity: 0 }}
+                />
+              )),
+            )}
+            {BEAMS.map((d) => (
+              <path key={d} data-beam d={d} fill="url(#pl-beam)" style={{ opacity: 0 }} />
+            ))}
+            <path data-lamp d="M574 138L540 392H670L634 138Z" fill="url(#pl-lamp)" style={{ opacity: 0 }} />
+
+            {/* the drawing */}
+            <g stroke="#efe4d2" strokeWidth={1.6} strokeOpacity={0.9}>
+              {LINES.map((d, i) => (
+                <path key={i} data-line d={d} pathLength={1} style={dash} />
+              ))}
+            </g>
+            <g stroke="#e3a56f" strokeWidth={1.2}>
+              {DIMENSIONS.map((d) => (
+                <path key={d} data-dim d={d} pathLength={1} style={dash} />
+              ))}
+            </g>
+            <g fill="#e3a56f" fontFamily="var(--font-mono-face), monospace" fontSize="11" letterSpacing="2">
+              <text data-label x="476" y="456" textAnchor="middle" style={{ opacity: 0 }}>
+                W 220 CM
+              </text>
+              <text data-label x="54" y="214" textAnchor="middle" transform="rotate(-90 54 214)" style={{ opacity: 0 }}>
+                H 240 CM
+              </text>
+              <text data-label x="796" y="40" textAnchor="end" fill="#efe4d2" fillOpacity="0.55" style={{ opacity: 0 }}>
+                LIVING ROOM · ELEVATION A
+              </text>
+            </g>
+          </svg>
+
+          <p className="mt-6 font-display text-[clamp(2.4rem,7vw,4.2rem)] leading-none font-semibold tracking-[-0.045em] sm:mt-8">
+            {"Home".split("").map((ch, i) => (
+              <span key={i} className="-mb-[0.14em] inline-block overflow-hidden pb-[0.14em] align-bottom">
+                <span data-letter className="inline-block" style={{ transform: "translateY(110%)" }}>
+                  {ch}
+                </span>
+              </span>
+            ))}{" "}
+            <em className="font-serif text-[1.08em] font-normal tracking-[-0.01em] italic">
+              {"Decor".split("").map((ch, i) => (
+                <span key={i} className="-mb-[0.14em] inline-block overflow-hidden pb-[0.14em] align-bottom">
+                  <span data-letter className="text-gradient inline-block pr-[0.06em]" style={{ transform: "translateY(110%)" }}>
+                    {ch}
+                  </span>
+                </span>
+              ))}
+            </em>
+          </p>
+          <p data-sub className="mt-4 font-mono text-[0.68rem] tracking-[0.5em] text-white/55 uppercase opacity-0">
+            Furniture
+          </p>
         </div>
       </div>
     </>
