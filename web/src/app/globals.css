@@ -78,7 +78,8 @@
   --color-glass-line: var(--glass-line);
 
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-face), var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-serif: var(--font-serif-face), ui-serif, Georgia, serif;
 
   --radius-card: 1.5rem;
@@ -126,7 +127,6 @@
     background: var(--bg);
     color: var(--ink);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv11";
   }
 
   /* Film grain over the whole page, for a printed, cinematic feel. */
@@ -143,6 +143,7 @@
   h1,
   h2,
   h3 {
+    font-family: var(--font-display);
     text-wrap: balance;
     letter-spacing: -0.035em;
   }
@@ -155,7 +156,7 @@
     font-family: var(--font-serif);
     font-style: italic;
     font-weight: 400;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
   }
 
   p {
@@ -253,9 +254,10 @@
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.22em;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--accent);
   }
@@ -275,19 +277,6 @@
   }
 }
 
-/* Product image morph between the shop grid and the product page. */
-::view-transition-group(.morph) {
-  animation-duration: 450ms;
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-}
-::view-transition-image-pair(.morph) {
-  animation-name: via-blur;
-}
-@keyframes via-blur {
-  30% {
-    filter: blur(3px);
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -306,3 +295,114 @@
     animation-duration: 0s !important;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Entrance animations for server-rendered content. Add a class and, to
+   stagger, a delay: style={{ "--d": "120ms" }} (see lib/motion.ts).
+   Reduced-motion users get the end state instantly via the rule above.
+--------------------------------------------------------------------------- */
+@keyframes enter-rise {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+    filter: blur(6px);
+  }
+}
+/* Insets overshoot the box so italic overhangs and descenders are never cut. */
+@keyframes enter-mask {
+  from {
+    clip-path: inset(-20% -6% 120% -6%);
+    transform: translateY(0.35em);
+  }
+  to {
+    clip-path: inset(-20% -6% -25% -6%);
+  }
+}
+@keyframes enter-draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes enter-reveal {
+  from {
+    clip-path: inset(14% 10% 14% 10%);
+    transform: scale(1.14);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes ken-burns {
+  from {
+    transform: scale(1.04) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.14) translate3d(-2%, -1.5%, 0);
+  }
+}
+@keyframes sheen {
+  0%,
+  55% {
+    transform: translateX(-120%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(260%) skewX(-20deg);
+  }
+}
+@keyframes ping-soft {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+.enter-rise {
+  animation: enter-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms) both;
+}
+.enter-mask {
+  animation: enter-mask 1s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms) both;
+}
+.enter-draw {
+  transform-origin: left;
+  animation: enter-draw 1.2s cubic-bezier(0.65, 0, 0.35, 1) var(--d, 0ms) both;
+}
+.enter-reveal {
+  animation: enter-reveal 1.4s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms) both;
+}
+.ken-burns {
+  animation: ken-burns 22s ease-in-out infinite alternate;
+}
+.ping-soft {
+  animation: ping-soft 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+/* A light sweep across a button, for the one action that matters on a page. */
+.sheen {
+  position: relative;
+  overflow: hidden;
+}
+.sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.35), transparent);
+  animation: sheen 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Children cascade in one after another (forms, lists). Replays on remount. */
+.stagger > * {
+  animation: enter-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.stagger > :nth-child(2) { animation-delay: 60ms; }
+.stagger > :nth-child(3) { animation-delay: 120ms; }
+.stagger > :nth-child(4) { animation-delay: 180ms; }
+.stagger > :nth-child(5) { animation-delay: 240ms; }
+.stagger > :nth-child(6) { animation-delay: 300ms; }
+.stagger > :nth-child(7) { animation-delay: 360ms; }
+.stagger > :nth-child(8) { animation-delay: 420ms; }
+.stagger > :nth-child(n + 9) { animation-delay: 480ms; }

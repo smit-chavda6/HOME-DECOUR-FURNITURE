@@ -1,4 +1,3 @@
-import { ViewTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Box, Star } from "lucide-react";
@@ -14,7 +13,7 @@ type ProductCardProps = {
   className?: string;
 };
 
-/** Glass product card. Its image morphs into the product page hero on navigation. */
+/** Glass product card with image, price and quick actions. */
 export function ProductCard({
   product,
   sizes = "(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw",
@@ -34,18 +33,16 @@ export function ProductCard({
     >
       <div className="relative aspect-[4/5] overflow-hidden rounded-[calc(var(--radius-card)-0.4rem)] bg-surface-2">
         {product.image && (
-          <ViewTransition name={`product-${product.id}`} share="morph" default="none">
-            <Image
-              src={product.image}
-              alt={product.name}
-              fill
-              sizes={sizes}
-              className={cn(
-                "object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]",
-                !product.inStock && "opacity-50 grayscale",
-              )}
-            />
-          </ViewTransition>
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            sizes={sizes}
+            className={cn(
+              "object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]",
+              !product.inStock && "opacity-50 grayscale",
+            )}
+          />
         )}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/45 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 

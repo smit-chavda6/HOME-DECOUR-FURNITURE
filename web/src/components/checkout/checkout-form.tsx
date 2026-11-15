@@ -12,8 +12,10 @@ import {
   CreditCard,
   LoaderCircle,
   Lock,
+  Mail,
   ShieldCheck,
   ShoppingBag,
+  Truck,
 } from "lucide-react";
 import { Button, buttonStyles } from "@/components/ui/button";
 import { Field, FormMessage, Input } from "@/components/ui/field";
@@ -25,6 +27,7 @@ import {
 } from "@/lib/actions/checkout";
 import type { CurrentUser } from "@/lib/auth";
 import { FREE_SHIPPING_FROM, calculateTotals } from "@/lib/pricing";
+import { delay } from "@/lib/motion";
 import { cn, formatPrice } from "@/lib/utils";
 import { addressSchema, type FieldErrors } from "@/lib/validation";
 import { useCart } from "@/stores/cart";
@@ -77,7 +80,7 @@ function Stepper({ step, onJump }: { step: number; onJump: (n: number) => void }
               disabled={!done}
               onClick={() => onJump(i)}
               aria-current={active ? "step" : undefined}
-              className="flex items-center gap-2.5 text-sm disabled:cursor-default"
+              className="relative flex items-center gap-2.5 text-sm disabled:cursor-default"
             >
               <span
                 className={cn(
@@ -89,6 +92,7 @@ function Stepper({ step, onJump }: { step: number; onJump: (n: number) => void }
               >
                 {done ? <Check className="size-4" aria-hidden /> : i + 1}
               </span>
+              {active && <span aria-hidden className="ping-soft absolute size-8 rounded-full border border-accent" />}
               <span className={cn("hidden font-medium sm:inline", active || done ? "text-ink" : "text-muted")}>{label}</span>
             </button>
             {i < steps.length - 1 && (
@@ -260,9 +264,18 @@ export function CheckoutForm({ user, onlinePayment }: CheckoutFormProps) {
   return (
     <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_25rem] lg:gap-16">
       <div className="min-w-0">
-        <Stepper step={step} onJump={go} />
+        <div className="enter-rise" style={delay(350)}>
+          <Stepper step={step} onJump={go} />
+        </div>
 
-        <div className="relative mt-10 overflow-hidden">
+        <div
+          className="enter-rise relative mt-8 overflow-hidden rounded-panel bg-surface p-6 ring-1 ring-line sm:p-10"
+          style={delay(450)}
+        >
+          <div aria-hidden className="pointer-events-none absolute top-0 right-10 left-10 h-px bg-gradient-to-r from-transparent via-accent/70 to-transparent" />
+          <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase">
+            Step {step + 1} of {steps.length} · {steps[step]}
+          </p>
           <AnimatePresence mode="wait" custom={direction} initial={false}>
             <motion.section
               key={step}
@@ -280,7 +293,7 @@ export function CheckoutForm({ user, onlinePayment }: CheckoutFormProps) {
                     ev.preventDefault();
                     continueFromAddress();
                   }}
-                  className="space-y-5"
+                  className="stagger mt-3 space-y-5"
                 >
                   <h2 className="text-3xl font-semibold">Where should we deliver?</h2>
                   <div className="grid gap-5 sm:grid-cols-2">
@@ -320,7 +333,7 @@ export function CheckoutForm({ user, onlinePayment }: CheckoutFormProps) {
               )}
 
               {step === 1 && (
-                <div className="space-y-6">
+                <div className="stagger mt-3 space-y-6">
                   <h2 className="text-3xl font-semibold">How would you like to pay?</h2>
                   <fieldset className="grid gap-3 sm:grid-cols-2">
                     <legend className="sr-only">Payment method</legend>
@@ -344,7 +357,9 @@ export function CheckoutForm({ user, onlinePayment }: CheckoutFormProps) {
                         key={option.value}
                         className={cn(
                           "ring-glow relative flex cursor-pointer flex-col gap-6 rounded-card border p-6 transition-all duration-300",
-                          method === option.value ? "border-accent bg-accent/[0.07]" : "border-line bg-surface hover:border-ink/25",
+                          method === option.value
+                            ? "border-accent bg-accent/[0.07] shadow-[0_0_0_4px_var(--glow)]"
+                            : "border-line bg-surface hover:-translate-y-0.5 hover:border-ink/25",
                           !option.enabled && "pointer-events-none opacity-45",
                         )}
                       >
@@ -367,7 +382,15 @@ export function CheckoutForm({ user, onlinePayment }: CheckoutFormProps) {
                               method === option.value ? "border-accent bg-accent text-accent-ink" : "border-line",
                             )}
                           >
-                            {method === option.value && <Check className="size-3.5" aria-hidden />}
+                            {method === option.value && (
+                              <motion.span
+                                initial={{ scale: 0, rotate: -45 }}
+                                animate={{ scale: 1, rotate: 0 }}
+                                transition={{ type: "spring", stiffness: 500, damping: 22 }}
+                              >
+                                <Check className="size-3.5" aria-hidden />
+                              </motion.span>
+                            )}
                           </span>
                         </span>
                         <span>
@@ -377,10 +400,12 @@ export function CheckoutForm({ user, onlinePayment }: CheckoutFormProps) {
                       </label>
                     ))}
                   </fieldset>
-                  <p className="flex items-center gap-2 text-sm text-muted">
-                    <ShieldCheck className="size-4 text-sage" aria-hidden />
-                    Card details are entered only in Razorpay&apos;s secure window, never on our site.
-                  </p>
+                  {onlinePayment && (
+                    <p className="flex items-center gap-2 text-sm text-muted">
+                      <ShieldCheck className="size-4 text-sage" aria-hidden />
+                      Card details are entered only in Razorpay&apos;s secure window, never on our site.
+                    </p>
+                  )}
                   <div className="flex flex-wrap gap-3">
                     <Button variant="outline" size="lg" onClick={() => go(0)}>
                       <ArrowLeft aria-hidden />
@@ -395,7 +420,7 @@ export function CheckoutForm({ user, onlinePayment }: CheckoutFormProps) {
               )}
 
               {step === 2 && (
-                <div className="space-y-6">
+                <div className="stagger mt-3 space-y-6">
                   <h2 className="text-3xl font-semibold">Check and place your order</h2>
                   <dl className="divide-y divide-line overflow-hidden rounded-card border border-line bg-surface text-sm">
                     {[
@@ -426,7 +451,7 @@ export function CheckoutForm({ user, onlinePayment }: CheckoutFormProps) {
                       <ArrowLeft aria-hidden />
                       Back
                     </Button>
-                    <Button size="lg" onClick={placeOrder} disabled={pending || !hydrated} className="min-w-56">
+                    <Button size="lg" onClick={placeOrder} disabled={pending || !hydrated} className={cn("min-w-56", !pending && "sheen")}>
                       {pending ? <LoaderCircle className="animate-spin" aria-hidden /> : <Lock aria-hidden />}
                       {pending ? "Placing order…" : method === "cod" ? `Place order · ${formatPrice(totals.total)}` : `Pay ${formatPrice(totals.total)}`}
                     </Button>
@@ -440,9 +465,22 @@ export function CheckoutForm({ user, onlinePayment }: CheckoutFormProps) {
             </motion.section>
           </AnimatePresence>
         </div>
+
+        <ul className="enter-rise mt-6 grid gap-3 text-sm text-muted sm:grid-cols-3" style={delay(650)}>
+          {[
+            { icon: ShieldCheck, text: "Prices re-checked on our side" },
+            { icon: Truck, text: "Delivered and assembled" },
+            { icon: Mail, text: "Order updates by email" },
+          ].map(({ icon: Icon, text }) => (
+            <li key={text} className="flex items-center gap-2.5 rounded-2xl bg-surface-2/60 px-4 py-3">
+              <Icon className="size-4 shrink-0 text-accent" aria-hidden />
+              {text}
+            </li>
+          ))}
+        </ul>
       </div>
 
-      <aside className="lg:sticky lg:top-24 lg:self-start">
+      <aside className="enter-rise lg:sticky lg:top-24 lg:self-start" style={delay(550)}>
         <OrderCard
           items={cartItems}
           totals={totals}

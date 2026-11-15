@@ -35,7 +35,13 @@ export function ModelViewer({
 
   useEffect(() => {
     let cancelled = false;
-    import("@google/model-viewer").then(() => {
+    import("@google/model-viewer").then(({ ModelViewerElement }) => {
+      // Our .glb files are meshopt-compressed. model-viewer has no default
+      // decoder, so point it at the copy we serve ourselves (from the
+      // meshoptimizer package) instead of a third-party CDN.
+      if (!ModelViewerElement.meshoptDecoderLocation) {
+        ModelViewerElement.meshoptDecoderLocation = "/vendor/meshopt_decoder.js";
+      }
       if (!cancelled) setReady(true);
     });
     return () => {

@@ -88,7 +88,7 @@ export const blogPosts: BlogPost[] = [
     excerpt: "The sofa anchors your living room. Here is how to get the size, fabric and comfort right the first time.",
     date: "2026-09-18",
     readingMinutes: 4,
-    image: "image/product/SoftAura™ 3-Seater Minimal Sofa.webp",
+    image: "image/rooms/living.svg",
     body: [
       { text: "A sofa is the piece you use every day and see every time you walk into the room, so it is worth choosing slowly. These five checks cover most of what matters." },
       { heading: "1. Measure the room, then the doorway", text: "Leave about 45 cm between the sofa and a coffee table, and at least 75 cm for walkways. Then measure the doors, stairs and lift the sofa must pass through on delivery day." },
@@ -104,7 +104,7 @@ export const blogPosts: BlogPost[] = [
     excerpt: "How responsibly sourced wood, recycled metal and durable finishes make furniture better for your home and the planet.",
     date: "2026-08-02",
     readingMinutes: 3,
-    image: "image/product/WalnutCraft™ Solid Wood Dining Chair.webp",
+    image: "image/rooms/dining.svg",
     body: [
       { text: "The most sustainable piece of furniture is the one you keep for decades. That starts with materials chosen to last." },
       { heading: "Wood from managed sources", text: "Certified and reclaimed timber keeps forests healthy. Engineered wood made from offcuts uses more of every tree and resists warping." },
@@ -118,7 +118,7 @@ export const blogPosts: BlogPost[] = [
     excerpt: "Simple habits that keep wood looking beautiful for years.",
     date: "2026-06-21",
     readingMinutes: 3,
-    image: "image/product/NordEdge™ Solid Wood Study Desk.webp",
+    image: "image/rooms/study.svg",
     body: [
       { text: "Wood is a natural material that reacts to light, heat and moisture. A little care goes a long way." },
       { heading: "Dust often, clean gently", text: "Use a soft dry cloth weekly. For marks, a cloth barely damp with mild soap and water, then dry straight away." },
@@ -133,7 +133,7 @@ export const blogPosts: BlogPost[] = [
     excerpt: "Warm neutrals, natural textures and furniture that works harder: the ideas shaping homes right now.",
     date: "2026-05-10",
     readingMinutes: 3,
-    image: "image/product/CurveLounge™ Designer Accent Chair.webp",
+    image: "image/rooms/lounge.svg",
     body: [
       { text: "Trends come and go, but the best ones make a home calmer and more comfortable. These are easy to adopt a little at a time." },
       { heading: "Warm, earthy neutrals", text: "Clay, sand, olive and walnut tones replace stark grey and white, and make rooms feel lived in." },

@@ -23,8 +23,8 @@ const chapters = [
       </>
     ),
     text: "Generous seats, honest proportions and lines that stay calm in any room.",
-    image: "image/product/SoftAura™ 3-Seater Minimal Sofa.webp",
-    alt: "A light grey minimal sofa with a round oak coffee table against a warm wall",
+    image: "image/rooms/lounge.svg",
+    alt: "Illustrated lounge with a sage velvet loveseat, travertine side table and tufted accent chair",
   },
   {
     kicker: "02 — Craft",
@@ -34,8 +34,8 @@ const chapters = [
       </>
     ),
     text: "Solid woods, dense foams, velvet and full-grain leather, chosen to last for years, not seasons.",
-    image: "image/product/HeritageTan™ Leather 3-Seater Sofa.webp",
-    alt: "A tan leather three-seater sofa against a pale wall",
+    image: "image/rooms/leather.svg",
+    alt: "Illustrated room with a cognac leather Chesterfield sofa, leather ottoman and ladder bookshelf",
   },
   {
     kicker: "03 — Certainty",
@@ -45,8 +45,8 @@ const chapters = [
       </>
     ),
     text: "Open a piece in the AR room, place it on your floor at real size, and walk around it.",
-    image: "image/product/NordEdge™ Solid Wood Study Desk.webp",
-    alt: "A solid wood study desk with a black chair in a sunlit room",
+    image: "image/rooms/study.svg",
+    alt: "Illustrated study with a walnut writing desk, task chair and ladder bookshelf",
   },
 ];
 

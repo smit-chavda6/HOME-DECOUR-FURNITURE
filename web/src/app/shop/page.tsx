@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Box, ChevronLeft, ChevronRight, SearchX, X } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { ProductCard, ProductCardSkeleton } from "@/components/product/product-card";
@@ -99,6 +100,11 @@ async function ShopContent({
     }),
     getCategoryCounts(),
   ]);
+
+  // A page past the end (old link, typed URL) goes to the last real page.
+  if (page > result.pageCount) {
+    redirect(shopHref(current, { page: result.pageCount > 1 ? String(result.pageCount) : undefined }));
+  }
 
   const totalCount = Object.values(counts).reduce((sum, n) => sum + n, 0);
   const hasFilters = Boolean(category || q || band || only3d);
@@ -216,17 +222,20 @@ async function ShopContent({
 
         {result.pageCount > 1 && (
           <nav aria-label="Pages" className="mt-14 flex items-center justify-center gap-2">
-            <Link
-              href={shopHref(current, { page: page > 2 ? String(page - 1) : undefined })}
-              aria-disabled={page <= 1}
-              className={buttonStyles({
-                variant: "outline",
-                size: "icon",
-                className: page <= 1 ? "pointer-events-none opacity-40" : "",
-              })}
-            >
-              <ChevronLeft aria-label="Previous page" />
-            </Link>
+            {/* Disabled arrows are plain spans, so nothing can follow them off the ends. */}
+            {page > 1 ? (
+              <Link
+                href={shopHref(current, { page: page > 2 ? String(page - 1) : undefined })}
+                aria-label="Previous page"
+                className={buttonStyles({ variant: "outline", size: "icon" })}
+              >
+                <ChevronLeft aria-hidden />
+              </Link>
+            ) : (
+              <span aria-hidden className={buttonStyles({ variant: "outline", size: "icon", className: "opacity-40" })}>
+                <ChevronLeft />
+              </span>
+            )}
             {Array.from({ length: result.pageCount }, (_, i) => i + 1).map((n) => (
               <Link
                 key={n}
@@ -240,17 +249,19 @@ async function ShopContent({
                 {n}
               </Link>
             ))}
-            <Link
-              href={shopHref(current, { page: String(page + 1) })}
-              aria-disabled={page >= result.pageCount}
-              className={buttonStyles({
-                variant: "outline",
-                size: "icon",
-                className: page >= result.pageCount ? "pointer-events-none opacity-40" : "",
-              })}
-            >
-              <ChevronRight aria-label="Next page" />
-            </Link>
+            {page < result.pageCount ? (
+              <Link
+                href={shopHref(current, { page: String(page + 1) })}
+                aria-label="Next page"
+                className={buttonStyles({ variant: "outline", size: "icon" })}
+              >
+                <ChevronRight aria-hidden />
+              </Link>
+            ) : (
+              <span aria-hidden className={buttonStyles({ variant: "outline", size: "icon", className: "opacity-40" })}>
+                <ChevronRight />
+              </span>
+            )}
           </nav>
         )}
       </section>

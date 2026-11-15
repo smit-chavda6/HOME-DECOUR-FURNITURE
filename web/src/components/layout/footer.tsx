@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
 import { buttonStyles } from "@/components/ui/button";
-import { categories, site } from "@/lib/site";
+import { getSettings } from "@/lib/data/content";
+import { categories } from "@/lib/site";
 
 const columns = [
   {
@@ -31,7 +32,15 @@ const columns = [
   },
 ];
 
-export function Footer() {
+export async function Footer() {
+  const settings = await getSettings();
+  const social = [
+    { label: "Instagram", href: settings.instagram },
+    { label: "Facebook", href: settings.facebook },
+    { label: "YouTube", href: settings.youtube },
+    { label: "Pinterest", href: settings.pinterest },
+    { label: "WhatsApp", href: settings.whatsapp ? `https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, "")}` : "" },
+  ].filter((s) => s.href);
   return (
     <footer className="relative mt-32 overflow-hidden border-t border-line">
       <div className="spotlight pointer-events-none absolute inset-0 opacity-70 [--x:50%] [--y:100%]" />
@@ -56,21 +65,33 @@ export function Footer() {
             <ul className="mt-8 space-y-3 text-sm">
               <li className="flex items-center gap-3">
                 <MapPin className="size-4 text-accent" aria-hidden />
-                {site.contact.address}
+                {settings.address}
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="size-4 text-accent" aria-hidden />
-                <a href={`tel:${site.contact.phone.replace(/\s/g, "")}`} className="hover:text-accent">
-                  {site.contact.phone}
+                <a href={`tel:${settings.phone.replace(/\s/g, "")}`} className="hover:text-accent">
+                  {settings.phone}
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="size-4 text-accent" aria-hidden />
-                <a href={`mailto:${site.contact.email}`} className="break-all hover:text-accent">
-                  {site.contact.email}
+                <a href={`mailto:${settings.email}`} className="break-all hover:text-accent">
+                  {settings.email}
                 </a>
               </li>
             </ul>
+            {social.length > 0 && (
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {social.map((s) => (
+                  <li key={s.label}>
+                    <a href={s.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-full border border-line px-3 py-1 text-xs hover:border-accent hover:text-accent">
+                      {s.label}
+                      <ArrowUpRight className="size-3" aria-hidden />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           {columns.map((column) => (
@@ -98,7 +119,7 @@ export function Footer() {
         </p>
 
         <div className="relative flex flex-col gap-3 border-t border-line pt-6 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 {site.name}. Crafted in Ahmedabad.</p>
+          <p>© 2026 {settings.name}. Crafted in Ahmedabad.</p>
           <ul className="flex gap-6">
             <li><Link href="/privacy" className="hover:text-ink">Privacy</Link></li>
             <li><Link href="/terms" className="hover:text-ink">Terms</Link></li>

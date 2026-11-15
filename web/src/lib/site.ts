@@ -35,31 +35,31 @@ export const categories = [
     slug: "sofa",
     label: "Sofas",
     blurb: "Home & living",
-    image: "image/product/Royal Crest Chesterfield Sofa (Leather Sofa).jpg",
+    image: "image/catalog/linen-cloud-3-seater-sofa.svg",
   },
   {
     slug: "chair",
     label: "Chairs",
     blurb: "Sitting focus",
-    image: "image/product/CurveLounge™ Designer Accent Chair.webp",
+    image: "image/catalog/verdant-velvet-tub-chair.svg",
   },
   {
     slug: "table",
     label: "Tables",
     blurb: "Dining & coffee",
-    image: "image/product/LunaNest™ Round Coffee Table.webp",
+    image: "image/catalog/noir-marble-coffee-table.svg",
   },
   {
     slug: "bed",
     label: "Beds",
     blurb: "Rest & sleep",
-    image: "image/product/bedroom.jpg",
+    image: "image/catalog/haven-channel-tufted-bed.svg",
   },
   {
     slug: "office",
     label: "Office",
     blurb: "Work & study",
-    image: "image/product/NordEdge™ Solid Wood Study Desk.webp",
+    image: "image/catalog/walnut-writing-desk.svg",
   },
 ] as const;
 

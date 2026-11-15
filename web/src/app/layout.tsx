@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Instrument_Serif } from "next/font/google";
+import { Bodoni_Moda, Bricolage_Grotesque, Schibsted_Grotesk, Space_Mono } from "next/font/google";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { ChatWidget } from "@/components/chat/chat-widget";
+import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { Preloader } from "@/components/layout/preloader";
@@ -9,17 +10,35 @@ import { preloaderSkipScript, themeInitScript } from "@/lib/inline-scripts";
 import { site, siteUrl } from "@/lib/site";
 import "./globals.css";
 
-// A precise modern sans for everything, with an italic serif for accent words.
-const body = Geist({
+/*
+ * Typography:
+ *  - Bricolage Grotesque: characterful display grotesque for headings (optical sizes).
+ *  - Schibsted Grotesk: crisp editorial sans for body copy and UI.
+ *  - Bodoni Moda italic: high-contrast fashion serif for accent words.
+ *  - Space Mono: small labels, counters and the intro tagline (as on the old site).
+ */
+const display = Bricolage_Grotesque({
+  variable: "--font-display-face",
+  subsets: ["latin"],
+  axes: ["opsz", "wdth"],
+});
+
+const body = Schibsted_Grotesk({
   variable: "--font-body",
   subsets: ["latin"],
 });
 
-const serif = Instrument_Serif({
+const serif = Bodoni_Moda({
   variable: "--font-serif-face",
   subsets: ["latin"],
-  weight: "400",
   style: ["normal", "italic"],
+  axes: ["opsz"],
+});
+
+const mono = Space_Mono({
+  variable: "--font-mono-face",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -42,8 +61,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       data-theme="dark"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
-      className={`${body.variable} ${serif.variable} h-full antialiased`}
+      className={`${display.variable} ${body.variable} ${serif.variable} ${mono.variable} h-full antialiased`}
     >
       <head>
         {/* Both run before the first paint: saved theme, and skip the intro for returning visitors. */}
@@ -57,6 +77,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
+        <AnnouncementBar />
         <Header />
         <main id="main" className="flex-1">
           {children}

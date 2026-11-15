@@ -7,7 +7,7 @@ import { assetUrl } from "@/lib/utils";
 
 /**
  * Every catalogue read goes through this file. Results are cached for hours
- * and tagged "products"; admin actions call updateTag("products") after a
+ * and tagged "products"; the admin panel (admin/) calls /api/revalidate after a
  * change so shoppers see it straight away.
  */
 

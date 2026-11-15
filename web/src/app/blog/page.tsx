@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { PageHeader } from "@/components/layout/page-header";
-import { blogPosts } from "@/lib/content";
+import { getPosts } from "@/lib/data/content";
 import { assetUrl } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 
 const dateFormat = new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 
-export default function BlogPage() {
-  const [lead, ...rest] = blogPosts;
+export default async function BlogPage() {
+  const [lead, ...rest] = await getPosts();
 
   return (
     <>
@@ -25,7 +25,8 @@ export default function BlogPage() {
       />
 
       <div className="container-page">
-        <Link href={`/blog/${lead.slug}`} className="group grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-14">
+        {!lead && <p className="rounded-card bg-surface-2 px-6 py-16 text-center text-muted">New articles are on the way.</p>}
+        {lead && <Link href={`/blog/${lead.slug}`} className="group grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-14">
           <div className="relative aspect-[4/3] overflow-hidden rounded-panel bg-surface-2">
             <Image src={assetUrl(lead.image)!} alt="" fill preload sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
           </div>
@@ -38,9 +39,9 @@ export default function BlogPage() {
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-muted">{lead.excerpt}</p>
           </div>
-        </Link>
+        </Link>}
 
-        <ul className="mt-20 grid gap-x-6 gap-y-14 border-t border-line pt-14 sm:grid-cols-2 lg:grid-cols-3">
+        {rest.length > 0 && <ul className="mt-20 grid gap-x-6 gap-y-14 border-t border-line pt-14 sm:grid-cols-2 lg:grid-cols-3">
           {rest.map((post) => (
             <li key={post.slug}>
               <Link href={`/blog/${post.slug}`} className="group block">
@@ -55,7 +56,7 @@ export default function BlogPage() {
               </Link>
             </li>
           ))}
-        </ul>
+        </ul>}
       </div>
     </>
   );

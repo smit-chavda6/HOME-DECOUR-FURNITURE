@@ -135,15 +135,6 @@ export async function getOrderForUser(orderId: string, userId: string) {
   return view;
 }
 
-/** Admin: every order, newest first. */
-export async function getAllOrders(limit = 200): Promise<OrderView[]> {
-  await connectDb();
-  const orders = await Order.find()
-    .sort({ created_at: -1 })
-    .limit(limit)
-    .lean<LeanOrder[]>();
-  return hydrate(orders);
-}
 
 /** Has this customer received an order containing this product? */
 export async function hasDeliveredPurchase(userId: string, productId: string) {

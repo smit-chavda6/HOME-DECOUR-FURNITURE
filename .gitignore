@@ -1,6 +1,19 @@
-node_modules
+# Dependencies and builds
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# Secrets
 .env
 .env.*
-.env.local
-users.db
-# public/uploads
+!.env.example
+
+# Local database backups (contain customer data)
+db-backups/
+
+# Uploads saved locally in development (production uses Vercel Blob)
+web/public/uploads/
+
+# Vercel CLI
+.vercel/

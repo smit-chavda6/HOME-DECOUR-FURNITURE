@@ -64,7 +64,7 @@ export function ArFeature() {
               <div className="relative w-64 rounded-[2.9rem] border border-white/15 bg-black p-2.5 shadow-2xl sm:w-72">
                 <div className="relative aspect-[9/18] overflow-hidden rounded-[2.2rem]">
                   <Image
-                    src={assetUrl("image/product/Nordic Minimal Side Table.webp")!}
+                    src={assetUrl("image/catalog/pebble-travertine-side-table.svg")!}
                     alt=""
                     fill
                     sizes="288px"

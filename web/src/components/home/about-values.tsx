@@ -19,8 +19,8 @@ export function AboutValues() {
       <div className="grid gap-4 lg:grid-cols-12">
         <Reveal className="relative min-h-[26rem] overflow-hidden rounded-panel lg:col-span-7 lg:row-span-2">
           <Image
-            src={assetUrl("image/product/ScandiHome™ 3-Seater Sofa.webp")!}
-            alt="A Scandinavian-style three-seater sofa in a bright living room"
+            src={assetUrl("image/rooms/terracotta.svg")!}
+            alt="Illustrated living room with a terracotta boucle sofa, glass nesting tables and a walnut console"
             fill
             sizes="(min-width: 1024px) 55vw, 100vw"
             className="object-cover"

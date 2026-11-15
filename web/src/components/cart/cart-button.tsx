@@ -16,7 +16,7 @@ export function CartButton() {
     <button
       type="button"
       onClick={open}
-      aria-label={shown > 0 ? `Open cart, ${shown} items` : "Open cart"}
+      aria-label={shown > 0 ? `Open cart, ${shown} ${shown === 1 ? "item" : "items"}` : "Open cart"}
       className={buttonStyles({
         variant: "ghost",
         size: "icon",

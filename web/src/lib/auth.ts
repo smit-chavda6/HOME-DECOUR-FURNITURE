@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { isValidObjectId } from "mongoose";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { connectDb } from "@/lib/db";
 import { User } from "@/lib/models/user";
 import { readSession } from "@/lib/session";
@@ -19,13 +19,12 @@ export type CurrentUser = {
   state: string;
   country: string;
   postalCode: string;
-  role: "user" | "admin";
 };
 
 /**
- * Who is making this request, or null. The role always comes from the
- * database, never from the cookie, so removing someone's admin role takes
- * effect immediately. Wrapped in cache() so one request loads the user once.
+ * Who is making this request, or null. Shop customers only: the admin panel
+ * is a separate app (admin/) with its own accounts and login. Wrapped in
+ * cache() so one request loads the user once.
  */
 export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   const session = await readSession();
@@ -47,7 +46,6 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
     state: user.state ?? "",
     country: user.country ?? "India",
     postalCode: user.postal_code ?? "",
-    role: user.role === "admin" ? "admin" : "user",
   };
 });
 
@@ -58,12 +56,6 @@ export async function requireUser(returnTo: string): Promise<CurrentUser> {
   return user;
 }
 
-/** For admin pages: anyone who is not an admin sees a normal 404. */
-export async function requireAdmin(): Promise<CurrentUser> {
-  const user = await getCurrentUser();
-  if (!user || user.role !== "admin") notFound();
-  return user;
-}
 
 /** Only allow redirects to paths on this site (blocks "//evil.com" tricks). */
 export function safeNextPath(next: unknown, fallback = "/account") {

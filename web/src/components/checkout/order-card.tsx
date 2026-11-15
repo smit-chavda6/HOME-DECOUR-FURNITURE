@@ -85,7 +85,10 @@ export function OrderCard({ items, totals, flipped, address }: OrderCardProps) {
             <div className="flex items-center justify-between">
               <p className="eyebrow">Your order</p>
               <p className="text-xs text-muted">
-                {items.reduce((n, i) => n + i.quantity, 0)} items
+                {(() => {
+                  const count = items.reduce((n, i) => n + i.quantity, 0);
+                  return `${count} ${count === 1 ? "item" : "items"}`;
+                })()}
               </p>
             </div>
 

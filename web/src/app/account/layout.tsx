@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LogOut, Package, Settings, ShieldCheck } from "lucide-react";
+import { LogOut, Package, Settings } from "lucide-react";
 import { logoutAction } from "@/lib/actions/auth";
 import { getCurrentUser } from "@/lib/auth";
 
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 const linkStyles =
   "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors hover:bg-surface-2";
 
-/** Greeting and the admin link depend on who is signed in, so they stream in. */
+/** The greeting depends on who is signed in, so it streams in. */
 async function AccountIdentity() {
   const user = await getCurrentUser();
   if (!user) return null;
@@ -21,12 +21,6 @@ async function AccountIdentity() {
     <>
       <p className="px-4 text-sm text-muted">Signed in as</p>
       <p className="truncate px-4 font-display text-xl">{user.fullName}</p>
-      {user.role === "admin" && (
-        <Link href="/admin" className={`${linkStyles} mt-4 bg-inverse text-inverse-ink hover:bg-inverse hover:opacity-90`}>
-          <ShieldCheck className="size-4" aria-hidden />
-          Admin panel
-        </Link>
-      )}
     </>
   );
 }

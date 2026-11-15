@@ -9,7 +9,11 @@ export const metadata: Metadata = {
 
 export default function RegisterPage() {
   return (
-    <AuthShell title="Create your account" description="It takes a minute. You can add your delivery address at checkout.">
+    <AuthShell
+      mode="register"
+      title={<>Create your <em className="text-gradient">account</em></>}
+      description="It takes a minute. You can add your delivery address at checkout."
+    >
       <RegisterForm />
     </AuthShell>
   );

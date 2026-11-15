@@ -212,7 +212,6 @@ async function ProductContent({ params }: { params: Props["params"] }) {
         <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="lg:sticky lg:top-24 lg:self-start">
             <ProductGallery
-              productId={product.id}
               name={product.name}
               images={product.gallery}
               modelUrl={product.modelUrl}

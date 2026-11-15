@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next";
-import { blogPosts } from "@/lib/content";
+import { getPosts } from "@/lib/data/content";
 import { getAllProductSlugs } from "@/lib/data/products";
 import { siteUrl } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteUrl();
   const pages = ["", "/shop", "/ar", "/about", "/contact", "/faq", "/blog", "/privacy", "/terms"];
-  const slugs = await getAllProductSlugs().catch(() => []);
+  const [slugs, blogPosts] = await Promise.all([getAllProductSlugs().catch(() => []), getPosts()]);
 
   return [
     ...pages.map((path) => ({ url: `${base}${path}`, changeFrequency: "weekly" as const, priority: path === "" ? 1 : 0.7 })),

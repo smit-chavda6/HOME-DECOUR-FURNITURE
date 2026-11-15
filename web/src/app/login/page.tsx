@@ -9,7 +9,11 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <AuthShell title="Welcome back" description="Log in to check out, track orders and review your furniture.">
+    <AuthShell
+      mode="login"
+      title={<>Welcome <em className="text-gradient">back</em></>}
+      description="Log in to check out, track orders and review your furniture."
+    >
       <LoginForm />
     </AuthShell>
   );

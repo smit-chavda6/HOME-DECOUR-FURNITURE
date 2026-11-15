@@ -1,21 +1,19 @@
 "use client";
 
-import { useState, ViewTransition } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { Box } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ModelViewer } from "./model-viewer";
 
 type ProductGalleryProps = {
-  /** Used to morph the shop card image into this one during navigation. */
-  productId: string;
   name: string;
   images: string[];
   modelUrl: string | null;
 };
 
 /** Large image with thumbnails. Products with a 3D model get an extra "3D" tab. */
-export function ProductGallery({ productId, name, images, modelUrl }: ProductGalleryProps) {
+export function ProductGallery({ name, images, modelUrl }: ProductGalleryProps) {
   // The selected view is an image index, or "3d".
   const [view, setView] = useState<number | "3d">(0);
   const showThumbs = images.length > 1 || Boolean(modelUrl);
@@ -68,17 +66,15 @@ export function ProductGallery({ productId, name, images, modelUrl }: ProductGal
             className="size-full"
           />
         ) : images.length > 0 ? (
-          <ViewTransition name={view === 0 ? `product-${productId}` : undefined} share="morph" default="none">
-            <Image
-              key={images[view as number]}
-              src={images[view as number] ?? images[0]}
-              alt={name}
-              fill
-              preload
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-            />
-          </ViewTransition>
+          <Image
+            key={images[view as number]}
+            src={images[view as number] ?? images[0]}
+            alt={name}
+            fill
+            preload
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="object-cover"
+          />
         ) : (
           <div className="grid size-full place-items-center text-muted">No image yet</div>
         )}

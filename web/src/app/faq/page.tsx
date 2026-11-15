@@ -3,15 +3,15 @@ import Link from "next/link";
 import { ChevronDown, Mail, Phone } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { buttonStyles } from "@/components/ui/button";
-import { faqGroups } from "@/lib/content";
-import { site } from "@/lib/site";
+import { getFaq, getSettings } from "@/lib/data/content";
 
 export const metadata: Metadata = {
   title: "Frequently asked questions",
   description: "Answers about delivery, shipping costs, assembly, returns, payment, custom furniture and the AR preview.",
 };
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const [faqGroups, settings] = await Promise.all([getFaq(), getSettings()]);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -36,12 +36,12 @@ export default function FaqPage() {
 
       <div className="container-page grid gap-14 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="space-y-14">
-          {faqGroups.map((group) => (
-            <section key={group.title}>
+          {faqGroups.map((group, gi) => (
+            <section key={gi}>
               <h2 className="font-display text-2xl font-medium">{group.title}</h2>
               <div className="mt-4 border-t border-line">
-                {group.items.map((item) => (
-                  <details key={item.q} className="group border-b border-line">
+                {group.items.map((item, ii) => (
+                  <details key={ii} className="group border-b border-line">
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 font-medium [&::-webkit-details-marker]:hidden">
                       {item.q}
                       <ChevronDown className="size-4 shrink-0 transition-transform group-open:rotate-180" aria-hidden />
@@ -63,11 +63,11 @@ export default function FaqPage() {
             <ul className="mt-6 space-y-3 text-sm">
               <li className="flex items-center gap-3">
                 <Phone className="size-4" aria-hidden />
-                <a href={`tel:${site.contact.phone.replace(/\s/g, "")}`}>{site.contact.phone}</a>
+                <a href={`tel:${settings.phone.replace(/\s/g, "")}`}>{settings.phone}</a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="size-4" aria-hidden />
-                <a href={`mailto:${site.contact.email}`} className="break-all">{site.contact.email}</a>
+                <a href={`mailto:${settings.email}`} className="break-all">{settings.email}</a>
               </li>
             </ul>
             <Link href="/contact" className={buttonStyles({ variant: "inverse", className: "mt-7 w-full" })}>

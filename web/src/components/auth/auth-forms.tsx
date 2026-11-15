@@ -1,9 +1,9 @@
 "use client";
 
 import { useActionState } from "react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Field, FormMessage, Input } from "@/components/ui/field";
+import { PasswordInput } from "@/components/ui/password-input";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { loginAction, registerAction } from "@/lib/actions/auth";
 import type { FormState } from "@/lib/validation";
@@ -20,7 +20,7 @@ export function LoginForm() {
   const [state, action] = useActionState(loginAction, initial);
 
   return (
-    <form action={action} className="space-y-5" noValidate>
+    <form action={action} className="stagger space-y-5" noValidate>
       <input type="hidden" name="next" value={next} />
       <FormMessage>{state.message}</FormMessage>
 
@@ -36,29 +36,18 @@ export function LoginForm() {
       </Field>
 
       <Field label="Password" htmlFor="password" error={state.errors?.password}>
-        <Input
+        <PasswordInput
           id="password"
           name="password"
-          type="password"
           autoComplete="current-password"
           error={state.errors?.password}
           required
         />
       </Field>
 
-      <SubmitButton size="lg" className="w-full" pendingText="Logging in…">
+      <SubmitButton size="lg" className="sheen w-full" pendingText="Logging in…">
         Log in
       </SubmitButton>
-
-      <p className="text-center text-sm text-muted">
-        New here?{" "}
-        <Link
-          href={next ? `/register?next=${encodeURIComponent(next)}` : "/register"}
-          className="font-medium text-ink underline underline-offset-4 hover:text-accent"
-        >
-          Create an account
-        </Link>
-      </p>
     </form>
   );
 }
@@ -70,7 +59,7 @@ export function RegisterForm() {
   const e = state.errors ?? {};
 
   return (
-    <form action={action} className="space-y-5" noValidate>
+    <form action={action} className="stagger space-y-5" noValidate>
       <input type="hidden" name="next" value={next} />
       <FormMessage>{state.message}</FormMessage>
 
@@ -92,22 +81,12 @@ export function RegisterForm() {
       </Field>
 
       <Field label="Password" htmlFor="password" error={e.password} hint="At least 8 characters.">
-        <Input id="password" name="password" type="password" autoComplete="new-password" error={e.password} required />
+        <PasswordInput id="password" name="password" autoComplete="new-password" error={e.password} required meter />
       </Field>
 
-      <SubmitButton size="lg" className="w-full" pendingText="Creating account…">
+      <SubmitButton size="lg" className="sheen w-full" pendingText="Creating account…">
         Create account
       </SubmitButton>
-
-      <p className="text-center text-sm text-muted">
-        Already have an account?{" "}
-        <Link
-          href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
-          className="font-medium text-ink underline underline-offset-4 hover:text-accent"
-        >
-          Log in
-        </Link>
-      </p>
     </form>
   );
 }

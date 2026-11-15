@@ -7,6 +7,7 @@ import { Hero } from "@/components/home/hero";
 import { Marquee } from "@/components/home/marquee";
 import { NewArrivals } from "@/components/home/new-arrivals";
 import { ScrollStory } from "@/components/home/scroll-story";
+import { getHomeContent } from "@/lib/data/content";
 import {
   getCategoryCounts,
   getFeaturedProducts,
@@ -40,11 +41,11 @@ async function loadHomeData() {
 }
 
 export default async function HomePage() {
-  const { featured, arrivals, counts, stats } = await loadHomeData();
+  const [{ featured, arrivals, counts, stats }, content] = await Promise.all([loadHomeData(), getHomeContent()]);
 
   return (
     <>
-      <Hero stats={stats} />
+      <Hero stats={stats} content={content} />
       <Marquee />
       <div id="collections" className="scroll-mt-20">
         <CategoryGrid counts={counts} />
